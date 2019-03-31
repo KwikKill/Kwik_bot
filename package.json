@@ -1,0 +1,13 @@
+{
+  "name": "Gab_bot",
+  "version": "1.0",
+  "description": "Gab_351 discord bot",
+  "main": "index.js",
+  "author": "Gab_351",
+  "license": "GPL v3+",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "11.4.2",
+    "apex-api": "3.1.0"
+  }
+}
