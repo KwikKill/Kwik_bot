@@ -274,6 +274,27 @@ client.on('message', message => {
 
 				message.channel.send(embed);
 				return;
+			}else if(legend == "Pathfinder" || legend == "pathfinder") {
+
+				const embed = new RichEmbed()
+      		.setTitle('Pathfinder - le robot :')
+      		.setColor(0xffe402)
+					.setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
+      		.setDescription(
+					"Pathfinder est une légende qui a des capacitées de mouvement, nottament grâce à des grapins et des tyroliennes."
+					)
+					.addField(
+						"Passif","Le passif de Pathfinder est de pouvoir scanner les balises (visibles sur la map) pour obtenir des informations sur la zone."
+					).addField(
+						"abilitée tactique","le tactique de Pathfinder est de pouvoir balancer un grapin qui lui permet de se déplacer plus vite ou d'attirer ses ennemis."
+					).addField(
+						"abilité ultime","l'ultime de Pathfinder est de pouvoir placer une tyrolienne qui lui permet de se déplacer plus vite sur une grande distance."
+					).setImage(
+						"https://gamepedia.cursecdn.com/apexlegends_gamepedia_en/thumb/5/53/Pathfinder.jpg/300px-Pathfinder.jpg?version=7e1bf9861a0abe49a58c7ef4665b40ab"
+					);
+
+				message.channel.send(embed);
+				return;
 			}
 
 
