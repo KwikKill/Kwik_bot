@@ -94,7 +94,7 @@ client.on('message', message => {
 					if (member) {
 
 						member.ban('demande de ban par ' + message.author.username).then(() => {
-          	message.reply(` ${user.tag} a bien été kick !`);
+          	message.reply(` ${user.tag} a bien été ban !`);
         		}).catch(err => {
          			message.reply('Je n\'ai pas pu le ban');
          			//console.error(err);
@@ -103,8 +103,28 @@ client.on('message', message => {
         		message.reply('cet utilisateur n\'est pas présent sur le serveur !');
       		}
     		} else {
-      		message.reply('vous n\'avez pas mentionnez l\'utilisateur à kick');
+      		message.reply('vous n\'avez pas mentionnez l\'utilisateur à ban');
     		}
+			}else {
+				message.reply('vous n\'avez pas les permissions necessaires !');
+
+			}
+			return;
+		}
+    var regexpunban = new RegExp('^\\' + prefix + 'unban\\s+([^\\s]*)$');
+		if (regexpunban.test(message.content)) {
+
+			let can_manage_chans = message.channel.permissionsFor(message.member).has("BAN_MEMBERS", false);
+			if(can_manage_chans) {
+
+				var id = message.content.replace(regexpunban, "$1");
+
+				message.guild.unban(id, 'demande de unban par ' + message.author.username).then((user) => {
+        message.reply(`${user.username} a bien été unban !`);
+        }).catch(err => {
+         	message.reply('Je n\'ai pas pu le unban');
+         	console.error(err);
+        });
 			}else {
 				message.reply('vous n\'avez pas les permissions necessaires !');
 

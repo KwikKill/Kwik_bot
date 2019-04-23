@@ -2,7 +2,6 @@
 
 This is my discord bot.
 
-
 ## Install
 
 * Clone this repo
