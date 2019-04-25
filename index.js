@@ -17,42 +17,25 @@ client.on('message', message => {
 			return;
 
   	}
+
 		if(message.content === prefix + 'help') {
 
-			message.author.send("liste des commandes :");
+      const help = require('./command/fun/help.js');
+      help(message);
 
-			const embed = new RichEmbed()
-      .setTitle('général :')
-      .setColor(0xffe402)
-			//.setThumbnail(message.author.avatarURL)
-      .setDescription("*help : affiche cette liste \n*info : affiche vos infos ");
-
-			message.author.send(embed);
-
-
-			const embed2 = new RichEmbed()
-      .setTitle('modération :')
-      .setColor(0xffe402)
-			//.setThumbnail(message.author.avatarURL)
-      .setDescription("*kick : permet de kick un utilisateur");
-
-			message.author.send(embed2);
-
-    	//message.channel.send(embed);
-			return;
-
-
-		}else if(message.content === prefix + 'info') {
-
-			const embed = new RichEmbed()
-      .setTitle('vos stats :')
-      .setColor(0xffe402)
-			.setThumbnail(message.author.avatarURL)
-      .setDescription("pseudo : " + message.author.username);
-    	message.channel.send(embed);
 			return;
 
 		}
+    
+    if(message.content === prefix + 'info') {
+
+      const info = require('./command/fun/info.js');
+			info(message);
+
+			return;
+
+		}
+
 		if (message.content.startsWith(prefix + 'kick')) {
 
       const kick = require('./command/moderation/kick.js');
@@ -60,6 +43,7 @@ client.on('message', message => {
 
 			return;
 		}
+
 		if (message.content.startsWith(prefix + 'ban')) {
 
       const ban = require('./command/moderation/ban.js');
@@ -67,6 +51,7 @@ client.on('message', message => {
 
 			return;
 		}
+
     var regexpunban = new RegExp('^\\' + prefix + 'unban\\s+([^\\s]*)$');
 		if (regexpunban.test(message.content)) {
 
@@ -298,7 +283,7 @@ client.on('channelDelete', chanel => {
 		);
 
 	log.send(embed);
-});*/
+});
 
 client.on('emojiCreate', emoji => {
 	var log = emoji.guild.channels.find(channel => channel.name === "log");
@@ -328,6 +313,6 @@ client.on('emojiDelete', emoji => {
 		);
 
 	log.send(embed);
-});
+});*/
 
 client.login(process.env.DISCORD_TOKEN);
