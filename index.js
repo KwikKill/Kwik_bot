@@ -10,6 +10,8 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
+    if (msg.author.bot) return undefined;
+    if (!msg.content.startsWith(prefix)) return undefined;
 
 
     if (message.content === prefix + 'ping') {
