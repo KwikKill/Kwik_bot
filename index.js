@@ -90,11 +90,11 @@ client.on('message', message => {
 		}
 });
 
-/*client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', member => {
   const channel = member.guild.channels.find(ch => ch.name === 'qui-vous-a-inviter-❔');
-  if (!channel) return;
+  if (!channel) return undefined;
   channel.send(`Bienvenue, plébéien ${member}`);
-});*/
+});
 
 client.on('channelCreate', chanel => {
 	var log = chanel.guild.channels.find(channel => channel.name === "log");
@@ -158,7 +158,7 @@ client.on('emojiDelete', emoji => {
 	log.send(embed);
 });
 
-client.on('guildBanAdd', ban => {
+/*client.on('guildBanAdd', ban => {
 	var log = ban.guild.channels.find(channel => channel.name === "log");
   if(!log) return undefined;
 
@@ -173,8 +173,8 @@ client.on('guildBanAdd', ban => {
 	log.send(embed);
 });
 
-client.on('guildBanRemove', ban => {
-	var log = ban.guild.channels.find(channel => channel.name === "log");
+client.on('guildBanRemove', unban => {
+	var log = unban.guild.channels.find(channel => channel.name === "log");
   if(!log) return undefined;
 
 	const embed = new RichEmbed()
@@ -182,11 +182,11 @@ client.on('guildBanRemove', ban => {
 		.setColor(0xffe402)
 		.setDescription(
 			"membre unban : " +
-			ban.user.username
+			unban.user.username
 		);
 
 	log.send(embed);
-});
+});*/
 
 
 client.login(process.env.DISCORD_TOKEN);
