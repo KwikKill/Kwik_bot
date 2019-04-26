@@ -1,3 +1,4 @@
+const { Client, RichEmbed } = require('discord.js');
 function kick(message) {
 
   let can_manage_chans = message.channel.permissionsFor(message.member).has("KICK_MEMBERS", false);

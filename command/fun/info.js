@@ -1,3 +1,4 @@
+const { Client, RichEmbed } = require('discord.js');
 function info(message) {
   const embed = new RichEmbed()
   .setTitle('vos stats :')

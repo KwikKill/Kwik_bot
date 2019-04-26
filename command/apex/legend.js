@@ -1,3 +1,4 @@
+const { Client, RichEmbed } = require('discord.js');
 function legend(message,legend) {
 
   if(legend == "list") {

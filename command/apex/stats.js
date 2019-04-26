@@ -1,3 +1,4 @@
+const { Client, RichEmbed } = require('discord.js');
 function stats(message,user,platform) {
 
   if(platform != 'PC' && platform != 'XBOX' && platform != 'PSN') {
