@@ -4,7 +4,7 @@ function legend(message,legend) {
   if(legend == "list") {
 
     const embed = new RichEmbed()
-      .setTitle('legendes apex :')
+      .setTitle("legendes apex :")
       .setColor(0xffe402)
       .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
       .setDescription(
@@ -16,7 +16,7 @@ function legend(message,legend) {
   }else if(legend == "Bloodhound" || legend == "bloodhound" ) {
 
     const embed = new RichEmbed()
-      .setTitle('Bloodhound - le traqueur :')
+      .setTitle("Bloodhound - le traqueur :")
       .setColor(0xffe402)
       .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
       .setDescription(
@@ -37,7 +37,7 @@ function legend(message,legend) {
   }else if(legend == "Gibraltar" || legend == "gibraltar") {
 
     const embed = new RichEmbed()
-      .setTitle('Gibraltar - le tank :')
+      .setTitle("Gibraltar - le tank :")
       .setColor(0xffe402)
       .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
       .setDescription(
@@ -57,7 +57,7 @@ function legend(message,legend) {
   }else if(legend == "Lifeline" || legend == "lifeline") {
 
     const embed = new RichEmbed()
-      .setTitle('Lifeline - la healeuse :')
+      .setTitle("Lifeline - la healeuse :")
       .setColor(0xffe402)
       .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
       .setDescription(
@@ -77,7 +77,7 @@ function legend(message,legend) {
   }else if(legend == "Pathfinder" || legend == "pathfinder") {
 
     const embed = new RichEmbed()
-      .setTitle('Pathfinder - le robot :')
+      .setTitle("Pathfinder - le robot :")
       .setColor(0xffe402)
       .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
       .setDescription(
