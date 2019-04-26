@@ -158,4 +158,35 @@ client.on('emojiDelete', emoji => {
 	log.send(embed);
 });
 
+client.on('guildBanAdd', ban => {
+	var log = ban.guild.channels.find(channel => channel.name === "log");
+  if(!log) return undefined;
+
+	const embed = new RichEmbed()
+		.setTitle('log :')
+		.setColor(0xffe402)
+		.setDescription(
+			"membre banni : " +
+			ban.user.username
+		);
+
+	log.send(embed);
+});
+
+client.on('guildBanRemove', ban => {
+	var log = ban.guild.channels.find(channel => channel.name === "log");
+  if(!log) return undefined;
+
+	const embed = new RichEmbed()
+		.setTitle('log :')
+		.setColor(0xffe402)
+		.setDescription(
+			"membre unban : " +
+			ban.user.username
+		);
+
+	log.send(embed);
+});
+
+
 client.login(process.env.DISCORD_TOKEN);
