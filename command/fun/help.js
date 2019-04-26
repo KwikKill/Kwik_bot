@@ -1,6 +1,6 @@
-function help(message) {
+function help(message,embed) {
 
-  const embed = new RichEmbed()
+  
   .setTitle("liste des commandes :")
   .setColor(0xffe402)
   //.setThumbnail(message.author.avatarURL)

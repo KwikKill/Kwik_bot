@@ -22,8 +22,9 @@ client.on('message', message => {
 
 		if(message.content === prefix + 'help') {
 
+      const embed = new RichEmbed()
       const help = require('./command/fun/help.js');
-      help(message);
+      help(message,embed);
 
 			return;
 
