@@ -1,6 +1,7 @@
-function help(message,embed) {
+const { Client, RichEmbed } = require('discord.js');
+function help(message) {
 
-  
+  const embed = new RichEmbed()
   .setTitle("liste des commandes :")
   .setColor(0xffe402)
   //.setThumbnail(message.author.avatarURL)
