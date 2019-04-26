@@ -83,7 +83,8 @@ client.on('message', message => {
 		if(regexp2.test(message.content)) {
 			var legend = message.content.replace(regexp2, "$1");
 
-
+      const legend = require('./command/apex/legend.js');
+      legend(message,legend);
 
 
 		}

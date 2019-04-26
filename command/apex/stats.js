@@ -10,7 +10,8 @@ function stats(message,user,platform) {
       )
       .setDescription(
         "Une erreur est survenue : " +
-        "\nVérifiez le nom de la plateforme."
+        "\nVérifiez le nom de la plateforme :" +
+        "\nPC, PSN ou XBOX"
       );
 
     message.channel.send(embed);
@@ -25,8 +26,7 @@ function stats(message,user,platform) {
   apex.user(user, platform).then(data => {
 
     try {
-      console.log('patapouet');
-      console.log(data);
+      //console.log(data);
 
       var description = ""
       data.data.stats.forEach(function(element) {
@@ -44,7 +44,7 @@ function stats(message,user,platform) {
       "\n\nLes stats peuvent seulement être recupérées grâce aux trackeurs de votre banière\nDonnées fournies par https://apex.tracker.gg/"
       );
 
-      console.log(data.data.stats);
+      //console.log(data.data.stats);
 
       message.channel.send(embed);
 

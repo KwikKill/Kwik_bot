@@ -10,7 +10,7 @@ function unban(message, id) {
     message.reply(`${user.username} a bien été unban !`);
     }).catch(err => {
       message.reply('Je n\'ai pas pu le unban');
-      console.error(err);
+      //console.error(err);
     });
   }else {
     message.reply('vous n\'avez pas les permissions necessaires !');
