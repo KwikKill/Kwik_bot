@@ -94,10 +94,11 @@ client.on('message', message => {
   const channel = member.guild.channels.find(ch => ch.name === 'qui-vous-a-inviter-❔');
   if (!channel) return;
   channel.send(`Bienvenue, plébéien ${member}`);
-});
+});*/
 
 client.on('channelCreate', chanel => {
 	var log = chanel.guild.channels.find(channel => channel.name === "log");
+  if(!log) return undefined;
 
 	const embed = new RichEmbed()
 		.setTitle('log :')
@@ -112,6 +113,8 @@ client.on('channelCreate', chanel => {
 
 client.on('channelDelete', chanel => {
 	var log = chanel.guild.channels.find(channel => channel.name === "log");
+  if(!log) return undefined;
+
 	const embed = new RichEmbed()
 		.setTitle('log :')
 		.setColor(0xffe402)
@@ -125,6 +128,7 @@ client.on('channelDelete', chanel => {
 
 client.on('emojiCreate', emoji => {
 	var log = emoji.guild.channels.find(channel => channel.name === "log");
+  if(!log) return undefined;
 
 	const embed = new RichEmbed()
 		.setTitle('log :')
@@ -140,6 +144,7 @@ client.on('emojiCreate', emoji => {
 
 client.on('emojiDelete', emoji => {
 	var log = emoji.guild.channels.find(channel => channel.name === "log");
+  if(!log) return undefined;
 
 	const embed = new RichEmbed()
 		.setTitle('log :')
@@ -151,6 +156,6 @@ client.on('emojiDelete', emoji => {
 		);
 
 	log.send(embed);
-});*/
+});
 
 client.login(process.env.DISCORD_TOKEN);
