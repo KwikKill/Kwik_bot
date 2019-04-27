@@ -42,7 +42,7 @@ function stats(message,user,platform) {
       "Pseudo : " + data.data.metadata.platformUserHandle +
       description
       )
-      .setFooter("Les stats peuvent seulement être recupérées grâce aux trackeurs de votre banière\nDonnées fournies par https://apex.tracker.gg/", "https://avatars0.githubusercontent.com/u/35538496?s=460&v=4"/*client.user.avatarURL*/);
+      .setFooter("Les stats peuvent seulement être recupérées grâce aux trackeurs de votre banière\nDonnées fournies par https://apex.tracker.gg/", /*"https://avatars0.githubusercontent.com/u/35538496?s=460&v=4"*/Client.user.avatarURL);
 
       //console.log(data.data.stats);
 
