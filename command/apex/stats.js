@@ -40,9 +40,9 @@ function stats(message,user,platform) {
       .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
       .setDescription(
       "Pseudo : " + data.data.metadata.platformUserHandle +
-      description  +
-      "\n\nLes stats peuvent seulement être recupérées grâce aux trackeurs de votre banière\nDonnées fournies par https://apex.tracker.gg/"
-      );
+      description
+      )
+      .setFooter("Les stats peuvent seulement être recupérées grâce aux trackeurs de votre banière\nDonnées fournies par https://apex.tracker.gg/", client.user.avatarURL);
 
       //console.log(data.data.stats);
 
