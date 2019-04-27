@@ -1,5 +1,5 @@
 const { Client, RichEmbed } = require('discord.js');
-const {PREFIX} = require('./config');
+const {PREFIX} = require('./config.js');
 
 const client = new Client();
 
@@ -10,14 +10,12 @@ client.on('error', console.error);
 
 client.on('ready', () => {
     console.log('Le bot est démarré !');
-    console.log(PREFIX);
 		client.user.setActivity("aduler Loomy")
 });
 
 client.on('message', message => {
     if (message.author.bot) return undefined;
     if (!message.content.startsWith(PREFIX)) return undefined;
-
 
     if (message.content === PREFIX + 'ping') {
 			message.channel.sendMessage("pong");
