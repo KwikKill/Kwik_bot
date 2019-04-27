@@ -5,6 +5,11 @@ const queue = new Map();
 
 function play(msg) {
 
+  const args = msg.content.split(' ');
+	const searchString = args.slice(1).join(' ');
+	const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
+  const serverQueue = queue.get(msg.guild.id);
+
   const voiceChannel = msg.member.voiceChannel;
   if (!voiceChannel) return msg.channel.send('je suis désolé maisvous n\'êtes pas dans un salon vocal');
   const permissions = voiceChannel.permissionsFor(msg.client.user);

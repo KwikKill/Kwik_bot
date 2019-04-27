@@ -1,5 +1,5 @@
 const { Client, RichEmbed } = require('discord.js');
-const {PREFIX} = require('./config.js');
+const config = require('./config.json');
 
 const client = new Client();
 
@@ -10,20 +10,20 @@ client.on('error', console.error);
 
 client.on('ready', () => {
     console.log('Le bot est démarré !');
-		client.user.setActivity("aduler Loomy")
+		client.user.setActivity("Aduler Loomy");
 });
 
 client.on('message', message => {
     if (message.author.bot) return undefined;
-    if (!message.content.startsWith(PREFIX)) return undefined;
+    if (!message.content.startsWith(config.prefix)) return undefined;
 
-    if (message.content === PREFIX + 'ping') {
+    if (message.content === config.prefix + 'ping') {
 			message.channel.sendMessage("pong");
 			return;
 
   	}
 
-		if(message.content === PREFIX + 'help') {
+		if(message.content === config.prefix + 'help') {
 
       const help = require('./command/fun/help.js');
       help(message);
@@ -32,7 +32,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.content === PREFIX + 'info') {
+    if(message.content === config.prefix + 'info') {
 
       const info = require('./command/fun/info.js');
 			info(message);
@@ -41,7 +41,7 @@ client.on('message', message => {
 
 		}
 
-		if (message.content.startsWith(PREFIX + 'kick')) {
+		if (message.content.startsWith(config.prefix + 'kick')) {
 
       const kick = require('./command/moderation/kick.js');
 			kick(message);
@@ -49,7 +49,7 @@ client.on('message', message => {
 			return;
 		}
 
-		if (message.content.startsWith(PREFIX + 'ban')) {
+		if (message.content.startsWith(config.prefix + 'ban')) {
 
       const ban = require('./command/moderation/ban.js');
 			ban(message);
@@ -57,7 +57,7 @@ client.on('message', message => {
 			return;
 		}
 
-    var regexpunban = new RegExp('^\\' + PREFIX + 'unban\\s+([^\\s]*)$');
+    var regexpunban = new RegExp('^\\' + config.prefix + 'unban\\s+([^\\s]*)$');
 		if (regexpunban.test(message.content)) {
 
       var id = message.content.replace(regexpunban, "$1");
@@ -68,7 +68,7 @@ client.on('message', message => {
 			return;
 		}
 
-		var regexp = new RegExp('^\\' + PREFIX + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
+		var regexp = new RegExp('^\\' + config.prefix + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
 		if(regexp.test(message.content)) {
 
 			var user = message.content.replace(regexp, "$1");
@@ -82,7 +82,7 @@ client.on('message', message => {
       return;
 		}
 
-		var regexp2 = new RegExp('^\\' + PREFIX + 'apex\\s+legend\\s+([^\\s]*)$');
+		var regexp2 = new RegExp('^\\' + config.prefix + 'apex\\s+legend\\s+([^\\s]*)$');
 		if(regexp2.test(message.content)) {
 			var legend = message.content.replace(regexp2, "$1");
 
@@ -92,7 +92,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.content.startsWith(PREFIX + 'play')) {
+    if(message.content.startsWith(config.prefix + 'play')) {
 
       /*const play = require('./command/music/play.js');
 			play(message,);*/
@@ -101,7 +101,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.content.startsWith(PREFIX + 'skip')) {
+    if(message.content.startsWith(config.prefix + 'skip')) {
 
       /*const skip = require('./command/music/skip.js');
 			skip(message,);*/
@@ -110,7 +110,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.content.startsWith(PREFIX + 'stop')) {
+    if(message.content.startsWith(config.prefix + 'stop')) {
 
       /*const stop = require('./command/music/stop.js');
 			stop(message,);*/
