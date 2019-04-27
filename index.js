@@ -2,7 +2,13 @@ const { Client, RichEmbed } = require('discord.js');
 
 const client = new Client();
 
+
+
 var prefix = ("*")
+
+client.on('warn', console.warn);
+
+client.on('error', console.error);
 
 client.on('ready', () => {
     console.log('Le bot est démarré !');
@@ -88,6 +94,16 @@ client.on('message', message => {
 
 
 		}
+
+    if(message.startsWith(prefix + 'play')) {
+
+      /*const play = require('./command/fun/play.js');
+			play(message,);*/
+
+			return;
+
+		}
+
 });
 
 client.on('guildMemberAdd', member => {
