@@ -95,7 +95,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.startsWith(prefix + 'play')) {
+    if(message.content.startsWith(prefix + 'play')) {
 
       /*const play = require('./command/fun/play.js');
 			play(message,);*/
