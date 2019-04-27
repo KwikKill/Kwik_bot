@@ -10,7 +10,11 @@ environment:
     secure: 79hCiTXNUjhvXDbffxqg0BmEnfRfCEpmQN49o2iZxm+VxFIWGXE3CWOgG56Og7YrMh180alVQqKkMLIy/u4sjAVDTjsCSZmRJ+4xsTIrJ5N2KbRqAvW49BNsJaZ90mqgQq3p9C7jLe2uH75C+haEpcP63E+pDR7oJRdmTrsGGUH0hcBmZKd8fWEupWKmhAcsk2vic5oN/aaf9iiIVYnMQ3lSWyFLbUd/wxkUneskIZbNrPqmJ3eWHhMYR7HGa/o4cPdBk+p8ppno7AGy4fZqFMVE1hW6c6m229qLmPQsmYNShhC8W2z2/DhiNP1+AOGET+pP0is0BtRAIZy4NWBiOMXND+seusJfow7KR7lGK8huMYfBMAXQ8J/TXVue3BIHIYFD9hZ1RCOMWEVV3RC8nVSC4Ccu2TjpcMGPlJNPSxEinlQWR9NxYRCeKT3I4i05q9E/LX2ybyp0K8tGtYmI9NGL8OrlF93ufFjPjgIbPbsUy8Dcd8MlpNvbHI+etMRWhDdl5yb5SA7lk7DAsCwUKMt8JJLpX5jWM9NqzgREBOU=
   host:
     secure: Xjsqbm4VjsuoKmRY0Gp1aYvLA0qT0Mg3rVgpWcWAKig=
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 install:
   - echo -e "${travis_ssh_key}" > id_ed25519
 build_script:
   - ssh -i id_ed25519 travis@${host} sudo /usr/local/bin/update-gab_bot.sh
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
