@@ -10,6 +10,7 @@ client.on('error', console.error);
 
 client.on('ready', () => {
     console.log('Le bot est démarré !');
+    console.log(PREFIX);
 		client.user.setActivity("aduler Loomy")
 });
 
