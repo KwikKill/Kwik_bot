@@ -14,5 +14,3 @@ install:
   - echo -e "${travis_ssh_key}" > id_ed25519
 build_script:
   - ssh -i id_25519 travis@${host} sudo /usr/local/bin/update-gab_bot.sh
-build:
-  verbosity: minimal
