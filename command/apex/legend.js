@@ -94,6 +94,26 @@ function legend(message,legend) {
       );
 
     message.channel.send(embed);
+  }else if(legend == "Octane" || legend == "octane") {
+
+    const embed = new RichEmbed()
+      .setTitle("Octane - le rapide :")
+      .setColor(0xffe402)
+      .setThumbnail("https://upload.wikimedia.org/wikipedia/fr/0/03/Apex_Legends_Logo.png")
+      .setDescription(
+      "Octane est une légende rapide. Ses capacitées lui permettent d'aller plus vite et cela l'avantage."
+      )
+      .addField(
+        "Passif","Le passif d'Octane est de récupérer sa vie quand on ne lui tire pas dessus.Pratique pour économiser les soin"
+      ).addField(
+        "abilitée tactique","le tactique d'Octane est de pouvoir aller plus vite mais en contrepartie, il doit \"sacrifier\" 10% de sa vie."
+      ).addField(
+        "abilité ultime","l'ultime d'Octane est de placer un jumppad qui réagit comme un trampoline. Aller dessus permet d'être propulsé en l'air."
+      ).setImage(
+        "https://media.contentapi.ea.com/content/dam/apex-legends/common/legends/apex-section-bg-legends-octane-xl.jpg.adapt.320w.jpg"
+      );
+
+    message.channel.send(embed);
   }
 
 }
