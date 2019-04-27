@@ -1,5 +1,5 @@
 const { Client, RichEmbed } = require('discord.js');
-const PREFIX = require('./config');
+const {PREFIX} = require('./config');
 
 const client = new Client();
 
