@@ -1,10 +1,8 @@
 const { Client, RichEmbed } = require('discord.js');
+const PREFIX = require('./config');
 
 const client = new Client();
 
-
-
-var prefix = ("*")
 
 client.on('warn', console.warn);
 
@@ -17,16 +15,16 @@ client.on('ready', () => {
 
 client.on('message', message => {
     if (message.author.bot) return undefined;
-    if (!message.content.startsWith(prefix)) return undefined;
+    if (!message.content.startsWith(PREFIX)) return undefined;
 
 
-    if (message.content === prefix + 'ping') {
+    if (message.content === PREFIX + 'ping') {
 			message.channel.sendMessage("pong");
 			return;
 
   	}
 
-		if(message.content === prefix + 'help') {
+		if(message.content === PREFIX + 'help') {
 
       const help = require('./command/fun/help.js');
       help(message);
@@ -35,7 +33,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.content === prefix + 'info') {
+    if(message.content === PREFIX + 'info') {
 
       const info = require('./command/fun/info.js');
 			info(message);
@@ -44,7 +42,7 @@ client.on('message', message => {
 
 		}
 
-		if (message.content.startsWith(prefix + 'kick')) {
+		if (message.content.startsWith(PREFIX + 'kick')) {
 
       const kick = require('./command/moderation/kick.js');
 			kick(message);
@@ -52,7 +50,7 @@ client.on('message', message => {
 			return;
 		}
 
-		if (message.content.startsWith(prefix + 'ban')) {
+		if (message.content.startsWith(PREFIX + 'ban')) {
 
       const ban = require('./command/moderation/ban.js');
 			ban(message);
@@ -60,7 +58,7 @@ client.on('message', message => {
 			return;
 		}
 
-    var regexpunban = new RegExp('^\\' + prefix + 'unban\\s+([^\\s]*)$');
+    var regexpunban = new RegExp('^\\' + PREFIX + 'unban\\s+([^\\s]*)$');
 		if (regexpunban.test(message.content)) {
 
       var id = message.content.replace(regexpunban, "$1");
@@ -71,7 +69,7 @@ client.on('message', message => {
 			return;
 		}
 
-		var regexp = new RegExp('^\\' + prefix + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
+		var regexp = new RegExp('^\\' + PREFIX + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
 		if(regexp.test(message.content)) {
 
 			var user = message.content.replace(regexp, "$1");
@@ -85,7 +83,7 @@ client.on('message', message => {
       return;
 		}
 
-		var regexp2 = new RegExp('^\\' + prefix + 'apex\\s+legend\\s+([^\\s]*)$');
+		var regexp2 = new RegExp('^\\' + PREFIX + 'apex\\s+legend\\s+([^\\s]*)$');
 		if(regexp2.test(message.content)) {
 			var legend = message.content.replace(regexp2, "$1");
 
@@ -95,7 +93,7 @@ client.on('message', message => {
 
 		}
 
-    if(message.content.startsWith(prefix + 'play')) {
+    if(message.content.startsWith(PREFIX + 'play')) {
 
       /*const play = require('./command/fun/play.js');
 			play(message,);*/
