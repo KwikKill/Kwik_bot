@@ -20,7 +20,7 @@ yarn Install
 
 ```
 cp environnement-example.sh environnement.sh
-# Edit to add you personnal token and API key
+# Edit to add you personnal token, Apex API key and Google API key
 ```
 
 ## Run

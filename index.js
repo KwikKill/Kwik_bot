@@ -94,12 +94,31 @@ client.on('message', message => {
 
     if(message.content.startsWith(PREFIX + 'play')) {
 
-      /*const play = require('./command/fun/play.js');
+      /*const play = require('./command/music/play.js');
 			play(message,);*/
 
 			return;
 
 		}
+
+    if(message.content.startsWith(PREFIX + 'skip')) {
+
+      /*const skip = require('./command/music/skip.js');
+			skip(message,);*/
+
+			return;
+
+		}
+
+    if(message.content.startsWith(PREFIX + 'stop')) {
+
+      /*const stop = require('./command/music/stop.js');
+			stop(message,);*/
+
+			return;
+
+		}
+
 
 });
 
