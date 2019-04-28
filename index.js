@@ -310,7 +310,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 
 		queueConstruct.songs.push(song);
 
-    console.log(queueConstruct);
+    console.log(queueConstruct.songs[0]);
 
 		try {
 			var connection = await voiceChannel.join();
