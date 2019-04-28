@@ -1,9 +1,9 @@
 const { Client, RichEmbed } = require('discord.js');
+const YouTube = require('simple-youtube-api');
 const config = require('./config.json');
 
 const client = new Client();
 
-const YouTube = require('simple-youtube-api');
 const youtube = new YouTube(process.env.GOOGLE_API_KEY);
 const queue = new Map();
 
