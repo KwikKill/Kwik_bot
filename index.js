@@ -293,7 +293,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 	const serverQueue = queue.get(msg.guild.id);
 	console.log(video.id);
 	const song = {
-		id: video.Video.id,
+		id: video.id,
 		title: Util.escapeMarkdown(video.title),
 		url: `https://www.youtube.com/watch?v=${video.id}`
 	};
