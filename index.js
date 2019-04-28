@@ -182,7 +182,7 @@ client.on('message', async message => {
   		if (!serverQueue) return msg.channel.send('Je suis déjâ stoppé.');
   		serverQueue.songs = [];
       serverQueue.connection.dispatcher.end('La command stop a bien été utilisé !');
-
+      message.channel.send('j\'ai quitté le salon vocal');
 			return;
 		}
 
