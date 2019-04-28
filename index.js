@@ -1,7 +1,7 @@
 const { Client, RichEmbed, Util} = require('discord.js');
 const YouTube = require('simple-youtube-api');
 const config = require('./config.json');
-const ytdl = require('ytdl-core');
+const ytdl = require('ytdl-core-discord');
 
 const client = new Client();
 
@@ -326,10 +326,8 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 	return undefined;
 }
 
-function play(guild, song) {
+async function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
-
-  console.log("a" + song.url);
 
 	if (!song) {
 		serverQueue.voiceChannel.leave();
@@ -338,7 +336,8 @@ function play(guild, song) {
 	}
 
 
-	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+	//const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
+  const dispatcher = serverQueue.connection.playOpusStream(await ytdl(song.url))
 		.on('end', reason => {
 			if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
 			else console.log(reason);
