@@ -291,7 +291,6 @@ client.on('guildBanRemove', unban => {
 
 async function handleVideo(video, msg, voiceChannel, playlist = false) {
 	const serverQueue = queue.get(msg.guild.id);
-	console.log(video);
 	const song = {
 		id: video.id,
 		title: Util.escapeMarkdown(video.title),
@@ -311,9 +310,16 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		queueConstruct.songs.push(song);
 
 		try {
-			var connection = await voiceChannel.join();
-			queueConstruct.connection = connection;
       console.log(queueConstruct.songs[0]);
+      
+			var connection = await voiceChannel.join();
+
+      console.log(queueConstruct.songs[0]);
+
+			queueConstruct.connection = connection;
+
+      console.log(queueConstruct.songs[0]);
+
 			play(msg.guild, queueConstruct.songs[0]);
 		} catch (error) {
 			console.error(`je ne peux pas rejoindre le salon vocal: ${error}`);
@@ -332,7 +338,6 @@ function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
 	if (!song) {
-    console.log(song);
 		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
