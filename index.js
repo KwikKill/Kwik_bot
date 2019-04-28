@@ -204,7 +204,7 @@ client.on('message', async message => {
 
     if(message.content === "playlist") {
 
-      if (!serverQueue) return message.channel.send("Il n\'y a rien à joué."');
+      if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
       return message.channel.send(`
 __**Playlist :**__
 ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
