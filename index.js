@@ -147,7 +147,7 @@ client.on('message', async message => {
     					`);
     					// eslint-disable-next-line max-depth
     					try {
-    						var response = await msg.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
+    						var response = await message.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
     							maxMatches: 1,
     							time: 10000,
     							errors: ['time']
