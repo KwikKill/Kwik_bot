@@ -13,7 +13,7 @@ function play(msg) {
 
   const voiceChannel = msg.member.voiceChannel;
   if (!voiceChannel) {
-    msg.channel.send('je suis désolé maisvous n\'êtes pas dans un salon vocal');
+    msg.channel.send('je suis désolé mais vous n\'êtes pas dans un salon vocal');
     return;
   }
   const permissions = voiceChannel.permissionsFor(msg.client.user);

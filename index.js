@@ -13,7 +13,7 @@ client.on('ready', () => {
 		client.user.setActivity("Aduler Loomy");
 });
 
-client.on('message', message => {
+client.on('message', async message => {
     if (message.author.bot) return undefined;
     if (!message.content.startsWith(config.prefix)) return undefined;
 
