@@ -22,6 +22,11 @@ client.on('message', async message => {
     if (message.author.bot) return undefined;
     if (!message.content.startsWith(config.prefix)) return undefined;
 
+    const args = message.content.split(' ');
+    const searchString = args.slice(1).join(' ');
+    const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
+    const serverQueue = queue.get(message.guild.id);
+
     if (message.content === config.prefix + 'ping') {
 			message.channel.sendMessage("pong");
 			return;
@@ -104,11 +109,6 @@ client.on('message', async message => {
 			play(message);
 
       console.log("play lancé");*/
-
-      const args = message.content.split(' ');
-    	const searchString = args.slice(1).join(' ');
-    	const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
-      const serverQueue = queue.get(message.guild.id);
 
       const voiceChannel = message.member.voiceChannel;
       if (!voiceChannel) {
