@@ -106,9 +106,7 @@ client.on('message', async message => {
 
 
       /*const play = require('./command/music/play.js');
-			play(message);
-
-      console.log("play lancé");*/
+			play(message);*/
 
       const voiceChannel = message.member.voiceChannel;
       if (!voiceChannel) {
@@ -293,7 +291,7 @@ client.on('guildBanRemove', unban => {
 
 async function handleVideo(video, msg, voiceChannel, playlist = false) {
 	const serverQueue = queue.get(msg.guild.id);
-	console.log(video.id);
+	console.log(video.video.id);
 	const song = {
 		id: video.id,
 		title: Util.escapeMarkdown(video.title),
