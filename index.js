@@ -182,10 +182,56 @@ client.on('message', async message => {
   		if (!serverQueue) return msg.channel.send('Je suis déjâ stoppé.');
   		serverQueue.songs = [];
       serverQueue.connection.dispatcher.end('La command stop a bien été utilisé !');
-      message.channel.send('j\'ai quitté le salon vocal');
-			return;
+      return message.channel.send('j\'ai quitté le salon vocal');
 		}
 
+    if(message.content.startsWith(config.prefix + 'volume')) {
+
+      if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
+		  if (!serverQueue) return msg.channel.send('Il n\'y a rien a joué');
+		  if (!args[1]) return message.channel.send(`Le volume est actuellement à : **${serverQueue.volume}**`);
+      serverQueue.volume = args[1];
+      serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
+      return message.channel.send(`J'ai mis le volume à : **${args[1]}**`);
+
+    }
+
+    if(message.content === "np") {
+
+      if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
+      return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
+    }
+
+    if(message.content === "playlist") {
+
+      if (!serverQueue) return message.channel.send("Il n\'y a rien à joué."');
+		return message.channel.send(`
+__**Playlist :**__
+${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
+**Now playing:** ${serverQueue.songs[0].title}
+		`);
+
+    }
+
+    if(message.content === "pause") {
+
+      if (serverQueue && serverQueue.playing) {
+			   serverQueue.playing = false;
+			   serverQueue.connection.dispatcher.pause();
+			   return message.channel.send('⏸ musique mis en Pause !');
+		  }
+      return message.channel.send('Il n\'a rien de joué.');
+    }
+
+    if(message.content === "resume") {
+
+      if (serverQueue && !serverQueue.playing) {
+			   serverQueue.playing = true;
+			   serverQueue.connection.dispatcher.resume();
+			   return msg.channel.send('▶ musique joué !');
+      }
+      return msg.channel.send("Il n\'y a rien de joué");
+    }
 
 });
 
