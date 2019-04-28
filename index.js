@@ -329,8 +329,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
-  console.log("a" + song);
-  console.log(serverQueue.connection);
+  console.log(song.url);
 
 	if (!song) {
 		serverQueue.voiceChannel.leave();
