@@ -9,6 +9,7 @@
   "dependencies": {
     "discord.js": "11.4.2",
     "apex-api": "3.1.0",
-    "simple-youtube-api": "^3.0.0"
+    "simple-youtube-api": "^3.0.0",
+    "ytdl-core": "^0.16.0"
   }
 }
