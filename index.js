@@ -330,13 +330,14 @@ function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
   console.log("a" + song);
+  console.log(serverQueue.songs);
 
 	if (!song) {
 		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
 	}
-	//console.log(serverQueue.songs);
+
 
 	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
 		.on('end', reason => {
