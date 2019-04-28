@@ -11,13 +11,18 @@ function play(msg) {
   const serverQueue = queue.get(msg.guild.id);
 
   const voiceChannel = msg.member.voiceChannel;
-  if (!voiceChannel) return msg.channel.send('je suis désolé maisvous n\'êtes pas dans un salon vocal');
+  if (!voiceChannel) {
+    msg.channel.send('je suis désolé maisvous n\'êtes pas dans un salon vocal');
+    return;
+  }
   const permissions = voiceChannel.permissionsFor(msg.client.user);
   if (!permissions.has('CONNECT')) {
-			return msg.channel.send('je ne peux pas me connecter dans votre salon vocal !');
+			msg.channel.send('je ne peux pas me connecter dans votre salon vocal !');
+      return;
   }
   if (!permissions.has('SPEAK')) {
-			return msg.channel.send('je ne peux pas parler dans votre salon vocal !');
+			msg.channel.send('je ne peux pas parler dans votre salon vocal !');
+      return;
   }
   if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
 			const playlist = await youtube.getPlaylist(url);
@@ -26,7 +31,8 @@ function play(msg) {
 				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
 				await handleVideo(video2, msg, voiceChannel, true); // eslint-disable-line no-await-in-loop
 			}
-			return msg.channel.send(`✅ Playlist: **${playlist.title}** a bien été ajouté à la playlist!`);
+			msg.channel.send(`✅ Playlist: **${playlist.title}** a bien été ajouté à la playlist!`);
+      return;
   }
   else {
 			try {
@@ -49,16 +55,19 @@ Please provide a value to select one of the search results ranging from 1-10.
 						});
 					} catch (err) {
 						console.error(err);
-						return msg.channel.send('résultat absent ou invalide, annulation de la sélection musicale.');
+						msg.channel.send('résultat absent ou invalide, annulation de la sélection musicale.');
+            return;
 					}
 					const videoIndex = parseInt(response.first().content);
 					var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
 				} catch (err) {
 					console.error(err);
-					return msg.channel.send('🆘 Je n\'ai pas trouvé de résultats.');
+					msg.channel.send('🆘 Je n\'ai pas trouvé de résultats.');
+          return;
 				}
 			}
-			return handleVideo(video, msg, voiceChannel);
+			handleVideo(video, msg, voiceChannel);
+      return;
     }
 
 }
