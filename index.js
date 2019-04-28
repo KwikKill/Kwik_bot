@@ -168,7 +168,7 @@ client.on('message', async message => {
     if(message.content.startsWith(config.prefix + 'skip')) {
 
 
-      if (!msg.member.voiceChannel) return msg.channel.send('vous n\'êtes pas dans un salon vocal !');
+      if (!messsage.member.voiceChannel) return messsage.channel.send('vous n\'êtes pas dans un salon vocal !');
       if (!serverQueue) return msg.channel.send('Je ne peut pas skip cette musique.');
       serverQueue.connection.dispatcher.end('musique skip !');
 
@@ -178,7 +178,7 @@ client.on('message', async message => {
 
     if(message.content.startsWith(config.prefix + 'stop')) {
 
-      if (!msg.member.voiceChannel) return msg.channel.send('vous n\'êtes pas dans un salon vocal !');
+      if (!messsage.member.voiceChannel) return messsage.channel.send('vous n\'êtes pas dans un salon vocal !');
   		if (!serverQueue) return msg.channel.send('Je suis déjâ stoppé.');
   		serverQueue.songs = [];
       serverQueue.connection.dispatcher.end('La command stop a bien été utilisé !');
