@@ -310,7 +310,6 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		queueConstruct.songs.push(song);
 
 		try {
-
 			var connection = await voiceChannel.join();
 			queueConstruct.connection = connection;
 			play(msg.guild, queueConstruct.songs[0]);
@@ -330,7 +329,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
-  console.log("a" + song[0]);
+  console.log("a" + song);
 
 	if (!song) {
 		serverQueue.voiceChannel.leave();
