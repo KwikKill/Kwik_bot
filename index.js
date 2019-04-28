@@ -321,6 +321,8 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
       console.log("c" + queueConstruct.songs[0]);
 
 			play(msg.guild, queueConstruct.songs[0]);
+
+      console.log("d" + queueConstruct.songs[0]);
 		} catch (error) {
 			console.error(`je ne peux pas rejoindre le salon vocal: ${error}`);
 			queue.delete(msg.guild.id);
