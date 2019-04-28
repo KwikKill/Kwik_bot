@@ -111,17 +111,14 @@ client.on('message', async message => {
 
       const voiceChannel = message.member.voiceChannel;
       if (!voiceChannel) {
-        message.channel.send('je suis désolé mais vous n\'êtes pas dans un salon vocal');
-        return;
+        return message.channel.send('je suis désolé mais vous n\'êtes pas dans un salon vocal');
       }
       const permissions = voiceChannel.permissionsFor(message.client.user);
       if (!permissions.has('CONNECT')) {
-    			message.channel.send('je ne peux pas me connecter dans votre salon vocal !');
-          return;
+    			return message.channel.send('je ne peux pas me connecter dans votre salon vocal !');
       }
       if (!permissions.has('SPEAK')) {
-    			message.channel.send('je ne peux pas parler dans votre salon vocal !');
-          return;
+    			return message.channel.send('je ne peux pas parler dans votre salon vocal !');
       }
       if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
     			const playlist = await youtube.getPlaylist(url);
@@ -130,8 +127,7 @@ client.on('message', async message => {
     				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
     				await handleVideo(video2, message, voiceChannel, true); // eslint-disable-line no-await-in-loop
     			}
-    			message.channel.send(`✅ Playlist: **${playlist.title}** a bien été ajouté à la playlist!`);
-          return;
+    			return message.channel.send(`✅ Playlist: **${playlist.title}** a bien été ajouté à la playlist!`);
       }
       else {
     			try {
@@ -154,19 +150,16 @@ client.on('message', async message => {
     						});
     					} catch (err) {
     						console.error(err);
-    						message.channel.send('résultat absent ou invalide, annulation de la sélection musicale.');
-                return;
+    						return message.channel.send('résultat absent ou invalide, annulation de la sélection musicale.');
     					}
     					const videoIndex = parseInt(response.first().content);
     					var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
     				} catch (err) {
     					console.error(err);
-    					message.channel.send('🆘 Je n\'ai pas trouvé de résultats.');
-              return;
+    					return message.channel.send('🆘 Je n\'ai pas trouvé de résultats.');
     				}
     			}
-    			handleVideo(video, message, voiceChannel);
-          return;
+    			return handleVideo(video, message, voiceChannel);
         }
 
 			return;
