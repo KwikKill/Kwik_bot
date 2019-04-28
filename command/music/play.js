@@ -4,6 +4,7 @@ const youtube = new YouTube(process.env.GOOGLE_API_KEY);
 const queue = new Map();
 
 function play(msg) {
+  console.log("play lancé");
 
   const args = msg.content.split(' ');
 	const searchString = args.slice(1).join(' ');

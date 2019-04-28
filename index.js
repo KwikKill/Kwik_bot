@@ -94,8 +94,11 @@ client.on('message', message => {
 
     if(message.content.startsWith(config.prefix + 'play')) {
 
+
       const play = require('./command/music/play.js');
 			play(message);
+
+      console.log("play lancé")
 
 			return;
 
