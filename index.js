@@ -310,19 +310,10 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		queueConstruct.songs.push(song);
 
 		try {
-      console.log("a" + queueConstruct.songs[0]);
 
 			var connection = await voiceChannel.join();
-
-      console.log("b" + queueConstruct.songs[0]);
-
 			queueConstruct.connection = connection;
-
-      console.log("c" + queueConstruct.songs[0]);
-
 			play(msg.guild, queueConstruct.songs[0]);
-
-      console.log("d" + queueConstruct.songs[0]);
 		} catch (error) {
 			console.error(`je ne peux pas rejoindre le salon vocal: ${error}`);
 			queue.delete(msg.guild.id);
@@ -338,6 +329,8 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
+
+  console.log("a" + queueConstruct.songs[0]);
 
 	if (!song) {
 		serverQueue.voiceChannel.leave();
