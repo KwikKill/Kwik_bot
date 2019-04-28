@@ -312,9 +312,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 
 		try {
 			var connection = await voiceChannel.join();
-      console.log(connection);
 			queueConstruct.connection = connection;
-      console.log(queueConstruct.connection);
 			play(msg.guild, queueConstruct.songs[0]);
 		} catch (error) {
 			console.error(`je ne peux pas rejoindre le salon vocal: ${error}`);
@@ -323,7 +321,6 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		}
 	} else {
 		serverQueue.songs.push(song);
-		console.log(serverQueue.songs);
 		if (playlist) return undefined;
 		else return msg.channel.send(`✅ **${song.title}** a été ajouté à la playlist!`);
 	}
