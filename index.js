@@ -291,7 +291,7 @@ client.on('guildBanRemove', unban => {
 
 async function handleVideo(video, msg, voiceChannel, playlist = false) {
 	const serverQueue = queue.get(msg.guild.id);
-	console.log(video.id[0].id);
+	console.log(video.id);
 	const song = {
 		id: video.id,
 		title: Util.escapeMarkdown(video.title),
