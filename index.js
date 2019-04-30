@@ -18,7 +18,9 @@ client.on('ready', () => {
     console.log('Le bot est démarré !');
 		client.user.setActivity("Aduler Loomy");
 
-    welcome[message.guild.id] = {
+    let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+
+    welcome['513776796211085342'] = {
       channel: 0
     };
     fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
