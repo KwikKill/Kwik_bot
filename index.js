@@ -294,7 +294,7 @@ client.on('channelDelete', channel => {
 });
 
 client.on('emojiCreate', emoji => {
-  if(!channel.guild) return undefined;
+  if(!emoji.guild) return undefined;
 
   let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
   if (logs[channel.guild.id].toggle === 1) {
@@ -315,7 +315,7 @@ client.on('emojiCreate', emoji => {
 });
 
 client.on('emojiDelete', emoji => {
-  if(!channel.guild) return undefined;
+  if(!emoji.guild) return undefined;
 
   let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
   if (logs[channel.guild.id].toggle === 1) {
