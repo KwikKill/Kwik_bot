@@ -52,7 +52,7 @@ client.on('message', async message => {
 
     }
 
-    if(message.content.startsWith(config.prefix + "log")) {
+    if(message.content.startsWith(config.prefix + "welcome")) {
 
       const welcome = require('./command/moderation/welcome.js');
       welcome(message);
