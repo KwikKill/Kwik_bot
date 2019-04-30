@@ -275,52 +275,64 @@ client.on('channelCreate', channel => {
 
 client.on('channelDelete', channel => {
   if(!channel.guild) return undefined;
-	var log = channel.guild.channels.find(channel => channel.name === "log");
-  if(!log) return undefined;
 
-	const embed = new RichEmbed()
-		.setTitle('log :')
-		.setColor(0xffe402)
-		.setDescription(
-			"salon supprimé : " +
-			chanel.name
-		);
+  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+  if (logs[channel.guild.id].toggle === 1) {
+  	var log = channel.guild.channels.find(channel => channel.name === "log");
+    if(!log) return undefined;
 
-	log.send(embed);
+  	const embed = new RichEmbed()
+  		.setTitle('log :')
+  		.setColor(0xffe402)
+  		.setDescription(
+  			"salon supprimé : " +
+  			chanel.name
+  		);
+
+  	log.send(embed);
+  }
 });
 
 client.on('emojiCreate', emoji => {
   if(!channel.guild) return undefined;
-	var log = emoji.guild.channels.find(channel => channel.name === "log");
-  if(!log) return undefined;
 
-	const embed = new RichEmbed()
-		.setTitle('log :')
-		.setColor(0xffe402)
-		.setThumbnail(emoji.url)
-		.setDescription(
-			"émoji créé : " +
-			emoji.name
-		);
+  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+  if (logs[channel.guild.id].toggle === 1) {
+  	var log = emoji.guild.channels.find(channel => channel.name === "log");
+    if(!log) return undefined;
 
-	log.send(embed);
+  	const embed = new RichEmbed()
+  		.setTitle('log :')
+  		.setColor(0xffe402)
+  		.setThumbnail(emoji.url)
+  		.setDescription(
+  			"émoji créé : " +
+  			emoji.name
+  		);
+
+  	log.send(embed);
+  }
 });
 
 client.on('emojiDelete', emoji => {
   if(!channel.guild) return undefined;
-	var log = emoji.guild.channels.find(channel => channel.name === "log");
-  if(!log) return undefined;
 
-	const embed = new RichEmbed()
-		.setTitle('log :')
-		.setColor(0xffe402)
-		.setThumbnail(emoji.url)
-		.setDescription(
-			"émoji supprimé : " +
-			emoji.name
-		);
+  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+  if (logs[channel.guild.id].toggle === 1) {
+  	var log = emoji.guild.channels.find(channel => channel.name === "log");
+    if(!log) return undefined;
 
-	log.send(embed);
+  	const embed = new RichEmbed()
+  		.setTitle('log :')
+  		.setColor(0xffe402)
+  		.setThumbnail(emoji.url)
+  		.setDescription(
+  			"émoji supprimé : " +
+  			emoji.name
+  		);
+
+  	log.send(embed);
+  }
 });
 
 /*client.on('guildBanAdd', ban => {
