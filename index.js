@@ -286,7 +286,7 @@ client.on('channelDelete', channel => {
   		.setColor(0xffe402)
   		.setDescription(
   			"salon supprimé : " +
-  			chanel.name
+  			channel.name
   		);
 
   	log.send(embed);
