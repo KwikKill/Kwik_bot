@@ -255,7 +255,7 @@ client.on('guildMemberAdd', member => {
 client.on('channelCreate', channel => {
   if(!channel.guild) return undefined;
 
-  let logs = JSON.parse(fs.readFileSync("./log.json", "utf8"));
+  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
   if (logs[channel.guild.id].toggle === 1) {
   	var logchannel  = channel.guild.channels.find(channel => channel.name === "logs");
     if(!logchannel ) return undefined;
