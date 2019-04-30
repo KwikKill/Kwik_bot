@@ -42,7 +42,7 @@ client.on('message', async message => {
 
 		}
 
-    if(message.startsWith(prefix + "log") {
+    if(message.startsWith(prefix + "log")) {
 
       const log = require('./command/moderation/log.js');
       log(message);
