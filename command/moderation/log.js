@@ -1,4 +1,5 @@
 const { Client, RichEmbed } = require('discord.js');
+const fs = require("fs");
 function log(message) {
 
   let messageArray = message.content.split(" ");
