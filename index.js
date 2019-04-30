@@ -278,7 +278,7 @@ client.on('channelDelete', channel => {
 
   let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
   if (logs[channel.guild.id].toggle === 1) {
-  	var log = channel.guild.channels.find(channel => channel.name === "log");
+  	var log = channel.guild.channels.find(channel => channel.name === "logs");
     if(!log) return undefined;
 
   	const embed = new RichEmbed()
@@ -298,7 +298,7 @@ client.on('emojiCreate', emoji => {
 
   let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
   if (logs[channel.guild.id].toggle === 1) {
-  	var log = emoji.guild.channels.find(channel => channel.name === "log");
+  	var log = emoji.guild.channels.find(channel => channel.name === "logs");
     if(!log) return undefined;
 
   	const embed = new RichEmbed()
@@ -319,7 +319,7 @@ client.on('emojiDelete', emoji => {
 
   let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
   if (logs[channel.guild.id].toggle === 1) {
-  	var log = emoji.guild.channels.find(channel => channel.name === "log");
+  	var log = emoji.guild.channels.find(channel => channel.name === "logs");
     if(!log) return undefined;
 
   	const embed = new RichEmbed()
