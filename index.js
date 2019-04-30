@@ -17,6 +17,13 @@ client.on('error', console.error);
 client.on('ready', () => {
     console.log('Le bot est démarré !');
 		client.user.setActivity("Aduler Loomy");
+
+    welcome[message.guild.id] = {
+      channel: 0
+    };
+    fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
+      if (err) console.log(err)
+    });
 });
 
 client.on('message', async message => {

@@ -25,7 +25,7 @@ function welcome(message) {
   		welcome[message.guild.id] = {
   			channel: arg[0]
   		};
-  		fs.writeFile("./welcome.json", JSON.stringify(log), (err) => {
+  		fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
   			if (err) console.log(err)
   		});
   		message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + arg[0] + ".");
