@@ -32,7 +32,7 @@ function log(message) {
 		helloworld.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Hello world!`)
 		} else {
 			message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `créé un salon appellé **logs**.`)
-		}}
+		}
 
   }
 
