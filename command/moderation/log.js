@@ -30,9 +30,9 @@ function log(message) {
 		});
 		message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les logs pour le serveur ont été activé.`);
 		const helloworld = message.guild.channels.find(channel => channel.name === "logs");
-		helloworld.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Hello world!`)
+		helloworld.send("**/log : /** \n  " + `Hello world!`)
 		} else {
-			message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `créé un salon appellé **logs**.`)
+			message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `vous devez créer un salon appellé **logs**.`)
 		}
 
   }
