@@ -268,7 +268,7 @@ client.on('channelCreate', channel => {
   			channel.name
   		);
 
-	   log.send(embed);
+	   logchannel.send(embed);
   }
 
 });
