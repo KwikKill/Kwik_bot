@@ -42,6 +42,15 @@ client.on('message', async message => {
 
 		}
 
+    if(message.startsWith(prefix + "log") {
+
+      const log = require('./command/moderation/log.js');
+      log(message);
+
+      return;
+
+    }
+
     if(message.content === config.prefix + 'info') {
 
       const info = require('./command/fun/info.js');
@@ -351,7 +360,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 			voiceChannel: voiceChannel,
 			connection: null,
 			songs: [],
-			volume: 5,
+			volume: 4,
 			playing: true
 		};
 		queue.set(msg.guild.id, queueConstruct);
