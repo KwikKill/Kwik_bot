@@ -9,7 +9,13 @@ function welcome(message) {
     message.channel.send("Vous n'avez pas les permissions necessaires.");
     return;
   }
-  let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+  try {
+    let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+  }catch(err) {
+    if (err.code === 'ENOENT') {
+      console.log('fichier existe pas');
+    }
+  }
 
   if (!args[0]) {
 		welcome[message.guild.id] = {
