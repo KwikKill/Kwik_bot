@@ -35,6 +35,7 @@ function welcome(message) {
         //const helloworld = message.guild.channels.find(channel => channel.name === "logs");
         //helloworld.send("**/log : /** \n  " + `Hello world!`)
       } else {
+        console.log('marche pas');
         message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `salon introuvable.`);
       }
 
