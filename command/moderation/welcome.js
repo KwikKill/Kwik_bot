@@ -26,7 +26,12 @@ function welcome(message) {
     if (args[1]) {
       if (message.guild.channels.find('id', args[0])) {
 
-        console.log('marche');
+        var msg;
+        args.forEach(function(element) {
+          if(!element == args[0]) {
+            msg = msg + element;
+          }
+        });
 
         welcome[message.guild.id] = {
           channel: args[0],
