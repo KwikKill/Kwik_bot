@@ -40,11 +40,11 @@ function welcome(message) {
         fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
           if (err) console.log(err)
         });
-        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + args[0] + ".\n le message de bienvenue est : " + msg + " @new.");
+        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + args[0] + ".\n le message de bienvenue est : " + msg + " @new.");
         //const helloworld = message.guild.channels.find(channel => channel.name === "logs");
         //helloworld.send("**/log : /** \n  " + `Hello world!`)
       } else {
-        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `salon introuvable.`);
+        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n " + `salon introuvable.`);
       }
 
     }
