@@ -256,10 +256,15 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 });
 
 client.on('guildMemberAdd', member => {
-  if(!channel.guild) return undefined;
-  const channel = member.guild.channels.find(ch => ch.name === 'qui-vous-a-inviter-❔');
-  if (!channel) return undefined;
-  channel.send(`Bienvenue, plébéien ${member}`);
+  if(!member.guild) return undefined;
+
+  let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+  if (welcome[channel.guild.id].channel) {
+    var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
+
+    if (!welcomechannel) return undefined;
+    welcomechannel.send(`Bienvenue, plébéien ${member}`);
+  }
 });
 
 client.on('channelCreate', channel => {

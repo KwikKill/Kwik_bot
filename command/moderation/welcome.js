@@ -50,7 +50,7 @@ function welcome(message) {
 
       fs.appendFile('./welcome.json', "{\n}", function (err) {
         if (err) throw err;
-        console.log('Saved!');
+        console.log('fichier créé !');
       });
 
     }
