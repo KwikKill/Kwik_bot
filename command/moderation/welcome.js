@@ -29,7 +29,7 @@ function welcome(message) {
         var msg;
         args.forEach(function(element) {
           if(!element == args[0]) {
-            msg = msg + element;
+            msg = msg + " " + element;
           }
         });
 
@@ -40,7 +40,7 @@ function welcome(message) {
         fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
           if (err) console.log(err)
         });
-        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + args[0] + ".\n le message de bienvenue est : " + args[1] + " @new.");
+        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + args[0] + ".\n le message de bienvenue est : " + msg + " @new.");
         //const helloworld = message.guild.channels.find(channel => channel.name === "logs");
         //helloworld.send("**/log : /** \n  " + `Hello world!`)
       } else {
