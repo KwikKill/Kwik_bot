@@ -45,7 +45,7 @@ function welcome(message) {
     if (err.code === 'ENOENT') {
       console.log('fichier existe pas');
 
-      fs.appendFile('./welcome.json', "{"\n"}", function (err) {
+      fs.appendFile('./welcome.json', "{\n}", function (err) {
         if (err) throw err;
         console.log('Saved!');
       });
