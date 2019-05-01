@@ -24,18 +24,20 @@ function welcome(message) {
       message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + "Les messages de bienvenue pour le serveur ont été désactivés.");
     }
     if (args[0]) {
-      if (message.guild.channels.exist('id', args[0])) {
+      if (message.guild.channels.find('id', args[0])) {
+
+        console.log('marche');
+
         welcome[message.guild.id] = {
-          channel: arg[0]
+          channel: args[0]
         };
         fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
           if (err) console.log(err)
         });
-        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + arg[0] + ".");
+        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Les messages de bienvenue pour le serveur ont été activé dans le salon avec l'id : ` + args[0] + ".");
         //const helloworld = message.guild.channels.find(channel => channel.name === "logs");
         //helloworld.send("**/log : /** \n  " + `Hello world!`)
       } else {
-        console.log('marche pas');
         message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `salon introuvable.`);
       }
 
