@@ -35,7 +35,7 @@ function welcome(message) {
 
         welcome[message.guild.id] = {
           channel: args[0],
-          message: args[1]
+          message: msg
         };
         fs.writeFile("./welcome.json", JSON.stringify(welcome), (err) => {
           if (err) console.log(err)
