@@ -259,7 +259,7 @@ client.on('guildMemberAdd', member => {
   if(!member.guild) return undefined;
 
   let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
-  if (welcome[channel.guild.id].channel) {
+  if (welcome[member.guild.id].channel) {
     var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
 
     if (!welcomechannel) return undefined;
