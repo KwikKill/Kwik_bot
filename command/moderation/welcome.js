@@ -24,7 +24,7 @@ function welcome(message) {
       message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + "Les messages de bienvenue pour le serveur ont été désactivés.");
     }
     if (args[0]) {
-      if (message.guild.channels.exist('id', arg[0])) {
+      if (message.guild.channels.exist('id', args[0])) {
         welcome[message.guild.id] = {
           channel: arg[0]
         };
