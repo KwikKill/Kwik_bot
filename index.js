@@ -263,7 +263,7 @@ client.on('guildMemberAdd', member => {
     var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
 
     if (!welcomechannel) return undefined;
-    welcomechannel.send(welcome[channel.guild.id].message + ` ${member}`);
+    welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
   }
 });
 
