@@ -28,9 +28,7 @@ function welcome(message) {
 
         const msg = "bienvenue";
         args.forEach(function(element) {
-          if(element != args[0]) {
             msg = msg + " " + element;
-          }
         });
 
         welcome[message.guild.id] = {
