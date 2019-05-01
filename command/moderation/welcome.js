@@ -25,7 +25,6 @@ function welcome(message) {
     }
     if (args[0]) {
       if (message.guild.channels.exist('id', arg[0])) {
-        console.log(args[0]);
         welcome[message.guild.id] = {
           channel: arg[0]
         };
@@ -36,7 +35,7 @@ function welcome(message) {
         //const helloworld = message.guild.channels.find(channel => channel.name === "logs");
         //helloworld.send("**/log : /** \n  " + `Hello world!`)
       } else {
-        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `salon introuvable.`)
+        message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `salon introuvable.`);
       }
 
     }
