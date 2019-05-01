@@ -11,7 +11,7 @@ function welcome(message) {
   }
   try {
 
-    
+
     let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
 
     if (!args[0]) {
@@ -44,6 +44,12 @@ function welcome(message) {
   }catch(err) {
     if (err.code === 'ENOENT') {
       console.log('fichier existe pas');
+
+      fs.appendFile('./welcome.json', "{"\n"}", function (err) {
+        if (err) throw err;
+        console.log('Saved!');
+      });
+
     }
   }
 
