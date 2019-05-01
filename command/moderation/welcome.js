@@ -26,7 +26,7 @@ function welcome(message) {
     if (args[1]) {
       if (message.guild.channels.find('id', args[0])) {
 
-        var msg;
+        var msg = "";
         args.forEach(function(element) {
           if(element != args[0]) {
             msg += " " + element;
