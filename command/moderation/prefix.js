@@ -44,6 +44,7 @@ function prefix(message) {
       });
 
     }
+    console.log(err)
   }
 
 }
