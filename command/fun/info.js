@@ -1,12 +1,9 @@
 const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
-  if(message.mentions.users.size) {
-    console.log('test1')
+  if(message.mentions.users) {
 
     let user = message.mentions.users.first();
-
-    console.log('test2')
 
     const embed = new RichEmbed()
     .setTitle('les stats de ' + user.username + ' :')
@@ -23,8 +20,7 @@ function info(message) {
     ).addField(
       "Compte créé le : ", user.createdAt, true
     );
-    console.log('test')
-    return message.channel.send(embed);
+    message.channel.send(embed);
 
   }
 
