@@ -29,6 +29,8 @@ client.on('message', async message => {
     const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
     const serverQueue = queue.get(message.guild.id);
 
+    //fun
+
     if (message.content === config.prefix + 'ping') {
 			message.channel.sendMessage("pong");
 			return;
@@ -44,10 +46,30 @@ client.on('message', async message => {
 
 		}
 
+    if(message.content === config.prefix + 'info') {
+
+      const info = require('./command/fun/info.js');
+      info(message);
+
+      return;
+
+    }
+
+    //moderation
+
     if(message.content.startsWith(config.prefix + "log")) {
 
       const log = require('./command/moderation/log.js');
       log(message);
+
+      return;
+
+    }
+
+    if(message.content.startsWith(config.prefix + "prefix")) {
+
+      const prefix = require('./command/moderation/prefix.js');
+      prefix(message);
 
       return;
 
@@ -61,15 +83,6 @@ client.on('message', async message => {
       return;
 
     }
-
-    if(message.content === config.prefix + 'info') {
-
-      const info = require('./command/fun/info.js');
-			info(message);
-
-			return;
-
-		}
 
 		if (message.content.startsWith(config.prefix + 'kick')) {
 
@@ -98,6 +111,8 @@ client.on('message', async message => {
 			return;
 		}
 
+    //apex
+
 		var regexp = new RegExp('^\\' + config.prefix + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
 		if(regexp.test(message.content)) {
 
@@ -121,6 +136,8 @@ client.on('message', async message => {
 
 
 		}
+
+    //musics
 
     if(message.content.startsWith(config.prefix + 'play')) {
 
