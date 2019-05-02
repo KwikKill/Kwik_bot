@@ -3,7 +3,11 @@ function info(message) {
 
   try{
 
+    console.log("a")
+
   if(!message.mentions.users.size) {
+
+    console.log("b")
 
     const embed = new RichEmbed()
     .setTitle('vos stats :')
@@ -25,9 +29,11 @@ function info(message) {
 
   }
 
+  console.log("c")
+
   var user = message.mentions.users.first();
 
-  const embed = new RichEmbed()
+  const embed2 = new RichEmbed()
   .setTitle('les stats de ' + user.username + ' :')
   .setColor(0xffe402)
   .setThumbnail(user.avatarURL)
@@ -42,7 +48,7 @@ function info(message) {
   ).addField(
     "Compte créé le : ", user.createdAt, true
   );
-  message.channel.send(embed);
+  message.channel.send(embed2);
 
 }catch(err) {
 
