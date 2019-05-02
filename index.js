@@ -31,7 +31,7 @@ client.on('message', async message => {
 
     //fun
 
-    if (message.content === config.prefix + 'ping') {
+    if (message.content === prefixVerifier(message) + 'ping') {
 			message.channel.sendMessage("pong");
 			return;
 
@@ -458,8 +458,12 @@ async function play(guild, song) {
 	serverQueue.textChannel.send(`🎶 Start playing: **${song.title}**`);
 }
 
-function prefixVerifier(guild) {
+function prefixVerifier(message) {
 
+  let prefix = JSON.parse(fs.readFileSync("./prefix.json", "utf8"));
+  if(prefix[message.guild.id].prefix) {
+    return prefix[message.guild.id].prefix;
+  }else return config.prefix;
 
 }
 
