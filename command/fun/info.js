@@ -5,10 +5,9 @@ function info(message) {
     let user = message.mentions.users.first();
 
     const embed = new RichEmbed()
-    .setTitle('vos stats :')
+    .setTitle('les stats de ' + user.username + ' :')
     .setColor(0xffe402)
     .setThumbnail(user.avatarURL)
-    .setDescription("vos infos :")
     .addField(
       "Pseudo : ", user.username
     ).addField(
@@ -20,6 +19,7 @@ function info(message) {
     ).addField(
       "Compte créé le : ", user.createdAt, true
     );
+    console.log('test')
     return message.channel.send(embed);
 
   }
@@ -28,7 +28,6 @@ function info(message) {
   .setTitle('vos stats :')
   .setColor(0xffe402)
   .setThumbnail(message.author.avatarURL)
-  .setDescription("vos infos :")
   .addField(
     "Pseudo : ",message.author.username
   ).addField(
