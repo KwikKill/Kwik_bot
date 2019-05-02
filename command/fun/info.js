@@ -1,6 +1,8 @@
 const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
+  try{
+
   if(!message.mentions.users.size) {
 
     const embed = new RichEmbed()
@@ -41,6 +43,12 @@ function info(message) {
     "Compte créé le : ", user.createdAt, true
   );
   message.channel.send(embed);
+
+}catch(err) {
+
+  console.log(err);
+
+}
 
 }
 
