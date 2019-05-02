@@ -1,46 +1,48 @@
 const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
-  if(message.mentions.users.first) {
-
-    let user = message.mentions.users.first();
+  if(!message.mentions.users.first) {
 
     const embed = new RichEmbed()
-    .setTitle('les stats de ' + user.username + ' :')
+    .setTitle('vos stats :')
     .setColor(0xffe402)
-    .setThumbnail(user.avatarURL)
+    .setThumbnail(message.author.avatarURL)
     .addField(
-      "Pseudo : ", user.username
+      "Pseudo : ",message.author.username
     ).addField(
-      "En ligne : ", user.presence.status, true
+      "En ligne : ", message.author.presence.status, true
     ).addField(
-      "ID", user.id, true
+      "ID", message.author.id, true
     ).addField(
-      "Jeux : ", user.presence.game, true
+      "Jeux : ", message.author.presence.game, true
     ).addField(
-      "Compte créé le : ", user.createdAt, true
+      "Compte créé le : ", message.author.createdAt, true
     );
     message.channel.send(embed);
+    return
 
   }
 
+  let user = message.mentions.users.first();
+
   const embed = new RichEmbed()
-  .setTitle('vos stats :')
+  .setTitle('les stats de ' + user.username + ' :')
   .setColor(0xffe402)
-  .setThumbnail(message.author.avatarURL)
+  .setThumbnail(user.avatarURL)
   .addField(
-    "Pseudo : ",message.author.username
+    "Pseudo : ", user.username
   ).addField(
-    "En ligne : ", message.author.presence.status, true
+    "En ligne : ", user.presence.status, true
   ).addField(
-    "ID", message.author.id, true
+    "ID", user.id, true
   ).addField(
-    "Jeux : ", message.author.presence.game, true
+    "Jeux : ", user.presence.game, true
   ).addField(
-    "Compte créé le : ", message.author.createdAt, true
+    "Compte créé le : ", user.createdAt, true
   );
   message.channel.send(embed);
 
+  }
 
 }
 
