@@ -32,12 +32,12 @@ client.on('message', async message => {
     //fun
 
     if (message.content === prefixVerifier(message) + 'ping') {
-			message.channel.sendMessage("pong");
+			message.channel.send("pong");
 			return;
 
   	}
 
-		if(message.content === config.prefix + 'help') {
+		if(message.content === prefixVerifier(message) + 'help') {
 
       const help = require('./command/fun/help.js');
       help(message);
@@ -46,7 +46,7 @@ client.on('message', async message => {
 
 		}
 
-    if(message.content === config.prefix + 'info') {
+    if(message.content === prefixVerifier(message) + 'info') {
 
       const info = require('./command/fun/info.js');
       info(message);
@@ -57,7 +57,7 @@ client.on('message', async message => {
 
     //moderation
 
-    if(message.content.startsWith(config.prefix + "log")) {
+    if(message.content.startsWith(prefixVerifier(message) + "log")) {
 
       const log = require('./command/moderation/log.js');
       log(message);
@@ -66,7 +66,7 @@ client.on('message', async message => {
 
     }
 
-    if(message.content.startsWith(config.prefix + "prefix")) {
+    if(message.content.startsWith(prefixVerifier(message) + "prefix")) {
 
       const prefix = require('./command/moderation/prefix.js');
       prefix(message);
@@ -75,7 +75,7 @@ client.on('message', async message => {
 
     }
 
-    if(message.content.startsWith(config.prefix + "welcome")) {
+    if(message.content.startsWith(prefixVerifier(message) + "welcome")) {
 
       const welcome = require('./command/moderation/welcome.js');
       welcome(message);
@@ -84,7 +84,7 @@ client.on('message', async message => {
 
     }
 
-		if (message.content.startsWith(config.prefix + 'kick')) {
+		if (message.content.startsWith(prefixVerifier(message) + 'kick')) {
 
       const kick = require('./command/moderation/kick.js');
 			kick(message);
@@ -92,7 +92,7 @@ client.on('message', async message => {
 			return;
 		}
 
-		if (message.content.startsWith(config.prefix + 'ban')) {
+		if (message.content.startsWith(prefixVerifier(message) + 'ban')) {
 
       const ban = require('./command/moderation/ban.js');
 			ban(message);
@@ -100,7 +100,7 @@ client.on('message', async message => {
 			return;
 		}
 
-    var regexpunban = new RegExp('^\\' + config.prefix + 'unban\\s+([^\\s]*)$');
+    var regexpunban = new RegExp('^\\' + prefixVerifier(message) + 'unban\\s+([^\\s]*)$');
 		if (regexpunban.test(message.content)) {
 
       var id = message.content.replace(regexpunban, "$1");
@@ -113,7 +113,7 @@ client.on('message', async message => {
 
     //apex
 
-		var regexp = new RegExp('^\\' + config.prefix + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
+		var regexp = new RegExp('^\\' + prefixVerifier(message) + 'apex\\s+stats\\s+([^\\s]*)\\s+([^\\s]*)$');
 		if(regexp.test(message.content)) {
 
 			var user = message.content.replace(regexp, "$1");
@@ -127,7 +127,7 @@ client.on('message', async message => {
       return;
 		}
 
-		var regexp2 = new RegExp('^\\' + config.prefix + 'apex\\s+legend\\s+([^\\s]*)$');
+		var regexp2 = new RegExp('^\\' + prefixVerifier(message) + 'apex\\s+legend\\s+([^\\s]*)$');
 		if(regexp2.test(message.content)) {
 			var legend = message.content.replace(regexp2, "$1");
 
@@ -139,7 +139,7 @@ client.on('message', async message => {
 
     //musics
 
-    if(message.content.startsWith(config.prefix + 'play')) {
+    if(message.content.startsWith(prefixVerifier(message) + 'play')) {
 
 
       /*const play = require('./command/music/play.js');
@@ -202,7 +202,7 @@ client.on('message', async message => {
 
 		}
 
-    if(message.content.startsWith(config.prefix + 'skip')) {
+    if(message.content.startsWith(prefixVerifier(message) + 'skip')) {
 
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
@@ -213,7 +213,7 @@ client.on('message', async message => {
 
 		}
 
-    if(message.content.startsWith(config.prefix + 'stop')) {
+    if(message.content.startsWith(prefixVerifier(message) + 'stop')) {
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
   		if (!serverQueue) return msg.channel.send('Je suis déjâ stoppé.');
@@ -222,7 +222,7 @@ client.on('message', async message => {
       return message.channel.send('j\'ai quitté le salon vocal');
 		}
 
-    if(message.content.startsWith(config.prefix + 'volume')) {
+    if(message.content.startsWith(prefixVerifier(message) + 'volume')) {
 
       if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
 		  if (!serverQueue) return msg.channel.send('Il n\'y a rien a joué');
@@ -233,13 +233,13 @@ client.on('message', async message => {
 
     }
 
-    if(message.content === "np") {
+    if(message.content.startsWith(prefixVerifier(message) + "np") {
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
       return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
     }
 
-    if(message.content === "playlist") {
+    if(message.content.startsWith(prefixVerifier(message) + "playlist") {
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
       return message.channel.send(`
@@ -250,7 +250,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
     }
 
-    if(message.content === "pause") {
+    if(message.content.startsWith(prefixVerifier(message) + "pause") {
 
       if (serverQueue && serverQueue.playing) {
 			   serverQueue.playing = false;
@@ -260,7 +260,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
       return message.channel.send('Il n\'a rien de joué.');
     }
 
-    if(message.content === "resume") {
+    if(message.content.startsWith(prefixVerifier(message) + "resume") {
 
       if (serverQueue && !serverQueue.playing) {
 			   serverQueue.playing = true;
