@@ -1,7 +1,7 @@
 const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
-  if(message.mentions.users.first()) {
+  if(message.mentions.users.size) {
     let user = message.mentions.users.first();
 
     const embed = new RichEmbed()
@@ -10,7 +10,7 @@ function info(message) {
     .setThumbnail(user.avatarURL)
     .setDescription("vos infos :")
     .addField(
-      "Pseudo : ",user.username
+      "Pseudo : ", user.username
     ).addField(
       "En ligne : ", user.presence.status, true
     ).addField(
