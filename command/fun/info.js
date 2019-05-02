@@ -42,8 +42,6 @@ function info(message) {
   );
   message.channel.send(embed);
 
-  }
-
 }
 
 module.exports = info;
