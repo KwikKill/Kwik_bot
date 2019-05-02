@@ -20,28 +20,28 @@ function info(message) {
     ).addField(
       "Compte créé le : ", user.createdAt, true
     );
-    message.channel.send(embed);
+    return message.channel.send(embed);
 
-  }else {
-
-    const embed = new RichEmbed()
-    .setTitle('vos stats :')
-    .setColor(0xffe402)
-    .setThumbnail(message.author.avatarURL)
-    .setDescription("vos infos :")
-    .addField(
-      "Pseudo : ",message.author.username
-    ).addField(
-      "En ligne : ", message.author.presence.status, true
-    ).addField(
-      "ID", message.author.id, true
-    ).addField(
-      "Jeux : ", message.author.presence.game, true
-    ).addField(
-      "Compte créé le : ", message.author.createdAt, true
-    );
-    message.channel.send(embed);
   }
+
+  const embed = new RichEmbed()
+  .setTitle('vos stats :')
+  .setColor(0xffe402)
+  .setThumbnail(message.author.avatarURL)
+  .setDescription("vos infos :")
+  .addField(
+    "Pseudo : ",message.author.username
+  ).addField(
+    "En ligne : ", message.author.presence.status, true
+  ).addField(
+    "ID", message.author.id, true
+  ).addField(
+    "Jeux : ", message.author.presence.game, true
+  ).addField(
+    "Compte créé le : ", message.author.createdAt, true
+  );
+  message.channel.send(embed);
+
 
 }
 
