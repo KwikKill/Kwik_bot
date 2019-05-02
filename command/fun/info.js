@@ -3,11 +3,7 @@ function info(message) {
 
   try{
 
-    console.log("a")
-
   if(!message.mentions.users.size) {
-
-    console.log("b")
 
     const embed = new RichEmbed()
     .setTitle('vos stats :')
@@ -28,8 +24,6 @@ function info(message) {
     return
 
   }
-
-  console.log("c")
 
   var user = message.mentions.users.first();
 
