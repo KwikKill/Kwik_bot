@@ -23,7 +23,7 @@ function info(message) {
 
   }
 
-  let user = message.mentions.users.first;
+  var user = message.mentions.users.first();
 
   const embed = new RichEmbed()
   .setTitle('les stats de ' + user.username + ' :')
