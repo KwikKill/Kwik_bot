@@ -460,10 +460,12 @@ async function play(guild, song) {
 
 function prefixVerifier(message) {
 
-  let prefix = JSON.parse(fs.readFileSync("./prefix.json", "utf8"));
-  if(prefix[message.guild.id].prefix) {
+  try {
+    let prefix = JSON.parse(fs.readFileSync("./prefix.json", "utf8"));
     return prefix[message.guild.id].prefix;
-  }else return config.prefix;
+  }catch(err) {
+    return config.prefix;
+  }
 
 }
 
