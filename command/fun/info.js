@@ -1,7 +1,7 @@
 const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
-  if(message.mentions.users) {
+  if(message.mentions.users.first) {
 
     let user = message.mentions.users.first();
 
