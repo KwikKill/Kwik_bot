@@ -4,7 +4,18 @@ function info(message) {
   .setTitle('vos stats :')
   .setColor(0xffe402)
   .setThumbnail(message.author.avatarURL)
-  .setDescription("pseudo : " + message.author.username);
+  .setDescription("vos infos :")
+  .addField(
+    "Pseudo : ",message.author.username
+  ).addField(
+    "En ligne : ", author.presence.status, true
+  ).addField(
+    "ID", author.id, true
+  ).addField(
+    "Jeux : ", author.presence.game, true
+  ).addField(
+    "Compte créé le : ", author.createdAt, true
+  );
   message.channel.send(embed);
 }
 
