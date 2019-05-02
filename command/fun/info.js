@@ -2,7 +2,11 @@ const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
   if(message.mentions.users.size) {
+    console.log('test1')
+
     let user = message.mentions.users.first();
+
+    console.log('test2')
 
     const embed = new RichEmbed()
     .setTitle('les stats de ' + user.username + ' :')
