@@ -8,13 +8,13 @@ function info(message) {
   .addField(
     "Pseudo : ",message.author.username
   ).addField(
-    "En ligne : ", author.presence.status, true
+    "En ligne : ", message.author.presence.status, true
   ).addField(
-    "ID", author.id, true
+    "ID", message.author.id, true
   ).addField(
-    "Jeux : ", author.presence.game, true
+    "Jeux : ", message.author.presence.game, true
   ).addField(
-    "Compte créé le : ", author.createdAt, true
+    "Compte créé le : ", message.author.createdAt, true
   );
   message.channel.send(embed);
 }
