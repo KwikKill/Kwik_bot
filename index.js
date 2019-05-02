@@ -233,13 +233,13 @@ client.on('message', async message => {
 
     }
 
-    if(message.content.startsWith(prefixVerifier(message) + "np") {
+    if(message.content.startsWith(prefixVerifier(message) + "np")) {
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
       return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
     }
 
-    if(message.content.startsWith(prefixVerifier(message) + "playlist") {
+    if(message.content.startsWith(prefixVerifier(message) + "playlist")) {
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
       return message.channel.send(`
@@ -250,7 +250,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
     }
 
-    if(message.content.startsWith(prefixVerifier(message) + "pause") {
+    if(message.content.startsWith(prefixVerifier(message) + "pause")) {
 
       if (serverQueue && serverQueue.playing) {
 			   serverQueue.playing = false;
@@ -260,7 +260,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
       return message.channel.send('Il n\'a rien de joué.');
     }
 
-    if(message.content.startsWith(prefixVerifier(message) + "resume") {
+    if(message.content.startsWith(prefixVerifier(message) + "resume")) {
 
       if (serverQueue && !serverQueue.playing) {
 			   serverQueue.playing = true;
