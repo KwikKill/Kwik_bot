@@ -1,7 +1,7 @@
 const { Client, RichEmbed } = require('discord.js');
 function info(message) {
 
-  if(!message.mentions.users.first) {
+  if(!message.mentions.users.size) {
 
     const embed = new RichEmbed()
     .setTitle('vos stats :')
