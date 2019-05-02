@@ -18,7 +18,7 @@ function prefix(message) {
   		prefix[message.guild.id] = {
   			prefix: "*"
   		};
-  		fs.writeFile("./prefix.json", JSON.stringify(log), (err) => {
+  		fs.writeFile("./prefix.json", JSON.stringify(prefix), (err) => {
   			if (err) console.log(err);
   		});
   		message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + "Le préfix pour le serveur a été réinitialisé.");
