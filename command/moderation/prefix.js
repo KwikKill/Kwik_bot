@@ -16,7 +16,7 @@ function prefix(message) {
 
     if (!args[0]) {
   		prefix[message.guild.id] = {
-  			prefix: "*"
+  			prefix: *
   		};
   		fs.writeFile("./prefix.json", JSON.stringify(prefix), (err) => {
   			if (err) console.log(err);
