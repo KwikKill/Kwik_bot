@@ -31,7 +31,7 @@ function prefix(message) {
     	fs.writeFile("./prefix.json", JSON.stringify(prefix), (err) => {
     		if (err) console.log(err)
     	});
-    	message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Le préfix du serveur a été changé à .` + args[0]);
+    	message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Le préfix du serveur a été changé à : ` + args[0]);
   	}
 
   }catch(err) {

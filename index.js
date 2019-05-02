@@ -22,7 +22,7 @@ client.on('ready', () => {
 
 client.on('message', async message => {
     if (message.author.bot) return undefined;
-    if (!message.content.startsWith(config.prefix)) return undefined;
+    //if (!message.content.startsWith(config.prefix)) return undefined;
 
     const args = message.content.split(' ');
     const searchString = args.slice(1).join(' ');
@@ -456,6 +456,11 @@ async function play(guild, song) {
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
 	serverQueue.textChannel.send(`🎶 Start playing: **${song.title}**`);
+}
+
+function prefixVerifier(guild) {
+
+
 }
 
 
