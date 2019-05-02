@@ -46,7 +46,7 @@ client.on('message', async message => {
 
 		}
 
-    if(message.content === prefixVerifier(message) + 'info') {
+    if(message.content.startsWith(prefixVerifier(message) + 'info')) {
 
       const info = require('./command/fun/info.js');
       info(message);
