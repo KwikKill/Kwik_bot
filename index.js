@@ -206,7 +206,7 @@ client.on('message', async message => {
 
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
-      if (!serverQueue) return msg.channel.send('Je ne peut pas skip cette musique.');
+      if (!serverQueue) return message.channel.send('Je ne peut pas skip cette musique.');
       serverQueue.connection.dispatcher.end('musique skip !');
 
 			return;
