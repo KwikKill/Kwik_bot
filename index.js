@@ -216,7 +216,7 @@ client.on('message', async message => {
     if(message.content.startsWith(prefixVerifier(message) + 'stop')) {
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
-  		if (!serverQueue) return msg.channel.send('Je suis déjâ stoppé.');
+  		if (!serverQueue) return message.channel.send('Je suis déjâ stoppé.');
   		serverQueue.songs = [];
       serverQueue.connection.dispatcher.end('La command stop a bien été utilisé !');
       return message.channel.send('j\'ai quitté le salon vocal');
