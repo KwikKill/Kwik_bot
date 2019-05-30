@@ -225,7 +225,7 @@ client.on('message', async message => {
     if(message.content.startsWith(prefixVerifier(message) + 'volume')) {
 
       if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
-		  if (!serverQueue) return msg.channel.send('Il n\'y a rien a joué');
+		  if (!serverQueue) return message.channel.send('Il n\'y a rien a joué');
 		  if (!args[1]) return message.channel.send(`Le volume est actuellement à : **${serverQueue.volume}**`);
       serverQueue.volume = args[1];
       serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
@@ -265,9 +265,9 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
       if (serverQueue && !serverQueue.playing) {
 			   serverQueue.playing = true;
 			   serverQueue.connection.dispatcher.resume();
-			   return msg.channel.send('▶ musique joué !');
+			   return message.channel.send('▶ musique joué !');
       }
-      return msg.channel.send("Il n\'y a rien de joué");
+      return message.channel.send("Il n\'y a rien de joué");
     }
 
 });
