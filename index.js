@@ -224,7 +224,7 @@ client.on('message', async message => {
 
   			return;
       }
-    }catch(err) {}
+    }catch(err) {console.log(err)}
 
 		}
 
