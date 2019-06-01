@@ -160,65 +160,65 @@ client.on('message', async message => {
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
-        }
-      }catch(err) {}
-      /*const play = require('./command/music/play.js');
-			play(message);*/
+        /*const play = require('./command/music/play.js');
+  			play(message);*/
 
-      const voiceChannel = message.member.voiceChannel;
-      if (!voiceChannel) {
-        return message.channel.send('je suis désolé mais vous n\'êtes pas dans un salon vocal');
-      }
-      const permissions = voiceChannel.permissionsFor(message.client.user);
-      if (!permissions.has('CONNECT')) {
-    			return message.channel.send('je ne peux pas me connecter dans votre salon vocal !');
-      }
-      if (!permissions.has('SPEAK')) {
-    			return message.channel.send('je ne peux pas parler dans votre salon vocal !');
-      }
-      if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
-    			const playlist = await youtube.getPlaylist(url);
-    			const videos = await playlist.getVideos();
-    			for (const video of Object.values(videos)) {
-    				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
-    				await handleVideo(video2, message, voiceChannel, true); // eslint-disable-line no-await-in-loop
-    			}
-    			return message.channel.send(`✅ Playlist: **${playlist.title}** a bien été ajouté à la playlist!`);
-      }
-      else {
-    			try {
-    				var video = await youtube.getVideo(url);
-    			} catch (error) {
-    				try {
-    					var videos = await youtube.searchVideos(searchString, 10);
-    					let index = 0;
-    					message.channel.send(`
-    __**Song selection:**__
-    ${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}
-    Please provide a value to select one of the search results ranging from 1-10.
-    					`);
-    					// eslint-disable-next-line max-depth
-    					try {
-    						var response = await message.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
-    							maxMatches: 1,
-    							time: 10000,
-    							errors: ['time']
-    						});
-    					} catch (err) {
-    						console.error(err);
-    						return message.channel.send('résultat absent ou invalide, annulation de la sélection musicale.');
-    					}
-    					const videoIndex = parseInt(response.first().content);
-    					var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
-    				} catch (err) {
-    					console.error(err);
-    					return message.channel.send('🆘 Je n\'ai pas trouvé de résultats.');
-    				}
-    			}
-    			return handleVideo(video, message, voiceChannel);
+        const voiceChannel = message.member.voiceChannel;
+        if (!voiceChannel) {
+          return message.channel.send('je suis désolé mais vous n\'êtes pas dans un salon vocal');
         }
+        const permissions = voiceChannel.permissionsFor(message.client.user);
+        if (!permissions.has('CONNECT')) {
+      			return message.channel.send('je ne peux pas me connecter dans votre salon vocal !');
+        }
+        if (!permissions.has('SPEAK')) {
+      			return message.channel.send('je ne peux pas parler dans votre salon vocal !');
+        }
+        if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
+      			const playlist = await youtube.getPlaylist(url);
+      			const videos = await playlist.getVideos();
+      			for (const video of Object.values(videos)) {
+      				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
+      				await handleVideo(video2, message, voiceChannel, true); // eslint-disable-line no-await-in-loop
+      			}
+      			return message.channel.send(`✅ Playlist: **${playlist.title}** a bien été ajouté à la playlist!`);
+        }
+        else {
+      			try {
+      				var video = await youtube.getVideo(url);
+      			} catch (error) {
+      				try {
+      					var videos = await youtube.searchVideos(searchString, 10);
+      					let index = 0;
+      					message.channel.send(`
+      __**Song selection:**__
+      ${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}
+      Please provide a value to select one of the search results ranging from 1-10.
+      					`);
+      					// eslint-disable-next-line max-depth
+      					try {
+      						var response = await message.channel.awaitMessages(msg2 => msg2.content > 0 && msg2.content < 11, {
+      							maxMatches: 1,
+      							time: 10000,
+      							errors: ['time']
+      						});
+      					} catch (err) {
+      						console.error(err);
+      						return message.channel.send('résultat absent ou invalide, annulation de la sélection musicale.');
+      					}
+      					const videoIndex = parseInt(response.first().content);
+      					var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
+      				} catch (err) {
+      					console.error(err);
+      					return message.channel.send('🆘 Je n\'ai pas trouvé de résultats.');
+      				}
+      			}
+      			return handleVideo(video, message, voiceChannel);
+          }
 
-			return;
+  			return;
+      }
+    }catch(err) {}
 
 		}
 
@@ -234,12 +234,12 @@ client.on('message', async message => {
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+          if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
+          if (!serverQueue) return message.channel.send('Je ne peut pas skip cette musique.');
+          serverQueue.connection.dispatcher.end('musique skip !');
+
         }
       }catch(err) {}
-
-      if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
-      if (!serverQueue) return message.channel.send('Je ne peut pas skip cette musique.');
-      serverQueue.connection.dispatcher.end('musique skip !');
 
 			return;
 
@@ -257,14 +257,15 @@ client.on('message', async message => {
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+
+          if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
+      		if (!serverQueue) return message.channel.send('Je suis déjâ stoppé.');
+      		serverQueue.songs = [];
+          serverQueue.connection.dispatcher.end('La command stop a bien été utilisé !');
+          return message.channel.send('j\'ai quitté le salon vocal');
+
         }
       }catch(err) {}
-
-      if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
-  		if (!serverQueue) return message.channel.send('Je suis déjâ stoppé.');
-  		serverQueue.songs = [];
-      serverQueue.connection.dispatcher.end('La command stop a bien été utilisé !');
-      return message.channel.send('j\'ai quitté le salon vocal');
 		}
 
     if(message.content.startsWith(prefixVerifier(message) + 'volume')) {
@@ -279,15 +280,15 @@ client.on('message', async message => {
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+          if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
+    		  if (!serverQueue) return message.channel.send('Il n\'y a rien a joué');
+    		  if (!args[1]) return message.channel.send(`Le volume est actuellement à : **${serverQueue.volume}**`);
+          serverQueue.volume = args[1];
+          serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
+          return message.channel.send(`J'ai mis le volume à : **${args[1]}**`);
+
         }
       }catch(err) {}
-
-      if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
-		  if (!serverQueue) return message.channel.send('Il n\'y a rien a joué');
-		  if (!args[1]) return message.channel.send(`Le volume est actuellement à : **${serverQueue.volume}**`);
-      serverQueue.volume = args[1];
-      serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
-      return message.channel.send(`J'ai mis le volume à : **${args[1]}**`);
 
     }
 
@@ -303,11 +304,11 @@ client.on('message', async message => {
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+        if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
+        return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
+
         }
       }catch(err) {}
-
-      if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
-      return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
     }
 
     if(message.content.startsWith(prefixVerifier(message) + "playlist")) {
@@ -322,15 +323,15 @@ client.on('message', async message => {
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+          if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
+          return message.channel.send(`
+    __**Playlist :**__
+    ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
+    **Now playing:** ${serverQueue.songs[0].title}
+    		`);
+
         }
       }catch(err) {}
-
-      if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
-      return message.channel.send(`
-__**Playlist :**__
-${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
-**Now playing:** ${serverQueue.songs[0].title}
-		`);
 
     }
 
@@ -346,15 +347,15 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+          if (serverQueue && serverQueue.playing) {
+    			   serverQueue.playing = false;
+    			   serverQueue.connection.dispatcher.pause();
+    			   return message.channel.send('⏸ musique mis en Pause !');
+    		  }
+          return message.channel.send('Il n\'a rien de joué.');
+
         }
       }catch(err) {}
-
-      if (serverQueue && serverQueue.playing) {
-			   serverQueue.playing = false;
-			   serverQueue.connection.dispatcher.pause();
-			   return message.channel.send('⏸ musique mis en Pause !');
-		  }
-      return message.channel.send('Il n\'a rien de joué.');
     }
 
     if(message.content.startsWith(prefixVerifier(message) + "resume")) {
@@ -369,15 +370,16 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
+
+          if (serverQueue && !serverQueue.playing) {
+    			   serverQueue.playing = true;
+    			   serverQueue.connection.dispatcher.resume();
+    			   return message.channel.send('▶ musique joué !');
+          }
+          return message.channel.send("Il n\'y a rien de joué");
+
         }
       }catch(err) {}
-
-      if (serverQueue && !serverQueue.playing) {
-			   serverQueue.playing = true;
-			   serverQueue.connection.dispatcher.resume();
-			   return message.channel.send('▶ musique joué !');
-      }
-      return message.channel.send("Il n\'y a rien de joué");
     }
 
 });
