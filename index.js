@@ -157,8 +157,8 @@ client.on('message', async message => {
         if (music[message.guild.id].musicchannel) {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
-          if (!musicchannel) return undefined;
-          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+          if (!musicchannel) console/log("1") && return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) console/log("2") && return undefined;
 
         /*const play = require('./command/music/play.js');
   			play(message);*/
