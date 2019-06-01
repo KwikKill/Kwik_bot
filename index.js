@@ -161,7 +161,7 @@ client.on('message', async message => {
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
       /*const play = require('./command/music/play.js');
 			play(message);*/
 
@@ -235,7 +235,7 @@ client.on('message', async message => {
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
       if (!serverQueue) return message.channel.send('Je ne peut pas skip cette musique.');
@@ -258,7 +258,7 @@ client.on('message', async message => {
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
   		if (!serverQueue) return message.channel.send('Je suis déjâ stoppé.');
@@ -280,7 +280,7 @@ client.on('message', async message => {
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
 		  if (!serverQueue) return message.channel.send('Il n\'y a rien a joué');
@@ -304,7 +304,7 @@ client.on('message', async message => {
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
       return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
@@ -323,7 +323,7 @@ client.on('message', async message => {
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
       return message.channel.send(`
@@ -347,7 +347,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (serverQueue && serverQueue.playing) {
 			   serverQueue.playing = false;
@@ -370,7 +370,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
 
         }
-      }
+      }catch(err) {}
 
       if (serverQueue && !serverQueue.playing) {
 			   serverQueue.playing = true;
@@ -393,7 +393,7 @@ client.on('guildMemberAdd', member => {
       if (!welcomechannel) return undefined;
       welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
     }
-  }
+  }catch(err) {}
 });
 
 client.on('channelCreate', channel => {
@@ -416,7 +416,7 @@ client.on('channelCreate', channel => {
 
   	   logchannel.send(embed);
     }
-  }
+  }catch(err) {}
 
 });
 
@@ -439,7 +439,7 @@ client.on('channelDelete', channel => {
 
     	log.send(embed);
     }
-  }
+  }catch(err) {}
 });
 
 client.on('emojiCreate', emoji => {
@@ -462,7 +462,7 @@ client.on('emojiCreate', emoji => {
 
     	log.send(embed);
     }
-  }
+  }catch(err) {}
 });
 
 client.on('emojiDelete', emoji => {
@@ -486,7 +486,7 @@ client.on('emojiDelete', emoji => {
 
     	log.send(embed);
     }
-  }
+  }catch(err) {}
 });
 
 /*client.on('guildBanAdd', ban => {
