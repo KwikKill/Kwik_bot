@@ -150,12 +150,12 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'play')) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
@@ -224,7 +224,7 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'skip')) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
@@ -247,12 +247,12 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'stop')) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
@@ -269,12 +269,12 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'volume')) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
@@ -293,12 +293,12 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + "np")) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
@@ -312,12 +312,12 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + "playlist")) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
@@ -336,12 +336,12 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
     if(message.content.startsWith(prefixVerifier(message) + "pause")) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
@@ -359,12 +359,12 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
     if(message.content.startsWith(prefixVerifier(message) + "resume")) {
 
-      if(!member.guild) return undefined;
+      if(!message.guild) return undefined;
 
       try {
         let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
-        if (music[member.guild.id].musicchannel) {
-          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+        if (music[message.guild.id].musicchannel) {
+          var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
           if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;

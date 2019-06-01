@@ -34,7 +34,7 @@ function musicchannel(message) {
       	fs.writeFile("./musicchannel.json", JSON.stringify(musicchannel), (err) => {
       		if (err) console.log(err)
       	});
-      	message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Le salon pour la musique a été changé à : ` + args[0] + "(" + channel.name + ")");
+      	message.channel.send("**/" + message.guild + "/" + message.channel.name + "/** \n  " + `Le salon pour la musique a été changé à : ` + args[0] + " (" + channel.name + ")");
     	}
     }
 
