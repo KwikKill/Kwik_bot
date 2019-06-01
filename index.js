@@ -75,6 +75,15 @@ client.on('message', async message => {
 
     }
 
+    if(message.content.startsWith(prefixVerifier(message) + "musicchannel")) {
+
+      const musicchannel = require('./command/music/musicchannel.js');
+      musicchannel(message);
+
+      return;
+
+    }
+
     if(message.content.startsWith(prefixVerifier(message) + "welcome")) {
 
       const welcome = require('./command/moderation/welcome.js');
@@ -141,7 +150,18 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'play')) {
 
+      if(!member.guild) return undefined;
 
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
       /*const play = require('./command/music/play.js');
 			play(message);*/
 
@@ -204,6 +224,18 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'skip')) {
 
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
 
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
       if (!serverQueue) return message.channel.send('Je ne peut pas skip cette musique.');
@@ -215,6 +247,19 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + 'stop')) {
 
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
+
       if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
   		if (!serverQueue) return message.channel.send('Je suis déjâ stoppé.');
   		serverQueue.songs = [];
@@ -223,6 +268,19 @@ client.on('message', async message => {
 		}
 
     if(message.content.startsWith(prefixVerifier(message) + 'volume')) {
+
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
 
       if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
 		  if (!serverQueue) return message.channel.send('Il n\'y a rien a joué');
@@ -235,11 +293,37 @@ client.on('message', async message => {
 
     if(message.content.startsWith(prefixVerifier(message) + "np")) {
 
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
+
       if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
       return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
     }
 
     if(message.content.startsWith(prefixVerifier(message) + "playlist")) {
+
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
 
       if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
       return message.channel.send(`
@@ -252,6 +336,19 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 
     if(message.content.startsWith(prefixVerifier(message) + "pause")) {
 
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
+
       if (serverQueue && serverQueue.playing) {
 			   serverQueue.playing = false;
 			   serverQueue.connection.dispatcher.pause();
@@ -261,6 +358,19 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
     }
 
     if(message.content.startsWith(prefixVerifier(message) + "resume")) {
+
+      if(!member.guild) return undefined;
+
+      try {
+        let music = JSON.parse(fs.readFileSync("./musicchannel.json", "utf8"));
+        if (music[member.guild.id].musicchannel) {
+          var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
+
+          if (!musicchannel) return undefined;
+          if (music[channel.guild.id].musicchannel != message.channels.id) return undefined;
+
+        }
+      }
 
       if (serverQueue && !serverQueue.playing) {
 			   serverQueue.playing = true;
@@ -275,32 +385,37 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 client.on('guildMemberAdd', member => {
   if(!member.guild) return undefined;
 
-  let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
-  if (welcome[member.guild.id].channel) {
-    var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
+  try {
+    let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+    if (welcome[member.guild.id].channel) {
+      var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
 
-    if (!welcomechannel) return undefined;
-    welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
+      if (!welcomechannel) return undefined;
+      welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
+    }
   }
 });
 
 client.on('channelCreate', channel => {
   if(!channel.guild) return undefined;
 
-  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
-  if (logs[channel.guild.id].toggle === 1) {
-  	var logchannel  = channel.guild.channels.find(channel => channel.name === "logs");
-    if(!logchannel ) return undefined;
 
-  	const embed = new RichEmbed()
-  		.setTitle('log :')
-  		.setColor(0xffe402)
-  		.setDescription(
-  			"salon créé : " +
-  			channel.name
-  		);
+  try {
+    let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+    if (logs[channel.guild.id].toggle === 1) {
+    	var logchannel  = channel.guild.channels.find(channel => channel.name === "logs");
+      if(!logchannel ) return undefined;
 
-	   logchannel.send(embed);
+    	const embed = new RichEmbed()
+    		.setTitle('log :')
+    		.setColor(0xffe402)
+    		.setDescription(
+    			"salon créé : " +
+    			channel.name
+    		);
+
+  	   logchannel.send(embed);
+    }
   }
 
 });
@@ -308,62 +423,69 @@ client.on('channelCreate', channel => {
 client.on('channelDelete', channel => {
   if(!channel.guild) return undefined;
 
-  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
-  if (logs[channel.guild.id].toggle === 1) {
-  	var log = channel.guild.channels.find(channel => channel.name === "logs");
-    if(!log) return undefined;
+  try {
+    let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+    if (logs[channel.guild.id].toggle === 1) {
+    	var log = channel.guild.channels.find(channel => channel.name === "logs");
+      if(!log) return undefined;
 
-  	const embed = new RichEmbed()
-  		.setTitle('log :')
-  		.setColor(0xffe402)
-  		.setDescription(
-  			"salon supprimé : " +
-  			channel.name
-  		);
+    	const embed = new RichEmbed()
+    		.setTitle('log :')
+    		.setColor(0xffe402)
+    		.setDescription(
+    			"salon supprimé : " +
+    			channel.name
+    		);
 
-  	log.send(embed);
+    	log.send(embed);
+    }
   }
 });
 
 client.on('emojiCreate', emoji => {
   if(!emoji.guild) return undefined;
 
-  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
-  if (logs[emoji.guild.id].toggle === 1) {
-  	var log = emoji.guild.channels.find(channel => channel.name === "logs");
-    if(!log) return undefined;
+  try {
+    let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+    if (logs[emoji.guild.id].toggle === 1) {
+    	var log = emoji.guild.channels.find(channel => channel.name === "logs");
+      if(!log) return undefined;
 
-  	const embed = new RichEmbed()
-  		.setTitle('log :')
-  		.setColor(0xffe402)
-  		.setThumbnail(emoji.url)
-  		.setDescription(
-  			"émoji créé : " +
-  			emoji.name
-  		);
+    	const embed = new RichEmbed()
+    		.setTitle('log :')
+    		.setColor(0xffe402)
+    		.setThumbnail(emoji.url)
+    		.setDescription(
+    			"émoji créé : " +
+    			emoji.name
+    		);
 
-  	log.send(embed);
+    	log.send(embed);
+    }
   }
 });
 
 client.on('emojiDelete', emoji => {
   if(!emoji.guild) return undefined;
 
-  let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
-  if (logs[emoji.guild.id].toggle === 1) {
-  	var log = emoji.guild.channels.find(channel => channel.name === "logs");
-    if(!log) return undefined;
 
-  	const embed = new RichEmbed()
-  		.setTitle('log :')
-  		.setColor(0xffe402)
-  		.setThumbnail(emoji.url)
-  		.setDescription(
-  			"émoji supprimé : " +
-  			emoji.name
-  		);
+  try {
+    let logs = JSON.parse(fs.readFileSync("./logs.json", "utf8"));
+    if (logs[emoji.guild.id].toggle === 1) {
+    	var log = emoji.guild.channels.find(channel => channel.name === "logs");
+      if(!log) return undefined;
 
-  	log.send(embed);
+    	const embed = new RichEmbed()
+    		.setTitle('log :')
+    		.setColor(0xffe402)
+    		.setThumbnail(emoji.url)
+    		.setDescription(
+    			"émoji supprimé : " +
+    			emoji.name
+    		);
+
+    	log.send(embed);
+    }
   }
 });
 
