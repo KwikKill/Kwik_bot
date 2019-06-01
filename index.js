@@ -158,7 +158,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
         /*const play = require('./command/music/play.js');
   			play(message);*/
@@ -232,7 +232,7 @@ client.on('message', async message => {
           var musicchannel = member.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
           if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
           if (!serverQueue) return message.channel.send('Je ne peut pas skip cette musique.');
@@ -255,7 +255,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
 
           if (!message.member.voiceChannel) return message.channel.send('vous n\'êtes pas dans un salon vocal !');
@@ -278,7 +278,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
           if (!message.member.voiceChannel) return message.channel.send('Vous n\'êtes pas dans un salon vocal!');
     		  if (!serverQueue) return message.channel.send('Il n\'y a rien a joué');
@@ -302,7 +302,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
         if (!serverQueue) return message.channel.send("Il n\'y a rien de joué");
         return message.channel.send(`🎶 Now playing: **${serverQueue.songs[0].title}**`);
@@ -321,7 +321,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
           if (!serverQueue) return message.channel.send("Il n\'y a rien à joué.");
           return message.channel.send(`
@@ -345,7 +345,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
           if (serverQueue && serverQueue.playing) {
     			   serverQueue.playing = false;
@@ -368,7 +368,7 @@ client.on('message', async message => {
           var musicchannel = message.guild.channels.find(channel => channel.id === music[channel.guild.id].musicchannel);
 
           if (!musicchannel) return undefined;
-          if (music[message.guild.id].musicchannel != message.channels.id) return undefined;
+          if (music[message.guild.id].musicchannel != message.channel.id) return undefined;
 
 
           if (serverQueue && !serverQueue.playing) {
