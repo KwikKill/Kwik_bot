@@ -26,7 +26,7 @@ function musicchannel(message) {
 
     if (args[0]) {
 
-      var channel  = channel.guild.channels.find(channel => channel.id === args[0]);
+      var channel  = message.guild.channels.find(channel => channel.id === args[0]);
       if(channel) {
       	musicchannel[message.guild.id] = {
       		musicchannel: args[0]
