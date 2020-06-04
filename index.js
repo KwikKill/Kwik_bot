@@ -59,6 +59,10 @@ potion_vie = true; //used
 potion_mort = true; //used
 roles = ["loup-garou", "petite-fille", "simple-villageois", "voyante", "sorcière", "loup-blanc", "chien-loup", "pyromane", "enfant-sauvage", "cupidon", "garde", "dictateur", "nécromancien", "fou", "chasseur"];
 
+save_players = []
+save_role = []
+save_vie = []
+save_votes = []
 
 client.on('warn', console.warn);
 
@@ -236,16 +240,54 @@ client.on('message', async message => {
 							message.reply("Les joueurs dans la partie sont :" + pl + ".");
 							return
 						}
+					}else if(args[1] == "clearplayer") {
+						if(state == "wait") {
+							players = []
+							vie = []
+							votes = []
+							message.reply("Les joueurs ont bien été réinitialisés.");
+							return;
+						}else {
+							message.reply("la partie n'est plus en configuration.");
+							return;
+						}
+
+					}else if(args[1] == "saveconfig") {
+						if(state == "wait") {
+						save_players = players
+						save_role = role
+						save_vie = vie
+						save_votes = votes
+							message.reply("La config à été sauvegardé.");
+							return;
+						}else {
+							message.reply("la partie n'est plus en configuration.");
+							return;
+						}
+
+					}else if(args[1] == "loadconfig") {
+						if(state == "wait") {
+						players = save_players
+						role = save_role
+						vie = save_vie
+						votes = save_votes
+							message.reply("La config à été restauré.");
+							return;
+						}else {
+							message.reply("la partie n'est plus en configuration.");
+							return;
+						}
+
 					}else if(args[1] == "help") {
 						const embed = new MessageEmbed()
   .setTitle("liste des commandes du loup garou:")
   .setColor(0xffe402)
   //.setThumbnail(message.author.avatarURL)
   .setDescription("voici la liste des commandes disponible :")
-  .addField("configuration","*lg config : permet de configurer une partie \n*lg abort : permet d'arréter une partie \n*lg state : permet de voir l'état de la partie")
-  .addField("joueurs","*lg seeplayers : permet de voir les joueurs \n*lg addplayer [mention] : permet d'ajouter un joueur \n*lg removeplayer [mention] : permet d'enlever un joueur")
-	.addField("rôles","*lg allroles : permet de voir la lise des rôles disponibles \n*lg addrole : permet d'ajouter un role dans la partie actuelle (la partie doit être en configuration) \n*lg removerole : permet de retirer un role dans la partie actuelle (la partie doit être en configuration) \n*lg seerole : permet de voir les roles configurées")
-	.addField("play","*lg play : permet de démarrer la partie");
+  .addField("configuration","`*lg config` : permet de configurer une partie \n`*lg abort` : permet d'arréter une partie \n`*lg state` : permet de voir l'état de la partie\n`*lg saveconfig` : permet de sauvegarder la config actuelle\n`*lg loadconfig` : permet de charger la config actuelle")
+  .addField("joueurs","`*lg seeplayers` : permet de voir les joueurs \n`*lg addplayer` [mention] : permet d'ajouter un joueur \n`*lg removeplayer` [mention] : permet d'enlever un joueur \n`*lg clearplayer` : permet de reset les joueurs")
+	.addField("rôles","`*lg allroles` : permet de voir la lise des rôles disponibles \n`*lg addrole` : permet d'ajouter un role dans la partie actuelle (la partie doit être en configuration) \n`*lg removerole` : permet de retirer un role dans la partie actuelle (la partie doit être en configuration) \n`*lg seerole` : permet de voir les roles configurées \n`*lg clearrole` : permet de reset les roles")
+	.addField("play","`*lg play` : permet de démarrer la partie");
 
 
   					message.channel.send(embed);
@@ -317,6 +359,16 @@ client.on('message', async message => {
 							message.reply("la partie n'est plus en configuration.");
 							return;
 						}
+					}else if(args[1] == "clearrole") {
+						if(state == "wait") {
+							role = []
+							message.reply("Les rôles ont bien été réinitialisés.");
+							return;
+						}else {
+							message.reply("la partie n'est plus en configuration.");
+							return;
+						}
+
 					}else if(args[1] == "play") {
 						if(state == "wait") {
 							if(role.length != players.length) {
