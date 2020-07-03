@@ -83,6 +83,7 @@ normal = {
             "maire": "Le village à besoin d'un maire. Vous pouvez voter avec la commande `*lg vote [nom_du_joueur]`. Vous pouvez aussi faire `*lg vote nobody` pour ne voter pour personne. Quand tout le monde aura votés, la personne désigné à la majorité sera élu.",
             "mort-village": "Le village va maintenant pouvoir voter pour pendre quelqu'un avec la commande `*lg vote [nom_du_joueur]`. Vous pouvez aussi faire `*lg vote nobody` pour ne voter pour personne. Quand tout le monde aura votés, la personne désigné à la majorité mourra.",
             "mort": "Le joueur {0} est mort. Il était {1}",
+            "mort-maire": "Le maire est mort, il va pouvoir désigner son successeur avec la commande `*lg choose [nom_du_joueur]`",
             "mort-love": "Dans son imense chagrin, {0} a rejoint la tombe. Il était {1}. Ses derniers mot furent : \"Ce n'est pas gay, c'est de la Bromance\"",
         },
         "victoire": {
@@ -1026,23 +1027,43 @@ client.on('message', async message => {
 											verif(message);
 										}
 									}
-							});
-							enfantsauvage.then((value) => {
-									if(message.channel.id == value.id) {
-										players.forEach(function(item, index, array) {
-											if(item.username == pll && pll != message.author.username) {
-												modele = index;
-												message.author.send(theme["messages"]["pouvoir"]["enfant-sauvage"].replace("{0}", item.username));
-												message.channel.updateOverwrite(message.author.id, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
-												verif(message);
-                        nextt(message, enfantsauvage);
-												return;
-											}
-										});
-									}
-							});
-							}
-						}
+							  });
+							  enfantsauvage.then((value) => {
+								  	if(message.channel.id == value.id) {
+									  	players.forEach(function(item, index, array) {
+										  	if(item.username == pll && pll != message.author.username) {
+											  	modele = index;
+												  message.author.send(theme["messages"]["pouvoir"]["enfant-sauvage"].replace("{0}", item.username));
+												  message.channel.updateOverwrite(message.author.id, { VIEW_CHANNEL: false, SEND_MESSAGES: false });
+										  		verif(message);
+                          nextt(message, enfantsauvage);
+										  		return;
+										  	}
+							  			});
+							  		}
+					  		});
+              }else {
+                village.then((value) => {
+                  if(message.channel.id == value.id && waitmaire == true) {
+                    players.forEach(function(item, index, array) {
+                      if(item.id == message.author.id) {
+                        if(maire.id == item.id) {
+                          players.forEach(function(item2, index2, array2) {
+                            if(item2.username == pll) {
+                              waitmaire = false;
+                              maire = item2
+                              value.updateOverwrite(message.author.id, { SEND_MESSAGES: false });
+                              dayy(message)
+                              return;
+                            }
+                          });
+                        }
+                      }
+                    });
+                  }
+                });
+              }
+					  }
 
 
 
@@ -1710,78 +1731,84 @@ function dayy(message) {
   if(a == true) {
     return;
   }
-	if(chasse == true) {
-		waitchasse = true;
-		chasse = false;
-		village.then((value) => {
-			value.send(theme["messages"]["misc"]["chasseur"])
-		});
-	}else {
-		players.forEach(function(item, index, array) {
-			if(role[index] == "dictateur") {
-				vie2 = vie[index]
-			}
-		});
-		//console.log(vie2)
-		if(coup_etat == true && vie2 == true) {
-			village.then((value) => {
-				actif_coup_etat = true;
-				coup_etat = false
-				players.forEach(function(item, index, array) {
-					if(role[index] == "dictateur") {
-						value.send(theme["messages"]["misc"]["dictateur"].replace("{0}", item.username))
-					}
-				});
+  if(waitmaire == true) {
+    village.then((value) => {
+      value.send(theme["messages"]["misc"]["mort-maire"])
+    });
+  }else {
+  	if(chasse == true) {
+  		waitchasse = true;
+  		chasse = false;
+  		village.then((value) => {
+  			value.send(theme["messages"]["misc"]["chasseur"])
+  		});
+  	}else {
+  		players.forEach(function(item, index, array) {
+  			if(role[index] == "dictateur") {
+  				vie2 = vie[index]
+  			}
+  		});
+  		//console.log(vie2)
+  		if(coup_etat == true && vie2 == true) {
+  			village.then((value) => {
+  				actif_coup_etat = true;
+  				coup_etat = false
+  				players.forEach(function(item, index, array) {
+  					if(role[index] == "dictateur") {
+  						value.send(theme["messages"]["misc"]["dictateur"].replace("{0}", item.username))
+  					}
+  				});
 
-			});
-		}else {
-			if(dictacible != null) {
-				cycle = "night"
-				setcycle(message)
-        a = eend(message)
-        if(a == true) {
-          return;
-        }else {
-					village.then((value) => {
-						value.send(theme["messages"]["misc"]["nuit"])
-					});
-				}
-			}else {
-				if(maire == null && vote_maire == false) {
-					village.then((value) => {
-						value.send(theme["messages"]["misc"]["maire"])
-					});
-					vote_maire = true;
-				}else {
-					if(vote_mort == false) {
-						resetvote();
-						village.then((value) => {
-							value.send(theme["messages"]["misc"]["mort-village"])
-						});
-						vote_mort = true
-					}else {
-						resetvote();
-						cycle = "night"
-						setcycle(message)
-            a = eend(message)
-            if(a == true) {
-              return;
-            }else {
-							village.then((value) => {
-								value.send(theme["messages"]["misc"]["nuit"])
-							});
-						}
-					}
-				}
-			}
-		}
-	}
+  			});
+  		}else {
+  			if(dictacible != null) {
+  				cycle = "night"
+  				setcycle(message)
+          a = eend(message)
+          if(a == true) {
+            return;
+          }else {
+  					village.then((value) => {
+  						value.send(theme["messages"]["misc"]["nuit"])
+  					});
+  				}
+  			}else {
+  				if(maire == null && vote_maire == false) {
+  					village.then((value) => {
+  						value.send(theme["messages"]["misc"]["maire"])
+  					});
+  					vote_maire = true;
+  				}else {
+  					if(vote_mort == false) {
+  						resetvote();
+  						village.then((value) => {
+  							value.send(theme["messages"]["misc"]["mort-village"])
+  						});
+  						vote_mort = true
+  					}else {
+  						resetvote();
+  						cycle = "night"
+  						setcycle(message)
+              a = eend(message)
+              if(a == true) {
+                return;
+              }else {
+  							village.then((value) => {
+  								value.send(theme["messages"]["misc"]["nuit"])
+  							});
+  						}
+  					}
+  				}
+  			}
+  		}
+  	}
+  }
 
 }
 
 function mort(user, statee) {
   if(maire != null && maire.id == user.id) {
-    maire = null
+    waitmaire = true
   }
 
 	if(statee == 0) {
@@ -1823,7 +1850,7 @@ function mort(user, statee) {
       }
 		}
 	});
-	if(chasse == true) {
+	if(chasse == true || waitmaire == true) {
 		village.then((value3) => {
 			necromancien.then((value2) => {
 				salon.forEach(function(item, index, array) {
