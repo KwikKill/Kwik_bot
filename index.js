@@ -1495,7 +1495,9 @@ client.on('message', async message => {
 				}
 
 				return;
-			}
+			}else {
+        message.channel.send("Le serveur n'est pas un serveur validé")
+      }
     }
 	if(state == "on") {
 		loupgarou.then((value) => {
