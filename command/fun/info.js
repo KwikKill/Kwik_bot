@@ -1,11 +1,11 @@
-const { Client, RichEmbed } = require('discord.js');
+const { Client, MessageEmbed } = require('discord.js');
 function info(message) {
 
   try{
 
   if(!message.mentions.users.size) {
 
-    const embed = new RichEmbed()
+    const embed = new MessageEmbed()
     .setTitle('vos stats :')
     .setColor(0xffe402)
     .setThumbnail(message.author.avatarURL)
