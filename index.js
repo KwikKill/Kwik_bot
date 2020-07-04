@@ -63,7 +63,7 @@ normal = {
             "potion-mort-true": "Vous n'avez pas utilisé votre potion de mort",
             "potion-mort-false": "Vous avez utilisé votre potion de mort",
             "lg-kill": "Les loup garou ont fait leurs choix, {0} est mort.",
-            "lgb-kill": "Vous avez décidé de tuer {0}."
+            "lgb-kill": "Vous avez décidé de tuer {0}.",
             "vote-mort": "Vous avez voté contre {0}.",
             "vote-maire": "Vous avez voté pour {0}.",
             "sorcière-kill": "Vous avez tué {0}.",
