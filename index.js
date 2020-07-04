@@ -324,7 +324,7 @@ client.on('message', async message => {
 							return
 						}
 					}else if(args[1] == "abort") {
-						message.reply("la partie à bien été abrégé.");
+						message.reply("la partie à bien été abrégée.");
 						salon.forEach(function(item, index, array) {
 							item.then((value) => {
   							value.delete('abort');
@@ -577,6 +577,9 @@ client.on('message', async message => {
       							role.push(item2);
       							message.channel.send("le rôle " + item2 + " a bien été ajouté");
       							if(item2 == "loup-garou") {
+      								nbr_loup += 1;
+      							}
+                    if(item2 == "loup-blanc") {
       								nbr_loup += 1;
       							}
       							return;
@@ -1054,12 +1057,13 @@ client.on('message', async message => {
                   if(message.channel.id == value.id && waitmaire == true) {
                     players.forEach(function(item, index, array) {
                       if(item.id == message.author.id) {
-                        if(maire.id == item.id) {
+                        if(maire != null && maire.id == item.id) {
                           players.forEach(function(item2, index2, array2) {
                             if(item2.username.toLowerCase() == pll) {
                               waitmaire = false;
                               maire = item2
                               value.updateOverwrite(message.author.id, { SEND_MESSAGES: false });
+                              message.channel.send("{0} est maintenant maire".replace("{0}", item2.username))
                               dayy(message)
                               return;
                             }
@@ -1140,14 +1144,21 @@ client.on('message', async message => {
 								garde.then((value) => {
 									if(message.channel.id == value.id) {
 										players.forEach(function(item, index, array) {
-											if(item.username.toLowerCase() == pll && pll != lastprotect) {
-												protect = pll
-												lastprotect = protect
-												value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
-												message.channel.send(theme["messages"]["pouvoir"]["protect"].replace("{0}", item.username))
-                        nextt(message, garde);
-												verif(message)
-
+											if(item.username.toLowerCase() == pll) {
+                        if(pll != lastprotect) {
+                          if(vie[index] == true) {
+    												protect = pll
+    												lastprotect = protect
+    												value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
+    												message.channel.send(theme["messages"]["pouvoir"]["protect"].replace("{0}", item.username))
+                            nextt(message, garde);
+    												verif(message)
+                          }else {
+                            message.channel.send("vous ne pouvez pas protéger un mort")
+                          }
+                        }else {
+                          	message.channel.send("vous ne pouvez pas protéger 2 fois la même personne")
+                        }
 											}
 										});
 									}
@@ -1639,7 +1650,16 @@ function verif(message) {
 
 	next = true;
 	role.forEach(function(item, index, array) {
-		if(item == "chien-loup") {
+  if(item == "loup-blanc") {
+    if(vie[index] == true) {
+      if(day % 2 == 1 && lgbcible == null) {
+        console.log('a')
+        next = false
+      }//else if(day % 2 != 1) {
+      //  next = false
+      //}
+    }
+  }else if(item == "chien-loup") {
 			if(chlg == null) {
 				if(vie[index] == true) {
 					next = false
@@ -1697,6 +1717,7 @@ function verif(message) {
       return;
     }else {
 			resetvote();
+      vote_mort
 			if(dictacible != null) {
 				players.forEach(function(item, index, array) {
 					if(item.id == dictacible.id) {
@@ -1715,7 +1736,7 @@ function verif(message) {
 				});
 			}
       if(lgbcible != null) {
-        mort(lgbcible)
+        mort(lgbcible, 0)
       }
 			if(soso == "kill") {
 				mort(sosocible, 0)
@@ -1865,9 +1886,6 @@ function mort(user, statee) {
 			if(rolemort == "chasseur") {
 				chasse = true;
 			}
-      if(maire != null && maire.id == item.id) {
-        maire = null
-      }
       if(modele != null && modele.id == item.id) {
         nbr_loup += 1
         enfsauvlg = true
@@ -2279,7 +2297,7 @@ function init(message, ch) {
     });
   }else if(ch == pyromane) {
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && day % 2 == 0) {
+      if(item == "loup-blanc" && day % 2 == 1) {
         if(vie[index] == true) {
           ch.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
@@ -2360,7 +2378,7 @@ function init(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && day % 2 == 0) {
+      if(item == "loup-blanc" && day % 2 == 1) {
         if(vie[index] == true) {
           ch.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
@@ -2451,7 +2469,7 @@ function init(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && day % 2 == 0) {
+      if(item == "loup-blanc" && day % 2 == 1) {
         if(vie[index] == true) {
           ch.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
@@ -2589,7 +2607,7 @@ function nextt(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && all == false && day % 2 == 0) {
+      if(item == "loup-blanc" && all == false && day % 2 == 1) {
         if(vie[index] == true) {
           loupblanc.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: true });
@@ -2678,7 +2696,7 @@ function nextt(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && all == false && day % 2 == 0) {
+      if(item == "loup-blanc" && all == false && day % 2 == 1) {
         if(vie[index] == true) {
           loupblanc.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: true });
@@ -2778,7 +2796,7 @@ function nextt(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && all == false && day % 2 == 0) {
+      if(item == "loup-blanc" && all == false && day % 2 == 1) {
         if(vie[index] == true) {
           loupblanc.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: true });
@@ -2856,7 +2874,7 @@ function nextt(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && all == false && day % 2 == 0) {
+      if(item == "loup-blanc" && all == false && day % 2 == 1) {
         if(vie[index] == true) {
           loupblanc.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: true });
@@ -2923,7 +2941,7 @@ function nextt(message, ch) {
       }
     });
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && all == false && day % 2 == 0) {
+      if(item == "loup-blanc" && all == false && day % 2 == 1) {
         if(vie[index] == true) {
           loupblanc.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: true });
@@ -2979,7 +2997,8 @@ function nextt(message, ch) {
     });
   }else if(ch == loupgarou) {
     role.forEach(function(item, index, array) {
-      if(item == "loup-blanc" && all == false && day % 2 == 0) {
+      if(item == "loup-blanc" && all == false && day % 2 == 1) {
+        console.log(day % 2 == 1)
         if(vie[index] == true) {
           loupblanc.then((value) => {
             value.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: true });
