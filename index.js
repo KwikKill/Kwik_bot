@@ -38,7 +38,7 @@ normal = {
             "voyante": "Vous êtes la voyante. Vous pouvez chaque nuit voir le rôle d'un joueur. Pour cela, executez la commande `*lg look [nom_du_joueur]`.",
             "sorcière": "Vous êtes la sorcière. Vous pouvez, une fois par partie, empêcher la mort d'un joueur avec la commande `*lg heal` ou en tuer un autre avec la commande `*lg kill [nom_du_joueur]`. Pour ne rien faire, faites la commande `*lg nothing`. Pour voir les potions qu'il vous reste, vous pouvez faire `*lg potion`. Vous jouez après les loup garou.",
             "loup-blanc": "Vous êtes le loup blanc. Vous votez avec les loup garou mais vous gagnez seul. Vous pouvez voter une fois tout les deux tours dans ce salon avec la commande `*lg kill [nom_du_joueur]`.",
-            "pyromane": "Vous êtes le pyromane. Vous gagnez seul. Chaque nuits vous avez le choix entre enduire deux joueur d'essences avec la commande `*lg oil [nom_du_joueur] [nom_du_joueur]` ou allumer tout les joueurs enduits d'essence avec la commande `*lg fire`.",
+            "pyromane": "Vous êtes le pyromane. Vous gagnez seul. Chaque nuits vous avez le choix entre enduire deux joueur d'essences avec la commande `*lg oil [nom_du_joueur] [nom_du_joueur]` ou un seul avec la commande `*lg oil [nom_du_joueur]` ou personne avec la commande `*lg oil` ou allumer tout les joueurs enduits d'essence avec la commande `*lg fire`.",
             "garde": "Vous êtes le garde. Chaque nuit vous pouvez protéger un joueur avec la commande `*lg protect [nom_du_joueur]`.",
             "nécromancien": "Vous êtes le nécromancien. Chaque nuit, le gémissement des mort vous est transmis dans ce salon.",
             "amoureux": "Vous êtes amoureux. Si vous êtes dans la même équipe, vous devez gagner avec elle. Mais si vous n'êtes pas dans la même équipe, vous devez gagner seuls.",
@@ -53,6 +53,9 @@ normal = {
             "enfant-sauvage": "Vous avez choisie {0} comme modèle.",
             "cupidon": "Vous avez bien mis {0} et {1} ensemble.",
             "dmlove": ":hearts: Vous êtes en couple avec {0} qui est {1} :hearts:",
+            "pyromane": "vous avez enduit d'huile {0} et {1}.",
+            "oil": "vous avez été enduit d'essence.",
+            "burn": "vous avez décidé d'allumer le feu (RIP johnny)",
             "voyante": "Le joueur {0} est {1}.",
             "protect": "Vous avez protégé {0}.",
             "coup-état": "Vous avez décidé de faire un coup d'état.",
@@ -241,6 +244,7 @@ vie = []; //used
 votes = []; // used
 chlg = null // used
 oil = [];
+pyro_act = null;
 modele = null; // used
 enfsauvlg = false // used
 potion_vie = true; //used
@@ -1095,6 +1099,7 @@ client.on('message', async message => {
                             }
                           });
                           plll = plll.trim()
+                          plll += plll.toLowerCase()
 													players.forEach(function(item2, index2, array2) {
 														if(item2.username.toLowerCase() == plll && plll != args[2].toLowerCase()) {
 															amoureux1 = item.username;
@@ -1543,7 +1548,89 @@ client.on('message', async message => {
 									});
 								}
 							}
-						}
+						}else if(args[1] == "oil") {
+              pyromane.then((value) => {
+                if(message.channel.id == value.id) {
+                  plll = ""
+                  args.forEach(function(item3, index3, array3) {
+                    if(index3 > 2) {
+                      plll += item3
+                    }
+                    if(index3 < args.length) {
+                      plll += " "
+                    }
+                  });
+                  plll = plll.trim()
+                  plll += plll.toLowerCase()
+                  if(pll != "") {
+                    players.forEach(function(item, index, array) {
+                      if(item.username.toLowerCase() == args[2].toLowerCase()) {
+                        players.forEach(function(item2, index2, array2) {
+                          if(item2.username.toLowerCase() == plll && plll != args[2].toLowerCase()) {
+                            a = false
+                            oil.forEach(function(item4, index4, array4) {
+                              if(item4.id == item.id) {
+                                a = true
+                              }
+                              if(item4.id == item2.id) {
+                                a = true
+                              }
+                            });
+                            if(a == false) {
+                              pyro_act = "oil";
+                              oil.push(item);
+                              oil.push(item2);
+                              message.channel.send(theme["messages"]["pouvoir"]["pyromane"].replace("{0}", item).replace("{1}", item2))
+                              message.channel.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
+                              item.send(theme["messages"]["pouvoir"]["oil"])
+                              item2.send(theme["messages"]["pouvoir"]["oil"])
+                              nextt(message, pyromane);
+                              verif(message)
+                            }
+                          }
+                        });
+                      }
+                    });
+                  }else if(pll != "") {
+                    players.forEach(function(item, index, array) {
+                      if(item.username.toLowerCase() == pll.toLowerCase()) {
+                            a = false
+                            oil.forEach(function(item4, index4, array4) {
+                              if(item4.id == item.id) {
+                                a = true
+                              }
+                            });
+                            if(a == false) {
+                              pyro_act = "oil";
+                              oil.push(item);
+                              message.channel.send(theme["messages"]["pouvoir"]["pyromane"].replace("{0}", item).replace("{1}", "personne"))
+                              message.channel.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
+                              item.send(theme["messages"]["pouvoir"]["oil"])
+                              nextt(message, pyromane);
+                              verif(message)
+                            }
+                      }
+                    });
+                  }else {
+                    pyro_act = "oil";
+                    message.channel.send(theme["messages"]["pouvoir"]["pyromane"].replace("{0}", "personne").replace("{1}", "personne"))
+                    message.channel.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
+                    nextt(message, pyromane);
+                    verif(message)
+                  }
+                }
+              });
+            }else if(args[1] == "fire") {
+              pyromane.then((value) => {
+                if(message.channel.id == value.id) {
+                  pyro_act = "burn";
+                  message.channel.send(theme["messages"]["pouvoir"]["burn"])
+                  message.channel.updateOverwrite(message.channel.guild.roles.everyone, { SEND_MESSAGES: false });
+                  nextt(message, pyromane);
+                  verif(message)
+                }
+              });
+            }
 
 
 				}catch(err) {
@@ -1611,15 +1698,24 @@ function prefixVerifier(message) {
 
 }
 
-function randomize(tab) {
-    var i, j, tmp;
-    for (i = tab.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1));
-        tmp = tab[i];
-        tab[i] = tab[j];
-        tab[j] = tmp;
-    }
-    return tab;
+function randomize(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+
+    // swap elements array[i] and array[j]
+    // we use "destructuring assignment" syntax to achieve that
+    // you'll find more details about that syntax in later chapters
+    // same can be written as:
+    // let t = array[i]; array[i] = array[j]; array[j] = t
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function ppyyrroo(message) {
+  oil.forEach(function(item, index, array) {
+    mort(item, 0)
+  });
+  oil = []
 }
 
 function verif(message) {
@@ -1671,7 +1767,13 @@ function verif(message) {
 					next = false
 				}
 			}
-		}else if(item == "cupidon") {
+		}else if(item == "pyromane") {
+      if(vie[index] == true) {
+        if(pyro_act == null) {
+          next = false
+        }
+      }
+    }else if(item == "cupidon") {
 			if(amoureux1 == null || amoureux2 == null) {
 				if(vie[index] == true) {
 					next = false
@@ -1743,6 +1845,9 @@ function verif(message) {
 			}else if(soso == "heal") {
 				lgmort = null
 			}
+      if(pyro_act == "burn") {
+        ppyyrroo(message)
+      }
 			if(lgmort != null) {
 				if(protect == lgmort.username.toLowerCase()) {
 
@@ -1951,6 +2056,8 @@ function setcycle(message) {
 		protect = null;
 		day = day + 1;
 		lgmort = null;
+    pyro_act = null;
+    lgbcible = null;
 	}
 
 	ccycle = (cycle == "night")
