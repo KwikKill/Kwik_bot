@@ -334,54 +334,63 @@ client.on('message', async message => {
   							value.delete('abort');
 							});
 						});
-						vote_nothing = []; // used
-						votemort = false; // used
-						vote_mort = false; // used
-						vote_maire = false; // used
-						waitchasse = false; // used
-						day = 0 // used
-						state = "off"; // used
-						cycle = "night" // used
-						village = null; // fait
-						loupgarou = null; // fait
-						petitefille = null; // fait
-						voyante = null; // fait
-						sorciere = null; // fait
-						loupblanc = null;
-						pyromane = null;
-						garde = null; // fait
-						necromancien = null;
-						amoureux = null; // fait
-						chienloup = null; // fait
-						enfantsauvage = null; // fait
-						cupidon = null; // fait
-						dictateur = null; // fait
-						nbr_loup = 0; // used
+            salonbase = null;
+            com = null;
+            maire_bet = []; // used
+            wait_maire = false //used
+            vote_nothing = []; // used
+            votemort = false; // used
+            vote_mort = false; // used
+            vote_maire = false; // used
+            waitchasse = false; // used
+            day = 0 // used
+            state = "off"; // used
+            cycle = "night" // used
 
-						actif_coup_etat = false; // used
-						maire = null; // used
-						dictacible = null; //used
-						vovo = false; //used
-						chasse = false; // used
-						amoureux1 = null; // used
-						amoureux2 = null; // used
-						protect = null; // used
-						lastprotect = null; // used
-						coup_etat = null; // used
-						coup_etat_used = false // used
-						lgmort = null; // used
-						soso = "null"; // used
-						sosocible = null; // used
-						salon = []; // used
-						players = []; // used
-						role = []; // used
-						vie = []; //used
-						votes = []; // used
-						chlg = null // used
-						oil = [];
-						modele = null; // used
-						potion_vie = true; //used
-						potion_mort = true; //used
+            village = null; // fait
+            loupgarou = null; // fait
+            petitefille = null; // fait
+            voyante = null; // fait
+            sorciere = null; // fait
+            loupblanc = null;
+            pyromane = null;
+            garde = null; // fait
+            necromancien = null;
+            amoureux = null; // fait
+            chienloup = null; // fait
+            enfantsauvage = null; // fait
+            cupidon = null; // fait
+            dictateur = null; // fait
+            nbr_loup = 0; // used
+
+            waitmaire = false;
+            actif_coup_etat = false; // used
+            maire = null; // used
+            dictacible = null; //used
+            vovo = false; //used
+            chasse = false; // used
+            amoureux1 = null; // used
+            amoureux2 = null; // used
+            protect = null; // used
+            lastprotect = null; // used
+            coup_etat = null; // used
+            coup_etat_used = false // used
+            lgmort = null; // used
+            lgbcible = null;
+            soso = "null"; // used
+            sosocible = null; // used
+            salon = []; // used
+            players = []; // used
+            role = []; // used
+            vie = []; //used
+            votes = []; // used
+            chlg = null // used
+            oil = [];
+            pyro_act = null;
+            modele = null; // used
+            enfsauvlg = false // used
+            potion_vie = true; //used
+            potion_mort = true; //used
 						return
 					}else if(args[1] == "state") {
 						if(state == "off") {
@@ -1528,7 +1537,7 @@ client.on('message', async message => {
                               }
 
 														}else {
-															maire = players[ind]
+															maire = players[ind[0]]
 															message.channel.send(theme["messages"]["pouvoir"]["village-maire"].replace("{0}", maire.username))
 															dayy(message)
 														}
@@ -1668,6 +1677,16 @@ client.on('message', async message => {
 
 client.on('guildMemberAdd', member => {
   if(!member.guild) return undefined;
+
+  try {
+    let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+    if (welcome[member.guild.id].channel) {
+      var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
+
+      if (!welcomechannel) return undefined;
+      welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
+    }
+  }catch(err) {}
 });
 
 client.on('channelCreate', channel => {
