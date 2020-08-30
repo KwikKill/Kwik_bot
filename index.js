@@ -301,6 +301,15 @@ client.on('message', async message => {
 
   	}
 
+    if(message.content.startsWith(prefixVerifier(message) + "welcome")) {
+
+      const welcome = require('./command/moderation/welcome.js');
+      welcome(message);
+
+      return;
+
+    }
+
 		if(message.content.startsWith(prefixVerifier(message) + 'lg')) {
 			if(message.channel.guild != null && message.channel.guild.id == "717475578176864277") {
         pll = ""
@@ -1653,6 +1662,7 @@ client.on('message', async message => {
         message.channel.send("Le serveur n'est pas un serveur validé")
       }
     }
+
 	if(state == "on") {
 		loupgarou.then((value) => {
 			if(message.channel.id == value.id) {
@@ -1671,6 +1681,8 @@ client.on('message', async message => {
 
 		});
 	}
+
+
 
 
 });
