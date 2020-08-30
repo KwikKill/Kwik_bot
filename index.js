@@ -1688,6 +1688,7 @@ client.on('message', async message => {
 });
 
 client.on('guildMemberAdd', member => {
+  console.log("a")
   if(!member.guild) return undefined;
 
   try {
@@ -1698,7 +1699,9 @@ client.on('guildMemberAdd', member => {
       if (!welcomechannel) return undefined;
       welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
     }
-  }catch(err) {}
+  }catch(err) {
+    console.log(err);
+  }
 });
 
 client.on('channelCreate', channel => {
