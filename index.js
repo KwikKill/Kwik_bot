@@ -1688,15 +1688,18 @@ client.on('message', async message => {
 });
 
 client.on('guildMemberAdd', member => {
-  console.log("a")
   if(!member.guild) return undefined;
 
   try {
     let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
     if (welcome[member.guild.id].channel) {
+      console.log(welcome[channel.guild.id].channel);
       var welcomechannel  = member.guild.channels.cache.get(channel => channel.id === welcome[channel.guild.id].channel);
 
-      if (!welcomechannel) return undefined;
+      if (!welcomechannel) {
+        console.log("a");
+        return undefined;
+      }
       welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
     }
   }catch(err) {
