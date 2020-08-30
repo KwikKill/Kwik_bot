@@ -1694,7 +1694,7 @@ client.on('guildMemberAdd', member => {
   try {
     let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
     if (welcome[member.guild.id].channel) {
-      var welcomechannel  = member.guild.channels.find(channel => channel.id === welcome[channel.guild.id].channel);
+      var welcomechannel  = message.guild.channels.cache.get(channel => channel.id === welcome[channel.guild.id].channel);
 
       if (!welcomechannel) return undefined;
       welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
