@@ -1693,8 +1693,8 @@ client.on('guildMemberAdd', member => {
   try {
     let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
     if (welcome[member.guild.id].channel) {
-      console.log(welcome[channel.guild.id].channel);
-      var welcomechannel  = member.guild.channels.cache.get(channel => channel.id === welcome[channel.guild.id].channel);
+      console.log(welcome[member.guild.id].channel);
+      var welcomechannel  = member.guild.channels.cache.get(channel => channel.id === welcome[member.guild.id].channel);
 
       if (!welcomechannel) {
         console.log("a");
