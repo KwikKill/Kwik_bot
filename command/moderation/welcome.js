@@ -15,6 +15,7 @@ function welcome(message) {
     let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
 
     if (!args[1]) {
+      console.log("a");
       welcome[message.guild.id] = {
         channel: 0
       };
@@ -32,6 +33,7 @@ function welcome(message) {
             msg += " " + element;
           }
         });
+        console.log(msg);
 
         welcome[message.guild.id] = {
           channel: args[0],
