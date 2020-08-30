@@ -53,6 +53,7 @@ function welcome(message) {
 
 
   }catch(err) {
+    console.log(err)
     if (err.code === 'ENOENT') {
       console.log('fichier existe pas');
 
