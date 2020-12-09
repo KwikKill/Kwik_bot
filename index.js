@@ -1688,7 +1688,6 @@ client.on('message', async message => {
 });
 
 client.on('guildMemberAdd', member => {
-  if(!member.guild) return undefined;
   console.log("a");
 
   try {
