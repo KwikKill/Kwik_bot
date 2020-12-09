@@ -258,6 +258,28 @@ save_votes = []
 
 client.on('warn', console.warn);
 
+client.on('guildMemberAdd', member => {
+  console.log("a");
+
+  try {
+    let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+    console.log(welcome);
+    if (welcome[member.guild.id].channel) {
+      var welcomechannel = member.guild.channels.cache.get(welcome[member.guild.id].channel);
+
+      if (!welcomechannel) {
+	console.log("pas de salon");
+        console.log(welcomechannel);
+        return undefined;
+      }
+      console.log(welcome[member.guild.id].message + ` ${member}`);
+      welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
+    }
+  }catch(err) {
+    console.log(err);
+  }
+});
+
 client.on('error', console.error);
 
 client.on('ready', () => {
@@ -1685,27 +1707,6 @@ client.on('message', async message => {
 
 
 
-});
-
-client.on('guildMemberAdd', member => {
-  console.log("a");
-
-  try {
-    let welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
-    if (welcome[member.guild.id].channel) {
-      var welcomechannel = member.guild.channels.cache.get(welcome[member.guild.id].channel);
-
-      if (!welcomechannel) {
-	console.log("pas de salon");
-        console.log(welcomechannel);
-        return undefined;
-      }
-      console.log(welcome[member.guild.id].message + ` ${member}`);
-      welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
-    }
-  }catch(err) {
-    console.log(err);
-  }
 });
 
 client.on('channelCreate', channel => {
