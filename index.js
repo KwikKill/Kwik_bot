@@ -1696,8 +1696,11 @@ client.on('guildMemberAdd', member => {
       var welcomechannel = member.guild.channels.cache.get(welcome[member.guild.id].channel);
 
       if (!welcomechannel) {
+	console.log("pas de salon");
+        console.log(welcomechannel);
         return undefined;
       }
+      console.log(welcome[member.guild.id].message + ` ${member}`);
       welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
     }
   }catch(err) {
