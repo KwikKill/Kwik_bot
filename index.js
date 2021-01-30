@@ -323,7 +323,7 @@ client.on('message', async message => {
     if(message.content.startsWith(prefixVerifier(message) + "rename")) {
       let can_manage_chans = message.channel.permissionsFor(message.member).has("MANAGE_NICKNAMES", false);
     	console.log(args);
-      if(args.lenght() == 1) {
+      if(args.lenght != 2) {
 	message.reply("Veuillez précissez le pseudo");
 	return;      
       }
@@ -332,7 +332,7 @@ client.on('message', async message => {
           const user = message.mentions.users.first();
           if(user) {
 		
-	      message.guild.members.cache.get(user.id).setNickname(args[0]);
+	      message.guild.members.cache.get(user.id).setNickname(args[1]);
           } else {
 	      message.reply();
           }
