@@ -318,6 +318,29 @@ client.on('message', async message => {
 			return;
 
   	}
+	
+    
+    if(message.content.startsWith(prefixVerifier(message) + "rename")) {
+      let can_manage_chans = message.channel.permissionsFor(message.member).has("MANAGE_NICKNAMES", false);
+    	console.log(args);
+      if(args.lenght() == 1) {
+	message.reply("Veuillez précissez le pseudo");
+	return;      
+      }
+	    
+      if(can_manage_chans) {
+          const user = message.mentions.users.first();
+          if(user) {
+		
+	      message.guild.members.cache.get(user.id).setNickname(args[0]);
+          } else {
+	      message.reply();
+          }
+      }
+
+      return;
+
+    }
 
     if(message.content.startsWith(prefixVerifier(message) + "welcome")) {
 
