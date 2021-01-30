@@ -331,10 +331,10 @@ client.on('message', async message => {
       if(can_manage_chans) {
           const user = message.mentions.users.first();
           if(user) {
-		
+		message.reply("la personne a été rennomé");
 	      message.guild.members.cache.get(user.id).setNickname(args[1]);
           } else {
-	      message.reply();
+	      message.reply("veuillez choisir quelqu'un a rennomer");
           }
       }
 
