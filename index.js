@@ -322,7 +322,7 @@ client.on('message', async message => {
     
     if(message.content.startsWith(prefixVerifier(message) + "rename")) {
       let can_manage_chans = message.channel.permissionsFor(message.member).has("MANAGE_NICKNAMES", false);
-    	console.log(args);
+    	console.log(args.lenght);
       if(args.lenght != 2) {
 	message.reply("Veuillez précissez le pseudo");
 	return;      
