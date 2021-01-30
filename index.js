@@ -322,16 +322,22 @@ client.on('message', async message => {
     
     if(message.content.startsWith(prefixVerifier(message) + "rename")) {
       let can_manage_chans = message.channel.permissionsFor(message.member).has("MANAGE_NICKNAMES", false);
-      if(!args[1]) {
+      if(!args[2]) {
 	message.reply("Veuillez précissez le pseudo");
 	return;      
       }
 	    
       if(can_manage_chans) {
           const user = message.mentions.users.first();
+	  var test = args[2];
+	  args.forEach(function(item, index, array) {
+		  if(index > 2) {
+			  test = test + " " + item
+	     	  }	
+	  })
           if(user) {
-	      message.guild.members.cache.get(user.id).setNickname(args[1]);
-	  	message.reply("la personne a été rennomé. Si ce n'est pas le cas, vérifiez les permissions du bot.");
+	      message.guild.members.cache.get(user.id).setNickname(test);
+	  	message.reply("la personne a été rennomée. Si ce n'est pas le cas, vérifiez les permissions du bot.");
           } else {
 	      message.reply("veuillez choisir quelqu'un a rennomer");
           }
