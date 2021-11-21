@@ -102,10 +102,11 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('messageCreate', async message => {
+  console.log("a")
   //config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json"), "utf8"));
-	if (message.partial) {
-		message = await message.fetch()
-	}
+  if (message.partial) {
+      message = await message.fetch()
+  }
 
   if (message.author.bot) return;
   const args = message.content.split(/ |\n/);
@@ -149,7 +150,6 @@ client.on('guildMemberAdd', member => {
   
 client.on('ready', () => {
     console.log('Le bot est démarré !');
-    console.log('test');
     client.user.setActivity("[insert savun twomp]", { type: 'LISTENING' });
 });
 
