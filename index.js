@@ -102,6 +102,7 @@ client.on('interactionCreate', async interaction => {
 });
 
 client.on('messageCreate', async message => {
+  console.log("a")
   //config = JSON.parse(fs.readFileSync(path.join(__dirname, "config.json"), "utf8"));
   if (message.partial) {
       message = await message.fetch()
