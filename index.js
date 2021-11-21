@@ -279,7 +279,6 @@ client.on('guildMemberAdd', member => {
 client.on('error', console.error);
 
 client.on('ready', () => {
-    console.log("test");
     console.log('Le bot est démarré !');
     client.user.setActivity("[insert savun twomp]", { type: 'LISTENING' });
 
