@@ -5,7 +5,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'rename',
 	group: 'util',
-	description: "Permet de rennomer un membre",
+	description: "Permet de renommer un membre",
 	permission: "modo",
 	hidden: false,
 	place: "guild",
