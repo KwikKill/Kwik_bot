@@ -149,7 +149,7 @@ client.on('guildMemberAdd', member => {
 });
   
 client.on('ready', () => {
-    const discordJSVersion = packageJSON.dependencies["discord.js"];
+    discordJSVersion = packageJSON.dependencies["discord.js"];
     console.log(discordJSVersion);
     console.log('Le bot est démarré !');
     client.user.setActivity("[insert savun twomp]", { type: 'LISTENING' });
