@@ -5,6 +5,7 @@ const path = require('path');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
+const discordJSVersion = packageJSON.dependencies["discord.js"];
 
 // -------------- Commandes -----------------
 client.commands = new Collection();
@@ -149,7 +150,6 @@ client.on('guildMemberAdd', member => {
 });
   
 client.on('ready', () => {
-    discordJSVersion = packageJSON.dependencies["discord.js"];
     console.log(discordJSVersion);
     console.log('Le bot est démarré !');
     client.user.setActivity("[insert savun twomp]", { type: 'LISTENING' });
