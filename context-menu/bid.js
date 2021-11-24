@@ -10,7 +10,7 @@ module.exports = {
     async run(interaction, client) {
         message = interaction.options.getMessage("message")
         if(message.channel.name == "mudatrade") {
-            if(message.embeds != []) {
+            if(message.embeds[0] != undefined) {
                 if(message.embeds[0].footer.text.startsWith("Appartient à " + interaction.member.user.username)) {
                     message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name}).then(thread =>{
                         first = thread.send(message.embeds[0].author.name + " à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis.")
