@@ -19,8 +19,12 @@ module.exports = {
                         })
                         interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
                     })
-                }
-            }
+                }else {
+		    interaction.reply({content: "Vous ne pouvez pas démarrer d'enchère à partir de ce message.", ephemeral: true})
+	    	}
+            }else {
+		interaction.reply({content: "Vous ne pouvez pas démarrer d'enchère à partir de ce message.", ephemeral: true})
+	    }
         }else {
             interaction.reply({content: "Vous devez être dans le salon #mudatrade pour utiliser cette commande.", ephemeral: true})
         }
