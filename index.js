@@ -14,6 +14,14 @@ client.context_menu = new Collection();
 client.groups = new Collection();
 client.owners = config["owner"]
 
+client.listeners = new Collection();
+
+const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
+for (const file of ListenerFiles) {
+	const listener = require(`./listeners/${file}`);
+	client.listeners.set(listener.name, listener);
+}
+
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
@@ -55,6 +63,12 @@ if (!String.prototype.format) {
 }
 
 // -------------- Events -----------------
+client.listeners.forEach((item, i) => {
+  client.on(item.type, async (args1, args2, args3, args4) => {
+    item.run(client, args1, args2, args3, args4)
+  })
+});
+
 client.on('warn', console.warn);
 
 client.on('interactionCreate', async interaction => {
