@@ -6,7 +6,7 @@ module.exports = {
     name: 'end',
     group: 'mudae',
     description: "Commande de fin d'enchère",
-    permission: "owner",
+    permission: "none",
     hidden: false,
     help: [
         {
