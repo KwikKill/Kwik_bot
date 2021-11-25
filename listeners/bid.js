@@ -27,7 +27,7 @@ module.exports = {
                     args.channel.messages.fetch().then(async messages => {
                         mssg = messages.filter(message => message.author.id == client.user.id && message.type != 'THREAD_STARTER_MESSAGE' && message.embeds[0] != undefined).first()
                         if(mssg) {
-				console.log(parseInt(mssg.embeds[0].description.split(" ")[3]) + parseInt(prix_min))
+				console.log(parseInt(mssg.embeds[0].description.split(" ")[3]), prix_min)
                             if(parseInt(mssg.embeds[0].description.split(" ")[3]) + parseInt(prix_min) < price) {
                                 let embed = new MessageEmbed()
                                 .setTitle("Enchère")
