@@ -37,7 +37,7 @@ module.exports = {
                         msssg = content.slice(0, 45).join(" ")
                         msssg += " " + somme
                         msg.edit(msssg)
-                        interaction.channel.send("enchère minimum au dessus du dernière prix définie à " + somme)
+                        interaction.channel.send("enchère minimum au dessus du dernier prix définie à " + somme)
                     }
                 }
             }
