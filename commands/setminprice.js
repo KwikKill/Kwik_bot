@@ -34,7 +34,7 @@ module.exports = {
                         msg = msg.last()
                         prix_min = msg.content.split(" ")[44]
                         content = msg.content.split(" ")
-                        msssg = content.slice(0, 44).join(" ")
+                        msssg = content.slice(0, 43).join(" ")
                         msssg += " " + somme
                         msg.edit(msssg)
                         interaction.channel.send("enchère minimum au dessus du dernière prix définie à" + somme)
