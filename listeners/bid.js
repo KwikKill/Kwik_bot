@@ -27,7 +27,7 @@ module.exports = {
                     args.channel.messages.fetch().then(async messages => {
                         mssg = messages.filter(message => message.author.id == client.user.id && message.type != 'THREAD_STARTER_MESSAGE' && message.embeds[0] != undefined).first()
                         if(mssg) {
-                            if(parseInt(mssg.embeds[0].description.split(" ")[3]) + prix_min < price) {
+                            if(parseInt(mssg.embeds[0].description.split(" ")[3]) + parseInt(prix_min) < price) {
                                 let embed = new MessageEmbed()
                                 .setTitle("Enchère")
                                 .setColor("#00FF00")
