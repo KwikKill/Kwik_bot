@@ -11,7 +11,7 @@ module.exports = {
     hidden: false,
     help: [
         {
-            "name": "- __prêt <@user> <somme> <interet>__ :",
+            "name": "- __pret <@user> <somme> <interet>__ :",
             "value": "Permet de génerer un contrat d'emprunt."
           }
     ],
