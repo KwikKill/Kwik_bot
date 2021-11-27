@@ -11,7 +11,7 @@ module.exports = {
     hidden: false,
     help: [
         {
-            "name": "- __pret <@user> <somme> <interet>__ :",
+            "name": "- __prêt <@user> <somme> <interet>__ :",
             "value": "Permet de génerer un contrat d'emprunt."
           }
     ],
@@ -37,7 +37,6 @@ module.exports = {
         },
     ],
     async run(message, client, interaction=undefined, mssg=true) {
-	    console.log("a")
         if(interaction == undefined) return;
         if(interaction.channel.name != "muda-industry") return;
 
@@ -122,11 +121,19 @@ module.exports = {
             + " : répondez au message par « lu et approuvé »)"
         )
             
-        path2 = __dirname + "/../contrats/contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf"
+        //path2 = __dirname + "/../contrats/contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf"
 
-        const doc = new PDFDocument;
+        const doc = new PDFDocument();
 
-        doc.pipe(fs.createWriteStream(path2));
+        let buffers = [];
+        doc.on('data', buffers.push.bind(buffers));
+        doc.on('end', () => {
+
+            let pdfData = Buffer.concat(buffers);
+            interaction.reply({content: "<@" + user.user.id + ">, voici votre contrat d'emprunt de " + somme + " kakera à " + interet + "% d'interêts. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.", files: [  { attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" } ]});
+
+
+        });
 
         doc
         .fontSize(11)
@@ -185,12 +192,5 @@ module.exports = {
 
         await doc.end();
 
-        await interaction.reply({content: "<@" + user.user.id + ">, voici votre contrat d'emprunt de " + somme + " kakera à " + interet + "% d'interêts. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.", files: [path2]});
-
-        try {
-            fs.unlinkSync(path2)
-        } catch(err) {
-            console.error(err)
-        }
   }
 }
