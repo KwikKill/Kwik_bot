@@ -37,6 +37,7 @@ module.exports = {
         },
     ],
     async run(message, client, interaction=undefined, mssg=true) {
+	    console.log("a")
         if(interaction == undefined) return;
         if(interaction.channel.name != "muda-industry") return;
 
