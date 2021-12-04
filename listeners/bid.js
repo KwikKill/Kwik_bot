@@ -21,7 +21,7 @@ module.exports = {
 
                     msg = await args.channel.messages.fetchPinned()
                     msg = msg.last()
-                    prix_min = msg.content.split(" ")[44]
+                    prix_min = msg.content.split(" ")[45]
 			
 		console.log(prix_min)
 
