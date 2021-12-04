@@ -22,8 +22,6 @@ module.exports = {
                     msg = await args.channel.messages.fetchPinned()
                     msg = msg.last()
                     prix_min = msg.content.split(" ")[45]
-			
-		console.log(prix_min)
 
                     args.channel.messages.fetch().then(async messages => {
                         mssg = messages.filter(message => message.author.id == client.user.id && message.type != 'THREAD_STARTER_MESSAGE' && message.embeds[0] != undefined).first()
