@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require('path');
 const { MessageEmbed, Interaction } = require('discord.js');
-const { channel } = require("diagnostics_channel");
 
 module.exports = {
     name: 'bid',
@@ -22,12 +21,12 @@ module.exports = {
 
                     msg = await args.channel.messages.fetchPinned()
                     msg = msg.last()
-                    prix_min = msg.content.split(" ")[45]
+                    prix_min = msg.content.split(" ")[44]
 
                     args.channel.messages.fetch().then(async messages => {
                         mssg = messages.filter(message => message.author.id == client.user.id && message.type != 'THREAD_STARTER_MESSAGE' && message.embeds[0] != undefined).first()
                         if(mssg) {
-                            if(parseInt(mssg.embeds[0].description.split(" ")[3]) + parseInt(prix_min) <= price) {
+                            if(parseInt(mssg.embeds[0].description.split(" ")[3]) + parseInt(prix_min) < price) {
                                 let embed = new MessageEmbed()
                                 .setTitle("Enchère")
                                 .setColor("#00FF00")
