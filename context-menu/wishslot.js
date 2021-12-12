@@ -13,6 +13,7 @@ module.exports = {
     async run(interaction, client) {
         message = interaction.options.getMessage("message")
         if(message.embeds[0] == undefined) {
+            interaction.reply("Ce message n'est pas un `$im` de mudae.")
             return
         }
         if(message.channel.name == "muda-industry") {
