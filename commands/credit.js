@@ -152,7 +152,7 @@ module.exports = {
                 user = interaction.options.getUser("user")
                 somme = interaction.options.getInteger("somme")
                 if(credits[user.id] == undefined) {
-                    credits[user.id] = credits
+                    credits[user.id] = 0
                 }
                 credits[user.id] += somme
                 await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits,null,4), (err) => {
