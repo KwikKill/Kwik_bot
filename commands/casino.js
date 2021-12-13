@@ -70,9 +70,9 @@ module.exports = {
                     rw = ""
                     rewards.forEach(reward => {
                         prob = prob - reward[1]
-                        rw = rw + " - \"" + reward[0] + "\" : " + reward[1] / 100 + "%\n"
+                        rw = rw + " - \"" + reward[0] + "\"\n"
                     });
-                    rw = rw + " - \"Et c'est perdu !\" : " + prob/100 + "%"
+                    rw = rw + " - \"Et c'est perdu !\""
 
                     embed = new MessageEmbed()
                     .setTitle("Liste des récompenses disponibles :")
