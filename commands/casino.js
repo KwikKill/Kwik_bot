@@ -111,22 +111,26 @@ module.exports = {
                             for(i = 0; i < nombre; i++) {
                                 nb = getRandomInt(10000)
                                 act = 0
+                                all = false
                                 for(reward of rewards){
-                                    if(nb <= reward[1] + act && rws[fruits.length - 1][1] != i) {
-                                        rws.push([reward[0], i])
+                                    if(nb <= reward[1] + act && all == false) {
+                                        //console.log(nb, reward[1], act)
+                                        all = true
+                                        rws.push(reward[0])
                                     }
+                                    act = act + reward[1]
                                 }
-                                act = act + reward[1]
+                                
                             }
                             if(rws.length == 0) {
                                 interaction.editReply("Vous n'avez rien gagné.")   
                             }else {
                                 resultat = {}
                                 rws.forEach(rw => {
-                                    if(resultat[rw[0]] == undefined) {
-                                        resultat[rw[0]] = 1
+                                    if(resultat[rw] == undefined) {
+                                        resultat[rw] = 1
                                     }else {
-                                        resultat[rw[0]] = resultat[rw[0]] + 1
+                                        resultat[rw] = resultat[rw] + 1
                                     }
                                 });
 
