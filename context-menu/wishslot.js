@@ -79,7 +79,7 @@ module.exports = {
                 doc.on('data', buffers.push.bind(buffers));
                 doc.on('end', () => {
                     let pdfData = Buffer.concat(buffers);
-                    interaction.reply({content: "<@" + user.id + ">, voici votre contrat de location de slot de wish pour **" + perso + "**. Lisez les conditions et répondez \"lu et approuvé\" pour accepte\n /!\\ Ce contrat ne prendra effet qu'après acceptation de la Kiwi Industry /!\\ .", files: [  { attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" } ]});
+                    interaction.reply({content: "<@" + user.id + ">, voici votre contrat de location de slot de wish pour **" + perso + "**. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.\n /!\\ Ce contrat ne prendra effet qu'après acceptation de la Kiwi Industry /!\\ .", files: [  { attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" } ]});
                 });
 
                 doc
