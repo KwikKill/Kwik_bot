@@ -66,13 +66,13 @@ module.exports = {
                         interaction.reply("Vous avez actuellement **" + credits[interaction.user.id] + "** jetons.")
                     }
                 }else if(interaction.options.getSubcommand() == "rewards") {
-                    prob = 100000
+                    prob = 10000
                     rw = ""
                     rewards.forEach(reward => {
                         prob = prob - reward[1]
-                        rw = rw + " - \"" + reward[0] + "\" : " + reward[1] / 1000 + "%\n"
+                        rw = rw + " - \"" + reward[0] + "\" : " + reward[1] / 100 + "%\n"
                     });
-                    rw = rw + " - \"Et c'est perdu !\" : " + prob/1000 + "%"
+                    rw = rw + " - \"Et c'est perdu !\" : " + prob/100 + "%"
 
                     embed = new MessageEmbed()
                     .setTitle("Liste des récompenses disponibles :")
@@ -95,11 +95,13 @@ module.exports = {
 
                         if(nombre == 1) {                            
                             nb = getRandomInt(10000)
+                            act = 0
                             for(reward of rewards){
-                                if(nb <= reward[1]) {
-                                    interaction.reply("Vous avez gagné " + reward[0] + ". Ce message fait office de preuve et vous permettra de retirer votre lot auprès de KwikKill (validation : " + nb + "/" + reward[1] + ").")
+                                if(nb <= reward[1] + act) {
+                                    interaction.reply("Vous avez gagné " + reward[0] + ". Ce message fait office de preuve et vous permettra de retirer votre lot auprès de KwikKill (validation : " + nb + "/" + (reward[1] + act) + ").")
                                     return;
                                 }
+                                act = act + reward[1]
                             }
                             interaction.reply("Vous n'avez rien gagné.")
                             return;
@@ -108,21 +110,23 @@ module.exports = {
                             rws = []
                             for(i = 0; i < nombre; i++) {
                                 nb = getRandomInt(10000)
+                                act = 0
                                 for(reward of rewards){
-                                    if(nb <= reward[1]) {
-                                        rws.push(reward[0])
+                                    if(nb <= reward[1] + act && rws[fruits.length - 1][1] != i) {
+                                        rws.push([reward[0], i])
                                     }
                                 }
+                                act = act + reward[1]
                             }
                             if(rws.length == 0) {
                                 interaction.editReply("Vous n'avez rien gagné.")   
                             }else {
                                 resultat = {}
                                 rws.forEach(rw => {
-                                    if(resultat[rw] == undefined) {
-                                        resultat[rw] = 1
+                                    if(resultat[rw[0]] == undefined) {
+                                        resultat[rw[0]] = 1
                                     }else {
-                                        resultat[rw] = resultat[rw] + 1
+                                        resultat[rw[0]] = resultat[rw[0]] + 1
                                     }
                                 });
 
