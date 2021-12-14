@@ -16,14 +16,13 @@ module.exports = {
                 if(message.embeds[0].footer.text.startsWith("Appartient à " + interaction.member.user.username)) {
                     if(config["credit"] == false) {
                         message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name}).then(thread =>{
-                            first = thread.send("Ce personnage est à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis. \nEnchère minimum : dernière enchère + 50")
-                            first.then(fs => {
+                            first = thread.send("Ce personnage est à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis. \nEnchère minimum : dernière enchère + 50").then(fs => {
 				console.log(fs)
                                 fs.pin()
-			        interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
                             }).catch(err => {
 				console.log(err)    
 			    })
+				interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
                         })
                     }else {
                         if(credits[interaction.user.id] != undefined && credits[interaction.user.id] >= 1) {
