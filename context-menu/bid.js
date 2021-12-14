@@ -20,10 +20,10 @@ module.exports = {
                             first.then(fs => {
 				console.log(fs)
                                 fs.pin()
+			        interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
                             }).catch(err => {
 				console.log(err)    
 			    })
-                            interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
                         })
                     }else {
                         if(credits[interaction.user.id] != undefined && credits[interaction.user.id] >= 1) {
