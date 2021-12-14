@@ -15,7 +15,12 @@ module.exports = {
             if(message.embeds[0] != undefined) {
                 if(message.embeds[0].footer.text.startsWith("Appartient à " + interaction.member.user.username)) {
                     if(config["credit"] == false) {			    
-                        //thread = await message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name})
+			try {
+				
+                        	thread = await message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name})
+			}catch(err) {
+				console.log(err)
+			}
 			//thread.send("Ce personnage est à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis. \nEnchère minimum : dernière enchère + 50")
                         //console.log("a")
 			//console.log(first)
