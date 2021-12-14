@@ -22,6 +22,7 @@ module.exports = {
 			//return;
 			//await first.pin()
 			await interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
+			return;
                     }else {
                         if(credits[interaction.user.id] != undefined && credits[interaction.user.id] >= 1) {
                             credits[interaction.user.id] = credits[interaction.user.id] - 1
