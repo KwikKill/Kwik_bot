@@ -19,7 +19,9 @@ module.exports = {
                             first = thread.send("Ce personnage est à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis. \nEnchère minimum : dernière enchère + 50")
                             first.then(fs => {
                                 fs.pin()
-                            })
+                            }).catch(err => {
+				console.log(err)    
+			    })
                             interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
                         })
                     }else {
