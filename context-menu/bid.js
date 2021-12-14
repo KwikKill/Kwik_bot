@@ -10,7 +10,8 @@ module.exports = {
 	permission: "none",
     type: "MESSAGE",
     async run(interaction, client) {
-        message = interaction.options.getMessage("message")
+        message = await interaction.options.getMessage("message")
+	console.log("b")
         if(message.channel.name == "mudatrade") {
             if(message.embeds[0] != undefined) {
                 if(message.embeds[0].footer.text.startsWith("Appartient à " + interaction.member.user.username)) {
