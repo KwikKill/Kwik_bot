@@ -14,6 +14,7 @@ module.exports = {
     async run(client, channel1, channel2) {
         if(channel2.archived == true && channel1.archived == false) {
             if(channel2.name.startsWith("[A VENDRE]")) {
+		console.log("a")
                 msg = await channel2.messages.fetchPinned()
                 msg = msg.last()
                 messages = await channel2.messages.fetch()
