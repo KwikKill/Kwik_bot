@@ -15,18 +15,13 @@ module.exports = {
             if(message.embeds[0] != undefined) {
                 if(message.embeds[0].footer.text.startsWith("Appartient à " + interaction.member.user.username)) {
                     if(config["credit"] == false) {			    
-			try {
-                        	message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name})
-			}catch(err) {
-				console.log("a" + err)
-			}
-			//thread.send("Ce personnage est à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis. \nEnchère minimum : dernière enchère + 50")
-                        //console.log("a")
-			//console.log(first)
-			//return;
-			//await first.pin()
-			await interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
-			return;
+		    	message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name}).then(thread =>{
+				first = thread.send(message.embeds[0].author.name + " à vendre. Pour enchérir, mettez simplement le prix dans le salon. Il n'est pas possible d'annuler une offre. L'enchère se termine au bout de 24h sans message. Vous pouvez ping <@" + interaction.member.user.id + "> si les enchères sont finis. \nEnchère minimum : denière enchère + 50")
+					first.then(fs => {
+			    		fs.pin()
+				})
+				interaction.reply({content: "Vous avez créé une enchère sur " + message.embeds[0].author.name + ".", ephemeral: true})
+		    	})
                     }else {
                         if(credits[interaction.user.id] != undefined && credits[interaction.user.id] >= 1) {
                             credits[interaction.user.id] = credits[interaction.user.id] - 1
