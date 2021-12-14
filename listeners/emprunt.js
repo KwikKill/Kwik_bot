@@ -13,6 +13,7 @@ module.exports = {
     async run(client, args) {
         if(args.reference != undefined){
             if(args.reference.messageId != undefined){
+		console.log("a")
                 msg = await args.channel.messages.fetch(args.reference.messageId)
                 if(msg.author.id == client.user.id) {
                     if(msg.content.includes("Lisez les conditions et répondez \"lu et approuvé\" pour accepter.")) {
