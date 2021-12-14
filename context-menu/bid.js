@@ -16,8 +16,7 @@ module.exports = {
                 if(message.embeds[0].footer.text.startsWith("Appartient à " + interaction.member.user.username)) {
                     if(config["credit"] == false) {			    
 			try {
-				
-                        	thread = await message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name})
+                        	message.startThread({name: "[A VENDRE] : " + message.embeds[0].author.name})
 			}catch(err) {
 				console.log(err)
 			}
