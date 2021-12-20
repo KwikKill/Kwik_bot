@@ -16,10 +16,10 @@ module.exports = {
         if(msg.author.id == "432610292342587392") {
             if(msg.content.includes(" vient de donner ")) {
                 if(msg.mentions.users.get(client.user.id).id == client.user.id) {
-                    if(credits[msg.mentions.users.first()] == undefined) {
-                        credits[msg.mentions.users.first()] = 0
+                    if(credits[msg.mentions.users.first().id] == undefined) {
+                        credits[msg.mentions.users.first().id] = 0
                     }
-                    credits[msg.mentions.users.first()] += Math.floor(msg.content.split(" ")[4].split("**")[1] / 10)
+                    credits[msg.mentions.users.first().id] += Math.floor(msg.content.split(" ")[4].split("**")[1] / 10)
                     await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits,null,4), (err) => {
                         if (err) console.log(err)
                     });
