@@ -15,7 +15,7 @@ module.exports = {
     async run(client, msg) {
         if(msg.author.id == "432610292342587392") {
             if(msg.content.includes(" vient de donner ")) {
-                if(msg.mentions.users.get(client.user.id).id == client.user.id) {
+                if(msg.mentions.users.has(client.user.id) && msg.mentions.users.get(client.user.id).id == client.user.id) {
                     if(credits[msg.mentions.users.first().id] == undefined) {
                         credits[msg.mentions.users.first().id] = 0
                     }
