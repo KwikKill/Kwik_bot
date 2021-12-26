@@ -11,7 +11,7 @@ module.exports = {
 	description: "Permet de jouer au Casino officiel de la Kiwi Industry",
 	permission: "none",
 	hidden: false,
-    deploy: true,
+        deploy: false,
 	place: "guild",
     help: [
         {
