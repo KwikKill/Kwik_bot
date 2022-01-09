@@ -7,6 +7,7 @@ module.exports = {
 	group: 'mudae',
 	description: "Permet de définir l'enchère minimum au dessus du dernière prix",
 	permission: "none",
+	serverid: ["513776796211085342", "480142959501901845"],
 	hidden: false,
 	place: "guild",
     help: [
