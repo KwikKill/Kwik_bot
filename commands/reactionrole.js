@@ -29,7 +29,9 @@ module.exports = {
 	)
 	.setTimestamp()
 	
-	interaction.reply({embeds:[embed1]})
+	msg = await interaction.reply({embeds:[embed1]})
+	      
+	msg.react("✅")
       }
     }
 }
