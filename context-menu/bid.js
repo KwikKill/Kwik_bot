@@ -8,6 +8,7 @@ module.exports = {
     name: 'bid',
 	description: "créé une enchère sur ce perso.",
 	permission: "none",
+	serverid: ["513776796211085342", "480142959501901845"],
     type: "MESSAGE",
     async run(interaction, client) {
         message = await interaction.options.getMessage("message")
