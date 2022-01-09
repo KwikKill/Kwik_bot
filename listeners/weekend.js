@@ -9,14 +9,10 @@ module.exports = {
     type: "messageReactionAdd",
     place: "guild",
     async run(client, message, user) {
-        console.log(message.message)
-        if(message.message.author.id == client.user.id) {
-            if(message.embeds[0].description == "Réagissez sur la réaction ✅ pour vous mettre ou enlever le rôle week end.") {
-                role = message.message.guild.roles.cache.get("929445487138996234")
-                member = await message.message.guild.members.fetch(user.id)
-                member.roles.add(role)   
-            }
+        if(message.embeds[0].description == "Réagissez sur la réaction ✅ pour vous mettre ou enlever le rôle week end.") {
+            role = message.message.guild.roles.cache.get("929445487138996234")
+            member = await message.message.guild.members.fetch(user.id)
+            member.roles.add(role)   
         }
-
     }
 }
