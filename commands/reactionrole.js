@@ -15,7 +15,16 @@ module.exports = {
     options: undefined,
     async run(message, client, interaction=undefined, mssg=true) {
       if(interaction != undefined) {
-        console.log("a") 
+        let embed1 = new MessageEmbed()
+	.setColor("0xffe402")
+    	.setTitle("Role week-end")
+    	.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
+    	.setDescription(
+		"Réagissez sur la réaction ✔️ pour vous mettre ou enlever le rôle week end."
+	)
+	.setTimestamp()
+	
+	interraction.reply({embeds:[embed1]})
       }
     }
 }
