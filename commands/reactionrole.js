@@ -1,3 +1,8 @@
+const fs = require("fs");
+const path = require('path');
+const { MessageEmbed } = require('discord.js');
+
+
 module.exports = {
     name: 'reactionrole',
     group: 'moderation',
