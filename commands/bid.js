@@ -10,7 +10,7 @@ module.exports = {
 	description: "Permet de démarrer une enchère",
 	permission: "none",
 	hidden: false,
-	serverid: ["513776796211085342", "480142959501901845"]
+	serverid: ["513776796211085342", "480142959501901845"],
     deploy: false,
 	place: "guild",
     help: [
