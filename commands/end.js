@@ -8,6 +8,7 @@ module.exports = {
     description: "Commande de fin d'enchère",
     permission: "none",
     hidden: false,
+    serverid: ["513776796211085342", "480142959501901845"],
     help: [
         {
             "name": "- __end__ :",
