@@ -9,6 +9,7 @@ module.exports = {
     type: "messageReactionRemove",
     place: "guild",
     async run(client, message, user) {
+        console.log("a")
         ch = await message.message.guild.channels.fetch(message.message.channelId)
         msg = await ch.messages.fetch(message.message.id)
         
