@@ -29,10 +29,10 @@ module.exports = {
 	)
 	.setTimestamp()
 	
-	interaction.reply({embeds:[embed1]}).then(msg => {
-		console.log(msg)
-		msg.react("✅")
-	})
+	interaction.reply({embeds:[embed1]})
+	     
+	msg = await interaction.fetchReply() 
+	msg.react("✅")
 	
       }
     }
