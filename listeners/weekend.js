@@ -9,7 +9,8 @@ module.exports = {
     type: "messageReactionAdd",
     place: "guild",
     async run(client, message, user) {
-    	role = message.guild.roles.cache.get("929445487138996234")
-    	console.log(role)
+        console.log(message)
+    	//role = message.guild.roles.cache.get("929445487138996234")
+    	//console.log(role)
     }
 }
