@@ -10,6 +10,7 @@ module.exports = {
 	description: "Commande de gestion de crédit",
 	permission: "owner",
 	hidden: true,
+	serverid: ["513776796211085342", "480142959501901845"],
 	place: "guild",
     help: [
         {
