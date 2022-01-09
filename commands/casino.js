@@ -12,6 +12,7 @@ module.exports = {
 	permission: "none",
 	hidden: false,
         deploy: false,
+	serverid: ["513776796211085342", "480142959501901845"],
 	place: "guild",
     help: [
         {
