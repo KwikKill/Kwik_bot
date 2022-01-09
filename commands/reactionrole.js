@@ -25,7 +25,7 @@ module.exports = {
     	.setTitle("Role week-end")
     	.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
     	.setDescription(
-		"Réagissez sur la réaction 🗸 pour vous mettre ou enlever le rôle week end."
+		"Réagissez sur la réaction ✅ pour vous mettre ou enlever le rôle week end."
 	)
 	.setTimestamp()
 	
