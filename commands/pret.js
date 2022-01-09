@@ -8,6 +8,7 @@ module.exports = {
     group: 'mudae',
 	description: "Commande de création de contrat d'emprunt",
 	permission: "owner",
+	serverid: ["513776796211085342", "480142959501901845"],
     hidden: false,
     help: [
         {
