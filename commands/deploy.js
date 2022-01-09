@@ -7,6 +7,7 @@ module.exports = {
     group: 'moderation',
 	description: "Commande de déploiement des commandes slash",
 	permission: "owner",
+	serverid: ["513776796211085342", "480142959501901845", "890915473363980308"],
     hidden: false,
     help: [
         {
