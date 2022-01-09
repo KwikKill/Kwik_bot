@@ -10,6 +10,7 @@ module.exports = {
 	group: 'mudae',
 	description: "Permet de faire une demande de contrat de location de slot de wish",
 	permission: "none",
+	serverid: ["513776796211085342", "480142959501901845"],
 	hidden: false,
     deploy: false,
 	place: "guild",
