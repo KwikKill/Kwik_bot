@@ -10,7 +10,7 @@ module.exports = {
     place: "guild",
     async run(client, message, user) {
     	role = message.message.guild.roles.cache.get("929445487138996234")
-    	member = await guild.members.fetch(user.id)
+    	member = await message.message.guild.members.fetch(user.id)
         member.roles.add(role)
     }
 }
