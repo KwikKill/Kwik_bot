@@ -77,7 +77,7 @@ module.exports = {
         });
 
         client.context_menu.forEach((item, i) => {
-		if(commands.serverid == undefined || ((interaction != undefined && commands.serverid.includes(interaction.guild.id)) || (message != undefined && commands.serverid.includes(message.guild.id)))) {
+		if(item.serverid == undefined || ((interaction != undefined && item.serverid.includes(interaction.guild.id)) || (message != undefined && item.serverid.includes(message.guild.id)))) {
 			commands.push({
 			    name: item.name,
 			    type: item.type,
