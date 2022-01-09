@@ -7,6 +7,7 @@ module.exports = {
     name: 'resetname',
 	description: "Reset le nom d'un utilisateur.",
 	permission: "modo",
+	serverid: ["513776796211085342", "480142959501901845"],
     type: "USER",
     async run(interaction, client) {
         user = interaction.options.getMember("user")
