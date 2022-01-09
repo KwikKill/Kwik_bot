@@ -29,7 +29,7 @@ module.exports = {
 	)
 	.setTimestamp()
 	
-	interraction.reply({embeds:[embed1]})
+	interaction.reply({embeds:[embed1]})
       }
     }
 }
