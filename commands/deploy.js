@@ -39,7 +39,7 @@ module.exports = {
         })
 
         client.commands.forEach((item, i) => {
-        if(item.deploy != false && ((item.serverid != undefined && interaction != undefined && item.serverid.includes(interaction.guild.id)) || (item.serverid != undefined && item.serverid.includes(message.guild.id)))) {
+        if(item.deploy != false && ((item.serverid != undefined && interaction != undefined && item.serverid.includes(interaction.guild.id)) || (item.serverid != undefined && message != undefined && item.serverid.includes(message.guild.id)))) {
             if(item.name == "help") {
                 choices = []
                 client.commands.forEach((item2, i) => {
