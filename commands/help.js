@@ -8,6 +8,7 @@ module.exports = {
 	description: "Fournit la liste des commandes et l'aide correspondante",
 	permission: "none",
 	hidden: false,
+	serverid: ["513776796211085342", "480142959501901845"],
 	place: "both",
     help: [
         {
