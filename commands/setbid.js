@@ -8,6 +8,7 @@ module.exports = {
 	description: "Permet de définir l'enchère actuelle",
 	permission: "modo",
 	hidden: false,
+	serverid: ["513776796211085342", "480142959501901845"],
 	place: "guild",
     help: [
         {
