@@ -9,6 +9,7 @@ module.exports = {
     name: 'wishslot',
 	description: "Permet de faire une demande pour louer un slot de wishlist.",
 	permission: "none",
+	serverid: ["513776796211085342", "480142959501901845"],
     type: "MESSAGE",
     async run(interaction, client) {
         message = interaction.options.getMessage("message")
