@@ -23,9 +23,8 @@ module.exports = {
 	      
 	fields = []
 	for(const role in roles) {
-		console.log(role)
 		fields.push({
-			"name":"role",
+			"name": " - " + role,
 			"value":"réagissez avec la réaction " + roles[role]["emoji"] + " pour avoir le rôle <@&" + roles[role]["role"] + ">",
 		})
 	}
