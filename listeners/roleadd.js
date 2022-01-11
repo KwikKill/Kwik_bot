@@ -13,7 +13,7 @@ module.exports = {
         ch = await message.message.guild.channels.fetch(message.message.channelId)
         msg = await ch.messages.fetch(message.message.id)
         
-        if(msg.embeds[0].description == "Réagissez sur un émoji pour avoir le rôle correspondant.") {
+        if(msg.embeds[0].description == "Réagissez sur un émoji pour avoir le rôle correspondant." && user.id != client.user.id) {
             for(const role in roles) {
                 if(roles[role]["emoji"] == message.emoji.name) {
                     role = message.message.guild.roles.cache.get("929445487138996234")
