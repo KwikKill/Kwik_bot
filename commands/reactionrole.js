@@ -26,7 +26,7 @@ module.exports = {
 		console.log(role)
 		fields.push({
 			"name":"role",
-			"value":"réagissez avec la réaction " + role["emoji"] + " pour avoir le rôle <@&" + role["role"] + ">",
+			"value":"réagissez avec la réaction " + roles[role]["emoji"] + " pour avoir le rôle <@&" + roles[role]["role"] + ">",
 		})
 	}
 	      
