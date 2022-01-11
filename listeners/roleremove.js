@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require('path');
 const { MessageEmbed, Interaction } = require('discord.js');
+const roles = require('../roles.json');
 
 module.exports = {
     name: 'roleremove',
