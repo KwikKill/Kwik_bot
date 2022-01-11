@@ -42,8 +42,11 @@ module.exports = {
 	
 	await interaction.reply({embeds:[embed1]})
 	     
-	msg = await interaction.fetchReply() 
-	msg.react("✅")
+	msg = await interaction.fetchReply()
+	for(const role in roles) {
+		await msg.react(roles[role]["emoji"])
+	}
+	
 	
       }
     }
