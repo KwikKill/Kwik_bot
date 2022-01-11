@@ -3,9 +3,9 @@ const path = require('path');
 const { MessageEmbed, Interaction } = require('discord.js');
 
 module.exports = {
-    name: 'weekend',
+    name: 'roleadd',
     group: 'INSA',
-    description: "listener d'ajout de role weekend",
+    description: "listener d'ajout de roles",
     type: "messageReactionAdd",
     place: "guild",
     async run(client, message, user) {
