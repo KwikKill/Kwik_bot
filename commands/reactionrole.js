@@ -22,7 +22,7 @@ module.exports = {
       if(interaction != undefined) {
 	      
 	fields = []
-	for(const role in role) {
+	for(const role in roles) {
 		console.log(role)
 		fields.push({
 			"name":"role",
