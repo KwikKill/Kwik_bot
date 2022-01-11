@@ -22,7 +22,7 @@ module.exports = {
       if(interaction != undefined) {
 	      
 	fields = []
-	roles.foreach(role => {
+	roles.forEach(role => {
 		console.log(role)
 		fields.push({
 			"name":"role",
