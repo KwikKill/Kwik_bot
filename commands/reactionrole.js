@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require('path');
 const { MessageEmbed } = require('discord.js');
-
+const roles = require('../roles.json');
 
 module.exports = {
     name: 'reactionrole',
@@ -20,13 +20,24 @@ module.exports = {
     options: undefined,
     async run(message, client, interaction=undefined, mssg=true) {
       if(interaction != undefined) {
+	      
+	fields = []
+	roles.foreach(role => {
+		console.log(role)
+		fields.push({
+			"name":"role",
+			"value":"réagissez avec la réaction " + role["emoji"] + " pour avoir le rôle <@&" + role["role"] + ">",
+		})
+	});
+	      
         let embed1 = new MessageEmbed()
 	.setColor("0xffe402")
-    	.setTitle("Role week-end")
+    	.setTitle("Roles")
     	.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
     	.setDescription(
-		"Réagissez sur la réaction ✅ pour vous mettre ou enlever le rôle week end."
+		"Réagissez sur un émoji pour avoir le rôle correspondant."
 	)
+ 	.addFields(fields)
 	.setTimestamp()
 	
 	await interaction.reply({embeds:[embed1]})
