@@ -31,7 +31,7 @@ module.exports = {
 	      
         let embed1 = new MessageEmbed()
 	.setColor("0xffe402")
-    	.setTitle("Roles")
+    	.setTitle("Roles : ")
     	.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
     	.setDescription(
 		"Réagissez sur un émoji pour avoir le rôle correspondant."
@@ -43,10 +43,8 @@ module.exports = {
 	     
 	msg = await interaction.fetchReply()
 	for(const role in roles) {
-		await msg.react(roles[role]["emoji"])
+		msg.react(roles[role]["emoji"])
 	}
-	
-	
       }
     }
 }
