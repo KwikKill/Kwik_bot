@@ -23,7 +23,7 @@ module.exports = {
 	for(x in arr) {
 	  if(arr[x].startsWith("di") || arr[x].startsWith("dy")) {
              console.log(arr[x].substring(2).length)
-	     if(arr[x].substring(2).length < 1) {
+	     if(arr[x].substring(2).length > 1) {
 		msg.reply(arr[x].substring(2))
 	        return;
 	     }
@@ -33,7 +33,7 @@ module.exports = {
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("cri") || arr[x].startsWith("cry")) {
-	     if(arr[x].substring(3).length < 1) {
+	     if(arr[x].substring(3).length > 1) {
 		msg.reply(arr[x].substring(3).toUpperCase())
 	        return;
 	     }
