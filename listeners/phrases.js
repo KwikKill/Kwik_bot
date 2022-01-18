@@ -20,13 +20,14 @@ module.exports = {
 	      
 	arr = content.split(" ")
 	for(x in arr) {
-	  if(arr[x].startsWith("di")) {
+	  if(arr[x].startsWith("di") || arr[x].startsWith("di")) {
 	     if(arr[x].substring(2) != "") {
 		msg.reply(arr[x].substring(2))
 	        return;
 	     }
 	  }
 	}
+	console.log(arr[arr.length - 1])
 	
 	      
       }
