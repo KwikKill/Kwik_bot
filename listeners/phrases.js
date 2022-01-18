@@ -32,7 +32,7 @@ module.exports = {
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("cri") || arr[x].startsWith("cry")) {
-	     if(arr[x].substring(3) != "") {
+	     if(arr[x].substring(3).length < 1) {
 		msg.reply(arr[x].substring(3).toUpperCase())
 	        return;
 	     }
