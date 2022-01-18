@@ -16,8 +16,18 @@ module.exports = {
       if(guilds.includes(msg.channel.guild.id)) {
         content = msg.content
 	content = content.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+	content = content.trim()
 	      
-	console.log(content)
+	say = []
+	      
+	arr = content.split(" ")
+	for(x in arr) {
+	  if(arr[x].startsWith("di")) {
+	     say.push(arr[x].substring(2))
+	  }
+	}
+	console.log(say)
+	      
       }
     }
 }
