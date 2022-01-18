@@ -17,10 +17,11 @@ module.exports = {
         content = msg.content
 	content = content.replaceAll(/[.,\/#!$%\^&\*;:{}=?\-_`~()]/g,"")
 	content = content.trim()
+	content = content.toLowerCase()
 	      
 	arr = content.split(" ")
 	for(x in arr) {
-	  if(arr[x].startsWith("di") || arr[x].startsWith("di")) {
+	  if(arr[x].startsWith("di") || arr[x].startsWith("dy")) {
 	     if(arr[x].substring(2) != "") {
 		msg.reply(arr[x].substring(2))
 	        return;
