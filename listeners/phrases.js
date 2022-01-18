@@ -13,7 +13,7 @@ module.exports = {
     async run(client, msg) {
       guilds = ["513776796211085342", "890915473363980308"]
       
-      if(guilds.includes(msg.channel.guild.id)) {
+      if(guilds.includes(msg.channel.guild.id) && msg.author.id != client.user.id) {
         content = msg.content
 	content = content.replaceAll(/[.,\/#!$%\^&\*;:{}=?\-_`~()]/g,"")
 	content = content.trim()
