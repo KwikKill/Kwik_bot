@@ -22,7 +22,7 @@ module.exports = {
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("di") || arr[x].startsWith("dy")) {
-	     if(arr[x].substring(2) != "") {
+	     if(arr[x].substring(2).length < 1) {
 		msg.reply(arr[x].substring(2))
 	        return;
 	     }
