@@ -28,6 +28,7 @@ module.exports = {
 	  }
 	}
 	last = arr[arr.length - 1]
+	console.log(last.substr(last.length - 4))
 	if(last.substr(last.length - 4) == "quoi" || last.substr(last.length - 3) == "koi" || last.substr(last.length - 7) == "quoient") {
 		msg.reply("feur")
 	}
