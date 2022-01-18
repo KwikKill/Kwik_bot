@@ -14,7 +14,10 @@ module.exports = {
       guilds = ["513776796211085342"]
       
       if(guilds.includes(msg.channel.guild.id)) {
-       console.log("a") 
+        content = msg.content
+	content.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+	      
+	console.log(content)
       }
     }
 }
