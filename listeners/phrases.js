@@ -18,17 +18,16 @@ module.exports = {
 	content = content.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
 	content = content.trim()
 	      
-	say = []
-	      
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("di")) {
 	     if(arr[x].substring(2) != "") {
-		say.push(arr[x].substring(2))
+		msg.reply(arr[x].substring(2))
+	        return;
 	     }
 	  }
 	}
-	console.log(say)
+	
 	      
       }
     }
