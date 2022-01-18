@@ -11,7 +11,7 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-      guilds = ["513776796211085342", "890915473363980308"]
+      guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
       
       if(guilds.includes(msg.channel.guild.id) && msg.author.id != client.user.id) {
         content = msg.content
