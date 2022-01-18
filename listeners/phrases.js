@@ -23,7 +23,9 @@ module.exports = {
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("di")) {
-	     say.push(arr[x].substring(2))
+	     if(arr[x].substring(2) != "") {
+		say.push(arr[x].substring(2))
+	     }
 	  }
 	}
 	console.log(say)
