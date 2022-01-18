@@ -28,7 +28,7 @@ module.exports = {
 	  }
 	}
 	last = arr[arr.length - 1]
-	if(last.substr(last.length - 4) == "quoi" || last.substr(last.length - 3) == "koi" || last.substr(last.length - 7) == "quoient") {
+	if(last.substr(last.length - 4) == "quoi" || last.substr(last.length - 3) == "koi" || last.substr(last.length - 7) == "quoient" || last.substr(last.length - 3) == "coi") {
 		msg.reply("feur")
 	}
 	      
