@@ -15,7 +15,7 @@ module.exports = {
       
       if(guilds.includes(msg.channel.guild.id)) {
         content = msg.content
-	content.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
+	content = content.replaceAll(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"")
 	      
 	console.log(content)
       }
