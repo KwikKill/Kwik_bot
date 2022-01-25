@@ -22,7 +22,7 @@ module.exports = {
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("di") || arr[x].startsWith("dy")) {
-	     if(arr[x].substring(2).length > 1) {
+	     if(arr[x].substring(2).length > 1 && arr[x] != "dire") {
 		msg.reply(arr[x].substring(2))
 	        return;
 	     }
@@ -41,7 +41,7 @@ module.exports = {
 	      
 	      
 	last = arr[arr.length - 1]
-	if(last.substr(last.length - 4) == "quoi" || last.substr(last.length - 3) == "koi" || last.substr(last.length - 7) == "quoient" || last.substr(last.length - 3) == "coi") {
+	if(last.substr(last.length - 4) == "quoi" || last.substr(last.length - 3) == "koi" || last.substr(last.length - 7) == "quoient" || last.substr(last.length - 3) == "coi" || last.substr(last.length - 4) == "koua"|| last.substr(last.length - 3) == "kwa") {
 		msg.reply("feur")
 		return;
 	}
