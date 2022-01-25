@@ -15,7 +15,7 @@ module.exports = {
       
       if(guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
         content = msg.content
-	content = content.replaceAll(/[.,\/#!$%\^&\*;:{}=?\-_`~()\"]/g,"")
+	content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g,"")
 	content = content.trim()
 	content = content.toLowerCase()
 	      
