@@ -16,7 +16,7 @@ module.exports = {
 	let embed = new MessageEmbed()
 	.setColor("0xffe402")
 	.setTitle("Gestionnaire de Ping :")
-	.setAuthor(msg.author.username, msg.author.displayAvatarURL())
+	.setAuthor(msg.author.username, msg.author.displayAvatarURL(), "https://discord.com/channels/" + msg.guild.id + "/" + msg.channel.id + "/" + msg.id)
 	.setDescription(
 	msg.content
 	)
