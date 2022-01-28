@@ -14,8 +14,8 @@ module.exports = {
       if(msg.content.includes("<@!297409548703105035>")) {
 	      
 	let embed = new MessageEmbed()
-	.setColor("0xffe402")
-	.setTitle("Gestionnaire de Ping :")
+	.setColor(msg.author.hexAccentColor)
+	.setTitle("Vous avez été ping dans " + msg.guild.name " :")
 	.setAuthor(msg.author.username, msg.author.displayAvatarURL(), "https://discord.com/channels/" + msg.guild.id + "/" + msg.channel.id + "/" + msg.id)
 	.setDescription(
 	msg.content
