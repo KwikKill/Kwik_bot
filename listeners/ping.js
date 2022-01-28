@@ -15,7 +15,7 @@ module.exports = {
 	      
 	let embed = new MessageEmbed()
 	.setColor(msg.author.hexAccentColor)
-	.setTitle("Vous avez été ping dans " + msg.guild.name " :")
+	.setTitle("Vous avez été ping dans " + msg.guild.name + " :")
 	.setAuthor(msg.author.username, msg.author.displayAvatarURL(), "https://discord.com/channels/" + msg.guild.id + "/" + msg.channel.id + "/" + msg.id)
 	.setDescription(
 	msg.content
