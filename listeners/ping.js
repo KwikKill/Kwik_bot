@@ -11,9 +11,18 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-	    console.log("b", msg.content)
-      if(msg.content.includes("<@297409548703105035>")) {
-	console.log("a", msg.content)
+      if(msg.content.includes("<@!297409548703105035>")) {
+	      
+	let embed = new MessageEmbed()
+	.setColor("0xffe402")
+	.setTitle("Gestionnaire de Ping :")
+	.setAuthor(msg.author.username, msg.author.displayAvatarURL())
+	.setDescription(
+	msg.content
+	)
+	.setTimestamp()
+	
+	msg.guild.members.cache.get("297409548703105035").send({embeds: [embed]})
       }
     }
 }
