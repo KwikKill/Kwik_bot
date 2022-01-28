@@ -11,6 +11,8 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-      console.log(client, msg)
+      if(message.content.includes("<@297409548703105035>") {
+	console.log("a", message.content)
+      }
     }
 }
