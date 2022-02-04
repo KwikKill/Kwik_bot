@@ -46,7 +46,7 @@ module.exports = {
 		return;
 	}
 	      
-	last = arr[arr.length - 1]
+	console.log(last)
 	if(last == "ah") {
 		msg.reply("B")
 		return;
