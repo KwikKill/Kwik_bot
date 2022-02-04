@@ -39,12 +39,13 @@ module.exports = {
 	  }
 	}
 	      
-	      
+	console.log("b")
 	last = arr[arr.length - 1]
 	if(last.substr(last.length - 4) == "quoi" || last.substr(last.length - 3) == "koi" || last.substr(last.length - 7) == "quoient" || last.substr(last.length - 3) == "coi" || last.substr(last.length - 4) == "koua"|| last.substr(last.length - 3) == "kwa") {
 		msg.reply("feur")
 		return;
 	}
+	console.log("a")
 	      
 	console.log(last)
 	if(last == "ah") {
