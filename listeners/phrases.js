@@ -46,6 +46,12 @@ module.exports = {
 		return;
 	}
 	      
+	last = arr[arr.length - 1]
+	if(last == "ah") {
+		msg.reply("B")
+		return;
+	}
+	      
       }
     }
 }
