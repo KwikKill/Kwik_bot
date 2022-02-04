@@ -18,6 +18,8 @@ module.exports = {
 	content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g,"")
 	content = content.trim()
 	content = content.toLowerCase()
+	
+	console.log("d")
 	      
 	arr = content.split(" ")
 	for(x in arr) {
@@ -28,6 +30,8 @@ module.exports = {
 	     }
 	  }
 	}
+	      
+	console.log("c")
 	
 	arr = content.split(" ")
 	for(x in arr) {
