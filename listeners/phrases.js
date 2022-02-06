@@ -21,8 +21,8 @@ module.exports = {
 	      
 	if(content.length >= 200) {
 	        mmsg = await msg.reply("menfou palu + ratio")
-	        await mmsg.react("♥")
-		await msg.react(♥")
+	        mmsg.react("♥")
+		msg.react(♥")
 		return;
 	}
 	      
