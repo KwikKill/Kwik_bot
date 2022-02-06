@@ -10,6 +10,9 @@ module.exports = {
     type: "messageReactionAdd",
     place: "guild",
     async run(client, message, user) {
+        if(user.bot) {
+            return
+        }
         ch = await message.message.guild.channels.fetch(message.message.channelId)
         msg = await ch.messages.fetch(message.message.id)
         
