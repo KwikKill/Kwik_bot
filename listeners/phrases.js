@@ -20,7 +20,9 @@ module.exports = {
 	content = content.toLowerCase()
 	      
 	if(content.length >= 200) {
-	       msg.reply("menfou palu + ratio")
+	        mmsg = await msg.reply("menfou palu + ratio")
+	        await mmsg.react("♥")
+		await msg.react(♥")
 		return;
 	}
 	      
