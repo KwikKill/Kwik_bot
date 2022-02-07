@@ -54,7 +54,10 @@ module.exports = {
 			msg.react(roles[role]["emoji"])
 		}
 	}else {
-		interaction.channel.messages.edit(interaction.options.getString('message'), {embeds: [embed1]})
+		msg = await interaction.channel.messages.edit(interaction.options.getString('message'), {embeds: [embed1]})
+		for(const role in roles) {
+			msg.react(roles[role]["emoji"])
+		}
 	}
       }
     }
