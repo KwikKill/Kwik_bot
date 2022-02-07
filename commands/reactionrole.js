@@ -17,7 +17,14 @@ module.exports = {
           }
     ],
 	  place: "guild",
-    options: undefined,
+    options: [
+		{
+			name: 'message',
+			description: 'message à modifier',
+			type: 'STRING',
+			required: false,
+		},
+	],
     async run(message, client, interaction=undefined, mssg=true) {
       if(interaction != undefined) {
 	      
@@ -39,11 +46,15 @@ module.exports = {
  	.addFields(fields)
 	.setTimestamp()
 	
-	await interaction.reply({embeds:[embed1]})
-	     
-	msg = await interaction.fetchReply()
-	for(const role in roles) {
-		msg.react(roles[role]["emoji"])
+	if(interaction.options.getString('message') == null) {
+		await interaction.reply({embeds:[embed1]})
+
+		msg = await interaction.fetchReply()
+		for(const role in roles) {
+			msg.react(roles[role]["emoji"])
+		}
+	}else {
+		interaction.channel.messages.edit(interaction.options.getString('message'), {embeds: [embed1]})
 	}
       }
     }
