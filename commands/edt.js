@@ -71,125 +71,13 @@ module.exports = {
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
-		/*context.beginPath();
-		context.rect(47, 40, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 85, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 130, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 175, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 221, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 266, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 311, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 356, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 401, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 447, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(47, 492, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();*/
-		
-		/*context.beginPath();
-		context.rect(344, 40, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(641, 40, 295, 43);
-		context.fillStyle = 'red';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(938, 40, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();
-		
-		context.beginPath();
-		context.rect(1235, 40, 295, 43);
-		context.fillStyle = 'yellow';
-		context.fill();
-		context.lineWidth = 2;
-		context.strokeStyle = 'black';
-		context.stroke();*/
+		context.font = '60px sans-serif';
+
+		// Select the style that will be used to fill the text in
+		context.fillStyle = '#000000';
+
+		// Actually fill the text with a solid color
+		context.fillText("Semaine du " monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + monday.getUTCFullYear(), 100, 20);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
@@ -210,6 +98,8 @@ module.exports = {
 				    );*/
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
+					
+					
 					
 					console.log(event.start.toISOString())
 					//console.log(event.end.toISOString())
