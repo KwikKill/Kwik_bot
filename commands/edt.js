@@ -62,6 +62,7 @@ module.exports = {
 		
 		console.log(url_modified)
 		const file = fs.createWriteStream("/home/gabriel/Gab_bot/temp/file.ics");
+		console.log(__filename)
 		var request = http.get(url_modified, function(response) {
 		   	 //console.log(response)
 			response.pipe(file);
