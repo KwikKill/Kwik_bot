@@ -95,6 +95,38 @@ module.exports = {
 		context.strokeStyle = 'black';
 		context.stroke();
 		
+		context.beginPath();
+		context.rect(47, 175, 295, 43);
+		context.fillStyle = 'yellow';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		context.beginPath();
+		context.rect(47, 220, 295, 43);
+		context.fillStyle = 'red';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		context.beginPath();
+		context.rect(47, 265, 295, 43);
+		context.fillStyle = 'yellow';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		context.beginPath();
+		context.rect(47, 310, 295, 43);
+		context.fillStyle = 'red';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
 		/*context.beginPath();
 		context.rect(344, 40, 295, 43);
 		context.fillStyle = 'yellow';
