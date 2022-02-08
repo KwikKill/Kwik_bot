@@ -62,24 +62,31 @@ module.exports = {
 
 		url_modified = url.replace("{0}", codes[interaction.options.getString("classe")]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 			
-		;(async () => {
-			ical.async.fromURL(url_modified, function(err, data) { 
-				console.log(data);
-			});
-		}
+		//ical.async.fromURL(url_modified, function(err, data) { 
+		//	console.log(data);
+		//});
 		
-		//const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
-		/*var request = https.get(url_modified, function(response) {
+		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
+		var request = https.get(url_modified, function(response) {
 		   	 //console.log(response)
 			response.pipe(file);
 			file.on('finish', function() {
 				file.close();
-				interaction.reply({content : "voici l'emploi du temps", files: ["/opt/gab_bot/temp/file.ics"]})
+				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
+				for (const event of Object.values(events)) {
+				    console.log(
+					'Summary: ' + event.summary +
+					'\nDescription: ' + event.description +
+					'\nStart Date: ' + event.start.toISOString() +
+					'\n'
+				    );
+				};
+				//interaction.reply({content : "voici l'emploi du temps", files: ["/opt/gab_bot/temp/file.ics"]})
 			});
 		}).on('error', function(err) {
 			fs.unlink(dest);
 			console.log(err.message)
-		});*/
+		});
 	}
     }
 }
