@@ -215,13 +215,12 @@ module.exports = {
 					console.log(event.end.toISOString())
 					
 					duration = Math.abs(start - end);
-					
-					console.log(duration)
-					
-					
+										
 					hours = Math.floor(duration / 3600000);
 					duration -= hours * 3600000;
 					console.log('calculated hours', hours);
+					
+					console.log(duration)
 
 					// calculate minutes
 					minutes = Math.floor(duration / 60) % 60;
