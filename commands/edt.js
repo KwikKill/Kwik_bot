@@ -60,12 +60,19 @@ module.exports = {
 
 		url_modified = url.replace("{0}", codes[interaction.options.getString("classe")]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 		
-		console.log(url_modified)
+		//console.log(url_modified)
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		//console.log(__filename)
 		var request = https.get(url_modified, function(response) {
 		   	 //console.log(response)
 			response.pipe(file);
+			file.on('finish', function() {
+				await file.close();
+				interaction.reply({content : "voici l'emploi du temps", files: ["/opt/gab_bot/temp/file.ics"]})
+			});
+		}).on('error', function(err) { // Handle errors
+			fs.unlink(dest); // Delete the file async. (But we don't check the result)
+			console.log(err.message)
 		});
 	}
     }
