@@ -72,7 +72,7 @@ module.exports = {
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
 		context.beginPath();
-		context.rect(40, 50, 100, 100);
+		context.rect(47, 40, 100, 100);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
