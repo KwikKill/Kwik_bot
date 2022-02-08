@@ -87,7 +87,7 @@ module.exports = {
 		day.setDate(day.getDate() + 1);
 		context.fillText("Jeudi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1030, 34);
 		day.setDate(day.getDate() + 1);
-		context.fillText("Jeudi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1300, 34);
+		context.fillText("Vendredi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1340, 34);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
