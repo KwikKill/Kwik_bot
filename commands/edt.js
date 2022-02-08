@@ -28,7 +28,7 @@ module.exports = {
     async run(message, client, interaction=undefined) {
 	if(interaction != undefined) {
 		monday = new Date()
-		prevMonday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
+		monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 		console.log(monday.toDateString())
 	}
     }
