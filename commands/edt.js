@@ -214,7 +214,7 @@ module.exports = {
 					console.log(event.start.toISOString())
 					console.log(event.end.toISOString())
 					
-					duration = Math.abs(end - start);
+					duration = Math.abs(start - end);
 					
 				        days = Math.floor(duration / 86400);
 					duration -= days * 86400;
