@@ -80,11 +80,11 @@ module.exports = {
 		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 700, 16);
 		context.fillText("Lundi " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 135, 34);
 		day = new Date(monday)
-		day = day.setDate(day.getDate() + 1);
+		day.setDate(day.getDate() + 1);
 		context.fillText("Mardi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 440, 34);
-		day = day.setDate(day.getDate() + 1);
+		day.setDate(day.getDate() + 1);
 		context.fillText("Mercredi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 715, 34);
-		day = day.setDate(day.getDate() + 1);
+		day.setDate(day.getDate() + 1);
 		context.fillText("Jeudi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1030, 34);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
