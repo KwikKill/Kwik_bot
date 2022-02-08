@@ -216,6 +216,10 @@ module.exports = {
 					
 					duration = Math.abs(end - start);
 					
+				        const days = Math.floor(diffInMilliSeconds / 86400);
+					diffInMilliSeconds -= days * 86400;
+					console.log('calculated days', days);
+					
 					hours = Math.floor(duration / 3600) % 24;
 					duration -= hours * 3600;
 					console.log('calculated hours', hours);
