@@ -73,8 +73,10 @@ module.exports = {
 			file.on('finish', function() {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
-				const canvas = Canvas.createCanvas(1200, 1200);
+				const canvas = Canvas.createCanvas(1530, 757);
 				const context = canvas.getContext('2d');
+				
+				const background = await Canvas.loadImage('../preset.png');
 				
 				for (const event of Object.values(events)) {
 				    console.log(
