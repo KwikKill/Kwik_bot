@@ -223,8 +223,7 @@ module.exports = {
 					console.log(duration)
 
 					// calculate minutes
-					minutes = Math.floor(duration / 60) % 60;
-					duration -= minutes * 60;
+					minutes = Math.floor(duration / 60000);
 					console.log('minutes', minutes);
 					
 					
