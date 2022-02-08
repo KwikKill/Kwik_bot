@@ -80,7 +80,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 86, 295, 43);
+		context.rect(47, 85, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -88,7 +88,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 132, 295, 43);
+		context.rect(47, 130, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -96,7 +96,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 178, 295, 43);
+		context.rect(47, 175, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -104,7 +104,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 224, 295, 43);
+		context.rect(47, 220, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -112,7 +112,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 270, 295, 43);
+		context.rect(47, 265, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -120,7 +120,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 316, 295, 43);
+		context.rect(47, 310, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -128,7 +128,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 362, 295, 43);
+		context.rect(47, 355, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -136,7 +136,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 408, 295, 43);
+		context.rect(47, 400, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -144,7 +144,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 454, 295, 43);
+		context.rect(47, 445, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -152,7 +152,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 500, 295, 43);
+		context.rect(47, 490, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
