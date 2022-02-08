@@ -230,7 +230,7 @@ module.exports = {
 					context.fill();
 					context.lineWidth = 2;
 					context.strokeStyle = 'black';
-					context.stroke();*/
+					context.stroke();
 					
 					
 				};
