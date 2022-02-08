@@ -70,17 +70,16 @@ module.exports = {
 				
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
-		i = window.setInterval(function draw() {
-			context.drawImage(v, 5, 5, 260, 125);
-			context.clearRect(135, 92, 126, 34);
-			context.beginPath();
-			context.rect(135, 92, 126, 34);
-			context.fillStyle = 'yellow';
-			context.fill();
-			context.lineWidth = 7;
-			context.strokeStyle = 'black';
-			context.stroke();
-		}, 20);
+		
+		context.drawImage(v, 5, 5, 260, 125);
+		context.clearRect(135, 92, 126, 34);
+		context.beginPath();
+		context.rect(135, 92, 126, 34);
+		context.fillStyle = 'red';
+		context.fill();
+		context.lineWidth = 7;
+		context.strokeStyle = 'black';
+		context.stroke();
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
