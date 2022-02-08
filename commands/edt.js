@@ -213,7 +213,7 @@ module.exports = {
 					console.log(47 + 297 * (date.getUTCDay() - 1))
 					console.log(40 + 45.2 * (date.getHours() + 1 + (date.getMinutes()/60)))
 					
-				};*/
+				//};
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
