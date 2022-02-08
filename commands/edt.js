@@ -62,7 +62,7 @@ module.exports = {
 
 		var request = http.get(url_modified, function(response) {
 		    console.log(response)
-		};
+		});
 	}
     }
 }
