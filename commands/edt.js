@@ -218,12 +218,9 @@ module.exports = {
 					
 					console.log(duration)
 					
-				        days = Math.floor(duration / 86400);
-					duration -= days * 86400;
-					console.log('calculated days', days);
 					
-					hours = Math.floor(duration / 3600) % 24;
-					duration -= hours * 3600;
+					hours = Math.floor(duration / 3600000);
+					duration -= hours * 3600000;
 					console.log('calculated hours', hours);
 
 					// calculate minutes
