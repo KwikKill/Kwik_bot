@@ -26,5 +26,9 @@ module.exports = {
 	ls_process.stdout.on('data', (data) => {
 	  console.log(`stdout: ${data}`);
 	});
+	    
+	ls_process.stderr.on('data', (data) => {
+	  console.error(`stderr: ${data}`);
+	});
     }
 }
