@@ -211,6 +211,9 @@ module.exports = {
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
 					
+					console.log(event.start.toISOString())
+					console.log(event.end.toISOString())
+					
 					duration = Math.abs(end - start);
 					
 					hours = Math.floor(duration / 3600) % 24;
@@ -224,8 +227,6 @@ module.exports = {
 					
 					
 					//console.log(40 + 45.2 * (hours + (minutes/60)))
-					
-					//console.log(event.start.toISOString())
 					//console.log(47 + 297 * (start.getUTCDay() - 1))
 					//console.log(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60)))
 					
