@@ -80,7 +80,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(342, 40, 295, 43);
+		context.rect(343, 40, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -88,7 +88,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(637, 40, 295, 43);
+		context.rect(639, 40, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -96,7 +96,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(932, 40, 295, 43);
+		context.rect(935, 40, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -104,7 +104,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(1227, 40, 295, 43);
+		context.rect(1231, 40, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
