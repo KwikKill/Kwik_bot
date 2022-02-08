@@ -73,6 +73,9 @@ module.exports = {
 			file.on('finish', function() {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
+				const canvas = Canvas.createCanvas(1200, 1200);
+				const context = canvas.getContext('2d');
+				
 				for (const event of Object.values(events)) {
 				    console.log(
 					'Summary: ' + event.summary +
@@ -81,7 +84,7 @@ module.exports = {
 					'\n'
 				    );
 				};
-				//interaction.reply({content : "voici l'emploi du temps", files: ["/opt/gab_bot/temp/file.ics"]})
+				interaction.reply({files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
 			fs.unlink(dest);
