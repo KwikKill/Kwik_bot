@@ -216,6 +216,8 @@ module.exports = {
 					
 					duration = Math.abs(start - end);
 					
+					console.log(duration)
+					
 				        days = Math.floor(duration / 86400);
 					duration -= days * 86400;
 					console.log('calculated days', days);
