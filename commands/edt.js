@@ -10,6 +10,7 @@ module.exports = {
 	serverid: ["513776796211085342", "480142959501901845"],
 	hidden: false,
 	place: "guild",
+	deploy: true,
     help: [
         {
             "name": "- __edt <classe>__ :",
