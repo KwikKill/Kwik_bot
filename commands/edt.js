@@ -76,7 +76,7 @@ module.exports = {
 				const canvas = Canvas.createCanvas(1530, 757);
 				const context = canvas.getContext('2d');
 				
-				const background = await Canvas.loadImage('../preset.png');
+				const background = Canvas.loadImage('../preset.png');
 				
 				for (const event of Object.values(events)) {
 				    console.log(
