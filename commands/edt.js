@@ -79,6 +79,14 @@ module.exports = {
 		context.strokeStyle = 'black';
 		context.stroke();
 		
+		context.beginPath();
+		context.rect(342, 40, 295, 43);
+		context.fillStyle = 'yellow';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
 		   	 //console.log(response)
@@ -96,7 +104,8 @@ module.exports = {
 					'\nStart Date: ' + event.start.toISOString() +
 					'\n'
 				    );*/
-					console.log(new Date(event.start.toISOString()).getUTCDay())
+					date = new Date(event.start.toISOString())
+					console.log((date.getUTCDay - 1)
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
