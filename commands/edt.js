@@ -30,7 +30,7 @@ module.exports = {
 		monday = new Date()
 		monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 		
-		sunday = monday
+		sunday = new Date(monday)
 		sunday = new Date(sunday.setDate(sunday.getDate() + 4));
 		
 		console.log(monday.toDateString())
