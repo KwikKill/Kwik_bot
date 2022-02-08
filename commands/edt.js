@@ -55,8 +55,8 @@ module.exports = {
 		sunday = new Date(monday)
 		sunday = new Date(sunday.setDate(sunday.getDate() + 4));
 
-		console.log(monday.toDateString())
-		console.log(sunday.toDateString())
+		//console.log(monday.toDateString())
+		//console.log(sunday.toDateString())
 
 		url_modified = url.replace("{0}", codes[interaction.options.getString("classe")]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 		
