@@ -87,6 +87,30 @@ module.exports = {
 		context.strokeStyle = 'black';
 		context.stroke();
 		
+		context.beginPath();
+		context.rect(637, 40, 295, 43);
+		context.fillStyle = 'red';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		context.beginPath();
+		context.rect(932, 40, 295, 43);
+		context.fillStyle = 'yellow';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		context.beginPath();
+		context.rect(1227, 40, 295, 43);
+		context.fillStyle = 'yellow';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
 		   	 //console.log(response)
