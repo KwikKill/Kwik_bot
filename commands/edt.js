@@ -2,6 +2,8 @@ const fs = require("fs");
 const https = require("https");
 const path = require('path');
 const { MessageEmbed } = require('discord.js');
+const Canvas = require('canvas');
+const ical = require('node-ical');
 
 codes = {
 	"A": "914,1033,426,411,395,383,377",
@@ -60,20 +62,22 @@ module.exports = {
 
 		url_modified = url.replace("{0}", codes[interaction.options.getString("classe")]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 		
-		//console.log(url_modified)
-		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
-		//console.log(__filename)
-		var request = https.get(url_modified, function(response) {
+		ical.async.fromURL(url_modified, function(err, data) { 
+			console.log(data); 
+		});
+		
+		//const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
+		/*var request = https.get(url_modified, function(response) {
 		   	 //console.log(response)
 			response.pipe(file);
 			file.on('finish', function() {
 				file.close();
 				interaction.reply({content : "voici l'emploi du temps", files: ["/opt/gab_bot/temp/file.ics"]})
 			});
-		}).on('error', function(err) { // Handle errors
-			fs.unlink(dest); // Delete the file async. (But we don't check the result)
+		}).on('error', function(err) {
+			fs.unlink(dest);
 			console.log(err.message)
-		});
+		});*/
 	}
     }
 }
