@@ -79,12 +79,13 @@ module.exports = {
 		// Actually fill the text with a solid color
 		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 700, 16);
 		context.fillText("Lundi " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 135, 34);
-		tuesday = new Date(sunday.setDate(sunday.getDate() + 1));
-		context.fillText("Mardi " + tuesday.getUTCDate() + "/" + (tuesday.getUTCMonth() + 1) + "/" + tuesday.getUTCFullYear(), 440, 34);
-		wednesday = new Date(sunday.setDate(sunday.getDate() + 2));
-		context.fillText("Mercredi " + wednesday.getUTCDate() + "/" + (wednesday.getUTCMonth() + 1) + "/" + wednesday.getUTCFullYear(), 715, 34);
-		thursday = new Date(sunday.setDate(sunday.getDate() + 3));
-		context.fillText("Jeudi " + thursday.getUTCDate() + "/" + (thursday.getUTCMonth() + 1) + "/" + thursday.getUTCFullYear(), 1030, 34);
+		day = new Date(monday)
+		day = day.setDate(day.getDate() + 1);
+		context.fillText("Mardi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 440, 34);
+		day = day.setDate(day.getDate() + 1);
+		context.fillText("Mercredi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 715, 34);
+		day = day.setDate(day.getDate() + 1);
+		context.fillText("Jeudi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1030, 34);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
