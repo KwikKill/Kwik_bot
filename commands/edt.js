@@ -27,7 +27,16 @@ module.exports = {
 	],
     async run(message, client, interaction=undefined) {
 	if(interaction != undefined) {
-		console.log("a")
+		console.log(getPreviousMonday())
 	}
     }
+}
+
+function getPreviousMonday() {
+  var date = new Date();
+  if (date.getDay() != 0) {
+    return new Date().setDate(date.getDate() - 7 - 6);
+  } else {
+    return new Date().setDate(date.getDate() - date.getDate() - 6);
+  }
 }
