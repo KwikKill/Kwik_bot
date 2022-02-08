@@ -71,13 +71,13 @@ module.exports = {
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
-		context.font = '20px sans-serif';
+		context.font = '15px sans-serif';
 
 		// Select the style that will be used to fill the text in
 		context.fillStyle = '#000000';
 
 		// Actually fill the text with a solid color
-		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + monday.getUTCFullYear(), 100, 20);
+		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + monday.getUTCFullYear(), 600, 20);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
