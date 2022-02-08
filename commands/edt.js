@@ -61,10 +61,12 @@ module.exports = {
 		//console.log(sunday.toDateString())
 
 		url_modified = url.replace("{0}", codes[interaction.options.getString("classe")]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
-		
-		ical.async.fromURL(url_modified, function(err, data) { 
-			console.log(data); 
-		});
+			
+		;(async () => {
+			ical.async.fromURL(url_modified, function(err, data) { 
+				console.log(data);
+			});
+		}
 		
 		//const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		/*var request = https.get(url_modified, function(response) {
@@ -81,3 +83,4 @@ module.exports = {
 	}
     }
 }
+
