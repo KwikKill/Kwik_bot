@@ -67,7 +67,7 @@ module.exports = {
 		   	 //console.log(response)
 			response.pipe(file);
 			file.on('finish', function() {
-				await file.close();
+				file.close();
 				interaction.reply({content : "voici l'emploi du temps", files: ["/opt/gab_bot/temp/file.ics"]})
 			});
 		}).on('error', function(err) { // Handle errors
