@@ -1,4 +1,5 @@
 const fs = require("fs");
+const https = require("https");
 const path = require('path');
 const { MessageEmbed } = require('discord.js');
 
@@ -62,7 +63,7 @@ module.exports = {
 		console.log(url_modified)
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		//console.log(__filename)
-		request(url_modified, function(response) {
+		var request = https.get(url_modified, function(response) {
 		   	 //console.log(response)
 			response.pipe(file);
 		});
