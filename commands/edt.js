@@ -18,7 +18,7 @@ codes = {
 	"L": "1586,1617,1792,1963,3180,3179"
 }
 
-url = "https://edt.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=22&calType=ical&firstDate={1}&lastDate={2}"
+url = "http://edt.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=22&calType=ical&firstDate={1}&lastDate={2}"
 
 module.exports = {
 	name: 'edt',
