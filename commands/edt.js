@@ -199,7 +199,7 @@ module.exports = {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
-				console.log(events)
+				//console.log(events)
 				for (const event of Object.values(events)) {
 					
 				    /*console.log(
@@ -212,7 +212,7 @@ module.exports = {
 					end = new Date(event.end.toISOString())
 					
 					console.log(event.start.toISOString())
-					console.log(event.end.toISOString())
+					//console.log(event.end.toISOString())
 					
 					duration = Math.abs(start - end);
 										
@@ -220,9 +220,9 @@ module.exports = {
 					duration -= hours * 3600000;
 					minutes = Math.floor(duration / 60000);					
 					
-					//console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
-					//console.log(Math.floor(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60))))
-					//console.log(Math.floor(295*(hours + (minutes/60))))
+					console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
+					console.log(Math.floor(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60))))
+					console.log(Math.floor(295*(hours + (minutes/60))))
 					
 					context.beginPath();
 					context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60))), Math.floor(295*(hours + (minutes/60))), 43);
