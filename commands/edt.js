@@ -78,8 +78,9 @@ module.exports = {
 
 		// Actually fill the text with a solid color
 		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 700, 16);
-		tuesday = new Date(monday + 1000*60*60*24)
-		context.fillText("Lundi " + tuesday.getUTCDate() + "/" + (tuesday.getUTCMonth() + 1) + "/" + tuesday.getUTCFullYear(), 135, 34);
+		context.fillText("Lundi " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 135, 34);
+		tuesday = new Date(monday + 1000*60*60*24 + 1)
+		console.log(tuesday)
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
