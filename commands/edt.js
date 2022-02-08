@@ -225,7 +225,7 @@ module.exports = {
 					console.log(Math.floor(295*(hours + (minutes/60))))
 					
 					context.beginPath();
-					context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60))), Math.floor(295*(hours + (minutes/60))), 43);
+					context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), 295, 43);
 					context.fillStyle = 'yellow';
 					context.fill();
 					context.lineWidth = 2;
