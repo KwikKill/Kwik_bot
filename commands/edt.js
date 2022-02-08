@@ -96,7 +96,7 @@ module.exports = {
 					'\nStart Date: ' + event.start.toISOString() +
 					'\n'
 				    );*/
-					console.log(new Date(event.start.toISOString()))
+					console.log(new Date(event.start.toISOString()).getUTCDay())
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
