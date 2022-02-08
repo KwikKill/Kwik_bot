@@ -22,5 +22,9 @@ module.exports = {
     async run(message, client, interaction=undefined, mssg=true) {
     	console.log("a")
         let ls_process = child_process.exec("sudo update-gab_bot.sh");
+	    
+	ls_process.stdout.on('data', (data) => {
+	  console.log(`stdout: ${data}`);
+	});
     }
 }
