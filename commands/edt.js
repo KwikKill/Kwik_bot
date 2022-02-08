@@ -209,6 +209,8 @@ module.exports = {
 					'\n'
 				    );*/
 					date = new Date(event.start.toISOString())
+					console.log(event.start.toISOString())
+					console.log(47 + 297 * (date.getUTCDay() - 1))
 					console.log(47 + 297 * (date.getUTCDay() - 1))
 					
 				};
