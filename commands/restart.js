@@ -22,13 +22,14 @@ module.exports = {
     async run(message, client, interaction=undefined, mssg=true) {
     	console.log("a")
         let ls_process = child_process.exec("update-gab_bot.sh");
+	process.exit(1)
 	    
-	ls_process.stdout.on('data', (data) => {
-	  console.log(`stdout: ${data}`);
-	});
+	//ls_process.stdout.on('data', (data) => {
+	//  console.log(`stdout: ${data}`);
+	//});
 	    
-	ls_process.stderr.on('data', (data) => {
-	  console.error(`stderr: ${data}`);
-	});
+	//ls_process.stderr.on('data', (data) => {
+	//  console.error(`stderr: ${data}`);
+	//});
     }
 }
