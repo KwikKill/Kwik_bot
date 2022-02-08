@@ -69,6 +69,7 @@ module.exports = {
 		const context = canvas.getContext('2d');
 				
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
+		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
