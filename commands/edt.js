@@ -211,7 +211,7 @@ module.exports = {
 					date = new Date(event.start.toISOString())
 					console.log(event.start.toISOString())
 					console.log(47 + 297 * (date.getUTCDay() - 1))
-					console.log((date..getHours() + 1))
+					console.log((date.getHours() + 1))
 					
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
