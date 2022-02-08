@@ -26,6 +26,8 @@ module.exports = {
 		},
 	],
     async run(message, client, interaction=undefined) {
-      console.log("a")
+	if(interaction != undefined) {
+		console.log("a")
+	}
     }
 }
