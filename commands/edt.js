@@ -199,7 +199,7 @@ module.exports = {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
-				console.log(event)
+				console.log(events)
 				/*for (const event of Object.values(events)) {
 					
 				    /*console.log(
