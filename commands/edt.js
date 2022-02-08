@@ -27,7 +27,9 @@ module.exports = {
 	],
     async run(message, client, interaction=undefined) {
 	if(interaction != undefined) {
-		console.log(getPreviousMonday())
+		monday = getPreviousMonday()
+		date = new Date(monday)
+		console.log(date.toDateString())
 	}
     }
 }
