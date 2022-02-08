@@ -59,7 +59,8 @@ module.exports = {
 		console.log(sunday.toDateString())
 
 		url_modified = url.replace("{0}", codes[interaction.options.getString("classe")]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
-
+		
+		console.log(url_modified)
 		var request = http.get(url_modified, function(response) {
 		    console.log(response)
 		});
