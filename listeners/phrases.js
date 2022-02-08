@@ -20,8 +20,11 @@ module.exports = {
 	if(content2.includes("application d'enzo")) {
 		msg.reply("Ah ? cette CELEBRE application trouvée le 08/02/2022 aux alentours de 15h20 par le GRAND Enzo Sicard ?")
 		return;
+	}else if(content2.includes("pgcd")) {
+		msg.reply("Le PGCD c'est 4")
+		return;
 	}
-	      
+
         content = msg.content
 	content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g,"")
 	content = content.trim()
