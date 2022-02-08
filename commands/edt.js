@@ -90,12 +90,13 @@ module.exports = {
 				
 				for (const event of Object.values(events)) {
 					
-				    console.log(
+				    /*console.log(
 					'Summary: ' + event.summary +
 					'\nDescription: ' + event.description +
 					'\nStart Date: ' + event.start.toISOString() +
 					'\n'
-				    );
+				    );*/
+					console.log(new Date(event.start.toISOString()))
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
