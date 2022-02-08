@@ -104,7 +104,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 220, 295, 43);
+		context.rect(47, 221, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -112,7 +112,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 265, 295, 43);
+		context.rect(47, 266, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -120,7 +120,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 310, 295, 43);
+		context.rect(47, 311, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -128,7 +128,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 355, 295, 43);
+		context.rect(47, 356, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -136,7 +136,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 400, 295, 43);
+		context.rect(47, 401, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
@@ -144,7 +144,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 446, 295, 43);
+		context.rect(47, 447, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -152,7 +152,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 491, 295, 43);
+		context.rect(47, 492, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
