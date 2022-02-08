@@ -220,9 +220,17 @@ module.exports = {
 					duration -= hours * 3600000;
 					minutes = Math.floor(duration / 60000);					
 					
-					console.log(295*(hours + (minutes/60)))
-					//console.log(47 + 297 * (start.getUTCDay() - 1))
-					//console.log(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60)))
+					//console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
+					//console.log(Math.floor(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60))))
+					//console.log(Math.floor(295*(hours + (minutes/60))))
+					
+					context.beginPath();
+					context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() + 1 + (start.getMinutes()/60))), Math.floor(295*(hours + (minutes/60))), 43);
+					context.fillStyle = 'yellow';
+					context.fill();
+					context.lineWidth = 2;
+					context.strokeStyle = 'black';
+					context.stroke();*/
 					
 					
 				};
