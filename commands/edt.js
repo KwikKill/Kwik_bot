@@ -71,12 +71,11 @@ module.exports = {
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
-		context.clearRect(135, 92, 126, 34);
 		context.beginPath();
-		context.rect(135, 92, 126, 34);
+		context.rect(100, 100, 100, 100);
 		context.fillStyle = 'red';
 		context.fill();
-		context.lineWidth = 7;
+		context.lineWidth = 2;
 		context.strokeStyle = 'black';
 		context.stroke();
 		
