@@ -29,7 +29,7 @@ module.exports = {
 	permission: "owner",
 	serverid: ["513776796211085342", "890915473363980308"],
 	hidden: false,
-	place: "guild",
+	place: "both",
 	deploy: true,
     help: [
         {
@@ -77,7 +77,7 @@ module.exports = {
 		context.fillStyle = '#000000';
 
 		// Actually fill the text with a solid color
-		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + monday.getUTCFullYear(), 800, 10);
+		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 800, 15);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
@@ -110,9 +110,9 @@ module.exports = {
 					duration -= hours * 3600000;
 					minutes = Math.floor(duration / 60000);					
 					
-					console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
-					console.log(Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))))
-					console.log(Math.floor(295*(hours + (minutes/60))))
+					//console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
+					//console.log(Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))))
+					//console.log(Math.floor(295*(hours + (minutes/60))))
 					
 					context.beginPath();
 					context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), 295, Math.floor(43*(hours + (minutes/60))));
