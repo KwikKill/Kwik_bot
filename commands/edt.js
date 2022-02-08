@@ -71,7 +71,7 @@ module.exports = {
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
-		context.font = '60px sans-serif';
+		context.font = '20px sans-serif';
 
 		// Select the style that will be used to fill the text in
 		context.fillStyle = '#000000';
