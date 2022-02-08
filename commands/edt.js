@@ -71,7 +71,6 @@ module.exports = {
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
-		context.drawImage(v, 5, 5, 260, 125);
 		context.clearRect(135, 92, 126, 34);
 		context.beginPath();
 		context.rect(135, 92, 126, 34);
