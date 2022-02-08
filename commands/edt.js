@@ -7,7 +7,7 @@ module.exports = {
 	group: 'INSA',
 	description: "Permet de récupérer l'edt d'une classe",
 	permission: "none",
-	serverid: ["513776796211085342", "480142959501901845"],
+	serverid: ["513776796211085342", "890915473363980308"],
 	hidden: false,
 	place: "guild",
 	deploy: true,
