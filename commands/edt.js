@@ -105,7 +105,7 @@ module.exports = {
 					'\n'
 				    );*/
 					date = new Date(event.start.toISOString())
-					console.log((date.getUTCDay - 1)
+					console.log((date.getUTCDay - 1))
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
