@@ -44,6 +44,10 @@ module.exports = {
 	],
     async run(message, client, interaction=undefined) {
 	if(interaction != undefined) {
+		if(codes[interaction.options.getString("classe")] == undefined) {
+			interaction.reply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
+			return;
+		}
 		monday = new Date()
 		monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 		
