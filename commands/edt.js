@@ -80,6 +80,22 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
+		context.rect(47, 85, 295, 43);
+		context.fillStyle = 'yellow';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		context.beginPath();
+		context.rect(47, 130, 295, 43);
+		context.fillStyle = 'red';
+		context.fill();
+		context.lineWidth = 2;
+		context.strokeStyle = 'black';
+		context.stroke();
+		
+		/*context.beginPath();
 		context.rect(344, 40, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
@@ -109,7 +125,7 @@ module.exports = {
 		context.fill();
 		context.lineWidth = 2;
 		context.strokeStyle = 'black';
-		context.stroke();
+		context.stroke();*/
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
@@ -130,6 +146,7 @@ module.exports = {
 				    );*/
 					date = new Date(event.start.toISOString())
 					console.log(47 + 297 * (date.getUTCDay() - 1))
+					
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
