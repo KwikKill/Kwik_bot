@@ -14,6 +14,14 @@ module.exports = {
       guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
       
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
+	      
+	content2 = msg.content
+	content2 = content2.toLowerCase()
+	if(content2.includes("application d'enzo")) {
+		msg.reply("Ah ? cette CELEBRE application trouvée le 08/02/2022 aux alentours de 15h20 par le GRAND Enzo Sicard ?")
+		return;
+	}
+	      
         content = msg.content
 	content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g,"")
 	content = content.trim()
@@ -54,7 +62,7 @@ module.exports = {
 	  }
 	}
 	      
-	if(last == "ah") {
+	if(last == "ah" || last == "ha") {
 		msg.reply("B")
 		return;
 	}
