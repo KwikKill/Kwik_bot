@@ -77,7 +77,7 @@ module.exports = {
 		context.fillStyle = '#000000';
 
 		// Actually fill the text with a solid color
-		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 800, 15);
+		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 700, 15);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
@@ -101,7 +101,7 @@ module.exports = {
 					
 					
 					
-					console.log(event.start.toISOString())
+					//console.log(event.start.toISOString())
 					//console.log(event.end.toISOString())
 					
 					duration = Math.abs(start - end);
