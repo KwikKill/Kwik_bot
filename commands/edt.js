@@ -144,7 +144,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 445, 295, 43);
+		context.rect(47, 446, 295, 43);
 		context.fillStyle = 'yellow';
 		context.fill();
 		context.lineWidth = 2;
@@ -152,7 +152,7 @@ module.exports = {
 		context.stroke();
 		
 		context.beginPath();
-		context.rect(47, 490, 295, 43);
+		context.rect(47, 491, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
 		context.lineWidth = 2;
