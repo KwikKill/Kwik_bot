@@ -29,7 +29,12 @@ module.exports = {
 	if(interaction != undefined) {
 		monday = new Date()
 		monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
+		
+		sunday = monday
+		sunday = sunday.setDate(sunday.getDate() + 4);
+		
 		console.log(monday.toDateString())
+		console.log(sunday.toDateString())
 	}
     }
 }
