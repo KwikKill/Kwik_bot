@@ -221,7 +221,7 @@ module.exports = {
 					minutes = Math.floor(duration / 60000);					
 					
 					console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
-					console.log(Math.floor((start.getHours() + 1 + (start.getMinutes()/60))))
+					console.log((start.getHours() + 1 + (start.getMinutes()/60)))
 					console.log(Math.floor(295*(hours + (minutes/60))))
 					
 					context.beginPath();
