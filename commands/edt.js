@@ -71,7 +71,7 @@ module.exports = {
 		const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
 		context.drawImage(background, 0, 0, canvas.width, canvas.height);
 		
-		context.beginPath();
+		/*context.beginPath();
 		context.rect(47, 40, 295, 43);
 		context.fillStyle = 'red';
 		context.fill();
@@ -157,7 +157,7 @@ module.exports = {
 		context.fill();
 		context.lineWidth = 2;
 		context.strokeStyle = 'black';
-		context.stroke();
+		context.stroke();*/
 		
 		/*context.beginPath();
 		context.rect(344, 40, 295, 43);
@@ -211,7 +211,7 @@ module.exports = {
 					date = new Date(event.start.toISOString())
 					console.log(event.start.toISOString())
 					console.log(47 + 297 * (date.getUTCDay() - 1))
-					console.log((date.getHours() + 1 + (date.getMinutes()/60)))
+					console.log(40 + 45.2 * (date.getHours() + 1 + (date.getMinutes()/60)))
 					
 				};
 				interaction.reply({files: [canvas.toBuffer()]})
