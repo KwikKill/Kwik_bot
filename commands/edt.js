@@ -199,8 +199,8 @@ module.exports = {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
-				
-				for (const event of Object.values(events)) {
+				console.log(event)
+				/*for (const event of Object.values(events)) {
 					
 				    /*console.log(
 					'Summary: ' + event.summary +
@@ -213,7 +213,7 @@ module.exports = {
 					console.log(47 + 297 * (date.getUTCDay() - 1))
 					console.log(40 + 45.2 * (date.getHours() + 1 + (date.getMinutes()/60)))
 					
-				};
+				};*/
 				interaction.reply({files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
