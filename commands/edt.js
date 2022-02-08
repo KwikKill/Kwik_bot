@@ -53,7 +53,7 @@ module.exports = {
 		console.log(monday.toDateString())
 		console.log(sunday.toDateString())
 		
-		console.log(url.replace("{0}", interaction.options.getString("classe").replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()))
+		console.log(url.replace("{0}", interaction.options.getString("classe")).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()))
 	}
     }
 }
