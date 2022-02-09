@@ -128,7 +128,7 @@ module.exports = {
 							description2 = description.trim()
 							description2 = location + "\n" + description2
 							description2 = description2.split("\n")
-							description2 = description2.slice(0,description2.length - 2)
+							description2 = description2.slice(0,description2.length - 1)
 							
 							description3 = ""
 							duration = Math.abs(start - end);
@@ -136,7 +136,6 @@ module.exports = {
 							duration -= hours * 3600000;
 							minutes = Math.floor(duration / 60000);	
 							
-							console.log("---\n" + description)
 							if(hours + minutes/60 <= 1.5) {
 								description3 = location
 							}else {
