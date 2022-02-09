@@ -129,7 +129,7 @@ module.exports = {
 							minutes = Math.floor(duration / 60000);	
 							
 							width = 295/di[j][i].length
-							if(summary.length > 40/di[j][i].length) {
+							if(summary.length > 45/di[j][i].length) {
 								console.log(summary, di[j][i].length)
 							}
 							color = "yellow"
@@ -166,7 +166,7 @@ module.exports = {
 							context.textAlign = "center"
 							context.font = '12px sans-serif';
 							context.fillStyle = '#000000';
-							context.fillText(summary, (2*(Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h)) + Math.floor(45*(hours + (minutes/60))))/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 20, width);
+							context.fillText(summary, Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h) + width, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 20, width);
 						}
 					}
 				}
