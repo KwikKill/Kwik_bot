@@ -131,17 +131,23 @@ module.exports = {
 							description2 = description2.slice(0,description2.length - 2)
 							
 							description3 = ""
-							for(const y in description2) {
-								if(!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
-									console.log(description2[y])
-									description3 += description2[y] + "\n"
+							duration = Math.abs(start - end);
+							if(duration <= 1) {
+								description3 = location
+							}else {
+															
+								for(const y in description2) {
+									if(!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
+										
+										description3 += description2[y] + "\n"
+									}else {
+										console.log(description2[y])
+									}
 								}
 							}
 							
 							
 							//console.log(description3)
-							
-							duration = Math.abs(start - end);
 										
 							hours = Math.floor(duration / 3600000);
 							duration -= hours * 3600000;
