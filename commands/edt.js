@@ -136,7 +136,7 @@ module.exports = {
 							duration -= hours * 3600000;
 							minutes = Math.floor(duration / 60000);	
 							
-							console.log("---\n" + description2)
+							console.log("---\n" + description)
 							if(hours + minutes/60 <= 1.5) {
 								description3 = location
 							}else {
