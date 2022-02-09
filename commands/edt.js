@@ -166,7 +166,7 @@ module.exports = {
 							context.textAlign = "center"
 							context.font = '12px sans-serif';
 							context.fillStyle = '#000000';
-							context.fillText(summary, Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h) + width, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 20, width);
+							context.fillText(summary, (Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 20, width);
 						}
 					}
 				}
