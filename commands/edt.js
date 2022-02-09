@@ -97,7 +97,7 @@ module.exports = {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
-				di = {}
+				di = { 0: {}, 1:{}, 2:{}, 3:{}, 4:{}, 5:{}, 6:{}}
 				for (const event of Object.values(events)) {
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
