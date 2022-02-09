@@ -97,15 +97,15 @@ module.exports = {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
-				di = { 0: {}, 1:{}, 2:{}, 3:{}, 4:{}, 5:{}, 6:{}}
+				di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 				for (const event of Object.values(events)) {
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
 					
 					if(di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] == undefined) {
-						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [event.summary]
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end}]
 					}else {
-						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push(event.summary)
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end})
 					}
 				}
 				
