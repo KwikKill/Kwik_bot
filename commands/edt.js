@@ -103,9 +103,9 @@ module.exports = {
 					end = new Date(event.end.toISOString())
 					
 					if(di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] == undefined) {
-						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end}]
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description}]
 					}else {
-						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end})
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description})
 					}
 				}
 				
@@ -116,6 +116,8 @@ module.exports = {
 						for(const h in di[j][i]) {
 							start = di[j][i][h]["start"]
 							end = di[j][i][h]["end"]
+							summary = di[j][i][h]["summary"]
+							description = di[j][i][h]["description"]
 							
 							duration = Math.abs(start - end);
 										
@@ -124,7 +126,10 @@ module.exports = {
 							minutes = Math.floor(duration / 60000);	
 							
 							width = 295/di[j][i].length
-							console.log(width)
+							color = "orange"
+							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
+							   color = "aqua"
+							}
 							
 							context.beginPath();
 							context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
