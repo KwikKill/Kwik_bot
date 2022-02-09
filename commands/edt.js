@@ -126,7 +126,7 @@ module.exports = {
 							
 							description2 = description
 							description2 = description2.split("\n")
-							description2 = description2[0:description2.length - 2]
+							description2 = description2.substr(0,description2.length - 2)
 							
 							console.log(description2)
 							
