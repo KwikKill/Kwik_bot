@@ -143,6 +143,9 @@ module.exports = {
 										color = "#80FF00"
 									}
 								}
+								if(summary.includes("TP") {
+								   color = "#FFCCFF"
+								}
 							}
 
 							//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
