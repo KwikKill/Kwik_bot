@@ -129,6 +129,9 @@ module.exports = {
 							minutes = Math.floor(duration / 60000);	
 							
 							width = 295/di[j][i].length
+							if(summary.length > 40/di[j][i].length) {
+								console.log(summary, di[j][i].length)
+							}
 							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
 							   color = "#99FFFF"
