@@ -109,7 +109,13 @@ module.exports = {
 					}
 				}
 				
-				console.log(di)
+				//console.log(di)
+				
+				for(const j in di) {
+					for(const i in di[j]) {
+						console.log(d[j][i]["summary"])
+					}
+				}
 				
 				//console.log(events)
 				for (const event of Object.values(events)) {
