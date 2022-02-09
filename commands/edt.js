@@ -130,8 +130,15 @@ module.exports = {
 							description2 = description2.split("\n")
 							description2 = description2.slice(0,description2.length - 2)
 							
+							description3 = ""
+							for(const y in description2) {
+								if(!description2[y].includes("STPI")) {
+									description3 += description2[y] + "\n"
+								}
+							}
 							
-							console.log(description2)
+							
+							console.log(description3)
 							
 							duration = Math.abs(start - end);
 										
