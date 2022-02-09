@@ -106,9 +106,9 @@ module.exports = {
 					end = new Date(event.end.toISOString())
 					
 					if(di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] == undefined) {
-						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description}]
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
 					}else {
-						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description})
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
 					}
 				}
 				
@@ -121,12 +121,15 @@ module.exports = {
 							end = di[j][i][h]["end"]
 							summary = di[j][i][h]["summary"]
 							description = di[j][i][h]["description"]
+							location = di[j][i][h]["location"]
 							
 							//console.log(description)
 							
-							description2 = description
+							description2 = description.trim()
+							description2 = location + "\n" + description2
 							description2 = description2.split("\n")
 							description2 = description2.slice(0,description2.length - 2)
+							
 							
 							console.log(description2)
 							
