@@ -146,7 +146,7 @@ module.exports = {
 								}
 							}
 							
-							console.log(description3)
+							console.log("---\n" + description3)
 							
 							
 							//console.log(description3)
