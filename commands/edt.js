@@ -132,7 +132,7 @@ module.exports = {
 							
 							description3 = ""
 							for(const y in description2) {
-								if(!description2[y].includes("STPI") && !description2[y].includes("Grp")) {
+								if(!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
 									description3 += description2[y] + "\n"
 								}
 							}
