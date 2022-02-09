@@ -21,6 +21,7 @@ codes = {
 }
 
 TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE"]
+LANGUES = ["LV2", "LV3", "ANGLAIS"]
 
 url = "https://edt.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=22&calType=ical&firstDate={1}&lastDate={2}"
 
@@ -131,11 +132,15 @@ module.exports = {
 							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
 							   color = "#99FFFF"
-							}else {
-								for(const y in TD) {
-									if(summary.includes(y)) {
-										color = "#99FF99"
-									}
+							}
+							for(const y in TD) {
+								if(summary.includes(y)) {
+									color = "#99FF99"
+								}
+							}
+							for(const y in lANGUES) {
+								if(summary.includes(y)) {
+									color = "#80FF00"
 								}
 							}
 							//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
