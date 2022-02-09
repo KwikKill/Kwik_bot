@@ -102,7 +102,11 @@ module.exports = {
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
 					
-					di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = event.summary
+					if(di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] == undefined) {
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [event.summary]
+					}else {
+						di[start.getUTCDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push(event.summary)
+					}
 				}
 				
 				console.log(di)
