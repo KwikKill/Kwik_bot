@@ -129,7 +129,7 @@ module.exports = {
 							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
 							   color = "aqua"
-							}else if(summary.includes("MECANIQUE_2")) {
+							}else if(summary.includes("MECANIQUE 2")) {
 							   color = "99FF99"
 							}
 							
