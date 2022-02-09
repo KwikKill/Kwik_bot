@@ -132,7 +132,7 @@ module.exports = {
 							
 							description3 = ""
 							duration = Math.abs(start - end);
-							if(duration <= 1) {
+							if(duration <= 1.5) {
 								description3 = location
 							}else {
 															
