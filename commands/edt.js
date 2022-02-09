@@ -138,12 +138,14 @@ module.exports = {
 									color = "#99FF99"
 								}
 							}
+							summary2 = summary
 							for(const y in LANGUES) {
-								if(summary.includes(y)) {
+								summary2.replace(y, "c'est une langue")
+							}
+							if(summary2.includes("c'est une langue")) {
 									console.log(summary)
 									color = "#80FF00"
 								}
-							}
 							//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
 							//   color = "yellow"
 							//}
