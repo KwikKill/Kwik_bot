@@ -141,10 +141,12 @@ module.exports = {
 										
 										description3 += description2[y] + "\n"
 									}else {
-										console.log(description2[y])
+										//console.log(description2[y])
 									}
 								}
 							}
+							
+							console.log(description3)
 							
 							
 							//console.log(description3)
