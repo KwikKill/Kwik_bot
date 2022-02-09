@@ -174,7 +174,7 @@ module.exports = {
 							//}
 							
 							context.beginPath();
-							context.rect(Math.floor(47 + 296.4 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
+							context.rect(Math.floor(47 + 296.7 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
 							context.fillStyle = color;
 							context.fill();
 							context.lineWidth = 2;
@@ -184,12 +184,12 @@ module.exports = {
 							context.textAlign = "center"
 							context.font = '12px sans-serif';
 							context.fillStyle = '#000000';
-							context.fillText(summary, (Math.floor(47 + 296.4 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 296.4 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
+							context.fillText(summary, (Math.floor(47 + 296.7 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 296.7 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
 						
 							context.textAlign = "center"
 							context.font = '12px sans-serif';
 							context.fillStyle = '#000000';
-							context.fillText(description3, (Math.floor(47 + 296.4 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 296.4 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 30 + Math.floor(8*(hours - 1 + (minutes/60))), width);
+							context.fillText(description3, (Math.floor(47 + 296.7 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 296.7 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 30 + Math.floor(8*(hours - 1 + (minutes/60))), width);
 
 						}
 					}
