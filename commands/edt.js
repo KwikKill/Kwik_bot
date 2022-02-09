@@ -127,7 +127,7 @@ module.exports = {
 							console.log(width)
 							
 							context.beginPath();
-							context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(44*(hours + (minutes/60))));
+							context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
 							context.fillStyle = 'yellow';
 							context.fill();
 							context.lineWidth = 2;
