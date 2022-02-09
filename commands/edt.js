@@ -143,7 +143,7 @@ module.exports = {
 										color = "#80FF00"
 									}
 								}
-								if(summary.includes("TP") {
+								if(summary.includes("TP")) {
 								   color = "#FFCCFF"
 								}
 							}
