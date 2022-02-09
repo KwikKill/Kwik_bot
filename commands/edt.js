@@ -132,17 +132,19 @@ module.exports = {
 							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
 							   color = "#99FFFF"
-							}
-							for(const y in TD) {
-								if(summary.includes(TD[y])) {
-									color = "#99FF99"
+							}else {
+								for(const y in TD) {
+									if(summary.includes(TD[y])) {
+										color = "#99FF99"
+									}
+								}
+								for(const y in LANGUES) {
+									if(summary.includes(LANGUES[y])) {
+										color = "#80FF00"
+									}
 								}
 							}
-							for(const y in LANGUES) {
-								if(summary.includes(LANGUES[y])) {
-									color = "#80FF00"
-								}
-							}
+
 							//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
 							//   color = "yellow"
 							//}
