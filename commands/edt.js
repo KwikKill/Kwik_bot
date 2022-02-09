@@ -20,6 +20,8 @@ codes = {
 	"l": "1586,1617,1792,1963,3180,3179"
 }
 
+TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE"]
+
 url = "https://edt.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=22&calType=ical&firstDate={1}&lastDate={2}"
 
 module.exports = {
@@ -128,10 +130,17 @@ module.exports = {
 							width = 295/di[j][i].length
 							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
-							   color = "aqua"
-							}else if(summary.includes("MECANIQUE 2")) {
-							   color = "#99FF99"
+							   color = "#99FFFF"
+							}else {
+								for(const y in TD) {
+									if(summary.includes(y)) {
+										color = "#99FF99"
+									}
+								}
 							}
+							//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
+							//   color = "yellow"
+							//}
 							
 							context.beginPath();
 							context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
