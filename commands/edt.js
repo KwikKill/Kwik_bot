@@ -122,10 +122,13 @@ module.exports = {
 							summary = di[j][i][h]["summary"]
 							description = di[j][i][h]["description"]
 							
-							console.log(description)
+							//console.log(description)
 							
-							//description2 = description
-							//description2.replace("")
+							description2 = description
+							description2 = description2.split("\n")
+							description2 = description2[0:description2.length - 2]
+							
+							console.log(description2)
 							
 							duration = Math.abs(start - end);
 										
