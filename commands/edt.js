@@ -140,6 +140,7 @@ module.exports = {
 							}
 							for(const y in LANGUES) {
 								if(summary.includes(y)) {
+									console.log(summary)
 									color = "#80FF00"
 								}
 							}
