@@ -138,7 +138,7 @@ module.exports = {
 									color = "#99FF99"
 								}
 							}
-							for(const y in lANGUES) {
+							for(const y in LANGUES) {
 								if(summary.includes(y)) {
 									color = "#80FF00"
 								}
