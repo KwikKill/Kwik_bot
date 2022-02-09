@@ -132,7 +132,11 @@ module.exports = {
 							
 							description3 = ""
 							duration = Math.abs(start - end);
-							if(duration <= 1.5) {
+							hours = Math.floor(duration / 3600000);
+							duration -= hours * 3600000;
+							minutes = Math.floor(duration / 60000);	
+							
+							if(hours + minutes/60 <= 1.5) {
 								description3 = location
 							}else {
 															
@@ -151,9 +155,7 @@ module.exports = {
 							
 							//console.log(description3)
 										
-							hours = Math.floor(duration / 3600000);
-							duration -= hours * 3600000;
-							minutes = Math.floor(duration / 60000);	
+
 							
 							width = 295/di[j][i].length
 							if(summary.length > 45/di[j][i].length) {
