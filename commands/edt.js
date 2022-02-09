@@ -114,48 +114,27 @@ module.exports = {
 				for(const j in di) {
 					for(const i in di[j]) {
 						for(const h in di[j][i]) {
-							console.log(di[j][i][h]["summary"])
+							start = di[j][i][h]["start"]
+							end = di[j][i][h]["end"]
+							
+							duration = Math.abs(start - end);
+										
+							hours = Math.floor(duration / 3600000);
+							duration -= hours * 3600000;
+							minutes = Math.floor(duration / 60000);	
+							
+							context.beginPath();
+							context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), 295, Math.floor(43*(hours + (minutes/60))));
+							context.fillStyle = 'yellow';
+							context.fill();
+							context.lineWidth = 2;
+							context.strokeStyle = 'black';
+							context.stroke();
 						}
 					}
 				}
 				
-				//console.log(events)
-				for (const event of Object.values(events)) {
-					
-				    /*console.log(
-					'Summary: ' + event.summary +
-					'\nDescription: ' + event.description +
-					'\nStart Date: ' + event.start.toISOString() +
-					'\n'
-				    );*/
-					start = new Date(event.start.toISOString())
-					end = new Date(event.end.toISOString())
-					
-					
-					
-					//console.log(event.start.toISOString())
-					//console.log(event.end.toISOString())
-					
-					duration = Math.abs(start - end);
-										
-					hours = Math.floor(duration / 3600000);
-					duration -= hours * 3600000;
-					minutes = Math.floor(duration / 60000);					
-					
-					//console.log(Math.floor(47 + 297 * (start.getUTCDay() - 1)))
-					//console.log(Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))))
-					//console.log(Math.floor(295*(hours + (minutes/60))))
-					
-					context.beginPath();
-					context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1)), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), 295, Math.floor(43*(hours + (minutes/60))));
-					context.fillStyle = 'yellow';
-					context.fill();
-					context.lineWidth = 2;
-					context.strokeStyle = 'black';
-					context.stroke();
-					
-					
-				};
+				
 				interaction.reply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
