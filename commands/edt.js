@@ -126,14 +126,14 @@ module.exports = {
 							minutes = Math.floor(duration / 60000);	
 							
 							width = 295/di[j][i].length
-							color = "orange"
+							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
 							   color = "aqua"
 							}
 							
 							context.beginPath();
 							context.rect(Math.floor(47 + 297 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
-							context.fillStyle = 'yellow';
+							context.fillStyle = color;
 							context.fill();
 							context.lineWidth = 2;
 							context.strokeStyle = 'black';
