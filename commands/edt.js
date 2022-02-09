@@ -148,7 +148,7 @@ module.exports = {
 							
 							width = 295/di[j][i].length
 							if(summary.length > 45/di[j][i].length) {
-								console.log(summary, di[j][i].length)
+								//console.log(summary, di[j][i].length)
 							}
 							color = "yellow"
 							if(summary.includes("ABCDE") || summary.includes("FGHKL")) {
