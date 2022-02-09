@@ -113,7 +113,9 @@ module.exports = {
 				
 				for(const j in di) {
 					for(const i in di[j]) {
-						console.log(di[j][i]["summary"])
+						for(const h in di[j][i]) {
+							console.log(di[j][i][h]["summary"])
+						}
 					}
 				}
 				
