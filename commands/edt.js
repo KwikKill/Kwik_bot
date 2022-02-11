@@ -54,11 +54,23 @@ module.exports = {
 			interaction.reply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
 			return;
 		}
-		monday = new Date()
-		monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
+		today = new Date('February 12, 2022 23:15:30 GMT+11:00')
+		if(today.getUTCDay() != 0 && today.getUTCDay() != 6) {
+			monday = new Date()
+			monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 
-		sunday = new Date(monday)
-		sunday = new Date(sunday.setDate(sunday.getDate() + 4));
+			sunday = new Date(monday)
+			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
+		}else {
+			monday = new Date()
+			monday.setDate(monday.getDate() + 7 - (monday.getDay() + 6) % 7);
+
+			sunday = new Date(monday)
+			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
+			
+			console.log(monday, sunday)
+			return;
+		}
 
 		//console.log(monday.toDateString())
 		//console.log(sunday.toDateString())
