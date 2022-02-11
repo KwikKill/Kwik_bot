@@ -54,7 +54,7 @@ module.exports = {
 			interaction.reply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
 			return;
 		}
-		today = new Date('February 12, 2022 23:15:30 GMT+11:00')
+		today = new Date()
 		if(today.getUTCDay() != 0 && today.getUTCDay() != 6) {
 			monday = new Date()
 			monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
@@ -69,7 +69,6 @@ module.exports = {
 			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
 			
 			console.log(monday, sunday)
-			return;
 		}
 
 		//console.log(monday.toDateString())
