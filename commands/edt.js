@@ -210,7 +210,7 @@ module.exports = {
 				interaction.reply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
-			fs.unlink(dest);
+			fs.unlink(file);
 			console.log(err.message)
 		});
 	}
