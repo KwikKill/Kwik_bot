@@ -32,7 +32,7 @@ module.exports = {
 	      
 	if(content.length >= 200) {
 		random = Math.floor(Math.random() * (1000 + 1))
-		if(true) {//random == 100
+		if(random == 100) {
 			mmsg = await msg.reply("https://media.discordapp.net/attachments/514374423910809601/943079513212989470/20220214_224737.jpg?width=668&height=663")
 			await mmsg.react("♥")
 			await msg.react("♥")
