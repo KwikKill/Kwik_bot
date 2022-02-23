@@ -18,7 +18,7 @@ module.exports = {
 	content2 = msg.content
 	content2 = content2.toLowerCase()
 	      
-	if(client.owners.includes(msg.author.id) {
+	if(client.owners.includes(msg.author.id)) {
 	   if(msg.reference.messageId != undefined) {
 		mmsg = await msg.channel.messages.fetch(msg.reference.messageId);
 		if(mmsg.author.id == client.user.id) {
