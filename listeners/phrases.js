@@ -22,7 +22,7 @@ module.exports = {
 	   if(msg.reference != undefined && msg.reference.messageId != undefined) {
 		mmsg = await msg.channel.messages.fetch(msg.reference.messageId);
 		if(mmsg.author.id == client.user.id) {
-			await msg.react("♥");
+			await msg.reply("♥");
 		}
 	   }
 	}
