@@ -17,6 +17,16 @@ module.exports = {
 	      
 	content2 = msg.content
 	content2 = content2.toLowerCase()
+	      
+	if(client.owners.includes(msg.author.id) {
+	   if(msg.reference.messageId != undefined) {
+		mmsg = await msg.channel.messages.fetch(msg.reference.messageId);
+		if(mmsg.author.id == client.user.id) {
+			await msg.react("♥");
+		}
+	   }
+	}
+	      
 	if(content2.includes("application d'enzo")) {
 		msg.reply("Ah ? cette CELEBRE application trouvée le 08/02/2022 aux alentours de 15h20 par le GRAND Enzo Sicard ?")
 		return;
