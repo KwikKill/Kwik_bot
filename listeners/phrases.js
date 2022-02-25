@@ -74,7 +74,7 @@ module.exports = {
 	}
 	
 	for(x in arr) {
-	  if(arr[x].startsWith("ukraine") || arr[x].startsWith("l'ukraine")) {
+	  if(arr[x].startsWith("ukraine") || arr[x].startsWith("lukraine")) {
 		msg.reply("L'Ukraine ? tu veut dire cette province de la Russie ?")
 		return;
 	  }
