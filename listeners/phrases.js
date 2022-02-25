@@ -73,6 +73,13 @@ module.exports = {
 	  }
 	}
 	
+	for(x in arr) {
+	  if(arr[x].startsWith("ukraine")) {
+		msg.reply("L'Ukraine ? tu veut dire cette province de la Russie ?")
+		return;
+	  }
+	}
+	      
 	arr = content.split(" ")
 	for(x in arr) {
 	  if(arr[x].startsWith("cri") || arr[x].startsWith("cry")) {
