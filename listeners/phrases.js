@@ -36,7 +36,7 @@ module.exports = {
 	}
 
         content = msg.content
-	content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g,"")
+	content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_'`~()\"]/g,"")
 	content = content.trim()
 	content = content.toLowerCase()
 	      
