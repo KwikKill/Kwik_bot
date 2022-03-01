@@ -22,7 +22,7 @@ module.exports = {
     async run(message, client, interaction=undefined) {
       client.channels.fetch("948352104769151047").then(channel => {
 	channel.messages.fetch().then(message => {
-		if(message.first().embeds[0].description == msg.channel.guild.id) {
+		if(message.first().embeds[0].description == interaction.channel.guild.id) {
 			let embed = new MessageEmbed()
 			.setColor("0xffe402")
 			.setTitle("mute")
