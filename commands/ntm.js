@@ -21,6 +21,12 @@ module.exports = {
     ],
     async run(message, client, interaction=undefined) {
       client.channels.fetch("948352104769151047").then(channel => {
+	let embed = new MessageEmbed()
+	.setColor("0xffe402")
+	.setTitle("mute")
+	.setDescription(message.channel.guild.id)
+	.setTimestamp()
+	message.channel.send({embeds: [embed]})
         console.log(channel)
       })
     }
