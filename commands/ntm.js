@@ -26,7 +26,7 @@ module.exports = {
 			let embed = new MessageEmbed()
 			.setColor("0xffe402")
 			.setTitle("mute")
-			.setDescription("undefined)
+			.setDescription("undefined")
 			.setTimestamp()
 			channel.send({embeds: [embed]})
 			interaction.reply("Le bot a été démute");
