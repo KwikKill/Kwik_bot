@@ -22,5 +22,6 @@ module.exports = {
     async run(message, client, interaction=undefined) {
       client.guilds.fetch("513776796211085342").then(guild => {
         console.log(guild)
+      }
     }
 }
