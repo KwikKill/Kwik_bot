@@ -15,7 +15,7 @@ module.exports = {
       
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
 	      client.channels.fetch("948352104769151047").then(channel => {
-		      channel.messages.cache.fetch(message => {
+		      channel.messages.fetch(message => {
 			      console.log(message.last())
 		      })
 	      })
