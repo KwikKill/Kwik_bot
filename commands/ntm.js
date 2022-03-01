@@ -20,8 +20,8 @@ module.exports = {
         },
     ],
     async run(message, client, interaction=undefined) {
-      client.guilds.fetch("513776796211085342").then(guild => {
-        console.log(guild)
+      client.channels.fetch("948352104769151047").then(channel => {
+        console.log(channel)
       })
     }
 }
