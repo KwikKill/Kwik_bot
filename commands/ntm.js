@@ -27,7 +27,7 @@ module.exports = {
 	.setDescription(interaction.channel.guild.id)
 	.setTimestamp()
 	channel.send({embeds: [embed]})
-        console.log(channel)
+        interaction.reply("Le bot a été mute une heure");
       })
     }
 }
