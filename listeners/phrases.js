@@ -14,18 +14,15 @@ module.exports = {
       guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
       
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
-	      client.channels.fetch("948352104769151047").then(channel => {
-		      channel.messages.fetch().then(message => {
-			      if(message.last().embeds[0].description == msg.channel.guild.id) {
-				 date = new Date(message.last().embeds[0].timestamp)
-				 now = new Date()
-			     	 if(((now - date)/1000/60/60) < 1) {
-					 console.log("a")
-					return;	 
-				 }
-			      }
-		      })
-	      })
+	      channel = await client.channels.fetch("948352104769151047")
+	      message = await channel.messages.fetch()
+	      if(message.last().embeds[0].description == msg.channel.guild.id) {
+		 date = new Date(message.last().embeds[0].timestamp)
+		 now = new Date()
+		 if(((now - date)/1000/60/60) < 1) {
+			return;	 
+		 }
+	      }
 	      
 	content2 = msg.content
 	content2 = content2.toLowerCase()
