@@ -14,6 +14,9 @@ module.exports = {
       guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
       
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
+	      client.channels.fetch("948352104769151047").then(channel => {
+		      console.log(channel.messages.cache.last())
+	      })
 	      
 	content2 = msg.content
 	content2 = content2.toLowerCase()
