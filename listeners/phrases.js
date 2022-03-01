@@ -16,6 +16,7 @@ module.exports = {
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
 	      channel = await client.channels.fetch("948352104769151047")
 	      message = await channel.messages.fetch()
+	      console.log(message.last().embeds[0].description, msg.channel.guild.id)
 	      if(message.last().embeds[0].description == msg.channel.guild.id) {
 		 date = new Date(message.last().embeds[0].timestamp)
 		 now = new Date()
