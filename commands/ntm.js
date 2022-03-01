@@ -24,9 +24,9 @@ module.exports = {
 	let embed = new MessageEmbed()
 	.setColor("0xffe402")
 	.setTitle("mute")
-	.setDescription(message.channel.guild.id)
+	.setDescription(interaction.channel.guild.id)
 	.setTimestamp()
-	message.channel.send({embeds: [embed]})
+	channel.send({embeds: [embed]})
         console.log(channel)
       })
     }
