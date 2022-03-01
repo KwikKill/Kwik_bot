@@ -19,7 +19,7 @@ module.exports = {
 			      if(message.last().embeds[0].description == msg.channel.guild.id) {
 				 date = new Date(message.last().embeds[0].timestamp)
 				 now = new Date()
-			     	 console.log(date)
+			     	 console.log(date - now)
 			      }
 		      })
 	      })
