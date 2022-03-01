@@ -16,7 +16,11 @@ module.exports = {
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
 	      client.channels.fetch("948352104769151047").then(channel => {
 		      channel.messages.fetch().then(message => {
-			      console.log(message.last().embeds[0].description)
+			      if(message.last().embeds[0].description == msg.channel.guild.id) {
+				 date = new Date(message.last().embeds[0].timestamp)
+				 now = new Date()
+			     	 console.log(date)
+			      }
 		      })
 	      })
 	      
