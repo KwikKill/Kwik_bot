@@ -20,6 +20,7 @@ module.exports = {
 				 date = new Date(message.last().embeds[0].timestamp)
 				 now = new Date()
 			     	 if(((now - date)/1000/60/60) < 1) {
+					 console.log("a")
 					return;	 
 				 }
 			      }
