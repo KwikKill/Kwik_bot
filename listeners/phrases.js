@@ -17,13 +17,9 @@ module.exports = {
 	      channel = await client.channels.fetch("948352104769151047")
 	      message = await channel.messages.fetch()
 	      if(message.first().embeds[0].description == msg.channel.guild.id) {
-		 date = new Date(message.last().embeds[0].timestamp)
+		 date = new Date(message.first().embeds[0].timestamp)
 		 now = new Date()
-	         console.log(message.last())
-		 console.log(date, now)
-		 console.log(message.last().id, (now - date), 1000*60*60)
 		 if(((now - date)/1000/60/60) < 1) {
-			 console.log("a")
 			return;	 
 		 }
 	      }
