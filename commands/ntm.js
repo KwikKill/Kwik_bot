@@ -23,13 +23,25 @@ module.exports = {
       client.channels.fetch("948352104769151047").then(channel => {
 	channel.messages.fetch().then(message => {
 		if(message.first().embeds[0].description == interaction.channel.guild.id) {
-			let embed = new MessageEmbed()
-			.setColor("0xffe402")
-			.setTitle("mute")
-			.setDescription("undefined")
-			.setTimestamp()
-			channel.send({embeds: [embed]})
-			interaction.reply("Le bot a été démute");
+			date = new Date(message.first().embeds[0].timestamp)
+			 now = new Date()
+			 if(((now - date)/1000/60/60) < 1) {
+				let embed = new MessageEmbed()
+				.setColor("0xffe402")
+				.setTitle("mute")
+				.setDescription("undefined")
+				.setTimestamp()
+				channel.send({embeds: [embed]})
+				interaction.reply("Le bot a été démute");
+			 }else {
+				let embed = new MessageEmbed()
+				.setColor("0xffe402")
+				.setTitle("mute")
+				.setDescription(interaction.channel.guild.id)
+				.setTimestamp()
+				channel.send({embeds: [embed]})
+				interaction.reply("Le bot a été mute une heure");
+			 }
 		}else {
 			let embed = new MessageEmbed()
 			.setColor("0xffe402")
