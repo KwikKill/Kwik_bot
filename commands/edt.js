@@ -116,6 +116,7 @@ module.exports = {
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
 					
+					console.log(start)
 					if(di[start.getDay()][start.getHours() + "-" + start.getMinutes()] == undefined) {
 						di[start.getDay()][start.getHours() + "-" + start.geMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
 					}else {
