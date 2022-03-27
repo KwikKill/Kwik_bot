@@ -114,7 +114,7 @@ module.exports = {
 				di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 				for (const event of Object.values(events)) {
 					start = new Date(event.start.toISOString())
-					start.setHours(start)
+					//start.setHours(start)
 					end = new Date(event.end.toISOString())
 					
 					if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] == undefined) {
