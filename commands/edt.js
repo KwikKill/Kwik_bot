@@ -121,7 +121,7 @@ module.exports = {
 					if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] == undefined) {
 						di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
 					}else {
-						di[start.getDay()][(start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
+						di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
 					}
 				}
 				
