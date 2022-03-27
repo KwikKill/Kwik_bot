@@ -55,7 +55,7 @@ module.exports = {
 			return;
 		}
 		today = new Date()
-		if(today.getDay() != 0 && today.getDay() != 6) {
+		if(today.getUTCDay() != 0 && today.getUTCDay() != 6) {
 			monday = new Date()
 			monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 
@@ -91,17 +91,17 @@ module.exports = {
 		context.fillStyle = '#000000';
 
 		// Actually fill the text with a solid color
-		context.fillText("Semaine du " + monday.getDate() + "/" + (monday.getMonth() + 1) + "/" + monday.getFullYear(), 700, 16);
-		context.fillText("Lundi " + monday.getDate() + "/" + (monday.getMonth() + 1) + "/" + monday.getFullYear(), 135, 34);
+		context.fillText("Semaine du " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 700, 16);
+		context.fillText("Lundi " + monday.getUTCDate() + "/" + (monday.getUTCMonth() + 1) + "/" + monday.getUTCFullYear(), 135, 34);
 		day = new Date(monday)
 		day.setDate(day.getDate() + 1);
-		context.fillText("Mardi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 440, 34);
+		context.fillText("Mardi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 440, 34);
 		day.setDate(day.getDate() + 1);
-		context.fillText("Mercredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 715, 34);
+		context.fillText("Mercredi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 715, 34);
 		day.setDate(day.getDate() + 1);
-		context.fillText("Jeudi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1030, 34);
+		context.fillText("Jeudi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1030, 34);
 		day.setDate(day.getDate() + 1);
-		context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
+		context.fillText("Vendredi " + day.getUTCDate() + "/" + (day.getUTCMonth() + 1) + "/" + day.getUTCFullYear(), 1320, 34);
 		
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 		var request = https.get(url_modified, function(response) {
@@ -116,11 +116,10 @@ module.exports = {
 					start = new Date(event.start.toISOString())
 					end = new Date(event.end.toISOString())
 					
-					console.log(start)
-					if(di[start.getDay()][start.getHours() + "-" + start.getMinutes()] == undefined) {
-						di[start.getDay()][start.getHours() + "-" + start.geMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
+					if(di[start.getUTCDay()][(start.getUTCHours() + 1) + "-" + start.getUTCMinutes()] == undefined) {
+						di[start.getUTCDay()][(start.getUTCHours() + 1) + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
 					}else {
-						di[start.getDay()][start.getHours() + "-" + start.getMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
+						di[start.getUTCDay()][(start.getUTCHours() + 1) + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
 					}
 				}
 				
@@ -197,7 +196,7 @@ module.exports = {
 							//}
 							
 							context.beginPath();
-							context.rect(Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
+							context.rect(Math.floor(47 + 296.85 * (start.getUTCDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
 							context.fillStyle = color;
 							context.fill();
 							context.lineWidth = 2;
@@ -207,12 +206,12 @@ module.exports = {
 							context.textAlign = "center"
 							context.font = '12px sans-serif';
 							context.fillStyle = '#000000';
-							context.fillText(summary, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
+							context.fillText(summary, (Math.floor(47 + 296.85 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
 						
 							context.textAlign = "center"
 							context.font = '12px sans-serif';
 							context.fillStyle = '#000000';
-							context.fillText(description3, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 33 + Math.floor(8*(hours - 1 + (minutes/60))), width);
+							context.fillText(description3, (Math.floor(47 + 296.85 * (start.getUTCDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getUTCDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 33 + Math.floor(8*(hours - 1 + (minutes/60))), width);
 
 						}
 					}
@@ -228,4 +227,3 @@ module.exports = {
 	}
     }
 }
-
