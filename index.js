@@ -16,6 +16,8 @@ client.owners = config["owner"]
 
 client.listeners = new Collection();
 
+client.amonglegends = new Collection();
+
 const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
 for (const file of ListenerFiles) {
 	const listener = require(`./listeners/${file}`);
