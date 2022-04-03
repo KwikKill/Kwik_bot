@@ -288,7 +288,6 @@ module.exports = {
                     }
                     break;
                 case 'join':
-		    console.log(client.amonglegends)
                     if(interaction.channel.type == "GUILD_PUBLIC_THREAD") {
                         if(interaction.channel.name.includes("Among Legends - Partie de")) {
                             if(client.amonglegends.get(interaction.channel.id).players[interaction.user.id] != undefined) {
