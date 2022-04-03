@@ -83,7 +83,7 @@ module.exports = {
 	description: "Permet de gérer des parties d'amonglegends",
 	permission: "none",
 	hidden: false,
-	serverid: ["513776796211085342", "890915473363980308"],
+	serverid: ["513776796211085342", "890915473363980308", "960284706073612379"],
     deploy: true,
 	place: "guild",
     options: [
