@@ -56,6 +56,16 @@ module.exports = {
 			await mmsg.react("♥")
 			await msg.react("♥")
 			return;
+		}else if(random == 99) {
+			mmsg = await msg.reply("https://cdn.discordapp.com/attachments/294267591734722561/969366860472655972/My_Movie.mov")
+			await mmsg.react("♥")
+			await msg.react("♥")
+			return;
+		}else if(random == 98) {
+			mmsg = await msg.reply("https://images-ext-1.discordapp.net/external/XFH2Kik-2VUJhgU7NHddd7Z9-CiP9VtUqWjWKZCk3_M/https/media.discordapp.net/attachments/661317980671574020/964874613370789898/20220415_192915.jpg")
+			await mmsg.react("♥")
+			await msg.react("♥")
+			return;
 		}else {
 			mmsg = await msg.reply("menfou palu + ratio")
 			await mmsg.react("♥")
