@@ -50,7 +50,7 @@ module.exports = {
 	],
     async run(message, client, interaction=undefined) {
 	if(interaction != undefined) {
-		interaction.deferReply():
+		interaction.deferReply()
 		if(codes[interaction.options.getString("classe").toLowerCase()] == undefined) {
 			interaction.editReply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
 			return;
