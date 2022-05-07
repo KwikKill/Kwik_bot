@@ -221,7 +221,7 @@ module.exports = {
 				}
 				
 				
-				await interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
+				interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
 			fs.unlink(file);
