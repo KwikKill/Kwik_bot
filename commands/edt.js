@@ -50,9 +50,9 @@ module.exports = {
 	],
     async run(message, client, interaction=undefined) {
 	if(interaction != undefined) {
-		await interaction.deferReply()
+		//await interaction.deferReply()
 		if(codes[interaction.options.getString("classe").toLowerCase()] == undefined) {
-			await interaction.editReply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
+			await interaction.reply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
 			return;
 		}
 		today = new Date()
@@ -221,7 +221,7 @@ module.exports = {
 				}
 				
 				
-				interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
+				interaction.reply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
 			fs.unlink(file);
