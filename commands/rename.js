@@ -7,7 +7,7 @@ module.exports = {
 	group: 'util',
 	description: "Permet de renommer un membre",
 	permission: "modo",
-	serverid: ["513776796211085342", "480142959501901845"],
+	serverid: ["513776796211085342", "480142959501901845", "890915473363980308"],
 	hidden: false,
 	place: "guild",
     help: [
