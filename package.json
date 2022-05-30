@@ -6,7 +6,6 @@
   "author": "Gab_351",
   "license": "GPL v3+",
   "dependencies": {
-    "common-tags": "^1.8.2",
     "discord.js": "^13.3.1",
     "pdfkit": "^0.13.0"
   }
