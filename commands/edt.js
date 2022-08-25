@@ -6,24 +6,24 @@ const Canvas = require('canvas');
 const ical = require('node-ical');
 
 codes = {
-	"a": "914,1033,426,411,395,383,377",
-	"b": "1034,430,440,433,464,463",
-	"c": "1035,562,559,521,501,499",
-	"d": "1036,603,602,658,634,676",
-	"e": "1037,690,689,697,696,695",
-	"f": "1038,717,716,708,701,700",
-	"g": "1039,729,727,726,721,720",
-	"h": "1040,802,800,798,787,770",
-	"i": "1326,1325,1324,1300,1298,2337,2329,2327,979,2000,1999,2075,2077,1042",
-	"j": "2338,1780,978,2344,2343,1353,1333,1330,1317,1316,1314,2078,2081,1041",
-	"k": "3194,818,3193,3192,812,811",
-	"l": "1586,1617,1792,1963,3180,3179"
+	"a": "348",
+	"b": "354",
+	"c": "356",
+	"d": "365",
+	"e": "367",
+	"f": "372",
+	"g": "374",
+	"h": "382",
+	"i": "2387",
+	"j": "2390",
+	"k": "389",
+	"l": "897"
 }
 
 TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE"]
 LANGUES = ["LV2", "LV3", "ANGLAIS"]
 
-url = "https://edt.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=22&calType=ical&firstDate={1}&lastDate={2}"
+url = "https://ade.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=1&calType=ical&firstDate={1}&lastDate={2}"
 
 module.exports = {
 	name: 'edt',
