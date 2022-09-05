@@ -158,6 +158,7 @@ module.exports = {
 					 //console.log(response)
 					response.pipe(file);
 					file.on('finish', function() {
+						console.log("a")
 						file.close();
 						const events = ical.sync.parseFile('/opt/gab_bot/temp/file' + x + '.ics');
 
