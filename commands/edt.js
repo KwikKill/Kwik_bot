@@ -147,9 +147,9 @@ module.exports = {
 			context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
 
 			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
-			const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
 				
+				const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
 				url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 				var request = https.get(url_modified, function(response) {
 					 //console.log(response)
