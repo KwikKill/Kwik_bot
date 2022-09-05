@@ -53,7 +53,7 @@ codes = {
 		],
 		// 1K
 		"496,2455": [
-			"ALGEBRE 1_K"
+			"ANALYSE 1 (Base d'analyse réelle)_K"
 		],
 		// 2B
 		"354,2241": [
