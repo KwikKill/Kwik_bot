@@ -59,6 +59,7 @@ codes = {
 		"354,2241": [
 			"SCIENCE INDUSTRIEL",
 			"EPS-AB",
+			"EPS AB - CHOIX des ACTIVITES & ORGANISATION ANNEE"
 			"PARCOURS RIE",
 		],
 		// 2A
