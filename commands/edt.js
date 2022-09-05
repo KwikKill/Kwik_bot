@@ -178,10 +178,13 @@ module.exports = {
 								}else {
 									a = false
 									for(const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
-										console.log(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"])
+										if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"]) == event.summary) {
+											a = true	
+										}
 									}
-									di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
-									
+									if(a == false) {
+										di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
+									}
 								}
 							}
 						}
