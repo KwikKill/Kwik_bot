@@ -178,7 +178,7 @@ module.exports = {
 								}else {
 									a = false
 									for(const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
-										console.log(x)
+										console.log(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"])
 									}
 									di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
 									
