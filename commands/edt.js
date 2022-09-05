@@ -155,13 +155,12 @@ module.exports = {
 				const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
 				url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 				var request = https.get(url_modified, function(response) {
-					 //console.log(response)
+					 console.log(response)
 					response.pipe(file);
 					file.on('finish', function() {
-						console.log("a")
 						file.close();
 						const events = ical.sync.parseFile('/opt/gab_bot/temp/file' + x + '.ics');
-
+	
 						
 						for (const event of Object.values(events)) {
 							console.log(x, event.summary)
