@@ -180,6 +180,7 @@ module.exports = {
 						}
 
 						test.push(x)
+						console.log(test.length)
 
 						
 					});
@@ -189,7 +190,7 @@ module.exports = {
 				});
 			}
 			while(test.length != codes[interaction.options.getString("classe").toLowerCase()].length) {
-				
+				console.log(test.length)
 			}
 			console.log("a")
 			console.log(test.length)
