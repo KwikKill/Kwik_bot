@@ -188,6 +188,7 @@ module.exports = {
 					console.log(err.message)
 				});
 			}
+			console.log(di)
 			for(const j in di) {
 				for(const i in di[j]) {
 					for(const h in di[j][i]) {
