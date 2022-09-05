@@ -109,13 +109,13 @@ module.exports = {
 		today = new Date()
 		today = new Date(today.setDate(today.getDate() + 7));
 		if(today.getDay() != 0 && today.getDay() != 6) {
-			monday = new Date()
+			monday = new Date(today)
 			monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 
 			sunday = new Date(monday)
 			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
 		}else {
-			monday = new Date()
+			monday = new Date(today)
 			monday.setDate(monday.getDate() + 7 - (monday.getDay() + 6) % 7);
 
 			sunday = new Date(monday)
