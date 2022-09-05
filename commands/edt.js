@@ -30,9 +30,47 @@ codes = {
 	"1j": "892,1274",
 	"1k": "496,2455",
 	"1l": "795,1584",
+	"raph": {
+		// 1B
+		"460,2445": [
+			"ALGEBRE 1_ABCDE",
+			"ALGEBRE 2_ABCDE",
+			"ANALYSE 1_ABCDE",
+			"ANALYSE 2_ABCDE",
+			"ELECTRICITE 1_ABCDE",
+			"ELECTRICITE 2_ABCDE",
+			"MECANIQUE 1_ABCDE",
+			"MECANIQUE 1_B",
+			"OMSP ABCDE",
+			"CHIMIE 1_ABCDE",
+			"OPTIQUE_ABCDE",
+			"PHYSIQUE_B",
+			"THERMOPHYSIQUE_ABCDE"
+		],
+		// 1F
+		"2433,469": [
+			"ALGEBRE 1_F"
+		],
+		// 1K
+		"496,2455": [
+			"ALGEBRE 1_K"
+		],
+		// 2B
+		"354,2241": [
+			"SCIENCE INDUSTRIEL",
+			"EPS-AB",
+			"PARCOURS RIE",
+		],
+		// 2A
+		"348,2237": [
+			"LV2_A allemand",
+			"#ANGLAIS_A"
+		]
+		
+	}
 }
 
-TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE"]
+TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE", "CA"]
 LANGUES = ["LV2", "LV3", "ANGLAIS"]
 
 url = "https://ade.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=1&calType=ical&firstDate={1}&lastDate={2}"
@@ -82,6 +120,12 @@ module.exports = {
 			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
 			
 			console.log(monday, sunday)
+		}
+		if(interaction.options.getString("classe").toLowerCase() == "raph") {
+			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
+				console.log(x)	
+			}
+			return;
 		}
 
 		//console.log(monday.toDateString())
