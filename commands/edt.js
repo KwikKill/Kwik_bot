@@ -149,13 +149,13 @@ module.exports = {
 			context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
 
 			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
+			test = []
 			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
 				
 				
 				
 				const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
 				url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
-				console.log("------", x, url_modified)
 				var request = https.get(url_modified, function(response) {
 					response.pipe(file);
 					file.on('finish', function() {
@@ -164,7 +164,7 @@ module.exports = {
 	
 						
 						for (const event of Object.values(events)) {
-							console.log(x, event.summary)
+							//console.log(x, event.summary)
 							if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary)) {
 								start = new Date(event.start.toISOString())
 								start.setHours(start.getHours() + 1)
@@ -179,7 +179,8 @@ module.exports = {
 							}
 						}
 
-						//console.log(di)
+						test.push(x)
+						console.log(test.length)
 
 						
 					});
@@ -189,6 +190,7 @@ module.exports = {
 				});
 			}
 			console.log("a")
+			console.log(test.length)
 			for(const j in di) {
 				for(const i in di[j]) {
 					for(const h in di[j][i]) {
