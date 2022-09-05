@@ -165,7 +165,7 @@ module.exports = {
 						
 						for (const event of Object.values(events)) {
 							//console.log(x, event.summary)
-							if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary) || event.summary.contains("CC")) {
+							if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary) || event.summary.includes("CC")) {
 								start = new Date(event.start.toISOString())
 								start.setHours(start.getHours() + 1)
 								end = new Date(event.end.toISOString())
