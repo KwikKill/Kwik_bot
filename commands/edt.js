@@ -180,21 +180,8 @@ module.exports = {
 						}
 
 						test.push(x)
-						console.log(test.length)
-
-						
-					});
-				}).on('error', function(err) {
-					fs.unlink(file);
-					console.log(err.message)
-				});
-			}
-			while(test.length != codes[interaction.options.getString("classe").toLowerCase()].length) {
-				console.log(test.length)
-			}
-			console.log("a")
-			console.log(test.length)
-			for(const j in di) {
+						if(test.length == codes[interaction.options.getString("classe").toLowerCase()].length) {
+							for(const j in di) {
 				for(const i in di[j]) {
 					for(const h in di[j][i]) {
 						start = di[j][i][h]["start"]
@@ -286,6 +273,16 @@ module.exports = {
 				}
 			}
 			interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
+			
+						}
+
+						
+					});
+				}).on('error', function(err) {
+					fs.unlink(file);
+					console.log(err.message)
+				});
+			}
 			return;
 		}
 
