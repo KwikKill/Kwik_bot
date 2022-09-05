@@ -150,12 +150,12 @@ module.exports = {
 			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
 				
-				console.log("------", x)
+				
 				
 				const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
 				url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
+				console.log("------", x, url_modified)
 				var request = https.get(url_modified, function(response) {
-					 console.log(response)
 					response.pipe(file);
 					file.on('finish', function() {
 						file.close();
