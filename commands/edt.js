@@ -150,7 +150,7 @@ module.exports = {
 
 			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 			test = []
-			for(const x in codes[interaction.options.getString("classe").toLowerCase()].keys().length) {
+			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
 				
 				
 				
@@ -180,7 +180,7 @@ module.exports = {
 						}
 
 						test.push(x)
-						console.log(test.length, codes[interaction.options.getString("classe").toLowerCase()].length)
+						console.log(test.length, codes[interaction.options.getString("classe").toLowerCase()].keys().length)
 						if(test.length == codes[interaction.options.getString("classe").toLowerCase()].length) {
 							for(const j in di) {
 								for(const i in di[j]) {
