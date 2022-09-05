@@ -178,7 +178,7 @@ module.exports = {
 								}else {
 									a = false
 									for(const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
-										if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"]) == event.summary) {
+										if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"] == event.summary) {
 											a = true	
 										}
 									}
