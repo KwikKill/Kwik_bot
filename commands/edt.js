@@ -146,6 +146,7 @@ module.exports = {
 			day.setDate(day.getDate() + 1);
 			context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
 
+			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 			const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
 			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
 				
@@ -157,7 +158,7 @@ module.exports = {
 						file.close();
 						const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 
-						di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
+						
 						for (const event of Object.values(events)) {
 							if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary)) {
 								start = new Date(event.start.toISOString())
