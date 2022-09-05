@@ -160,6 +160,7 @@ module.exports = {
 
 						
 						for (const event of Object.values(events)) {
+							console.log(event.summary)
 							if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary)) {
 								start = new Date(event.start.toISOString())
 								start.setHours(start.getHours() + 1)
