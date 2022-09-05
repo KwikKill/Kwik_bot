@@ -150,7 +150,7 @@ module.exports = {
 
 			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 			test = []
-			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
+			for(const x in codes[interaction.options.getString("classe").toLowerCase()].keys().length) {
 				
 				
 				
