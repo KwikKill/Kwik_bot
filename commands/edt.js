@@ -180,7 +180,7 @@ module.exports = {
 						}
 
 						test.push(x)
-						console.log(test.length, codes[interaction.options.getString("classe").toLowerCase()])
+						console.log(test.length, codes[interaction.options.getString("classe").toLowerCase()].keys())
 						if(test.length == codes[interaction.options.getString("classe").toLowerCase()].length) {
 							for(const j in di) {
 								for(const i in di[j]) {
