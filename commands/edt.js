@@ -107,7 +107,7 @@ module.exports = {
 			return;
 		}
 		today = new Date()
-		today = new Date(today.setDate(today.getDate() + 14));
+		//today = new Date(today.setDate(today.getDate() + 14));
 		if(today.getDay() != 0 && today.getDay() != 6) {
 			monday = new Date(today)
 			monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
