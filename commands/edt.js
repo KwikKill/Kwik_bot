@@ -239,7 +239,7 @@ module.exports = {
 											//console.log(summary, di[j][i].length)
 										}
 										color = "yellow"
-										if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHIJKL")) {
+										if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHJKL")) {
 										   color = "#99FFFF"
 										}else {
 											for(const y in TD) {
@@ -400,7 +400,7 @@ module.exports = {
 								//console.log(summary, di[j][i].length)
 							}
 							color = "yellow"
-							if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHIJKL")) {
+							if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHJKL")) {
 							   color = "#99FFFF"
 							}else {
 								for(const y in TD) {
