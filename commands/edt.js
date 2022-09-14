@@ -458,9 +458,9 @@ module.exports = {
 					value: "a"
 				}])
 				.setTimestamp()
-    			.setImage(attachment);
+				.setImage(`attachment://edt.png`);
 				
-				interaction.editReply({embeds: [embed1]});
+				interaction.editReply({embeds: [embed1], files: [attachment]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
