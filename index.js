@@ -42,6 +42,7 @@ for (const file of buttonFiles) {
 	const button = require(`./buttons/${file}`);
 	client.buttons.set(button.name, button);
 }
+console.log(client.buttons)
 
 client.commands.forEach((item, i) => {
 	if(!client.groups.has(item.group)) {
