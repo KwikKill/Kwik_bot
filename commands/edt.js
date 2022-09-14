@@ -443,8 +443,10 @@ module.exports = {
 						}
 					}
 				}
+				const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+
 				let embed1 = new MessageEmbed()
-				.setColor("0xffe402")
+				.setColor("0x757575")
 				.setTitle("Emploi du temps : ")
 				.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
 				.setDescription(
@@ -455,8 +457,10 @@ module.exports = {
 					value: "a"
 				}])
 				.setTimestamp()
+				.attachFiles(attachment)
+    			.setImage('attachment://bufferedfilename.png');
 				
-				interaction.editReply({embeds: [embed1], files: [canvas.toBuffer()]});
+				//interaction.editReply({embeds: [embed1], files: [canvas.toBuffer()]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
