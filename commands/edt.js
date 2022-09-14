@@ -467,7 +467,7 @@ module.exports = {
 					new MessageButton()
 					.setCustomId('nextweek')
 					.setLabel('▶️')
-					.setStyle('PRIMARY'),
+					.setStyle('SECONDARY'),
 				);
 				const lastweek = new MessageActionRow()
 				.addComponents(
