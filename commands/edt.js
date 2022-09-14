@@ -459,13 +459,7 @@ module.exports = {
 				.addComponents(
 					new MessageButton()
 					.setCustomId('refresh')
-					.setLabel('↻')
-					.setStyle('PRIMARY'),
-				)
-				.addComponents(
-					new MessageButton()
-					.setCustomId('nextweek')
-					.setLabel('▶️')
+					.setLabel('🔁')
 					.setStyle('PRIMARY'),
 				)
 				.addComponents(
@@ -476,14 +470,20 @@ module.exports = {
 				)
 				.addComponents(
 					new MessageButton()
-					.setCustomId('nextclass')
-					.setLabel('⏭️')
+					.setCustomId('nextweek')
+					.setLabel('▶️')
 					.setStyle('PRIMARY'),
 				)
 				.addComponents(
 					new MessageButton()
 					.setCustomId('lastclass')
 					.setLabel('⏮️')
+					.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+					.setCustomId('nextclass')
+					.setLabel('⏭️')
 					.setStyle('PRIMARY'),
 				);
 				

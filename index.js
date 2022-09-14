@@ -11,6 +11,7 @@ const discordJSVersion = packageJSON.dependencies["discord.js"];
 // -------------- Commandes -----------------
 client.commands = new Collection();
 client.context_menu = new Collection();
+client.buttons = new Collection();
 client.groups = new Collection();
 client.owners = config["owner"]
 
@@ -34,6 +35,12 @@ const contextFiles = fs.readdirSync('./context-menu').filter(file => file.endsWi
 for (const file of contextFiles) {
 	const context = require(`./context-menu/${file}`);
 	client.context_menu.set(context.name, context);
+}
+
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+for (const file of buttonFiles) {
+	const button = require(`./buttons/${file}`);
+	client.buttons.set(button.name, button);
 }
 
 client.commands.forEach((item, i) => {
@@ -78,45 +85,66 @@ client.on('interactionCreate', async interaction => {
 
   if (!client.commands.has(interaction.commandName)) return;
 
-  try {
-    can_run = canRunCommande(undefined, client.commands.get(interaction.commandName), interaction)
-    if(can_run) {
-      await client.commands.get(interaction.commandName).run(undefined, client, interaction);
-      return
-    }else {
-      if(can_run == "perm") {
-        await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
+    try {
+      can_run = canRunCommande(undefined, client.commands.get(interaction.commandName), interaction)
+      if(can_run) {
+        await client.commands.get(interaction.commandName).run(undefined, client, interaction);
+        return
       }else {
-        await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
+        if(can_run == "perm") {
+          await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
+        }else {
+          await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
+        }
+
       }
-
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
-  } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-  }
-}else {
-  //console.log(interaction)
-  if (!client.context_menu.has(interaction.commandName)) return;
+  }else if(interaction.isButton()) {
+    if (!client.button.has(interaction.commandName)) return;
 
-  try {
-    can_run = canRunCommande(undefined, client.context_menu.get(interaction.commandName), interaction)
-    if(can_run) {
-      await client.context_menu.get(interaction.commandName).run(interaction, client);
-      return
-    }else {
-      if(can_run == "perm") {
-        await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
+
+    try {
+      can_run = canRunCommande(undefined, client.buttons.get(interaction.commandName), interaction)
+      if(can_run) {
+        await client.buttons.get(interaction.commandName).run(interaction, client);
+        return
       }else {
-        await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
-      }
+        if(can_run == "perm") {
+          await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
+        }else {
+          await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
+        }
 
+      }
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
-  } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+ } else {
+    //console.log(interaction)
+    if (!client.context_menu.has(interaction.commandName)) return;
+
+    try {
+      can_run = canRunCommande(undefined, client.context_menu.get(interaction.commandName), interaction)
+      if(can_run) {
+        await client.context_menu.get(interaction.commandName).run(interaction, client);
+        return
+      }else {
+        if(can_run == "perm") {
+          await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
+        }else {
+          await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
+        }
+
+      }
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
   }
-}
 });
 
 client.on('messageCreate', async message => {
