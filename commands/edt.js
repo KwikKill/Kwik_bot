@@ -455,7 +455,7 @@ module.exports = {
 				.setTimestamp()
 				.setImage(`attachment://edt.png`);
 
-				const refresh = new MessageActionRow()
+				const row = new MessageActionRow()
 				.addComponents(
 					new MessageButton()
 					.setCustomId('refresh')
