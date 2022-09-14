@@ -459,7 +459,7 @@ module.exports = {
 				.addComponents(
 					new MessageButton()
 					.setCustomId('refresh')
-					.setLabel('🔄')
+					.setLabel('↻')
 					.setStyle('PRIMARY'),
 				);
 				const nextweek = new MessageActionRow()
