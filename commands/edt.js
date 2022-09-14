@@ -81,7 +81,7 @@ module.exports = {
 	group: 'INSA',
 	description: "Permet de récupérer l'edt d'une classe",
 	permission: "none",
-	serverid: ["513776796211085342"],//, "890915473363980308"],
+	serverid: ["513776796211085342", "890915473363980308"],
 	hidden: false,
 	place: "both",
 	deploy: true,
@@ -282,6 +282,16 @@ module.exports = {
 									}
 								}
 							}
+							let embed1 = new MessageEmbed()
+							.setColor("0x757575")
+							.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
+							.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
+							.setDescription(
+								"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
+							)
+							.setTimestamp()
+							.setImage(`attachment://edt.png`);
+
 							const row = new MessageActionRow()
 							.addComponents(
 								new MessageButton()
