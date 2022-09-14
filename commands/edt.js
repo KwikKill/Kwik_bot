@@ -1,7 +1,7 @@
 const fs = require("fs");
 const https = require("https");
 const path = require('path');
-const { MessageEmbed, MessageAttachment, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { MessageEmbed, MessageAttachment, MessageActionRow, MessageButton} = require('discord.js');
 const Canvas = require('canvas');
 const ical = require('node-ical');
 
@@ -455,12 +455,12 @@ module.exports = {
 				.setTimestamp()
 				.setImage(`attachment://edt.png`);
 
-				const row = new ActionRowBuilder()
+				const row = new MessageActionRow()
 				.addComponents(
-					new ButtonBuilder()
+					new MessageButton()
 						.setCustomId('primary')
-						.setLabel('Click me!')
-						.setStyle(ButtonStyle.Primary),
+						.setLabel('Primary')
+						.setStyle('PRIMARY'),
 				);
 				
 				interaction.editReply({embeds: [embed1], files: [attachment], components: []});
