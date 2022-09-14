@@ -460,7 +460,7 @@ module.exports = {
 				.setTimestamp()
     			.setImage(attachment);
 				
-				//interaction.editReply({embeds: [embed1], files: [canvas.toBuffer()]});
+				interaction.editReply({embeds: [embed1]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
