@@ -444,7 +444,7 @@ module.exports = {
 					}
 				}
 				const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
-				console.log("a")
+				console.log(attachment)
 
 				let embed1 = new MessageEmbed()
 				.setColor("0x757575")
