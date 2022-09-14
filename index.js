@@ -104,13 +104,13 @@ client.on('interactionCreate', async interaction => {
     }
   }else if(interaction.isButton()) {
     console.log(interaction)
-    if (!client.buttons.has(interaction.commandName)) return;
+    if (!client.buttons.has(interaction.customId)) return;
 
     
     try {
-      can_run = canRunCommande(undefined, client.buttons.get(interaction.commandName), interaction)
+      can_run = canRunCommande(undefined, client.buttons.get(interaction.customId), interaction)
       if(can_run) {
-        await client.buttons.get(interaction.commandName).run(interaction, client);
+        await client.buttons.get(interaction.customId).run(interaction, client);
         return
       }else {
         if(can_run == "perm") {
