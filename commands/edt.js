@@ -443,7 +443,7 @@ module.exports = {
 						}
 					}
 				}
-				const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+				const attachment = new Discord.MessageAttachment(canvas.toBuffer(),'edt.png');
 
 				let embed1 = new MessageEmbed()
 				.setColor("0x757575")
