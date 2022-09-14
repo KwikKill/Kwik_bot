@@ -36,11 +36,11 @@ module.exports = {
 		})
 	}
 	      
-        let embed1 = new MessageEmbed()
+	let embed1 = new MessageEmbed()
 	.setColor("0xffe402")
-    	.setTitle("Roles : ")
-    	.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
-    	.setDescription(
+	.setTitle("Roles : ")
+	.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
+	.setDescription(
 		"Réagissez sur un émoji pour avoir le rôle correspondant."
 	)
  	.addFields(fields)

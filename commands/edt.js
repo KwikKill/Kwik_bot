@@ -81,7 +81,7 @@ module.exports = {
 	group: 'INSA',
 	description: "Permet de récupérer l'edt d'une classe",
 	permission: "none",
-	serverid: ["513776796211085342", "890915473363980308"],
+	serverid: ["513776796211085342"],//, "890915473363980308"],
 	hidden: false,
 	place: "both",
 	deploy: true,
@@ -443,9 +443,21 @@ module.exports = {
 						}
 					}
 				}
+				let embed1 = new MessageEmbed()
+				.setColor("0xffe402")
+				.setTitle("Emploi du temps : ")
+				.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
+				.setDescription(
+					"Test de description."
+				)
+				.addFields([{
+					name: "Semaine du " + di[0][0][0].start.toDateString(),
+					value: "a"
+				}])
+				.setTimestamp()
 				
-				
-				interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
+				interaction.editReply({embeds: [embed1], files: [new MessageAttachment(canvas.toBuffer(), 'emploi_du_temps.png')]});
+				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
 			fs.unlink(file);
