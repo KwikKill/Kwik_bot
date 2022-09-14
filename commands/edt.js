@@ -454,8 +454,16 @@ module.exports = {
 				)
 				.setTimestamp()
 				.setImage(`attachment://edt.png`);
+
+				const row = new ActionRowBuilder()
+				.addComponents(
+					new ButtonBuilder()
+						.setCustomId('primary')
+						.setLabel('Click me!')
+						.setStyle(ButtonStyle.Primary),
+				);
 				
-				interaction.editReply({embeds: [embed1], files: [attachment]});
+				interaction.editReply({embeds: [embed1], files: [attachment], components: []});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
