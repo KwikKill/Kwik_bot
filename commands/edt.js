@@ -456,7 +456,7 @@ module.exports = {
 				}])
 				.setTimestamp()
 				
-				interaction.editReply({embeds: [embed1], files: [new MessageAttachment(canvas.toBuffer(), 'emploi_du_temps.png')]});
+				interaction.editReply({embeds: [embed1], files: [canvas.toBuffer()]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
