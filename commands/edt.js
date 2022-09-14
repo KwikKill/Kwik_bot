@@ -282,6 +282,21 @@ module.exports = {
 									}
 								}
 							}
+							const row = new MessageActionRow()
+							.addComponents(
+								new MessageButton()
+								.setCustomId('lastweek')
+								.setLabel('◀️')
+								.setStyle('PRIMARY'),
+							)
+							.addComponents(
+								new MessageButton()
+								.setCustomId('nextweek')
+								.setLabel('▶️')
+								.setStyle('PRIMARY'),
+							);
+							
+							//interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
 							interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 
 						}
