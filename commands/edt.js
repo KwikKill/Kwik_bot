@@ -283,7 +283,7 @@ module.exports = {
 								}
 							}
 							const row = new MessageActionRow()
-							.addComponents(
+							/*.addComponents(
 								new MessageButton()
 								.setCustomId('lastweek')
 								.setLabel('◀️')
@@ -294,10 +294,10 @@ module.exports = {
 								.setCustomId('nextweek')
 								.setLabel('▶️')
 								.setStyle('PRIMARY'),
-							);
+							);*/
 							
-							//interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
-							interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
+							interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
+							//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 
 						}
 
@@ -471,7 +471,7 @@ module.exports = {
 				.setImage(`attachment://edt.png`);
 
 				const row = new MessageActionRow()
-				.addComponents(
+				/*.addComponents(
 					new MessageButton()
 					.setCustomId('lastweek')
 					.setLabel('◀️')
@@ -494,7 +494,7 @@ module.exports = {
 					.setCustomId('nextclass')
 					.setLabel('⏭️')
 					.setStyle('PRIMARY'),
-				);
+				);*/
 				
 				interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
