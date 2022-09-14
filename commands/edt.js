@@ -461,29 +461,25 @@ module.exports = {
 					.setCustomId('refresh')
 					.setLabel('↻')
 					.setStyle('PRIMARY'),
-				);
-				const nextweek = new MessageActionRow()
+				)
 				.addComponents(
 					new MessageButton()
 					.setCustomId('nextweek')
 					.setLabel('▶️')
 					.setStyle('PRIMARY'),
-				);
-				const lastweek = new MessageActionRow()
+				)
 				.addComponents(
 					new MessageButton()
 					.setCustomId('lastweek')
 					.setLabel('◀️')
 					.setStyle('PRIMARY'),
-				);
-				const nextclass = new MessageActionRow()
+				)
 				.addComponents(
 					new MessageButton()
 					.setCustomId('nextclass')
 					.setLabel('⏭️')
 					.setStyle('PRIMARY'),
-				);
-				const lastclass = new MessageActionRow()
+				)
 				.addComponents(
 					new MessageButton()
 					.setCustomId('lastclass')
@@ -491,7 +487,7 @@ module.exports = {
 					.setStyle('PRIMARY'),
 				);
 				
-				interaction.editReply({embeds: [embed1], files: [attachment], components: [[refresh, nextweek, lastweek, nextclass, lastclass]]});
+				interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
