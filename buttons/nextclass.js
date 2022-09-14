@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 //const { oneLine } = require('common-tags');
 
 module.exports = {
-    name: 'refresh',
+    name: 'nextclass',
 	description: "refresh la semaine de l'edt.",
 	permission: "all",
 	serverid: ["513776796211085342", "890915473363980308"],
