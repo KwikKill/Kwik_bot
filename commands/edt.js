@@ -282,6 +282,8 @@ module.exports = {
 									}
 								}
 							}
+							const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+
 							let embed1 = new MessageEmbed()
 							.setColor("0x757575")
 							.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
