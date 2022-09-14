@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 //const { oneLine } = require('common-tags');
 
 module.exports = {
-    name: 'lastweek',
+    name: 'nextclass',
 	description: "Change l'edt pour la semaine précédante.",
 	permission: "all",
 	serverid: ["513776796211085342", "890915473363980308"],
