@@ -4,8 +4,8 @@ const { MessageEmbed } = require('discord.js');
 //const { oneLine } = require('common-tags');
 
 module.exports = {
-    name: 'reset',
-	description: "Reset la semaine de l'edt.",
+    name: 'refresh',
+	description: "refresh la semaine de l'edt.",
 	permission: "all",
 	serverid: ["513776796211085342", "890915473363980308"],
     async run(interaction, client) {
