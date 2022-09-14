@@ -42,7 +42,6 @@ for (const file of buttonFiles) {
 	const button = require(`./buttons/${file}`);
 	client.buttons.set(button.name, button);
 }
-console.log(client.buttons)
 
 client.commands.forEach((item, i) => {
 	if(!client.groups.has(item.group)) {
@@ -104,9 +103,10 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   }else if(interaction.isButton()) {
+    console.log(interaction)
     if (!client.buttons.has(interaction.commandName)) return;
 
-
+    
     try {
       can_run = canRunCommande(undefined, client.buttons.get(interaction.commandName), interaction)
       if(can_run) {
