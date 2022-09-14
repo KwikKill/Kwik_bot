@@ -457,8 +457,7 @@ module.exports = {
 					value: "a"
 				}])
 				.setTimestamp()
-				.attachFiles(attachment)
-    			.setImage('attachment://bufferedfilename.png');
+    			.setImage(attachment);
 				
 				//interaction.editReply({embeds: [embed1], files: [canvas.toBuffer()]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
