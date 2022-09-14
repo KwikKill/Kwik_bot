@@ -1,7 +1,7 @@
 const fs = require("fs");
 const https = require("https");
 const path = require('path');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const Canvas = require('canvas');
 const ical = require('node-ical');
 
@@ -443,7 +443,7 @@ module.exports = {
 						}
 					}
 				}
-				const attachment = new Discord.MessageAttachment(canvas.toBuffer(),'edt.png');
+				const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
 
 				let embed1 = new MessageEmbed()
 				.setColor("0x757575")
