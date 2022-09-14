@@ -467,7 +467,7 @@ module.exports = {
 					new MessageButton()
 					.setCustomId('nextweek')
 					.setLabel('▶️')
-					.setStyle('SECONDARY'),
+					.setStyle('PRIMARY'),
 				);
 				const lastweek = new MessageActionRow()
 				.addComponents(
@@ -491,7 +491,7 @@ module.exports = {
 					.setStyle('PRIMARY'),
 				);
 				
-				interaction.editReply({embeds: [embed1], files: [attachment], components: [refresh, nextweek, lastweek, nextclass, lastclass]});
+				interaction.editReply({embeds: [embed1], files: [attachment], components: [[refresh, nextweek, lastweek, nextclass, lastclass]]});
 				//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 			});
 		}).on('error', function(err) {
