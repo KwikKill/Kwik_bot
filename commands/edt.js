@@ -458,12 +458,6 @@ module.exports = {
 				const row = new MessageActionRow()
 				.addComponents(
 					new MessageButton()
-					.setCustomId('refresh')
-					.setLabel('🔁')
-					.setStyle('PRIMARY'),
-				)
-				.addComponents(
-					new MessageButton()
 					.setCustomId('lastweek')
 					.setLabel('◀️')
 					.setStyle('PRIMARY'),
