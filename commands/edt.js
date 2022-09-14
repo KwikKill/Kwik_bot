@@ -444,19 +444,14 @@ module.exports = {
 					}
 				}
 				const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
-				console.log(attachment)
 
 				let embed1 = new MessageEmbed()
 				.setColor("0x757575")
-				.setTitle("Emploi du temps : ")
+				.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
 				.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
 				.setDescription(
-					"Test de description."
+					"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
 				)
-				.addFields([{
-					name: "Semaine du b",
-					value: "a"
-				}])
 				.setTimestamp()
 				.setImage(`attachment://edt.png`);
 				
