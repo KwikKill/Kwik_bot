@@ -451,7 +451,7 @@ module.exports = {
 					"Test de description."
 				)
 				.addFields([{
-					name: "Semaine du " + di[0][0][0].start.toDateString(),
+					name: "Semaine du b",
 					value: "a"
 				}])
 				.setTimestamp()
