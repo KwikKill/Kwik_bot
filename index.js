@@ -103,7 +103,6 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   }else if(interaction.isButton()) {
-    console.log(interaction)
     if (!client.buttons.has(interaction.customId)) return;
 
     
