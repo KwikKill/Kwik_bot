@@ -16,7 +16,12 @@ module.exports = {
         test = JSON.parse(JSON.stringify(client.commands.get("edt").codes))
         delete test["raph"]
         keys = Object.keys(test)
-        classs = keys[(keys.indexOf(classs) - 1) % keys.length]
+        if((keys.indexOf(classs) - 1) % keys.length == 0) {
+            classs = keys[keys.length - 1]
+        }else {
+            classs = keys[(keys.indexOf(classs) - 1) % keys.length]
+        }
+        
         // edit
         if(classs == "raph") {
             client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
