@@ -5,10 +5,24 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'lastclass',
-	description: "Change la classe pour la suivante.",
+	description: "Change la classe pour la précédante.",
 	permission: "all",
 	serverid: ["513776796211085342", "890915473363980308"],
     async run(interaction, client) {
-        interaction.reply({content: "Reset de la semaine en cours...", ephemeral: true});
+        classs = interaction.message.embeds[0].title.replace("Emploi du temp de la classe : ", '')
+        date1 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[0])
+        date2 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[2])
+
+        test = JSON.parse(JSON.stringify(client.commands.get("edt").codes))
+        delete test["raph"]
+        keys = Object.keys(test)
+        classs = keys[(keys.indexOf(classs) - 1) % keys.length]
+        // edit
+        if(classs == "raph") {
+            client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
+        }else {
+            client.commands.get("edt").classic(client, date1, date2, interaction, classs);
+        }
+        interaction.deferUpdate()
   }
 }
