@@ -125,7 +125,7 @@ module.exports = {
 		}
 		if(interaction.options.getString("classe").toLowerCase() == "raph") {
 			
-			await create_di_raph(monday, sunday, interaction);
+			await create_di_raph(client, monday, sunday, interaction);
 			return;
 		}
 
@@ -216,7 +216,7 @@ function create_di(events) {
 	}
 }
 
-async function create_di_raph(monday, sunday, interaction, rt=false) {
+async function create_di_raph(client, monday, sunday, interaction, rt=false) {
 	di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 	test = []
 	for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
