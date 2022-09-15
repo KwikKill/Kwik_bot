@@ -12,7 +12,7 @@ module.exports = {
         await interaction.reply({content: "a...", ephemeral: true});
         today = new Date()
         a2 = new Date(today)
-        a2.setDate(monday.getDate() + 7)
+        a2.setDate(a2.getDate() + 7)
         a3 = new Date(a2)
 		a3 = new Date(a3.setDate(a3.getDate() + 4));
         client.commands.get("edt").create_di_raph(a2, a3, interaction, "raph");
