@@ -21,5 +21,6 @@ module.exports = {
         }else {
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
+        interaction.deferUpdate()
   }
 }

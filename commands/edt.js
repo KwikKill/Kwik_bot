@@ -138,7 +138,8 @@ module.exports = {
 	create_di,
 	generate_canvas,
 	create_di_raph,
-	classic
+	classic,
+	codes
 }
 
 async function classic(client, monday, sunday, interaction, rt=false) {
