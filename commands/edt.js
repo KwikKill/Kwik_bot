@@ -143,6 +143,7 @@ module.exports = {
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
 				di = create_di(events)
+				console.log(di)
 				
 				//console.log(di)
 				
