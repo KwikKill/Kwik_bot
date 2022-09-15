@@ -291,7 +291,7 @@ async function create_di_raph(client, monday, sunday, interaction, rt=false) {
 					if(rt == false) {
 						interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
 					}else {
-						console.log(interaction.message)
+						interaction.message.edit({embeds: [embed1], files: [attachment], components: [row]})
 					}
 					//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 
