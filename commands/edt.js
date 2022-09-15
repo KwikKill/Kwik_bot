@@ -546,6 +546,7 @@ async function generate_canvas(di) {
 			}
 		}
 	}
-
+	
+	console.log(canvas.toBuffer())
 	return canvas
 }
