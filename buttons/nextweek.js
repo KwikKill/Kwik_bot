@@ -22,7 +22,7 @@ module.exports = {
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
           
-        await interaction.reply({content: "Le message a été update", ephemeral: true});
+        //await interaction.reply({content: "Le message a été update", ephemeral: true});
 
   }
 }

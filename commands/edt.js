@@ -201,7 +201,7 @@ async function classic(client, monday, sunday, interaction, rt=false) {
 				);
 				
 				if(rt == false) {
-					interaction.editReply({embeds: [embed1], files: [attachment]});//, components: [row]});
+					interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
 				}else {
 					interaction.message.edit({embeds: [embed1], files: [attachment], components: [row]})
 				}
