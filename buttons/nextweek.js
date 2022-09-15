@@ -21,6 +21,7 @@ module.exports = {
         }else {
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
+        interaction.deferUpdate()
           
         //await interaction.reply({content: "Le message a été update", ephemeral: true});
 
