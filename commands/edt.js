@@ -218,9 +218,14 @@ function create_di(events) {
 }
 
 async function create_di_raph(client, monday, sunday, interaction, rt=false) {
+	if(rt != false) {
+		arg = rt
+	}else {
+		arg = interaction.options.getString("classe").toLowerCase()
+	}
 	di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 	test = []
-	for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
+	for(const x in codes[arg]) {
 		const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
 		url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
 		var request = https.get(url_modified, function(response) {
@@ -231,7 +236,7 @@ async function create_di_raph(client, monday, sunday, interaction, rt=false) {
 
 				
 				for (const event of Object.values(events)) {
-					if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary) || event.summary.includes("CC")) {
+					if(codes[arg][x].includes(event.summary) || event.summary.includes("CC")) {
 						start = new Date(event.start.toISOString())
 						start.setHours(start.getHours() + 1)
 						end = new Date(event.end.toISOString())
@@ -256,13 +261,13 @@ async function create_di_raph(client, monday, sunday, interaction, rt=false) {
 				}
 
 				test.push(x)
-				if(test.length == Object.keys(codes[interaction.options.getString("classe").toLowerCase()]).length) {
+				if(test.length == Object.keys(codes[arg]).length) {
 					generate_canvas(di, monday).then(canvas => {
 					const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
 
 					let embed1 = new MessageEmbed()
 					.setColor("0x757575")
-					.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
+					.setTitle("Emploi du temp de la classe : " + arg)
 					.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
 					.setDescription(
 						"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
