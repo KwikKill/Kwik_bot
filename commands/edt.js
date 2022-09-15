@@ -124,30 +124,7 @@ module.exports = {
 			console.log(monday, sunday)
 		}
 		if(interaction.options.getString("classe").toLowerCase() == "raph") {
-			const canvas = Canvas.createCanvas(1530, 757);
-			const context = canvas.getContext('2d');
-
-			const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
-			context.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-			context.font = '15px sans-serif';
-
-			// Select the style that will be used to fill the text in
-			context.fillStyle = '#000000';
-
-			// Actually fill the text with a solid color
-			context.fillText("Semaine du " + monday.getDate() + "/" + (monday.getMonth() + 1) + "/" + monday.getFullYear(), 700, 16);
-			context.fillText("Lundi " + monday.getDate() + "/" + (monday.getMonth() + 1) + "/" + monday.getFullYear(), 135, 34);
-			day = new Date(monday)
-			day.setDate(day.getDate() + 1);
-			context.fillText("Mardi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 440, 34);
-			day.setDate(day.getDate() + 1);
-			context.fillText("Mercredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 715, 34);
-			day.setDate(day.getDate() + 1);
-			context.fillText("Jeudi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1030, 34);
-			day.setDate(day.getDate() + 1);
-			context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
-
+			
 			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 			test = []
 			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
@@ -191,7 +168,7 @@ module.exports = {
 
 						test.push(x)
 						if(test.length == Object.keys(codes[interaction.options.getString("classe").toLowerCase()]).length) {
-							generate_canvas(di).then(canvas => {
+							generate_canvas(di, monday).then(canvas => {
 							const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
 
 							let embed1 = new MessageEmbed()
@@ -263,7 +240,7 @@ module.exports = {
 				
 				//console.log(di)
 				
-				generate_canvas(di).then(canvas => {
+				generate_canvas(di, monday).then(canvas => {
 					const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
 
 					let embed1 = new MessageEmbed()
@@ -314,7 +291,11 @@ module.exports = {
     }
 }
 
-async function generate_canvas(di) {
+async function create_di() {
+
+}
+
+async function generate_canvas(di, monday) {
 	const canvas = Canvas.createCanvas(1530, 757);
 	const context = canvas.getContext('2d');
 
