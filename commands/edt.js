@@ -191,97 +191,7 @@ module.exports = {
 
 						test.push(x)
 						if(test.length == Object.keys(codes[interaction.options.getString("classe").toLowerCase()]).length) {
-							for(const j in di) {
-								for(const i in di[j]) {
-									for(const h in di[j][i]) {
-										start = di[j][i][h]["start"]
-										end = di[j][i][h]["end"]
-										summary = di[j][i][h]["summary"]
-										description = di[j][i][h]["description"]
-										location = di[j][i][h]["location"]
-
-										//console.log(description)
-
-										description2 = description.trim()
-										description2 = location + "\n" + description2
-										description2 = description2.split("\n")
-										description2 = description2.slice(0,description2.length - 1)
-
-										description3 = ""
-										duration = Math.abs(start - end);
-										hours = Math.floor(duration / 3600000);
-										duration -= hours * 3600000;
-										minutes = Math.floor(duration / 60000);	
-
-										if(hours + minutes/60 <= 1.5) {
-											description3 = location
-										}else {
-
-											for(const y in description2) {
-												if(!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
-
-													description3 += description2[y] + "\n"
-												}else {
-													//console.log(description2[y])
-												}
-											}
-										}
-
-
-
-
-										//console.log(description3)
-
-
-
-										width = 295/di[j][i].length
-										if(summary.length > 45/di[j][i].length) {
-											//console.log(summary, di[j][i].length)
-										}
-										color = "yellow"
-										if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHJKL")) {
-										   color = "#99FFFF"
-										}else {
-											for(const y in TD) {
-												if(summary.includes(TD[y])) {
-													color = "#99FF99"
-												}
-											}
-											for(const y in LANGUES) {
-												if(summary.includes(LANGUES[y])) {
-													color = "#80FF00"
-												}
-											}
-											if(summary.includes("TP")) {
-											   color = "#FFCCFF"
-											}
-										}
-
-										//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
-										//   color = "yellow"
-										//}
-
-										context.beginPath();
-										context.rect(Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
-										context.fillStyle = color;
-										context.fill();
-										context.lineWidth = 2;
-										context.strokeStyle = 'black';
-										context.stroke();
-
-										context.textAlign = "center"
-										context.font = '12px sans-serif';
-										context.fillStyle = '#000000';
-										context.fillText(summary, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
-
-										context.textAlign = "center"
-										context.font = '12px sans-serif';
-										context.fillStyle = '#000000';
-										context.fillText(description3, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 33 + Math.floor(8*(hours - 1 + (minutes/60))), width);
-
-									}
-								}
-							}
+							generate_canvas(di).then(canvas => {
 							const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
 
 							let embed1 = new MessageEmbed()
@@ -312,6 +222,7 @@ module.exports = {
 							//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 
 						}
+					)}
 
 						
 					});
@@ -517,4 +428,122 @@ module.exports = {
 		});
 	}
     }
+}
+
+async function generate_canvas(di) {
+	const canvas = Canvas.createCanvas(1530, 757);
+	const context = canvas.getContext('2d');
+
+	const background = await Canvas.loadImage('/opt/gab_bot/preset.png');
+	context.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+	context.font = '15px sans-serif';
+
+	// Select the style that will be used to fill the text in
+	context.fillStyle = '#000000';
+
+	// Actually fill the text with a solid color
+	context.fillText("Semaine du " + monday.getDate() + "/" + (monday.getMonth() + 1) + "/" + monday.getFullYear(), 700, 16);
+	context.fillText("Lundi " + monday.getDate() + "/" + (monday.getMonth() + 1) + "/" + monday.getFullYear(), 135, 34);
+	day = new Date(monday)
+	day.setDate(day.getDate() + 1);
+	context.fillText("Mardi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 440, 34);
+	day.setDate(day.getDate() + 1);
+	context.fillText("Mercredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 715, 34);
+	day.setDate(day.getDate() + 1);
+	context.fillText("Jeudi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1030, 34);
+	day.setDate(day.getDate() + 1);
+	context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
+
+	for(const j in di) {
+		for(const i in di[j]) {
+			for(const h in di[j][i]) {
+				start = di[j][i][h]["start"]
+				end = di[j][i][h]["end"]
+				summary = di[j][i][h]["summary"]
+				description = di[j][i][h]["description"]
+				location = di[j][i][h]["location"]
+
+				//console.log(description)
+
+				description2 = description.trim()
+				description2 = location + "\n" + description2
+				description2 = description2.split("\n")
+				description2 = description2.slice(0,description2.length - 1)
+
+				description3 = ""
+				duration = Math.abs(start - end);
+				hours = Math.floor(duration / 3600000);
+				duration -= hours * 3600000;
+				minutes = Math.floor(duration / 60000);	
+
+				if(hours + minutes/60 <= 1.5) {
+					description3 = location
+				}else {
+
+					for(const y in description2) {
+						if(!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
+
+							description3 += description2[y] + "\n"
+						}else {
+							//console.log(description2[y])
+						}
+					}
+				}
+
+
+
+
+				//console.log(description3)
+
+
+
+				width = 295/di[j][i].length
+				if(summary.length > 45/di[j][i].length) {
+					//console.log(summary, di[j][i].length)
+				}
+				color = "yellow"
+				if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHJKL")) {
+					color = "#99FFFF"
+				}else {
+					for(const y in TD) {
+						if(summary.includes(TD[y])) {
+							color = "#99FF99"
+						}
+					}
+					for(const y in LANGUES) {
+						if(summary.includes(LANGUES[y])) {
+							color = "#80FF00"
+						}
+					}
+					if(summary.includes("TP")) {
+						color = "#FFCCFF"
+					}
+				}
+
+				//if(color == "yellow" and summary.includes("MECANIQUE 2") || ) {
+				//   color = "yellow"
+				//}
+
+				context.beginPath();
+				context.rect(Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
+				context.fillStyle = color;
+				context.fill();
+				context.lineWidth = 2;
+				context.strokeStyle = 'black';
+				context.stroke();
+
+				context.textAlign = "center"
+				context.font = '12px sans-serif';
+				context.fillStyle = '#000000';
+				context.fillText(summary, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
+
+				context.textAlign = "center"
+				context.font = '12px sans-serif';
+				context.fillStyle = '#000000';
+				context.fillText(description3, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 33 + Math.floor(8*(hours - 1 + (minutes/60))), width);
+
+			}
+		}
+	}
 }
