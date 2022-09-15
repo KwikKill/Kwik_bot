@@ -100,104 +100,117 @@ module.exports = {
 		},
 	],
     async run(message, client, interaction=undefined) {
-	if(interaction != undefined) {
-		await interaction.deferReply()
-		if(codes[interaction.options.getString("classe").toLowerCase()] == undefined) {
-			await interaction.editReply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
-			return;
-		}
-		today = new Date()
-		//today = new Date(today.setDate(today.getDate() + 14));
-		if(today.getDay() != 0 && today.getDay() != 6) {
-			monday = new Date(today)
-			monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
+		if(interaction != undefined) {
+			// deferReply is necessary to send a delayed response
+			await interaction.deferReply()
+			// check if the class exists
+			if(codes[interaction.options.getString("classe").toLowerCase()] == undefined) {
+				await interaction.editReply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)")
+				return;
+			}
+			// get the date
+			today = new Date()
+			if(today.getDay() != 0 && today.getDay() != 6) {
+				monday = new Date(today)
+				monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 
-			sunday = new Date(monday)
-			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
-		}else {
-			monday = new Date(today)
-			monday.setDate(monday.getDate() + 7 - (monday.getDay() + 6) % 7);
+				sunday = new Date(monday)
+				sunday = new Date(sunday.setDate(sunday.getDate() + 4));
+			}else {
+				monday = new Date(today)
+				monday.setDate(monday.getDate() + 7 - (monday.getDay() + 6) % 7);
 
-			sunday = new Date(monday)
-			sunday = new Date(sunday.setDate(sunday.getDate() + 4));
-			
-			console.log(monday, sunday)
-		}
-		if(interaction.options.getString("classe").toLowerCase() == "raph") {
-			
-			await create_di_raph(client, monday, sunday, interaction);
-			return;
-		}
-
-		//console.log(monday.toDateString())
-		//console.log(sunday.toDateString())
-
-		url_modified = url.replace("{0}", codes[interaction.options.getString("classe").toLowerCase()]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
-			
-		const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
-		var request = https.get(url_modified, function(response) {
-		   	 //console.log(response)
-			response.pipe(file);
-			file.on('finish', function() {
-				file.close();
-				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
+				sunday = new Date(monday)
+				sunday = new Date(sunday.setDate(sunday.getDate() + 4));
 				
-				di = create_di(events)
-				
-				//console.log(di)
-				
-				generate_canvas(di, monday).then(canvas => {
-					const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
-
-					let embed1 = new MessageEmbed()
-					.setColor("0x757575")
-					.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
-					.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
-					.setDescription(
-						"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
-					)
-					.setTimestamp()
-					.setImage(`attachment://edt.png`);
-
-					const row = new MessageActionRow()
-					.addComponents(
-						new MessageButton()
-						.setCustomId('lastweek')
-						.setLabel('◀️')
-						.setStyle('PRIMARY'),
-					)
-					.addComponents(
-						new MessageButton()
-						.setCustomId('nextweek')
-						.setLabel('▶️')
-						.setStyle('PRIMARY'),
-					)
-					.addComponents(
-						new MessageButton()
-						.setCustomId('lastclass')
-						.setLabel('⏮️')
-						.setStyle('PRIMARY'),
-					)
-					.addComponents(
-						new MessageButton()
-						.setCustomId('nextclass')
-						.setLabel('⏭️')
-						.setStyle('PRIMARY'),
-					);
-					
-					interaction.editReply({embeds: [embed1], files: [attachment]});//, components: [row]});
-					//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
-				})
-			});
-		}).on('error', function(err) {
-			fs.unlink(file);
-			console.log(err.message)
-		});
-	}
+				console.log(monday, sunday)
+			}
+			// if it's for raph the bg
+			if(interaction.options.getString("classe").toLowerCase() == "raph") {
+				await create_di_raph(client, monday, sunday, interaction);
+				return;
+			// or for the lambda people
+			}else {
+				await classic(client, monday, sunday, interaction);
+			}
+		}
     },
 	create_di,
 	generate_canvas,
-	create_di_raph
+	create_di_raph,
+	classic
+}
+
+async function classic(client, monday, sunday, interaction, rt=false) {
+	if(rt != false) {
+		arg = rt
+	}else {
+		arg = interaction.options.getString("classe").toLowerCase()
+	}
+	url_modified = url.replace("{0}", codes[arg]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
+					
+	const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
+	var request = https.get(url_modified, function(response) {
+		//console.log(response)
+		response.pipe(file);
+		file.on('finish', function() {
+			file.close();
+			const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
+			
+			di = create_di(events)
+			
+			//console.log(di)
+			
+			generate_canvas(di, monday).then(canvas => {
+				const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+
+				let embed1 = new MessageEmbed()
+				.setColor("0x757575")
+				.setTitle("Emploi du temp de la classe : " + arg)
+				.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
+				.setDescription(
+					"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
+				)
+				.setTimestamp()
+				.setImage(`attachment://edt.png`);
+
+				const row = new MessageActionRow()
+				.addComponents(
+					new MessageButton()
+					.setCustomId('lastweek')
+					.setLabel('◀️')
+					.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+					.setCustomId('nextweek')
+					.setLabel('▶️')
+					.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+					.setCustomId('lastclass')
+					.setLabel('⏮️')
+					.setStyle('PRIMARY'),
+				)
+				.addComponents(
+					new MessageButton()
+					.setCustomId('nextclass')
+					.setLabel('⏭️')
+					.setStyle('PRIMARY'),
+				);
+				
+				if(rt == false) {
+					interaction.editReply({embeds: [embed1], files: [attachment]});//, components: [row]});
+				}else {
+					interaction.message.edit({embeds: [embed1], files: [attachment], components: [row]})
+				}
+			})
+		});
+	}).on('error', function(err) {
+		fs.unlink(file);
+		console.log(err.message)
+	});
 }
 
 function create_di(events) {
