@@ -16,7 +16,7 @@ module.exports = {
         test = JSON.parse(JSON.stringify(client.commands.get("edt").codes))
         delete test["raph"]
         keys = Object.keys(test)
-        if((keys.indexOf(classs) - 1) % keys.length == 0) {
+        if(keys.indexOf(classs) == 0) {
             classs = keys[keys.length - 1]
         }else {
             classs = keys[(keys.indexOf(classs) - 1) % keys.length]
