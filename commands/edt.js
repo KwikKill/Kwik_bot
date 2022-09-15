@@ -546,4 +546,6 @@ async function generate_canvas(di) {
 			}
 		}
 	}
+
+	return canvas
 }
