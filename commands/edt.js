@@ -125,89 +125,7 @@ module.exports = {
 		}
 		if(interaction.options.getString("classe").toLowerCase() == "raph") {
 			
-			di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
-			test = []
-			for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
-				
-				
-				
-				const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
-				url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
-				var request = https.get(url_modified, function(response) {
-					response.pipe(file);
-					file.on('finish', function() {
-						file.close();
-						const events = ical.sync.parseFile('/opt/gab_bot/temp/file' + x + '.ics');
-	
-						
-						for (const event of Object.values(events)) {
-							//console.log(x, event.summary)
-							if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary) || event.summary.includes("CC")) {
-								start = new Date(event.start.toISOString())
-								start.setHours(start.getHours() + 1)
-								end = new Date(event.end.toISOString())
-								end.setHours(end.getHours() + 1)
-								
-								
-
-								if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] == undefined) {
-									di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
-								}else {
-									a = false
-									for(const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
-										if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"] == event.summary) {
-											a = true	
-										}
-									}
-									if(a == false) {
-										di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
-									}
-								}
-							}
-						}
-
-						test.push(x)
-						if(test.length == Object.keys(codes[interaction.options.getString("classe").toLowerCase()]).length) {
-							generate_canvas(di, monday).then(canvas => {
-							const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
-
-							let embed1 = new MessageEmbed()
-							.setColor("0x757575")
-							.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
-							.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
-							.setDescription(
-								"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
-							)
-							.setTimestamp()
-							.setImage(`attachment://edt.png`);
-
-							const row = new MessageActionRow()
-							.addComponents(
-								new MessageButton()
-								.setCustomId('lastweek')
-								.setLabel('◀️')
-								.setStyle('PRIMARY'),
-							)
-							.addComponents(
-								new MessageButton()
-								.setCustomId('nextweek')
-								.setLabel('▶️')
-								.setStyle('PRIMARY'),
-							);
-							
-							interaction.editReply({embeds: [embed1], files: [attachment]});//, components: [row]});
-							//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
-
-						}
-					)}
-
-						
-					});
-				}).on('error', function(err) {
-					fs.unlink(file);
-					console.log(err.message)
-				});
-			}
+			await create_di_raph();
 			return;
 		}
 
@@ -224,19 +142,7 @@ module.exports = {
 				file.close();
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
-				di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
-				for (const event of Object.values(events)) {
-					start = new Date(event.start.toISOString())
-					start.setHours(start.getHours() + 1)
-					end = new Date(event.end.toISOString())
-					end.setHours(end.getHours() + 1)
-					
-					if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] == undefined) {
-						di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
-					}else {
-						di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
-					}
-				}
+				di = create_di(events)
 				
 				//console.log(di)
 				
@@ -291,8 +197,103 @@ module.exports = {
     }
 }
 
-async function create_di() {
+function create_di(events) {
+	di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
+	for (const event of Object.values(events)) {
+		start = new Date(event.start.toISOString())
+		start.setHours(start.getHours() + 1)
+		end = new Date(event.end.toISOString())
+		end.setHours(end.getHours() + 1)
+		
+		if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] == undefined) {
+			di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
+		}else {
+			di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
+		}
+	}
+}
 
+async function create_di_raph() {
+	di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
+	test = []
+	for(const x in codes[interaction.options.getString("classe").toLowerCase()]) {
+		const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
+		url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate())
+		var request = https.get(url_modified, function(response) {
+			response.pipe(file);
+			file.on('finish', function() {
+				file.close();
+				const events = ical.sync.parseFile('/opt/gab_bot/temp/file' + x + '.ics');
+
+				
+				for (const event of Object.values(events)) {
+					//console.log(x, event.summary)
+					if(codes[interaction.options.getString("classe").toLowerCase()][x].includes(event.summary) || event.summary.includes("CC")) {
+						start = new Date(event.start.toISOString())
+						start.setHours(start.getHours() + 1)
+						end = new Date(event.end.toISOString())
+						end.setHours(end.getHours() + 1)
+						
+						
+
+						if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] == undefined) {
+							di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
+						}else {
+							a = false
+							for(const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
+								if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"] == event.summary) {
+									a = true	
+								}
+							}
+							if(a == false) {
+								di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
+							}
+						}
+					}
+				}
+
+				test.push(x)
+				if(test.length == Object.keys(codes[interaction.options.getString("classe").toLowerCase()]).length) {
+					generate_canvas(di, monday).then(canvas => {
+					const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+
+					let embed1 = new MessageEmbed()
+					.setColor("0x757575")
+					.setTitle("Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase())
+					.setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
+					.setDescription(
+						"Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
+					)
+					.setTimestamp()
+					.setImage(`attachment://edt.png`);
+
+					const row = new MessageActionRow()
+					.addComponents(
+						new MessageButton()
+						.setCustomId('lastweek')
+						.setLabel('◀️')
+						.setStyle('PRIMARY'),
+					)
+					.addComponents(
+						new MessageButton()
+						.setCustomId('nextweek')
+						.setLabel('▶️')
+						.setStyle('PRIMARY'),
+					);
+					
+					interaction.editReply({embeds: [embed1], files: [attachment]});//, components: [row]});
+					//interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
+
+				}
+			)}
+
+				
+			});
+		}).on('error', function(err) {
+			fs.unlink(file);
+			console.log(err.message)
+		});
+	}
 }
 
 async function generate_canvas(di, monday) {
