@@ -11,6 +11,8 @@ module.exports = {
     async run(interaction, client) {
         test = JSON.parse(JSON.stringify(client.commands.get("edt").codes))
         delete test["raph"]
+        console.log(test.keys())
+        // 
         return;
         classs = interaction.message.embeds[0].title.replace("Emploi du temp de la classe : ", '')
         date1 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[0])
