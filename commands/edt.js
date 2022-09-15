@@ -143,7 +143,6 @@ module.exports = {
 				const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 				
 				di = create_di(events)
-				console.log(di)
 				
 				//console.log(di)
 				
@@ -215,6 +214,7 @@ function create_di(events) {
 			di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location})
 		}
 	}
+	return di
 }
 
 async function create_di_raph(client, monday, sunday, interaction, rt=false) {
