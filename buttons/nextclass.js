@@ -9,7 +9,7 @@ module.exports = {
 	permission: "all",
 	serverid: ["513776796211085342", "890915473363980308"],
     async run(interaction, client) {
-        test = structuredClone(client.commands.get("edt").codes)
+        test = JSON.parse(JSON.stringify(client.commands.get("edt").codes))
         delete test["raph"]
         return;
         classs = interaction.message.embeds[0].title.replace("Emploi du temp de la classe : ", '')
