@@ -46,8 +46,7 @@ codes = {
 			"OPTIQUE_ABCDE",
 			"PHYSIQUE_B",
 			"CHIMIE 1_B",
-
-			"THERMOPHYSIQUE_ABCDE", 
+			"THERMOPHYSIQUE_ABCDE"
 			
 		],
 		// 1F
