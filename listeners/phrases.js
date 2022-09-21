@@ -22,7 +22,7 @@ module.exports = {
 	      for(const x in japonais) {
 		if(msg.content.includes(japonais[x])) {
 			client.channels.fetch("1004443609355002027").then(general => {
-				msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
+				msg.author.send("Pas de japoniaiserie dans les salons autre que <#940543958394732555>. Vous serez réinvité dans 10m.");
 				general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.")
 				msg.member.kick();
 				setTimeout(
