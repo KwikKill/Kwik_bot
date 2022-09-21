@@ -18,7 +18,7 @@ module.exports = {
 	    
       if(msg.channel.id != "940543958394732555") {
 	      for(const x in hiragana) {
-		if(msg.content.includes(x) {
+		if(msg.content.includes(x)) {
 		   	console.log("a")
 		   }
 	      }
