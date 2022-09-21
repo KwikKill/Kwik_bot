@@ -25,7 +25,7 @@ module.exports = {
 				msg.guild.invites.create(general).then(invite => {
 					msg.author.send(invite.url)
 				})
-				//msg.member.kick();
+				msg.member.kick();
 		   		return;
 			});
 		   }
