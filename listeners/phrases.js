@@ -25,9 +25,9 @@ module.exports = {
 				msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
 				general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.")
 				msg.member.kick();
-				setTimeout(msg.guild.invites.create(general).then(invite => {
+				setTimeout(function(msg) {msg.guild.invites.create(general).then(invite => {
 					msg.author.send(invite.url)
-				}), 600000)
+				}}), 600000, msg)
 		   		return;
 			});
 		   }
