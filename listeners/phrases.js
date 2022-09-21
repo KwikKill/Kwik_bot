@@ -22,7 +22,7 @@ module.exports = {
 			client.channels.fetch("1004443609355002027").then(general => {
 				msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
 				//general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.")
-				msg.guild.invite.create(general).then(invite => {
+				msg.guild.invites.create(general).then(invite => {
 					msg.author.send(invite)	
 				})
 				//msg.member.kick();
