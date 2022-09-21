@@ -19,7 +19,12 @@ module.exports = {
       if(msg.channel.id != "940543958394732555") {
 	      for(const x in hiragana) {
 		if(msg.content.includes(hiragana[x])) {
-		   	console.log("a")
+			client.channels.fetch("1004443609355002027").then(general => {
+				console.log("a")
+				//msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
+				//msg.member.kick();
+		   		return;
+			});
 		   }
 	      }
       }
