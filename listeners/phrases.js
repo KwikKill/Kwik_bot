@@ -18,7 +18,7 @@ module.exports = {
     async run(client, msg) {
       guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
 	    
-      if(msg.channel.id != "940543958394732555" && msg.guild.id == "890915473363980308" && !msg.author.bot) {
+      if(!msg.author.bot && msg.channel?.id != "940543958394732555" && msg.guild?.id == "890915473363980308") {
 	      for(const x in japonais) {
 		if(msg.content.includes(japonais[x])) {
 			client.channels.fetch("1004443609355002027").then(general => {
