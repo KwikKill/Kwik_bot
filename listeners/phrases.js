@@ -8,9 +8,9 @@ hiragana = ["あ","い","う","え","お","か","き","く","け","こ","さ","�
 module.exports = {
     name: 'phrases',
     group: 'fun',
-	  description: "listener de phrases",
+    description: "listener de phrases",
     type: "messageCreate",
-	  place: "guild",
+    place: "guild",
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
@@ -20,8 +20,11 @@ module.exports = {
 	      for(const x in hiragana) {
 		if(msg.content.includes(hiragana[x])) {
 			client.channels.fetch("1004443609355002027").then(general => {
-				console.log("a")
-				//msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
+				msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
+				general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.")
+				msg.guild.invite.create(general).then(invite => {
+					msg.author.send(invite)	
+				})
 				//msg.member.kick();
 		   		return;
 			});
