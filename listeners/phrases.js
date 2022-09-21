@@ -18,16 +18,22 @@ module.exports = {
     async run(client, msg) {
       guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
 	    
-      if(msg.channel.id != "940543958394732555" && msg.guild.id == "890915473363980308") {
+      if(msg.channel.id != "940543958394732555" && msg.guild.id == "890915473363980308" && !msg.author.bot) {
 	      for(const x in japonais) {
 		if(msg.content.includes(japonais[x])) {
 			client.channels.fetch("1004443609355002027").then(general => {
 				msg.author.send("pas de japoniaiserie dans les salons autre que <#940543958394732555>");
 				general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.")
 				msg.member.kick();
-				setTimeout(function(msg) {msg.guild.invites.create(general).then(invite => {
-					msg.author.send(invite.url)
-				}}), 600000, msg)
+				setTimeout(
+					function(msg) {
+						msg.guild.invites.create(general).then(invite => {
+							msg.author.send(invite.url)
+						})
+					},
+	                        	600000, 
+					msg
+				)
 		   		return;
 			});
 		   }
