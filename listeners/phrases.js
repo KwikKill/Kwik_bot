@@ -2,6 +2,9 @@ const fs = require("fs");
 const path = require('path');
 const { MessageEmbed, Interaction } = require('discord.js');
 
+hiragana = ["あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ","た","ち","つ","て","と","な","に","ぬ","ね","の","は","ひ","ふ","へ","ほ","ま","み","む","め","も","や","ゆ","よ","ら","り","る","れ","ろ","わ","を","ん","が","ぎ","ぐ","げ","ご","ざ",
+	    "じ","ず","ぜ","ぞ","だ","じ","づ","で","ど","ば","び","ぶ","べ","ぼ","ぱ","ぴ","ぷ","ぺ","ぽ"]
+
 module.exports = {
     name: 'phrases',
     group: 'fun',
@@ -12,6 +15,14 @@ module.exports = {
     commande_channel: true,
     async run(client, msg) {
       guilds = ["513776796211085342", "890915473363980308", "480142959501901845"]
+	    
+      if(msg.channel.id != "940543958394732555") {
+	      for(const x in hiragana) {
+		if(msg.content.includes(x) {
+		   	console.log("a")
+		   }
+	      }
+      }
       
       if(msg.channel.type == "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
 	      channel = await client.channels.fetch("948352104769151047")
