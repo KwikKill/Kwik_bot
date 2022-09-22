@@ -220,9 +220,9 @@ function create_di(events) {
 	di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}}
 	for (const event of Object.values(events)) {
 		start = new Date(event.start.toISOString())
-		start.setHours(start.getHours() + 1)
+		start.setHours(start.getUTCHours() + 1)
 		end = new Date(event.end.toISOString())
-		end.setHours(end.getHours() + 1)
+		end.setHours(end.getUTCHours() + 1)
 		
 		if(di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] == undefined) {
 			di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}]
