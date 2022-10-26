@@ -6,8 +6,6 @@ const packageJSON = require("./package.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
-const discordJSVersion = packageJSON.dependencies["discord.js"];
-
 // -------------- Commandes -----------------
 client.commands = new Collection();
 client.context_menu = new Collection();
