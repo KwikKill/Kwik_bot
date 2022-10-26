@@ -1,7 +1,7 @@
 const config = require('../config.json');
 const fs = require("fs");
 const path = require('path');
-const packageJSON = require("./package.json");
+const packageJSON = require("../package.json");
 const { MessageEmbed, Interaction } = require('discord.js');
 
 module.exports = {
