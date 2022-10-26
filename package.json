@@ -6,7 +6,10 @@
   "author": "Gab_351",
   "license": "GPL v3+",
   "dependencies": {
-    "discord.js": "^13.3.1",
+    "canvas": "^2.9.0",
+    "common-tags": "^1.8.2",
+    "discord.js": "^13.10.3",
+    "node-ical": "^0.14.1",
     "pdfkit": "^0.13.0",
     "pg": "^8.8.0"
   }
