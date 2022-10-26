@@ -90,14 +90,14 @@ module.exports = {
 
         if(interaction == undefined) {
         command = await message.guild.commands.set(commands)
-        if(mssg == true) {
-            message.channel.send({content: "Les " + commands.length.toString() + " commandes slash et menus contextuels ont bien été déployées", reply: { messageReference: message.id }, allowedMentions: { repliedUser: false }})
-        }
+            if(mssg == true) {
+                message.channel.send({content: "Les " + commands.length.toString() + " commandes slash et menus contextuels ont bien été déployées", reply: { messageReference: message.id }, allowedMentions: { repliedUser: false }})
+            }
         }else {
-        command = await interaction.guild.commands.set(commands)
-        if(mssg == true) {
-            await interaction.reply({content: "Les " + commands.length.toString() + " commandes slash et menus contextuels ont bien été déployées", ephemeral: true})
-        }
+            command = await interaction.guild.commands.set(commands)
+            if(mssg == true) {
+                await interaction.reply({content: "Les " + commands.length.toString() + " commandes slash et menus contextuels ont bien été déployées", ephemeral: true})
+            }
         }
 
         command.forEach((commande, i) => {
@@ -137,7 +137,7 @@ module.exports = {
             }
             if(perms.length != 0) {
             //console.log(commande.name, {permissions: perms})
-            commande.permissions.set({permissions: perms})
+            //commande.permissions.set({permissions: perms})
             }
         }else {
             perms = []
@@ -176,7 +176,7 @@ module.exports = {
             if(perms.length != 0) {
             //console.log(commande.name, {permissions: perms})
             //console.log(perms)
-            commande.permissions.set({permissions: perms})
+            //commande.permissions.set({permissions: perms})
             }
         }
         });
