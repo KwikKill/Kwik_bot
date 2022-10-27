@@ -1003,28 +1003,20 @@ module.exports = {
                     gamemode = interaction.options.getString("gamemode");
                     account = interaction.options.getString("account");
                     querychamp = ""
-                    querychamp2 = ""
                     if(champion != undefined) {
                         querychamp = " AND matchs.champion='" + champion + "'";
-                        querychamp2 = " AND m2.champion='" + champion + "'";
                     }
                     queryrole = ""
-                    queryrole2 = ""
                     if(role != undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
-                        queryrole2 = " AND m2.lane='" + role + "'";
                     }
                     querygamemode = ""
-                    querygamemode2 = ""
                     if(gamemode != undefined) {
                         querygamemode = " AND matchs.gamemode='" + gamemode + "'";
-                        querygamemode2 = " AND m2.gamemode='" + gamemode + "'";
                     }
                     queryaccount = ""
-                    queryaccount2 = ""
                     if(account != undefined) {
                         queryaccount = " AND summoners.username='" + account + "'";
-                        queryaccount2 = " AND s2.username='" + account + "'";
                     }
 
                     discordaccount = interaction.options.getUser("discordaccount");
@@ -1134,22 +1126,16 @@ module.exports = {
                     gamemode = interaction.options.getString("gamemode");
                     account = interaction.options.getString("account");
                     queryrole = ""
-                    queryrole2 = ""
                     if(role != undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
-                        queryrole2 = " AND m2.lane='" + role + "'";
                     }
                     querygamemode = ""
-                    querygamemode2 = ""
                     if(gamemode != undefined) {
                         querygamemode = " AND matchs.gamemode='" + gamemode + "'";
-                        querygamemode2 = " AND m2.gamemode='" + gamemode + "'";
                     }
                     queryaccount = ""
-                    queryaccount2 = ""
                     if(account != undefined) {
                         queryaccount = " AND summoners.username='" + account + "'";
-                        queryaccount2 = " AND s2.username='" + account + "'";
                     }
 
                     discordaccount = interaction.options.getUser("discordaccount");
@@ -1164,50 +1150,14 @@ module.exports = {
 
                     query = "SELECT champion, "+
                                 "count(*) AS count, ("+
-                                "cast((SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid ='" + discordaccount + "' " +
-                                        "AND m2.result = 'Win' " +
-                                        "AND m2.champion = matchs.champion" +
-                                        queryrole2 +
-                                        querygamemode2 + 
-                                        queryaccount2 +
-                                ") as float)*100/("+
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid ='" + discordaccount + "' " +
-                                        "AND m2.champion = matchs.champion" +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 +
-                                    ")"+
-                                ") AS winrate, (" +
-                                "cast((SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid ='" + discordaccount + "' " +
-                                        "AND ("+
-                                            "m2.first_gold " +
-                                            "OR m2.first_damages " +
-                                            "OR m2.first_tanked" +
-                                        ") " +
-                                        "AND m2.champion = matchs.champion" +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 +
-                                ") as float)*100/("+
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid ='" + discordaccount + "' " +
-                                        "AND m2.champion = matchs.champion" +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 +
-                                    ")"+
-                                ") AS carry " +
+                                "(cast(" + 
+                                    "count(*) FILTER ("+
+                                        "WHERE result = 'Win'" +
+                                ")*100 as float)/count(*)) as winrate, (" +
+                                "(cast(" + 
+                                    "count(*) FILTER ("+
+                                        "WHERE (first_tanked OR first_gold OR first_damages)" +
+                                ")*100 as float)/count(*)) AS carry " +
                             "FROM matchs, summoners "+
                             "WHERE summoners.discordid='" + discordaccount + "' "+
                                 "AND matchs.player = summoners.puuid"+
