@@ -19,7 +19,6 @@ var startDate = "1641528000";
 var champions = []
 championList(region, language).then(list => {
   champions = list
-  console.log(champions)
 })
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
