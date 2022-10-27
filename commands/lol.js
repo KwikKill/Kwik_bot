@@ -793,7 +793,7 @@ module.exports = {
                         discordaccount = discordaccount.id;
                     }
                     
-                    query = "SELECT puuid," +
+                    query = "SELECT matchs.puuid," +
                                 "player, " + 
                                 "gamemode, " + 
                                 "champion, " + 
