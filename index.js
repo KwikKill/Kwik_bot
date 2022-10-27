@@ -22,6 +22,8 @@ championList(region, language).then(list => {
   console.log(champions)
 })
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 // -------------- Commandes -----------------
 client.commands = new Collection();
 client.context_menu = new Collection();
