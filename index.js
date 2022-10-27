@@ -16,7 +16,11 @@ var route = "EUROPE"; // Regions Route
 var language = "en_US"; // Players Language - Only Used for Champion Names
 var	timezone = 7200000; // Players Timezone - If Blank defaults to Server Timezone
 var startDate = "1641528000";
-var champions = championList(region, language);
+var champions = []
+championList(region, language).then(list => {
+  champions = list
+  console.log(champions)
+})
 
 // -------------- Commandes -----------------
 client.commands = new Collection();
