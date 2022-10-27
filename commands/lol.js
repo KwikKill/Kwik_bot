@@ -1149,7 +1149,7 @@ module.exports = {
                     }
 
                     query = "SELECT champion, "+
-                                "count(*) AS count, ("+
+                                "count(*) AS count, "+
                                 "(cast(" + 
                                     "count(*) FILTER ("+
                                         "WHERE result = 'Win'" +
