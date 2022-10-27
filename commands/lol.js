@@ -1530,9 +1530,9 @@ module.exports = {
                         ")*100 as float)/count(*)) as hardcarry " +
                     "FROM matchs, summoners "+
                     "WHERE matchs.player = summoners.puuid" +
-                        query2
-                        queryrole
-                        queryall
+                        query2 +
+                        queryrole +
+                        queryall +
                     " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
                     response = await client.pg.query(query);
                     console.log(response.rows)
