@@ -6,7 +6,7 @@ module.exports = {
     name: 'lol',
     group: 'lol',
 	description: "Commande lol",
-	permission: "owner",
+	permission: "none",
 	serverid: ["513776796211085342", "962329252550807592", "890915473363980308"],
     hidden: false,
     help: [
@@ -793,7 +793,19 @@ module.exports = {
                         discordaccount = discordaccount.id;
                     }
                     
-                    query = "SELECT * " + 
+                    query = "SELECT *, " + 
+                                "avg(length) as avg_duration " + 
+                                "avg(kill) as avg_kill, "+
+                                "avg(deaths) as avg_deaths, "+
+                                "avg(assists) as avg_assists, "+
+                                "avg(total_damage) as avg_damage, "+
+                                "avg(tanked_damage) as avg_damage_taken, "+
+                                "avg(heal) as avg_heal, "+
+                                "avg(cs) as avg_cs, "+
+                                "avg(gold) as avg_gold, "+
+                                "avg(vision_score) as avg_vision_score, "+
+                                "avg(pinks) as avg_pinks, "+
+                                "avg(total_kills) as avg_total_kills " +
                             "FROM matchs, summoners " +
                             "WHERE summoners.discordid='" + discordaccount + "' " +
                                 "AND matchs.player = summoners.puuid";
@@ -814,37 +826,6 @@ module.exports = {
                     if(response.rows.length == 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
-
-                    // Query 2
-                    query2 = "SELECT " + 
-                                "avg(length) as duration, "+
-                                "avg(kill) as kill, "+
-                                "avg(deaths) as deaths, "+
-                                "avg(assists) as assists, "+
-                                "avg(total_damage) as damage, "+
-                                "avg(tanked_damage) as damage_taken, "+
-                                "avg(heal) as heal, "+
-                                "avg(cs) as cs, "+
-                                "avg(gold) as gold, "+
-                                "avg(vision_score) as vision_score, "+
-                                "avg(pinks) as pinks, "+
-                                "avg(total_kills) as total_kills " +
-                            "FROM matchs, summoners "+
-                            "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                    if(champion != undefined) {
-                        query2 += " AND matchs.champion='" + champion + "'";
-                    }
-                    if(role != undefined) {
-                        query2 += " AND matchs.lane='" + role + "'";
-                    }
-                    if(gamemode != undefined) {
-                        query2 += " AND matchs.gamemode='" + gamemode + "'";
-                    }
-                    if(account != undefined) {
-                        query2 += " AND summoners.username='" + account + "'";
-                    }
-                    query2 += ";"
-                    response2 = await client.pg.query(query2);
 
                     // query 3
                     query3 = "SELECT " + 
@@ -917,18 +898,18 @@ module.exports = {
 
                     // 2) Average stats
 
-                    length = response2.rows[0].duration;
+                    length = response.rows[0].avg_duration;
 
-                    average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(2);
-                    average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(2);
-                    average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(2);
-                    average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(2);
-                    average_gold = response2.rows[0].gold;
-                    average_damages = response2.rows[0].damage;
-                    average_tanked = response2.rows[0].damage_taken;
-                    average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(2);
-                    average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(2);
-                    average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(2);
+                    average_kills = Number.parseFloat(response.rows[0].avg_kill).toFixed(2);
+                    average_deaths = Number.parseFloat(response.rows[0].avg_deaths).toFixed(2);
+                    average_assists = Number.parseFloat(response.rows[0].avg_assists).toFixed(2);
+                    average_cs = Number.parseFloat(response.rows[0].avg_cs).toFixed(2);
+                    average_gold = response.rows[0].avg_gold;
+                    average_damages = response.rows[0].avg_damage;
+                    average_tanked = response.rows[0].avg_damage_taken;
+                    average_pinks = Number.parseFloat(response.rows[0].avg_pinks).toFixed(2);
+                    average_vision_score = Number.parseFloat(response.rows[0].avg_vision_score).toFixed(2);
+                    average_total_kills = Number.parseFloat(response.rows[0].avg_total_kills).toFixed(2);
 
                     average_cs = (average_cs / (length/60)).toFixed(2);
                     average_gold = (average_gold / (length/60)).toFixed(2);
