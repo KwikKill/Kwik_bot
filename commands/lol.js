@@ -1153,7 +1153,7 @@ module.exports = {
                                 "(cast(" + 
                                     "count(*) FILTER ("+
                                         "WHERE result = 'Win'" +
-                                ")*100 as float)/count(*)) as winrate, (" +
+                                ")*100 as float)/count(*)) as winrate, " +
                                 "(cast(" + 
                                     "count(*) FILTER ("+
                                         "WHERE (first_tanked OR first_gold OR first_damages)" +
