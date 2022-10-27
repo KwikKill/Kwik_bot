@@ -7,18 +7,6 @@ jobs:
     steps:
       - run: mkdir temp/
       - run: echo "${{ secrets.KEY }}" > temp/key
+      - run: chmod 700 temp/key
       - run: ssh -o 'StrictHostKeyChecking no' -i temp/key ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
       - run: rm -rf temp/
-#    - run: echo ${{ secrets.KEY }} > key.txt
-#    - run: chmod 700 key.txt
-#    - run: ssh -i key.txt ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
-#    - run: rm key.txt
-
-#    - name: executing remote ssh commands using key
-#      uses: appleboy/ssh-action@v0.1.4
-#      with:
-#        host: ${{ secrets.HOST }}
-#        username: ${{ secrets.USERNAME }}
-#        key: ${{ secrets.KEY }}
-#        port: ${{ secrets.PORT }}
-#        script: whoami
