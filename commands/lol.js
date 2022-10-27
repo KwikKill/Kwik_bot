@@ -7,7 +7,7 @@ module.exports = {
     group: 'lol',
 	description: "Commande lol",
 	permission: "owner",
-	serverid: ["1030883669491069099", "962329252550807592"],
+	serverid: ["513776796211085342", "962329252550807592", "890915473363980308"],
     hidden: false,
     help: [
         {
