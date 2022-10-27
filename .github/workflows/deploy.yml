@@ -2,7 +2,7 @@ name: deploy
 on: [push]
 jobs:
   build:
-    name: Build
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using password
@@ -10,6 +10,6 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
-        password: ${{ secrets.PASSWORD }}
+        key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: whoami
