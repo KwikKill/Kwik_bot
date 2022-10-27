@@ -7,6 +7,15 @@ const packageJSON = require("./package.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
+// -------------- LOL -----------------
+var apiKey = process.env.RIOT_API_KEY //documentProperties.getProperty('API_KEY'); // Riot Games API Key
+var region = "EUW1"; // Players Region
+var route = "EUROPE"; // Regions Route
+var language = "en_US"; // Players Language - Only Used for Champion Names
+var	timezone = 7200000; // Players Timezone - If Blank defaults to Server Timezone
+var champions = [];
+startDate = "1641528000";
+
 // -------------- Commandes -----------------
 client.commands = new Collection();
 client.context_menu = new Collection();
