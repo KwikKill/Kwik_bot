@@ -794,7 +794,7 @@ module.exports = {
                     }
                     
                     query = "SELECT *, " + 
-                                "avg(length) as avg_duration " + 
+                                "avg(length) as avg_duration, " + 
                                 "avg(kill) as avg_kill, "+
                                 "avg(deaths) as avg_deaths, "+
                                 "avg(assists) as avg_assists, "+
