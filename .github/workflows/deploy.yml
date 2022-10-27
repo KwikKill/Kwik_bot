@@ -5,9 +5,9 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - run: TEMP=$(mktemp)
-      - run: echo "${{ secrets.KEY }}" > $TEMP
-      - run: ssh -o 'StrictHostKeyChecking no' -i $TEMP ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
+      - run: TEMP2=$(mktemp)
+      - run: echo "${{ secrets.KEY }}" > $TEMP2
+      - run: ssh -o 'StrictHostKeyChecking no' -i $TEMP2 ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
 #    - run: echo ${{ secrets.KEY }} > key.txt
 #    - run: chmod 700 key.txt
 #    - run: ssh -i key.txt ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
