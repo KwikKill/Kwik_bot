@@ -1513,7 +1513,6 @@ module.exports = {
                         queryall +
                     " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
                     response = await client.pg.query(query);
-                    console.log(response.rows)
 
                     general = "";
                     if(response.rows.length == 0) {

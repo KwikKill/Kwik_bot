@@ -33,7 +33,20 @@ module.exports = {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
-        }else if(interaction.isButton()) {
+        }else if(interaction.isAutocomplete()) {
+            if (!client.commands.has(interaction.commandName)) return;
+        
+            try {
+              can_run = canRunCommande(undefined, client.commands.get(interaction.commandName), interaction)
+              if(can_run) {
+                await client.commands.get(interaction.commandName).autocomplete(client, interaction);
+                return
+              }else {
+              }
+            } catch (error) {
+              console.error(error);
+            }
+        } else if(interaction.isButton()) {
             if (!client.buttons.has(interaction.customId)) return;
         
             
