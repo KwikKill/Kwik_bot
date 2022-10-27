@@ -387,7 +387,7 @@ client.lol = async function() {
     client.requests["matchs"] = client.requests["matchs"].concat(matchs)
   }
   if(client.requests["matchs"].length > 0) {
-    await client.channels.cache.get("1032731157516779560").send("Update Started, " + client.requests["matchs"].length + " matchs to update");
+    await client.channels.cache.get("991052056657793124").send("Update Started, " + client.requests["matchs"].length + " matchs to update");
   }
   while(client.requests["matchs"].length > 0) {
     if(client.requests["summoners"].length > 0) {
@@ -475,7 +475,7 @@ timestamp \
   if(client.requests["summoners"].length > 0 || client.requests["update"].length > 0 || client.requests["matchs"].length > 0) {
     return await client.lol();
   }
-  await client.channels.cache.get("1032731157516779560").send("Finished updating");
+  await client.channels.cache.get("991052056657793124").send("Finished updating");
 }
 
 async function matchHistoryOutput(match, puuid){
