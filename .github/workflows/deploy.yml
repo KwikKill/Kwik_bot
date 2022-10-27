@@ -5,15 +5,19 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      run: |
+      TEMP=$(mktemp)
+      echo "${{ secrets.KEY }}" > $TEMP
+      ssh -o 'StrictHostKeyChecking no' -i $TEMP ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
 #    - run: echo ${{ secrets.KEY }} > key.txt
 #    - run: chmod 700 key.txt
 #    - run: ssh -i key.txt ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
 #    - run: rm key.txt
-    - name: executing remote ssh commands using key
-      uses: appleboy/ssh-action@v0.1.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        script: whoami
+#    - name: executing remote ssh commands using key
+#      uses: appleboy/ssh-action@v0.1.4
+#      with:
+#        host: ${{ secrets.HOST }}
+#        username: ${{ secrets.USERNAME }}
+#        key: ${{ secrets.KEY }}
+#        port: ${{ secrets.PORT }}
+#        script: whoami
