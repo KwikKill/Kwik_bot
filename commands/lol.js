@@ -1475,23 +1475,18 @@ module.exports = {
                 if(interaction.options.getSubcommand() == "carry") {
                     champion = interaction.options.getString("champion");
                     query2 = ""
-                    query3 = ""
                     if(champion != undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
-                        query3 = " AND m2.champion='" + champion + "'";
                     }
 
                     role = interaction.options.getString("lane");
                     queryrole = ""
-                    queryrole2 = ""
                     if(role != undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
-                        queryrole2 = " AND m2.lane='" + role + "'";
                     }
 
                     all = interaction.options.getBoolean("all") == true
                     queryall = ""
-                    queryall2 = ""
                     if(!all) {
                         members = await interaction.guild.members.fetch();
                         members = members.filter(member => !member.user.bot);
@@ -1502,32 +1497,15 @@ module.exports = {
                         list = list.slice(0, -1);
                         list += ")"
                         queryall = " AND summoners.discordid IN " + list
-                        queryall2 = " AND s2.discordid IN " + list
                     }
 
                     query = 
                     "SELECT summoners.discordid, " +
-                        "count(*) as total, " +
+                        "count(*) as count, " +
                         "(cast(" + 
                             "count(*) FILTER ("+
                                 "WHERE (matchs.first_tanked OR first_gold OR first_damages)" +
-                        ")*100 as float)/count(*)) as carry, " +
-                        "(cast(" + 
-                            "count(*) FILTER ("+
-                                "WHERE matchs.first_tanked" +
-                        ")*100 as float)/count(*)) as tanked, " +
-                        "(cast(" + 
-                            "count(*) FILTER ("+
-                                "WHERE matchs.first_gold" +
-                        ")*100 as float)/count(*)) as gold, " +
-                        "(cast(" + 
-                            "count(*) FILTER ("+
-                                "WHERE matchs.first_damages" +
-                        ")*100 as float)/count(*)) as damage, " +
-                        "(cast(" + 
-                            "count(*) FILTER ("+
-                                "WHERE matchs.first_damages AND first_gold AND first_tanked" +
-                        ")*100 as float)/count(*)) as hardcarry " +
+                        ")*100 as float)/count(*)) as carry " +
                     "FROM matchs, summoners "+
                     "WHERE matchs.player = summoners.puuid" +
                         query2 +
@@ -1537,31 +1515,6 @@ module.exports = {
                     response = await client.pg.query(query);
                     console.log(response.rows)
 
-                    // general Carry
-                    query = "SELECT summoners.discordid, "+
-                                "("+
-                                    "SELECT count(*) "+
-                                    "FROM summoners s2, matchs m2 "+
-                                    "WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + 
-                                        query3 +
-                                        queryrole2 +
-                                        queryall2 +
-                                "),"+
-                                " count(*)/(cast(("+
-                                    "SELECT count(*) "+
-                                    "FROM summoners s2, matchs m2 "+
-                                    "WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + 
-                                    query3 + 
-                                    queryrole2 +
-                                    queryall2 +
-                                ") as float)/100) AS carry "+
-                            "FROM matchs, summoners "+
-                            "WHERE matchs.player = summoners.puuid AND (matchs.first_damages=true OR matchs.first_tanked=true OR matchs.first_gold=true)";
-                    query += query2
-                    query += queryrole
-                    query += queryall
-                    query += " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
-                    response = await client.pg.query(query);
                     general = "";
                     if(response.rows.length == 0) {
                         general = "There are not enought summoners in the database or the filters are too restrictings.";
@@ -1572,66 +1525,101 @@ module.exports = {
                     }
 
                     // damage Carry
-                    query = "SELECT summoners.discordid, (SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + "), count(*)/(cast((SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + ") as float)/100) AS carry FROM matchs, summoners WHERE matchs.player = summoners.puuid AND (matchs.first_damages=true)";
-                    query += query2
-                    query += queryrole
-                    query += queryall
-                    query += " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
+                    query = 
+                    "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_damages" +
+                        ")*100 as float)/count(*)) as damage " +
+                    "FROM matchs, summoners "+
+                    "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                    " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;"
                     response = await client.pg.query(query);
+
                     damages = "";
                     if(response.rows.length == 0) {
                         damages = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
                         for(var x of response.rows) {
-                            damages += "- <@" + x.discordid + "> : " + x.carry.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // tanked Carry
-                    query = "SELECT summoners.discordid, (SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + "), count(*)/(cast((SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + ") as float)/100) AS carry FROM matchs, summoners WHERE matchs.player = summoners.puuid AND (matchs.first_tanked=true)";
-                    query += query2
-                    query += queryrole
-                    query += queryall
-                    query += " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
+                    query = 
+                    "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_tanked" +
+                        ")*100 as float)/count(*)) as tanked " +
+                    "FROM matchs, summoners "+
+                    "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                    " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;"
                     response = await client.pg.query(query);
+
                     tanked = "";
                     if(response.rows.length == 0) {
                         tanked = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
                         for(var x of response.rows) {
-                            tanked += "- <@" + x.discordid + "> : " + x.carry.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // Gold carry
-                    query = "SELECT summoners.discordid, (SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + "), count(*)/(cast((SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + ") as float)/100) AS carry FROM matchs, summoners WHERE matchs.player = summoners.puuid AND (matchs.first_gold=true)";
-                    query += query2
-                    query += queryrole
-                    query += queryall
-                    query += " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
+                    query = 
+                    "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_gold" +
+                        ")*100 as float)/count(*)) as gold " +
+                    "FROM matchs, summoners "+
+                    "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                    " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;"
                     response = await client.pg.query(query);
+
                     gold = "";
                     if(response.rows.length == 0) {
                         gold = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
                         for(var x of response.rows) {
-                            gold += "- <@" + x.discordid + "> : " + x.carry.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // Hard carry
-                    query = "SELECT summoners.discordid, (SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + "), count(*)/(cast((SELECT count(*) FROM summoners s2, matchs m2 WHERE s2.puuid = m2.player AND s2.discordid = summoners.discordid" + query3 + queryrole2 + queryall2 + ") as float)/100) AS carry FROM matchs, summoners WHERE matchs.player = summoners.puuid AND (matchs.first_damages=true AND matchs.first_tanked=true AND matchs.first_gold=true)";
-                    query += query2
-                    query += queryrole
-                    query += queryall
-                    query += " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
+                    query = 
+                    "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_damages AND first_gold AND first_tanked" +
+                        ")*100 as float)/count(*)) as hardcarry " +
+                    "FROM matchs, summoners "+
+                    "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                    " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;"
                     response = await client.pg.query(query);
                     hard = "";
                     if(response.rows.length == 0) {
                         hard = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
                         for(var x of response.rows) {
-                            hard += "- <@" + x.discordid + "> : " + x.carry.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
