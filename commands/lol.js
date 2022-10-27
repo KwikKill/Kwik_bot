@@ -1297,130 +1297,50 @@ module.exports = {
                         querychamp2 = " AND m2.champion='" + champion + "'";
                     }
 
-                    query = "SELECT timestamp*86400000 as time, " +
-                                "count(*) as daily, (" +
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as total, cast((" +
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        " AND (m2.first_tanked OR first_gold OR first_damages)" + 
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ")*100 as float)/(" + 
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as carry, cast((" +
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        " AND m2.result = 'Win'" + 
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ")*100 as float)/(" + 
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as wr, (" +
-                                    "SELECT cast((avg(m2.kill)+avg(m2.assists))*100 as float)/avg(m2.total_kills) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" + 
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as kp, (" +
-                                    "SELECT (avg(m2.vision_score))/(avg(m2.length)/60) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" + 
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as vs, (" +
-                                    "SELECT (avg(m2.cs))/(avg(m2.length)/60) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" + 
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as cs, cast((" +
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        " AND m2.first_tanked AND first_gold AND first_damages" + 
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ")*100 as float)/(" + 
-                                    "SELECT count(*) " +
-                                    "FROM matchs m2, summoners s2 " +
-                                    "WHERE m2.player = s2.puuid " +
-                                        "AND s2.discordid = '" + discordaccount + "' " +
-                                        "AND m2.timestamp <= (matchs.timestamp+1)*86400000" +
-                                        querychamp2 +
-                                        queryrole2 +
-                                        querygamemode2 +
-                                        queryaccount2 + 
-                                ") as hardcarry " + 
-                            "FROM (" +
-                                "SELECT puuid, " +
-                                    "champion, " +
-                                    "lane, " +
-                                    "gamemode, " +
-                                    "player, " +
-                                    "cast((matchs.timestamp)/86400000 as bigint) as timestamp " +
-                                "FROM matchs " +
-                            ") as matchs, summoners " +
-                            "WHERE matchs.player = summoners.puuid " +
-                                "AND summoners.discordid = '" + discordaccount + "'" +
-                                queryaccount +
-                                querygamemode +
-                                queryrole + 
-                                querychamp + 
-                            "GROUP BY timestamp;"
-                    response = await client.pg.query(query);
-                    //console.log(response.rows)
+                    query = 
+                    "SELECT timestamp*86400000 as time, " +
+                        "count(*) as daily, " +
+                        "("+
+                            "SELECT ARRAY[" + 
+                                "count(*), " +
+                                "cast(count(*) FILTER (WHERE first_tanked OR first_gold OR first_damages)*100 as float)/count(*), " +
+                                "cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*), " +
+                                "cast((avg(m2.kill)+avg(m2.assists))*100 as float)/avg(m2.total_kills), " +
+                                "(avg(m2.vision_score))/(avg(m2.length)/60), "  +
+                                "(avg(m2.cs))/(avg(m2.length)/60), " +
+                                "cast(count(*) FILTER (WHERE first_tanked AND first_gold AND first_damages)*100 as float)/count(*) " +
+                            "] as stats" + 
+                            "FROM matchs m2, summoners s2 " +
+                            "WHERE m2.player = s2.puuid " +
+                            "AND s2.discordid = '297409548703105035'" +
+                            //"AND s2.discordid = '" + discordaccount + "'" +
+                            //queryaccount2 +
+                            //querygamemode2 +
+                            //queryrole2 +
+                            //querychamp2 +
+                            "AND m2.timestamp <= (matchs.timestamp+1)*86400000 " +
+                        ")" +
+                    "FROM " +
+                        "(" +
+                            "SELECT puuid, " +
+                                "champion, " +
+                                "lane, " +
+                                "gamemode, " +
+                                "player, " +
+                                "cast((matchs.timestamp)/86400000 as bigint) as timestamp " +
+                            "FROM matchs " +
+                        ") as matchs, summoners " +
+                    "WHERE matchs.player = summoners.puuid " +
+                        "AND summoners.discordid = '297409548703105035'" +
+                        //"AND summoners.discordid = '" + discordaccount + "'" +
+                        //queryaccount +
+                        //querygamemode +
+                        //queryrole + 
+                        //querychamp + 
+                    "GROUP BY timestamp;"
 
+                    response = await client.pg.query(query);
+                    console.log(response)
                     if(response.rows.length == 0){
                         interaction.editReply("No data found for this account");
                         return;
@@ -1429,13 +1349,13 @@ module.exports = {
                     ks = []
                     for(i=0; i<response.rows.length; i++){
                         score = 0;
-                        score += response.rows[i].carry
-                        score += response.rows[i].wr
-                        score += response.rows[i].kp
-                        score += 5*response.rows[i].vs
-                        score += 10*response.rows[i].cs
-                        if(100 - response.rows[i].total > 0) {
-                            score = score * 0.99**(100 - response.rows[i].total);
+                        score += response.rows[i].stats[1]
+                        score += response.rows[i].stats[2]
+                        score += response.rows[i].stats[3]
+                        score += 5*response.rows[i].stats[4]
+                        score += 10*response.rows[i].stats[5]
+                        if(100 - response.rows[i].stats[0] > 0) {
+                            score = score * 0.99**(100 - response.rows[i].stats[0]);
                         }
                         ks.push({x: response.rows[i].time, y: score})
                     }
