@@ -5,11 +5,15 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
-        script: whoami
+    - run: echo ${{ secrets.KEY }} > key.txt
+    - run: chmod 700 key.txt
+    - run: ssh -i key.txt ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
+    - run: rm key.txt
+#    - name: executing remote ssh commands using password
+#      uses: appleboy/ssh-action@master
+#      with:
+#        host: ${{ secrets.HOST }}
+#        username: ${{ secrets.USERNAME }}
+#        key: ${{ secrets.KEY }}
+#        port: ${{ secrets.PORT }}
+#        script: whoami
