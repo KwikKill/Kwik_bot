@@ -1039,27 +1039,11 @@ module.exports = {
 
 
                     query = "SELECT matchs.matchup, count(*) AS count1, (cast(" + 
-                                "(SELECT count(*) " +
-                                "FROM matchs m2, summoners s2 " + 
-                                "WHERE m2.matchup = matchs.matchup" + 
-                                    " AND m2.result = 'Win'" +
-                                    " AND m2.player = s2.puuid" + 
-                                    " AND s2.discordid ='" + discordaccount + "'" + 
-                                    querychamp2 +
-                                    queryrole2 + 
-                                    querygamemode2 +
-                                    queryaccount2 + 
+                                "count(*) FILTER ("+
+                                    "WHERE result = 'Win'" +
                                 ")*100 as float)/count(*)) AS winrate, (cast(" + 
-                                "(SELECT count(*) " +
-                                "FROM matchs m2, summoners s2 " + 
-                                "WHERE m2.matchup = matchs.matchup" + 
-                                    " AND (m2.first_damages OR m2.first_tanked OR m2.first_gold)" +
-                                    " AND m2.player = s2.puuid" + 
-                                    " AND s2.discordid ='" + discordaccount + "'" + 
-                                    querychamp2 +
-                                    queryrole2 +
-                                    querygamemode2 +
-                                    queryaccount2 +
+                                "count(*) FILTER ("+
+                                    "WHERE (first_tanked OR first_gold OR first_damages)" +
                                 ")*100 as float)/count(*)) AS carry " +
                             "FROM matchs, summoners " + 
                             "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
