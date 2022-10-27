@@ -3,6 +3,7 @@ const config = require('./config.json');
 const fs = require("fs");
 const path = require('path');
 const pg = require('pg')
+const https = require('https');
 const packageJSON = require("./package.json");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
