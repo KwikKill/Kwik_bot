@@ -18,6 +18,9 @@ client.listeners = new Collection();
 
 client.amonglegends = new Collection();
 
+client.requests = {"summoners": [], "matchs": [], "update": []};
+client.running = false
+
 const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
 for (const file of ListenerFiles) {
 	const listener = require(`./listeners/${file}`);
