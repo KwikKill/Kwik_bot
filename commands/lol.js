@@ -1505,6 +1505,38 @@ module.exports = {
                         queryall2 = " AND s2.discordid IN " + list
                     }
 
+                    query = 
+                    "SELECT summoners.discordid, " +
+                        "count(*) as total, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE (matchs.first_tanked OR first_gold OR first_damages)" +
+                        ")*100 as float)/count(*)) as carry, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_tanked" +
+                        ")*100 as float)/count(*)) as tanked, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_gold" +
+                        ")*100 as float)/count(*)) as gold, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_damages" +
+                        ")*100 as float)/count(*)) as damage, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                                "WHERE matchs.first_damages AND first_gold AND first_tanked" +
+                        ")*100 as float)/count(*)) as hardcarry " +
+                    "FROM matchs, summoners "+
+                    "WHERE matchs.player = summoners.puuid" +
+                        query2
+                        queryrole
+                        queryall
+                    " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
+                    response = await client.pg.query(query);
+                    console.log(response.rows)
+
                     // general Carry
                     query = "SELECT summoners.discordid, "+
                                 "("+
