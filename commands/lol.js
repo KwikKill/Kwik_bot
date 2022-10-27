@@ -793,7 +793,37 @@ module.exports = {
                         discordaccount = discordaccount.id;
                     }
                     
-                    query = "SELECT *, " + 
+                    query = "SELECT puuid," +
+                                "player, " + 
+                                "gamemode, " + 
+                                "champion, " + 
+                                "matchup, " + 
+                                "support, " + 
+                                "gold, " + 
+                                "lane, " + 
+                                "kill, " + 
+                                "deaths, " + 
+                                "assists, " + 
+                                "result, " +  
+                                "total_damage, " + 
+                                "tanked_damage, " + 
+                                "heal, " + 
+                                "neutral_objectives, " + 
+                                "wards, " + 
+                                "pinks, " + 
+                                "vision_score, " + 
+                                "cs, " + 
+                                "length, " + 
+                                "total_kills, " + 
+                                "first_gold, " + 
+                                "first_damages, " + 
+                                "first_tanked, " + 
+                                "double, " + 
+                                "tripple, " + 
+                                "quadra, " + 
+                                "penta, " + 
+                                "time_spent_dead, " + 
+                                "timestamp, " + 
                                 "avg(length) as avg_duration, " + 
                                 "avg(kill) as avg_kill, "+
                                 "avg(deaths) as avg_deaths, "+
