@@ -37,7 +37,7 @@ module.exports = {
             if (!client.commands.has(interaction.commandName)) return;
         
             try {
-              can_run = canRunCommande(undefined, client.commands.get(interaction.commandName), interaction)
+              can_run = client.canRunCommande(undefined, client.commands.get(interaction.commandName), interaction)
               if(can_run) {
                 await client.commands.get(interaction.commandName).autocomplete(client, interaction);
                 return
