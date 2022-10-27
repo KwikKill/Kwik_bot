@@ -1309,16 +1309,15 @@ module.exports = {
                                 "(avg(m2.vision_score))/(avg(m2.length)/60), "  +
                                 "(avg(m2.cs))/(avg(m2.length)/60), " +
                                 "cast(count(*) FILTER (WHERE first_tanked AND first_gold AND first_damages)*100 as float)/count(*) " +
-                            "] as stats" + 
+                            "] as stats " + 
                             "FROM matchs m2, summoners s2 " +
                             "WHERE m2.player = s2.puuid " +
-                            "AND s2.discordid = '297409548703105035'" +
-                            //"AND s2.discordid = '" + discordaccount + "'" +
-                            //queryaccount2 +
-                            //querygamemode2 +
-                            //queryrole2 +
-                            //querychamp2 +
-                            "AND m2.timestamp <= (matchs.timestamp+1)*86400000 " +
+                            "AND s2.discordid = '" + discordaccount + "'" +
+                            queryaccount2 +
+                            querygamemode2 +
+                            queryrole2 +
+                            querychamp2 +
+                            " AND m2.timestamp <= (matchs.timestamp+1)*86400000 " +
                         ")" +
                     "FROM " +
                         "(" +
@@ -1331,16 +1330,14 @@ module.exports = {
                             "FROM matchs " +
                         ") as matchs, summoners " +
                     "WHERE matchs.player = summoners.puuid " +
-                        "AND summoners.discordid = '297409548703105035'" +
-                        //"AND summoners.discordid = '" + discordaccount + "'" +
-                        //queryaccount +
-                        //querygamemode +
-                        //queryrole + 
-                        //querychamp + 
-                    "GROUP BY timestamp;"
+                        "AND summoners.discordid = '" + discordaccount + "'" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole + 
+                        querychamp + 
+                    " GROUP BY timestamp;"
 
                     response = await client.pg.query(query);
-                    console.log(response)
                     if(response.rows.length == 0){
                         interaction.editReply("No data found for this account");
                         return;
