@@ -8,5 +8,5 @@ jobs:
       - run: mkdir temp/
       - run: echo "${{ secrets.KEY }}" > temp/key
       - run: chmod 700 temp/key
-      - run: ssh -o 'StrictHostKeyChecking no' -i temp/key ${{ secrets.USERNAME }}@${{ secrets.HOST }} whoami
+      - run: ssh -o 'StrictHostKeyChecking no' -i temp/key ${{ secrets.USERNAME }}@${{ secrets.HOST }} echo a
       - run: rm -rf temp/
