@@ -820,6 +820,8 @@ module.exports = {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
 
+                    console.log(response.rows.length);
+
                     // Query 2
                     query2 = "SELECT " + 
                                 "avg(length) as duration, "+
@@ -851,8 +853,6 @@ module.exports = {
                     query2 += ";"
                     response2 = await client.pg.query(query2);
 
-                    console.log(response.rows.length);
-
                     // query 3
                     query3 = "SELECT " + 
                                 "gamemode, "+
@@ -873,8 +873,6 @@ module.exports = {
                     if(response3.rows.length == 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
-
-                    console.log(response.rows.length);
 
                     // plot
 
