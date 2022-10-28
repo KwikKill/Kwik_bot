@@ -812,6 +812,7 @@ module.exports = {
                     }
                     query += ";"
                     response = await client.pg.query(query);
+                    console.log(response.rows);
                     if(response.rows == undefined) {
                         return await interaction.editReply("Error with the query, please redo this commande.");
                     }
