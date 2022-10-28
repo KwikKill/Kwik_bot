@@ -415,7 +415,7 @@ client.lol = async function() {
 			client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
 			client.requests["updates"][0]["total"] = matchs.length
 			
-			while(client.requests["updates"][0]["matchs"] > 0) {
+			while(client.requests["updates"][0]["matchs"].length > 0) {
 				matchId = client.requests["matchs"].shift()
 				client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1
 				var match = await matchesById(apiKey,route,matchId[0]);
