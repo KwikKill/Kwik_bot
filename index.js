@@ -394,6 +394,9 @@ client.lol = async function() {
       for(var y of al.rows) {
         already.push(y["puuid"])
       }
+	  for(var y of client.requests["matchs"]) {
+		already.push(y[1])
+	  }
       for(var y of matchIds) {
         if(!already.includes(y)) {
           matchs.push([y, x["puuid"]])
