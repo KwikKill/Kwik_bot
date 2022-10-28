@@ -412,12 +412,90 @@ client.lol = async function() {
 				  }
 				}
 			}
-			console.log(matchs)
 			client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
-	
+			client.requests["updates"][0]["total"] = matchs.length
+			
+			while(client.requests["updates"][0]["matchs"] > 0) {
+				matchId = client.requests["matchs"].shift()
+				client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1
+				var match = await matchesById(apiKey,route,matchId[0]);
+
+				if(match?.status?.status_code != 404) {
+					var exit = await matchHistoryOutput(match, matchId[1]);
+					if(exit != null) {
+					  	await client.pg.query("INSERT INTO matchs(" +
+			  								"puuid, " +
+			  								"player, " +
+			  								"gamemode, " +
+			  								"champion, " +
+											"matchup, " +
+											"support, " +
+											"lane, " +
+											"gold, " +
+											"kill, " +
+											"deaths, " +
+											"assists, " +
+											"result, " +
+											"total_damage, " +
+											"tanked_damage, " +
+											"heal, " +
+											"neutral_objectives, " +
+											" wards, " +
+											"pinks, " +
+											"vision_score, " +
+											"cs, "  +
+											"length, " +
+											"total_kills, " +
+											"first_gold, " +
+											"first_damages, " +
+											"first_tanked, " +
+											"double, " +
+											"tripple, " +
+											"quadra, " +
+											"penta, " +
+											"time_spent_dead, " +
+											"timestamp " +
+			  								") VALUES (" +
+											"'" + matchId[0] + "'," +
+											"'" + exit["summonerpuuid"] + "'," +
+											"'" + exit["queueName"] + "'," +
+											"'" + exit["champion"] + "'," +
+											"'" + exit["matchup"] + "'," +
+											"'" + exit["support"] + "'," +
+											"'" + exit["lane"] + "'," +
+											"'" + exit["gold"] + "'," +
+											"" + exit["kills"] + "," +
+											"" + exit["deaths"] + "," +
+											"" + exit["assists"] + "," +
+											"'" + exit["result"] + "'," +
+											"" + exit["dealt"] + "," +
+											"" + exit["taken"] + "," +
+											"" + exit["healed"] + "," +
+											"" + exit["objectifs"] + "," +
+											"" + exit["wardsPlaced"] + "," +
+											"" + exit["pinkPlaced"] + "," +
+											"" + exit["visionScore"] + "," +
+											"" + exit["CS"] + "," +
+											"" + exit["duration"] + "," +
+											"" + exit["teamKills"] + "," +
+											"" + exit["firstGold"] + "," +
+											"" + exit["firstDamage"] + "," +
+											"" + exit["firstTanked"] + "," +
+											"" + exit["doubles"] + "," +
+											"" + exit["triples"] + "," +
+											"" + exit["quadras"] + "," +
+											"" + exit["penta"] + "," +
+											"" + exit["totalTimeSpentDead"] + "," +
+											"" + exit["date"] + "" +
+											")"
+						)
+					}
+				}
+			}
+
 			console.log(client.requests)
 		}
-
+		interaction.editReply("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database")
 		client.requests["updates"].shift()
 	}
 	client.running = false;
@@ -425,95 +503,6 @@ client.lol = async function() {
 		return await client.lol();
 	}*/
 	await client.channels.cache.get("991052056657793124").send("Finished updating");
-  	return;
-
-  while(client.requests["matchs"].length > 0) {
-    if(client.requests["summoners"].length > 0) {
-      client.running = false;
-      return client.lol();
-    }
-    if(client.requests["update"].length > 0) {
-      client.running = false;
-      return client.lol();
-    }
-    matchId = client.requests["matchs"].shift()
-    var match = await matchesById(apiKey,route,matchId[0]);
-    if(match?.status?.status_code != 404) {
-      var exit = await matchHistoryOutput(match, matchId[1]);
-      if(exit != null) {
-        await client.pg.query("INSERT INTO matchs(\
-puuid, \
-player, \
-gamemode, \
-champion, \
-matchup, \
-support, \
-lane, \
-gold, \
-kill, \
-deaths, \
-assists, \
-result, \
-total_damage, \
-tanked_damage, \
-heal, \
-neutral_objectives, \
-wards, \
-pinks, \
-vision_score, \
-cs, \
-length, \
-total_kills, \
-first_gold, \
-first_damages, \
-first_tanked, \
-double, \
-tripple, \
-quadra, \
-penta, \
-time_spent_dead, \
-timestamp \
-) VALUES (\
-'" + matchId[0] + "',\
-'" + exit["summonerpuuid"] + "',\
-'" + exit["queueName"] + "',\
-'" + exit["champion"] + "',\
-'" + exit["matchup"] + "',\
-'" + exit["support"] + "',\
-'" + exit["lane"] + "',\
-'" + exit["gold"] + "',\
-" + exit["kills"] + ",\
-" + exit["deaths"] + ",\
-" + exit["assists"] + ",\
-'" + exit["result"] + "',\
-" + exit["dealt"] + ",\
-" + exit["taken"] + ",\
-" + exit["healed"] + ",\
-" + exit["objectifs"] + ",\
-" + exit["wardsPlaced"] + ",\
-" + exit["pinkPlaced"] + ",\
-" + exit["visionScore"] + ",\
-" + exit["CS"] + ",\
-" + exit["duration"] + ",\
-" + exit["teamKills"] + ",\
-" + exit["firstGold"] + ",\
-" + exit["firstDamage"] + ",\
-" + exit["firstTanked"] + ",\
-" + exit["doubles"] + ",\
-" + exit["triples"] + ",\
-" + exit["quadras"] + ",\
-" + exit["penta"] + ",\
-" + exit["totalTimeSpentDead"] + ",\
-" + exit["date"] + "\
-)")
-      }
-    }
-  }
-  client.running = false;
-  if(client.requests["summoners"].length > 0 || client.requests["update"].length > 0 || client.requests["matchs"].length > 0) {
-    return await client.lol();
-  }
-  await client.channels.cache.get("991052056657793124").send("Finished updating");
 }
 
 async function matchHistoryOutput(match, puuid){

@@ -1726,6 +1726,6 @@ async function addSumoner(client, name, interaction) {
 }
 
 async function update(client, interaction) {
-    client.requests["updates"].push({"discordid": interaction.user.id, "interaction": interaction, "matchs": []});
+    client.requests["updates"].push({"discordid": interaction.user.id, "interaction": interaction, "matchs": [], "total": 0, "count": 0});
     await client.lol();
 }
