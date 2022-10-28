@@ -354,13 +354,13 @@ client.lol = async function() {
 			await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.")
 		}
 	}
-	while(client.requests["update"].length > 0) {
+	while(client.requests["updates"].length > 0) {
 		if(client.requests["summoners"].length > 0) {
 			client.running = false;
 			return client.lol();
 		}
-		discordid = update["discordid"]
-		interaction = update["interaction"]
+		discordid = client.requests["updates"]["discordid"]
+		interaction = client.requests["updates"]["interaction"]
 
 		ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordId + '\'')
 
@@ -400,7 +400,7 @@ client.lol = async function() {
 			for(var y of al.rows) {
 			  already.push(y["puuid"])
 			}
-			for(var y of client.requests["update"][0]["matchs"]) {
+			for(var y of client.requests["updates"][0]["matchs"]) {
 			  already.push(y[1])
 			}
 			for(var y of matchIds) {
@@ -409,7 +409,7 @@ client.lol = async function() {
 			  }
 			}
 		  }
-		  client.requests["update"][0]["matchs"] = client.requests["update"][0]["matchs"].concat(matchs)
+		  client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
 
 		  console.log(client.requests)
 	}
