@@ -417,12 +417,12 @@ client.lol = async function() {
 			
 			while(client.requests["updates"][0]["matchs"].length > 0) {
 				matchId = client.requests["updates"][0]["matchs"].shift()
-				client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1
 				var match = await matchesById(apiKey,route,matchId[0]);
 
 				if(match?.status?.status_code != 404) {
 					var exit = await matchHistoryOutput(match, matchId[1]);
 					if(exit != null) {
+						client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1
 					  	await client.pg.query("INSERT INTO matchs(" +
 			  								"puuid, " +
 			  								"player, " +
@@ -492,8 +492,6 @@ client.lol = async function() {
 					}
 				}
 			}
-
-			console.log(client.requests)
 		}
 		interaction.editReply("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database")
 		client.requests["updates"].shift()
