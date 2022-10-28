@@ -363,57 +363,60 @@ client.lol = async function() {
 		interaction = client.requests["updates"]["interaction"]
 
 		ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'')
-
-		matchs = [];
-		for(var x of ids.rows) {
-			var matchIds = [];
-			var indexed = 0;
-			var gamesToIndex = true;
-			var listOfMatches = {};
-			//console.log(x)
-	  
-			do{
-			  var options = "?startTime="+startDate+"&start="+indexed+"&count=100";
-			  listOfMatches = {'matches':await matchlistsByAccount(apiKey,route,x["puuid"],options)};
-			  // If there are less than 100 matches in the object, then this is the last match list
-			  if (listOfMatches['matches'].length < 100){
-				gamesToIndex = false;
-			  }
-			  
-			  //console.log(listOfMatches)
-			  // Populate matchIds Array
-			  for (var match in listOfMatches['matches']){
-				matchIds[indexed] = listOfMatches['matches'][match];
-				indexed++;
-			  }
-			  
-			  // Fail Safe
-			  if (listOfMatches['matches'][0]==undefined){
-				gamesToIndex = false;
-				indexed = 0;
-			  }
-			}while(gamesToIndex);
-			console.log(matchIds)
-	  
-			//console.log(matchIds)
-			al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordId + '\'')
-			already = []
-			for(var y of al.rows) {
-			  already.push(y["puuid"])
+		if(ids.rowCount == 0) {
+			await interaction.editReply("<@" + discordid + ">, You don't have any account linked.")
+		}else {
+			matchs = [];
+			for(var x of ids.rows) {
+				var matchIds = [];
+				var indexed = 0;
+				var gamesToIndex = true;
+				var listOfMatches = {};
+				//console.log(x)
+		  
+				do{
+				  var options = "?startTime="+startDate+"&start="+indexed+"&count=100";
+				  listOfMatches = {'matches':await matchlistsByAccount(apiKey,route,x["puuid"],options)};
+				  // If there are less than 100 matches in the object, then this is the last match list
+				  if (listOfMatches['matches'].length < 100){
+					gamesToIndex = false;
+				  }
+				  
+				  //console.log(listOfMatches)
+				  // Populate matchIds Array
+				  for (var match in listOfMatches['matches']){
+					matchIds[indexed] = listOfMatches['matches'][match];
+					indexed++;
+				  }
+				  
+				  // Fail Safe
+				  if (listOfMatches['matches'][0]==undefined){
+					gamesToIndex = false;
+					indexed = 0;
+				  }
+				}while(gamesToIndex);
+				
+		  
+				//console.log(matchIds)
+				al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordId + '\'')
+				already = []
+				for(var y of al.rows) {
+				  already.push(y["puuid"])
+				}
+				for(var y of client.requests["updates"][0]["matchs"]) {
+				  already.push(y[1])
+				}
+				for(var y of matchIds) {
+				  if(!already.includes(y)) {
+					matchs.push([y, x["puuid"]])
+				  }
+				}
 			}
-			for(var y of client.requests["updates"][0]["matchs"]) {
-			  already.push(y[1])
-			}
-			for(var y of matchIds) {
-			  if(!already.includes(y)) {
-				matchs.push([y, x["puuid"]])
-			  }
-			}
+			console.log(matchs)
+			client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
+	
+			console.log(client.requests)
 		}
-		console.log(matchs)
-		client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
-
-		console.log(client.requests)
 
 		client.requests["updates"].shift()
 	}
