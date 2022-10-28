@@ -414,6 +414,7 @@ client.lol = async function() {
 			}
 			client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
 			client.requests["updates"][0]["total"] = matchs.length
+			await interaction.editReply("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.")
 			
 			while(client.requests["updates"][0]["matchs"].length > 0) {
 				matchId = client.requests["updates"][0]["matchs"].shift()
