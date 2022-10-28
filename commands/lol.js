@@ -949,10 +949,21 @@ module.exports = {
                     if(100 - response.rows.length > 0) {
                         score = score * 0.99**(100 - response.rows.length);
                     }
+
+                    title = "" + discordusername + "'s stats"
+                    if(champion != undefined) {
+                        title += " with " + champion;
+                    }
+                    if(role != undefined) {
+                        title += " in " + role;
+                    }
+                    if(account != undefined) {
+                        title += " on " + account;
+                    }
                     
                     // send embed
                     embed = new MessageEmbed()
-                    .setTitle("" + discordusername + "'s stats")
+                    .setTitle(title)
                     .setColor("#00FF00")
                     .setFooter({
                         text: "Requested by " + interaction.user.username,
