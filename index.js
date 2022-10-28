@@ -408,10 +408,13 @@ client.lol = async function() {
 				matchs.push([y, x["puuid"]])
 			  }
 			}
-		  }
-		  client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
+		}
+		console.log(matchs)
+		client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs)
 
-		  console.log(client.requests)
+		console.log(client.requests)
+
+		client.requests["updates"].shift()
 	}
 	client.running = false;
   	/*if(client.requests["summoners"].length > 0 || client.requests["update"].length > 0) {
