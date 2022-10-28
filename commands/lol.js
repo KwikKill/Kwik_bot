@@ -1090,9 +1090,20 @@ module.exports = {
 
                     url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
 
+                    title = "" + discordusername + "'s matchups"
+                    if(champion != undefined) {
+                        title += " with " + champion;
+                    }
+                    if(role != undefined) {
+                        title += " in " + role;
+                    }
+                    if(account != undefined) {
+                        title += " on " + account;
+                    }
+
                     // send embed
                     embed = new MessageEmbed()
-                    .setTitle("" + discordusername + "'s matchups")
+                    .setTitle(title)
                     .setColor("#00FF00")
                     .setFooter({
                         text: "Requested by " + interaction.user.username,
@@ -1205,9 +1216,17 @@ module.exports = {
                     champ = champ.substring(0, champ.length - 1);
                     url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
 
+                    title = "" + discordusername + "'s champions"
+                    if(role != undefined) {
+                        title += " in " + role;
+                    }
+                    if(account != undefined) {
+                        title += " on " + account;
+                    }
+
                     // send embed
                     embed = new MessageEmbed()
-                    .setTitle("" + discordusername + "'s champions")
+                    .setTitle(title)
                     .setColor("#00FF00")
                     .setFooter({
                         text: "Requested by " + interaction.user.username,
