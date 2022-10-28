@@ -398,7 +398,7 @@ client.lol = async function() {
 				
 		  
 				//console.log(matchIds)
-				al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordId + '\'')
+				al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordid + '\'')
 				already = []
 				for(var y of al.rows) {
 				  already.push(y["puuid"])
