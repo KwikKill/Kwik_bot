@@ -812,14 +812,9 @@ module.exports = {
                     }
                     query += ";"
                     response = await client.pg.query(query);
-                    if(response.rows == undefined) {
-                        return await interaction.editReply("Error with the query, please redo this commande.");
-                    }
                     if(response.rows.length == 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
-
-                    console.log(response);
 
                     // Query 2
                     query2 = "SELECT " + 
@@ -851,8 +846,6 @@ module.exports = {
                     }
                     query2 += ";"
                     response2 = await client.pg.query(query2);
-
-                    console.log(response);
 
                     // query 3
                     query3 = "SELECT " + 

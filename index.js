@@ -226,9 +226,9 @@ async function championmasteriesBySummoner(apiKey,region,summonerId){
 async function apiCall(url){
 	// Fetch Data from provided URL & Options
 	const responses = []
-	response = await fetch(url)
-	let data = await response.json();
-	statut = await response
+	responsefetch = await fetch(url)
+	let data = await responsefetch.json();
+	statut = await responsefetch
 	statut = statut.status
 	switch(statut) {
 		case 200:
