@@ -958,7 +958,7 @@ module.exports = {
                         title += " in " + role;
                     }
                     if(account != undefined) {
-                        title += " on " + account;
+                        title += " on \"" + account + "\"";
                     }
                     
                     // send embed
@@ -1098,7 +1098,7 @@ module.exports = {
                         title += " in " + role;
                     }
                     if(account != undefined) {
-                        title += " on " + account;
+                        title += " on \"" + account + "\"";
                     }
 
                     // send embed
@@ -1221,7 +1221,7 @@ module.exports = {
                         title += " in " + role;
                     }
                     if(account != undefined) {
-                        title += " on " + account;
+                        title += " on \"" + account + "\"";
                     }
 
                     // send embed
@@ -1608,7 +1608,6 @@ module.exports = {
                 }else if(interaction.options.getSubcommand() == "kwikscore") {
                     all = interaction.options.getBoolean("all") == true
                     queryall = ""
-                    queryall2 = ""
                     if(!all) {
                         members = await interaction.guild.members.fetch();
                         members = members.filter(member => !member.user.bot);
@@ -1619,14 +1618,12 @@ module.exports = {
                         list = list.slice(0, -1);
                         list += ")"
                         queryall = " AND summoners.discordid IN " + list
-                        queryall2 = " AND s2.discordid IN " + list
                     }
                     champion = interaction.options.getString("champion");
                     query2 = ""
                     query3 = ""
                     if(champion != undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
-                        query3 = " AND m2.champion='" + champion + "'";
                     }
 
                     role = interaction.options.getString("lane");
@@ -1634,134 +1631,33 @@ module.exports = {
                     queryrole2 = ""
                     if(role != undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
-                        queryrole2 = " AND m2.lane='" + role + "'";
                     }
 
-                    query = "SELECT summoners.discordid, "+
-                                "count(*), ("+
-                                    "cast(("+
-                                        "SELECT count(*) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            "AND (m2.first_gold OR m2.first_damages OR m2.first_tanked)" +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ") * 100 AS FLOAT) / "+
-                                    "("+
-                                        "SELECT count(*) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ")"+
-                                ") AS CARRY, (" +
-                                    "cast(("+
-                                        "SELECT count(*) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            "AND m2.result = 'Win'" +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ") * 100 AS FLOAT) / "+
-                                    "("+
-                                        "SELECT count(*) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ")"+
-                                ") AS WR, (" +
-                                    "cast(("+
-                                        "SELECT (avg(m2.kill)+avg(m2.assists)) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ") * 100 AS FLOAT) / "+
-                                    "("+
-                                        "SELECT avg(m2.total_kills) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ")"+
-                                ") AS KP, (" +
-                                    "cast(("+
-                                        "SELECT avg(m2.vision_score) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ") AS FLOAT) / "+
-                                    "("+
-                                        "SELECT avg(m2.length)/60 " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ")"+
-                                ") AS VS, (" +
-                                    "cast(("+
-                                        "SELECT avg(m2.cs) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ") AS FLOAT) / "+
-                                    "("+
-                                        "SELECT avg(m2.length)/60 " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ")"+
-                                ") AS CS, ("+
-                                    "cast(("+
-                                        "SELECT count(*) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            "AND (m2.first_gold AND m2.first_damages AND m2.first_tanked)" +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ") * 100 AS FLOAT) / "+
-                                    "("+
-                                        "SELECT count(*) " +
-                                        "FROM matchs m2, summoners s2 " +
-                                        "WHERE m2.player = s2.puuid " +
-                                            "AND s2.discordid = summoners.discordid " +
-                                            query3 +
-                                            queryrole2 +
-                                            queryall2 +
-                                    ")"+
-                                ") AS hardcarry " +
-                            "FROM matchs, summoners " +
-                            "WHERE matchs.player = summoners.puuid "
-                    query += query2
-                    query += queryrole
-                    query += queryall
-                    query += " GROUP BY summoners.discordid"
+                    query = 
+                    "SELECT summoners.discordid, " +
+                        "count(*), " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                            "WHERE result = 'Win'" +
+                        ")*100 as float)/count(*)) as WR, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                            "WHERE (first_gold OR first_damages OR first_tanked)" +
+                        ")*100 as float)/count(*)) as CARRY, " +
+                        "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+                        "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
+                        "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
+                        "(cast(" + 
+                            "count(*) FILTER ("+
+                            "WHERE first_gold AND first_damages AND first_tanked" +
+                        ")*100 as float)/count(*)) as hardcarry " +
+                    "FROM matchs, summoners "+
+                    "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                    " GROUP BY summoners.discordid"
+
                     query4 = "SELECT discordid, " +
                                 "count, " +
                                 "CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) "+
