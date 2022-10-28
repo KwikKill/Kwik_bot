@@ -362,7 +362,7 @@ client.lol = async function() {
 		discordid = client.requests["updates"]["discordid"]
 		interaction = client.requests["updates"]["interaction"]
 
-		ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordId + '\'')
+		ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'')
 
 		matchs = [];
 		for(var x of ids.rows) {
