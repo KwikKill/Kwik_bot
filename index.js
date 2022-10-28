@@ -393,6 +393,7 @@ client.lol = async function() {
 				indexed = 0;
 			  }
 			}while(gamesToIndex);
+			console.log(matchIds)
 	  
 			//console.log(matchIds)
 			al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordId + '\'')
