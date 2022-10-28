@@ -340,15 +340,18 @@ client.lol = async function() {
     username = x["username"]
 		  var summonerObject = await summonersByName(apiKey,region,username);
       if(summonerObject == null) {
-
+		interaction = x["interaction"]
+		await interaction.editReply("Account " + username + " not found.")
       }else {
         id = summonerObject['id'];
         accountId = summonerObject['accountId'];
         puuid = summonerObject['puuid'];
         discordid = x["discordid"]
+		interaction = x["interaction"]
 
         await client.pg.query('INSERT INTO summoners(puuid, username, accountid, id, discordid) VALUES(\'' + puuid + '\', \'' + username +'\', \'' + accountId +'\', \'' + id +'\', \'' + discordid +'\')')
-      }
+		await interaction.editReply("Account " + username + " has been added to the database.")
+	}
   }
   while(client.requests["update"].length > 0) {
     if(client.requests["summoners"].length > 0) {

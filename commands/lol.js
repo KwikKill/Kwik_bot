@@ -692,7 +692,7 @@ module.exports = {
                     response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND LOWER(username)=LOWER('" + summoner_name + "');")
                     if(!client.requests["summoners"].includes({"username": summoner_name, "discordid":interaction.user.id }) && response.rows.length == 0) {
                         await interaction.editReply("The request was added to the queue, this can take several minutes.");
-                        return await addSumoner(client, interaction.user.id, summoner_name);
+                        return await addSumoner(client, summoner_name, interaction);
                     }else {
                         return await interaction.editReply("This account is already in the database or requested.");
                     }
@@ -1719,8 +1719,8 @@ module.exports = {
 
 }
 
-async function addSumoner(client, id, name) {
-    client.requests["summoners"].push({"username":name, "discordid":id});
+async function addSumoner(client, name, interaction) {
+    client.requests["summoners"].push({"username":name, "discordid":interaction.user.id, "interaction": interaction});
     await client.lol();
 }
 
