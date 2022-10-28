@@ -744,12 +744,13 @@ module.exports = {
                 }
             }else if(interaction.options.getSubcommandGroup() == "matchs") {
                 if(interaction.options.getSubcommand() == "update") {
-                    if(!client.requests["update"].includes(interaction.user.id)) {
-                        await interaction.editReply("The request was added to the queue, this can take several minutes.");
-                        return await update(client, interaction, interaction.user.id);
-                    }else {
-                        return await interaction.editReply("This request is already in the queue.");
+                    for(var x of client.requests["update"]) {
+                        if(x["discordid"] == interaction.user.id) {
+                            return await interaction.editReply("You already have a request in the queue.");
+                        }
                     }
+                    await interaction.editReply("The request was added to the queue, this can take several minutes.");
+                    return await update(client, interaction);
                 }
             }else if(interaction.options.getSubcommandGroup() == "queue") {
                 if(interaction.options.getSubcommand() == "status") {
@@ -1724,7 +1725,7 @@ async function addSumoner(client, name, interaction) {
     await client.lol();
 }
 
-async function update(client, interaction, discordid) {
-    client.requests["update"].push(discordid);
+async function update(client, interaction) {
+    client.requests["update"].push({"discordid": interaction.user.id, "interaction": interaction, "matchs": []});
     await client.lol();
 }

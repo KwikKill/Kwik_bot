@@ -34,7 +34,7 @@ client.listeners = new Collection();
 
 client.amonglegends = new Collection();
 
-client.requests = {"summoners": [], "matchs": [], "update": []};
+client.requests = {"summoners": [], "updates": []};
 client.running = false
 
 const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
@@ -332,85 +332,94 @@ function checkpermission(message, perm) {
 }
 
 client.lol = async function() {
-  //console.log(client.running, client.requests)
-  if(client.running == true) return;
-  client.running = true;
-  while(client.requests["summoners"].length > 0) {
-    x = client.requests["summoners"].shift()
-    username = x["username"]
-		  var summonerObject = await summonersByName(apiKey,region,username);
-      if(summonerObject == null) {
+  	//console.log(client.running, client.requests)
+	if(client.running == true) return;
+	client.running = true;
+	while(client.requests["summoners"].length > 0) {
+		x = client.requests["summoners"].shift()
+		username = x["username"]
 		interaction = x["interaction"]
-		await interaction.editReply("Account " + username + " not found.")
-      }else {
-        id = summonerObject['id'];
-        accountId = summonerObject['accountId'];
-        puuid = summonerObject['puuid'];
-        discordid = x["discordid"]
-		interaction = x["interaction"]
+		discordid = x["discordid"]
+		var summonerObject = await summonersByName(apiKey,region,username);
+		if(summonerObject == null) {
+		
+			await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.")
 
-        await client.pg.query('INSERT INTO summoners(puuid, username, accountid, id, discordid) VALUES(\'' + puuid + '\', \'' + username +'\', \'' + accountId +'\', \'' + id +'\', \'' + discordid +'\')')
-		await interaction.editReply("Account " + username + " has been added to the database.")
+		}else {
+			id = summonerObject['id'];
+			accountId = summonerObject['accountId'];
+			puuid = summonerObject['puuid'];
+
+			await client.pg.query('INSERT INTO summoners(puuid, username, accountid, id, discordid) VALUES(\'' + puuid + '\', \'' + username +'\', \'' + accountId +'\', \'' + id +'\', \'' + discordid +'\')')
+			await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.")
+		}
 	}
-  }
-  while(client.requests["update"].length > 0) {
-    if(client.requests["summoners"].length > 0) {
-      client.running = false;
-      return client.lol();
-    }
-    discordId = client.requests["update"].shift()
-    //console.log(discordId)
-    ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordId + '\'')
-    matchs = [];
-    for(var x of ids.rows) {
-      var matchIds = [];
-      var indexed = 0;
-      var gamesToIndex = true;
-      var listOfMatches = {};
-      //console.log(x)
+	while(client.requests["update"].length > 0) {
+		if(client.requests["summoners"].length > 0) {
+			client.running = false;
+			return client.lol();
+		}
+		discordid = update["discordid"]
+		interaction = update["interaction"]
 
-      do{
-        var options = "?startTime="+startDate+"&start="+indexed+"&count=100";
-        listOfMatches = {'matches':await matchlistsByAccount(apiKey,route,x["puuid"],options)};
-        // If there are less than 100 matches in the object, then this is the last match list
-        if (listOfMatches['matches'].length < 100){
-          gamesToIndex = false;
-        }
-        
-        //console.log(listOfMatches)
-        // Populate matchIds Array
-        for (var match in listOfMatches['matches']){
-          matchIds[indexed] = listOfMatches['matches'][match];
-          indexed++;
-        }
-        
-        // Fail Safe
-        if (listOfMatches['matches'][0]==undefined){
-          gamesToIndex = false;
-          indexed = 0;
-        }
-      }while(gamesToIndex);
+		ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordId + '\'')
 
-      //console.log(matchIds)
-      al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordId + '\'')
-      already = []
-      for(var y of al.rows) {
-        already.push(y["puuid"])
-      }
-	  for(var y of client.requests["matchs"]) {
-		already.push(y[1])
-	  }
-      for(var y of matchIds) {
-        if(!already.includes(y)) {
-          matchs.push([y, x["puuid"]])
-        }
-      }
-    }
-    client.requests["matchs"] = client.requests["matchs"].concat(matchs)
-  }
-  if(client.requests["matchs"].length > 0) {
-    await client.channels.cache.get("991052056657793124").send("Update Started, " + client.requests["matchs"].length + " matchs to update");
-  }
+		matchs = [];
+		for(var x of ids.rows) {
+			var matchIds = [];
+			var indexed = 0;
+			var gamesToIndex = true;
+			var listOfMatches = {};
+			//console.log(x)
+	  
+			do{
+			  var options = "?startTime="+startDate+"&start="+indexed+"&count=100";
+			  listOfMatches = {'matches':await matchlistsByAccount(apiKey,route,x["puuid"],options)};
+			  // If there are less than 100 matches in the object, then this is the last match list
+			  if (listOfMatches['matches'].length < 100){
+				gamesToIndex = false;
+			  }
+			  
+			  //console.log(listOfMatches)
+			  // Populate matchIds Array
+			  for (var match in listOfMatches['matches']){
+				matchIds[indexed] = listOfMatches['matches'][match];
+				indexed++;
+			  }
+			  
+			  // Fail Safe
+			  if (listOfMatches['matches'][0]==undefined){
+				gamesToIndex = false;
+				indexed = 0;
+			  }
+			}while(gamesToIndex);
+	  
+			//console.log(matchIds)
+			al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordId + '\'')
+			already = []
+			for(var y of al.rows) {
+			  already.push(y["puuid"])
+			}
+			for(var y of client.requests["update"][0]["matchs"]) {
+			  already.push(y[1])
+			}
+			for(var y of matchIds) {
+			  if(!already.includes(y)) {
+				matchs.push([y, x["puuid"]])
+			  }
+			}
+		  }
+		  client.requests["update"][0]["matchs"] = client.requests["update"][0]["matchs"].concat(matchs)
+
+		  console.log(client.requests)
+	}
+	client.running = false;
+  	/*if(client.requests["summoners"].length > 0 || client.requests["update"].length > 0) {
+		return await client.lol();
+	}*/
+	await client.channels.cache.get("991052056657793124").send("Finished updating");
+  	return;
+
   while(client.requests["matchs"].length > 0) {
     if(client.requests["summoners"].length > 0) {
       client.running = false;
