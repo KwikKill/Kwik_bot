@@ -744,7 +744,7 @@ module.exports = {
                 }
             }else if(interaction.options.getSubcommandGroup() == "matchs") {
                 if(interaction.options.getSubcommand() == "update") {
-                    for(var x of client.requests["update"]) {
+                    for(var x of client.requests["updates"]) {
                         if(x["discordid"] == interaction.user.id) {
                             return await interaction.editReply("You already have a request in the queue.");
                         }
@@ -1726,6 +1726,6 @@ async function addSumoner(client, name, interaction) {
 }
 
 async function update(client, interaction) {
-    client.requests["update"].push({"discordid": interaction.user.id, "interaction": interaction, "matchs": []});
+    client.requests["updates"].push({"discordid": interaction.user.id, "interaction": interaction, "matchs": []});
     await client.lol();
 }
