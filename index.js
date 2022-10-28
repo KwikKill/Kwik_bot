@@ -494,7 +494,11 @@ client.lol = async function() {
 				}
 			}
 		}
-		interaction.editReply("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database")
+		try {
+			await interaction.editReply("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database")
+		}catch {
+			await interaction.channel.send("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database")
+		}
 		client.requests["updates"].shift()
 	}
 	client.running = false;

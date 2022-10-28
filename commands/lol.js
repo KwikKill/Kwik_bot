@@ -764,16 +764,8 @@ module.exports = {
                     .setTimestamp();
                     embed.addFields(
                         {
-                            name: "Requested Summoners :", 
-                            value: "Number : " + client.requests["summoners"].length
-                        },
-                        {
-                            name: "Requested Update :", 
-                            value: "Number : " + client.requests["update"].length
-                        },
-                        {
-                            name: "Matchs in queue :",
-                            value: "Number : " + client.requests["matchs"].length
+                            name: "Updates in queue :",
+                            value: "- Number : " + client.requests["updates"].length + "\n" + "- Current : " + (client.requests["updates"].length > 0 ? "<@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games" : "None")
                         }
                     );
                     return await interaction.editReply({embeds: [embed]});
