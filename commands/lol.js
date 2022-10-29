@@ -1554,7 +1554,7 @@ module.exports = {
                         queryrole +
                         querychamp +
                         ") AS SUB GROUP BY mate GROUP BY COUNT(*) DESC;";
-
+                    console.log(query);
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
                         interaction.editReply("No data found for this account");
