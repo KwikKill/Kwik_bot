@@ -26,9 +26,41 @@
         "semi": "error",
         //"no-await-in-loop": "error",
         "eqeqeq": "error",
-        "no-console": "warn",
+        "no-console": [
+            "warn",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
         "no-else-return": "warn",
-        //"no-magic-numbers": "warn",
+        "no-magic-numbers": [
+            "warn",
+            {
+                "ignoreArrayIndexes": true,
+                "ignoreDefaultValues": true,
+                "ignore": [
+                    0,
+                    -1,
+                    1,
+                    200,
+                    400,
+                    404,
+                    429,
+                    10,
+                    5,
+                    100,
+                    60,
+                    0.2,
+                    0.99,
+                    4,
+                    2,
+                    3
+                ]
+            }
+        ],
         "no-var": "error",
         "curly": "error",
         "prefer-const": "error",
@@ -49,7 +81,13 @@
             "smart-tabs"
         ],
         "no-irregular-whitespace": "error",
-        "no-multi-spaces": "error"
+        "no-multi-spaces": "error",
+        "no-empty": [
+            "error",
+            {
+                "allowEmptyCatch": true
+            }
+        ]
         //"camelcase": "warn"
     },
     "extends": [

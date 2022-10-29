@@ -17,7 +17,12 @@ championList(region, language).then(list => {
     champions = list;
 });
 
+const max_games = 100;
+const delay_time = 10000;
 const delay = ms => new Promise(res => setTimeout(res, ms));
+
+const RANKED_FLEX = 440;
+const RANKED_SOLO = 420;
 
 // -------------- Commandes -----------------
 client.commands = new Collection();
@@ -243,14 +248,14 @@ async function apiCall(url) {
                 }*/
             // Wait the time specified by the reponse header
             //await client.
-            await delay(10000);
+            await delay(delay_time);
             // Retry
             return await apiCall(url);
         case 404:
-            console.log("404: La ressource demandée n'existe pas.", url);
+            console.warn("404: La ressource demandée n'existe pas.", url);
             return null;
         case 400:
-            console.log("400: La requête est invalide.", url);
+            console.warn("400: La requête est invalide.", url);
             return null;
     }
     return data;
@@ -268,14 +273,14 @@ async function championStaticData(language, patch) {
         //Logger.log(url)
         return apiCall(url);
     } catch (error) {
-        console.log(error);
+        console.warn(error);
     }
 
     try {
         const url = "https://ddragon.leagueoflegends.com/cdn/10.9.1/data/" + language + "/champion.json" + "?api_key=" + apiKey;
         return await apiCall(url);
     } catch (error) {
-        console.log(error);
+        console.warn(error);
     }
 }
 
@@ -318,7 +323,7 @@ async function set_update(number) {
             const options = "?startTime=" + startDate + "&start=" + indexed + "&count=100";
             listOfMatches = { 'matches': await matchlistsByAccount(apiKey, route, x["puuid"], options) };
             // If there are less than 100 matches in the object, then this is the last match list
-            if (listOfMatches['matches'].length < 100) {
+            if (listOfMatches['matches'].length < max_games) {
                 gamesToIndex = false;
             }
 
@@ -372,7 +377,6 @@ client.lol = async function () {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
             } catch {
-                console.log("");
             }
         } else {
             const id = summonerObject['id'];
@@ -383,7 +387,6 @@ client.lol = async function () {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
             } catch {
-                console.log("");
             }
         }
     }
@@ -493,8 +496,7 @@ client.lol = async function () {
                             "'" + exit["player5"] + "'" +
                             ")"
                         );
-                    } catch (e) {
-                        console.log("");
+                    } catch {
                     }
                 }
             }
@@ -657,7 +659,7 @@ async function matchHistoryOutput(match, puuid) {
 
     let matchup = "";
     let x = 0;
-    while (x <= 9) {
+    while (x < 10) {
         if (match['info']['participants'][x]["teamPosition"] === lane) {
             if (participantId !== x) {
                 matchup = match['info']['participants'][x]['championName'];
@@ -787,19 +789,20 @@ async function matchHistoryOutput(match, puuid) {
     // Remake Check
     const inactivity = (kills + deaths + assists) + dealt + taken + laneCS + jungleCS;
     // if the match was less than 6 minutes and the player was active, then set the result to remake
-    if (duration < 360 && inactivity > 0) {
+    const ff_duration = 360;
+    if (duration < ff_duration && inactivity > 0) {
         result = "Remake";
         // If the match was less than 6 minutes and the player was AFK, then set the result to LEAVE
-    } else if (duration < 360 && inactivity === 0) {
+    } else if (duration < ff_duration && inactivity === 0) {
         result = "LEAVE";
     }
     //}
 
 
     let queueName = match['info']['gameMode'];
-    if (match["info"]["queueId"] === 440) {
+    if (match["info"]["queueId"] === RANKED_FLEX) {
         queueName = "RANKED_FLEX";
-    } else if (match["info"]["queueId"] === 420) {
+    } else if (match["info"]["queueId"] === RANKED_SOLO) {
         queueName = "RANKED_SOLO";
     }
 

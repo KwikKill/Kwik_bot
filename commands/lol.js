@@ -1,5 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 
+const decimal = 2;
+
 module.exports = {
     name: 'lol',
     group: 'lol',
@@ -851,20 +853,29 @@ module.exports = {
                         })
                         .setTimestamp();
                     let step = "";
-                    if (client.requests["updates"][0]["count"] === 0) {
-                        step = "- Step : 1/2 - Fetching game list" +
-                            "";
-                    } else {
-                        step = "- Step : 2/2 - Fetching matchs details\n" +
-                            "- Current : <@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games";
-                    }
-                    embed.addFields(
-                        {
-                            name: "Updates in queue :",
-                            value: "- Length : " + client.requests["updates"].length + " Summoners | " + client.queue_length + " Matchs\n" +
-                                step + "\n"
+                    if (client.requests["summoners"].length > 0) {
+                        if (client.requests["updates"][0]["count"] === 0) {
+                            step = "- Step : 1/2 (Fetching game list)" +
+                                "";
+                        } else {
+                            step = "- Step : 2/2 (Fetching matchs details)\n" +
+                                "- Current : <@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games";
                         }
-                    );
+                        embed.addFields(
+                            {
+                                name: "Updates in queue :",
+                                value: "- Length : " + client.requests["updates"].length + " Summoners | " + client.queue_length + " Matchs\n" +
+                                    step + "\n"
+                            }
+                        );
+                    } else {
+                        embed.addFields(
+                            {
+                                name: "Updates in queue :",
+                                value: "- Length : 0 Summoners | 0 Matchs\n"
+                            }
+                        );
+                    }
                     return await interaction.editReply({ embeds: [embed] });
                 }
             } else if (interaction.options.getSubcommandGroup() === "stats") {
@@ -1004,21 +1015,21 @@ module.exports = {
 
                     const length = response2.rows[0].duration;
 
-                    const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(2);
-                    const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(2);
-                    const average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(2);
-                    let average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(2);
+                    const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
+                    const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
+                    const average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
+                    let average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
                     let average_gold = response2.rows[0].gold;
                     let average_damages = response2.rows[0].damage;
                     let average_tanked = response2.rows[0].damage_taken;
-                    const average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(2);
-                    const average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(2);
-                    const average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(2);
+                    const average_pinks = Number.parseFloat(response2.rows[0].pinks).decimal;
+                    const average_vision_score = Number.parseFloat(response2.rows[0].vision_score).decimal;
+                    const average_total_kills = Number.parseFloat(response2.rows[0].total_kills).decimal;
 
-                    average_cs = (average_cs / (length / 60)).toFixed(2);
-                    average_gold = (average_gold / (length / 60)).toFixed(2);
-                    average_damages = (average_damages / (length / 60)).toFixed(2);
-                    average_tanked = (average_tanked / (length / 60)).toFixed(2);
+                    average_cs = (average_cs / (length / 60)).decimal;
+                    average_gold = (average_gold / (length / 60)).decimal;
+                    average_damages = (average_damages / (length / 60)).decimal;
+                    average_tanked = (average_tanked / (length / 60)).decimal;
 
                     // KwikScore
 
@@ -1060,17 +1071,17 @@ module.exports = {
                         },
                         {
                             name: "WR :",
-                            value: "" + (win / response.rows.length * 100).toFixed(2) + " %",
+                            value: "" + (win / response.rows.length * 100).decimal + " %",
                             inline: true,
                         },
                         {
                             name: "KillParticipation :",
-                            value: "" + ((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100).toFixed(2) + " %",
+                            value: "" + ((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100).decimal + " %",
                             inline: true,
                         },
                         {
                             name: "Carry stats :",
-                            value: "Overall : " + (overall / response.rows.length * 100).toFixed(2) + " %\nHard Carry : " + (hard_carry / response.rows.length * 100).toFixed(2) + " %\nDamage : " + (carry_damage / response.rows.length * 100).toFixed(2) + " %\nTanked : " + (carry_tanked / response.rows.length * 100).toFixed(2) + " %\nGold : " + (carry_gold / response.rows.length * 100).toFixed(2) + " %",
+                            value: "Overall : " + (overall / response.rows.length * 100).decimal + " %\nHard Carry : " + (hard_carry / response.rows.length * 100).decimal + " %\nDamage : " + (carry_damage / response.rows.length * 100).decimal + " %\nTanked : " + (carry_tanked / response.rows.length * 100).decimal + " %\nGold : " + (carry_gold / response.rows.length * 100).decimal + " %",
                             inline: true
                         },
                         {
@@ -1146,11 +1157,13 @@ module.exports = {
                     let values2 = "";
                     let champ = "";
 
+                    const max = 17;
+
                     const data = [];
                     for (let i = 0; i < response.rows.length; i++) {
                         if (response.rows[i].count1 > 4 && response.rows[i].matchup !== "" && response.rows[i].matchup !== "Invalid") {
                             data.push("- " + response.rows[i].matchup + " : " + response.rows[i].count1 + " matchs (" + response.rows[i].winrate.toFixed(1) + "% winrate, " + response.rows[i].carry.toFixed(1) + "% carry)\n");
-                            if (i < 17) {
+                            if (i < max) {
                                 values1 += response.rows[i].winrate + ",";
                                 values2 += response.rows[i].carry + ",";
                                 champ += response.rows[i].matchup + "|";
@@ -1275,9 +1288,11 @@ module.exports = {
                     let values2 = "";
                     let champ = "";
 
+                    const max = 17;
+
                     for (let i = 0; i < response.rows.length; i++) {
                         if (response.rows[i].count > 4 && response.rows[i].champion !== "" && response.rows[i].champion !== "Invalid") {
-                            if (i < 17) {
+                            if (i < max) {
                                 values1 += response.rows[i].winrate + ",";
                                 values2 += response.rows[i].carry + ",";
                                 champ += response.rows[i].champion + "|";
@@ -1627,7 +1642,7 @@ module.exports = {
                         general = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            general += "- <@" + x.discordid + "> : " + x.carry.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            general += "- <@" + x.discordid + "> : " + x.carry.decimal + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1652,7 +1667,7 @@ module.exports = {
                         damages = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            damages += "- <@" + x.discordid + "> : " + x.damage.decimal + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1677,7 +1692,7 @@ module.exports = {
                         tanked = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            tanked += "- <@" + x.discordid + "> : " + x.tanked.decimal + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1702,7 +1717,7 @@ module.exports = {
                         gold = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            gold += "- <@" + x.discordid + "> : " + x.gold.decimal + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1726,7 +1741,7 @@ module.exports = {
                         hard = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(2) + " % (" + x.count + " matchs)\n";
+                            hard += "- <@" + x.discordid + "> : " + x.hardcarry.decimal + " % (" + x.count + " matchs)\n";
                         }
                     }
 
