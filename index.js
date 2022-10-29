@@ -421,7 +421,11 @@ client.lol = async function () {
                             "quadra, " +
                             "penta, " +
                             "time_spent_dead, " +
-                            "timestamp " +
+                            "timestamp, " +
+                            "player2, " +
+                            "player3, " +
+                            "player4, " +
+                            "player5 " +
                             ") VALUES (" +
                             "'" + matchId[0] + "'," +
                             "'" + exit["summonerpuuid"] + "'," +
@@ -453,7 +457,11 @@ client.lol = async function () {
                             "" + exit["quadras"] + "," +
                             "" + exit["penta"] + "," +
                             "" + exit["totalTimeSpentDead"] + "," +
-                            "" + exit["date"] + "" +
+                            "" + exit["date"] + "," +
+                            "'" + exit["player2"] + "'," +
+                            "'" + exit["player3"] + "'," +
+                            "'" + exit["player4"] + "'," +
+                            "'" + exit["player5"] + "'" +
                             ")"
                         );
                     }
@@ -487,6 +495,13 @@ async function matchHistoryOutput(match, puuid) {
             foundParticipant = true;
         } else {
             participantId++;
+        }
+    }
+
+    const participants = [];
+    for (const x of match["info"]["participants"]) {
+        if (x.summonerName !== match["info"]["participants"][participantId].summonerName) {
+            participants.push(x.summonerName);
         }
     }
 
@@ -791,6 +806,10 @@ async function matchHistoryOutput(match, puuid) {
         "penta": pentas,
         "totalTimeSpentDead": totalTimeSpentDead,
         "date": match['info']['gameCreation'],
+        "player2": participants[0],
+        "player3": participants[1],
+        "player4": participants[2],
+        "player5": participants[3],
 
         //(last-14+outputRow),
 
