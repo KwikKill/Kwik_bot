@@ -4,8 +4,7 @@
         "commonjs": true,
         "es2021": true
     },
-    "overrides": [
-    ],
+    "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest"
     },
@@ -18,14 +17,27 @@
         "no-magic-numbers": "warn",
         "no-var": "error",
         "prefer-const": "error",
-        "indent": ["error", 4],
-        "jsx-quotes": ["error", "prefer-double"],
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "jsx-quotes": [
+            "error",
+            "prefer-double"
+        ],
         "no-trailing-spaces": "error",
-        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+        "no-mixed-spaces-and-tabs": [
+            "error",
+            "smart-tabs"
+        ],
         "no-irregular-whitespace": "error",
         "no-multi-spaces": "error"
         //"camelcase": "warn"
     },
-    "extends": ["eslint:recommended"]
-
+    "extends": [
+        "eslint:recommended"
+    ]
 }

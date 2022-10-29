@@ -129,64 +129,64 @@ module.exports = {
             ]
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction !== undefined) {
-            if(interaction.options.getSubcommand() === "activate") {
+    async run(message, client, interaction = undefined) {
+        if (interaction !== undefined) {
+            if (interaction.options.getSubcommand() === "activate") {
                 const value = interaction.options.getString("value");
-                if(value === "true") {
+                if (value === "true") {
                     config.credit = true;
-                    await fs.writeFile(path.join(__dirname, "..", "config.json"), JSON.stringify(config,null,4), (err) => {
+                    await fs.writeFile(path.join(__dirname, "..", "config.json"), JSON.stringify(config, null, 4), (err) => {
                         if (err) console.log(err);
                     });
                     interaction.reply("La fonctionnalité de crédit est activée.");
-                } else if(value === "false") {
+                } else if (value === "false") {
                     config.credit = false;
-                    await fs.writeFile(path.join(__dirname, "..", "config.json"), JSON.stringify(config,null,4), (err) => {
+                    await fs.writeFile(path.join(__dirname, "..", "config.json"), JSON.stringify(config, null, 4), (err) => {
                         if (err) console.log(err);
                     });
                     interaction.reply("La fonctionnalité de crédit est désactivée.");
-                }else {
+                } else {
                     console.log(value);
                 }
-            }else if(interaction.options.getSubcommand() === "add") {
+            } else if (interaction.options.getSubcommand() === "add") {
                 const user = interaction.options.getUser("user");
                 const somme = interaction.options.getInteger("somme");
-                if(credits[user.id] === undefined) {
+                if (credits[user.id] === undefined) {
                     credits[user.id] = 0;
                 }
                 credits[user.id] += somme;
-                await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits,null,4), (err) => {
+                await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
                     if (err) console.log(err);
                 });
-                interaction.reply("**"+user.username+"** a bien reçu **"+somme+"** crédit(s).");
-            }else if(interaction.options.getSubcommand() === "view") {
+                interaction.reply("**" + user.username + "** a bien reçu **" + somme + "** crédit(s).");
+            } else if (interaction.options.getSubcommand() === "view") {
                 const user = interaction.options.getUser("user");
-                if(credits[user.id] === undefined) {
+                if (credits[user.id] === undefined) {
                     credits[user.id] = 0;
                 }
-                interaction.reply("**"+user.username+"** a **"+credits[user.id]+"** crédit(s).");
-            }else if(interaction.options.getSubcommand() === "remove") {
+                interaction.reply("**" + user.username + "** a **" + credits[user.id] + "** crédit(s).");
+            } else if (interaction.options.getSubcommand() === "remove") {
                 const user = interaction.options.getUser("user");
                 const somme = interaction.options.getInteger("somme");
-                if(credits[user.id] === undefined) {
+                if (credits[user.id] === undefined) {
                     credits[user.id] = 0;
                 }
                 credits[user.id] -= somme;
-                await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits,null,4), (err) => {
+                await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
                     if (err) console.log(err);
                 });
-                interaction.reply("**"+user.username+"** a bien perdu **"+somme+"** crédit(s).");
-            }else if(interaction.options.getSubcommand() === "set") {
+                interaction.reply("**" + user.username + "** a bien perdu **" + somme + "** crédit(s).");
+            } else if (interaction.options.getSubcommand() === "set") {
                 const user = interaction.options.getUser("user");
                 const somme = interaction.options.getInteger("somme");
-                if(credits[user.id] === undefined) {
+                if (credits[user.id] === undefined) {
                     credits[user.id] = 0;
                 }
                 credits[user.id] = somme;
-                await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits,null,4), (err) => {
+                await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
                     if (err) console.log(err);
                 });
-                interaction.reply("**"+user.username+"** a bien **"+somme+"** crédit(s).");
+                interaction.reply("**" + user.username + "** a bien **" + somme + "** crédit(s).");
             }
         }
     }

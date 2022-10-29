@@ -15,17 +15,17 @@ function isConstructor(func, _class) {
     try {
         // eslint-disable-next-line no-new
         new new Proxy(func, isConstructorProxyHandler)();
-        if(!_class) return true;
+        if (!_class) return true;
         return func.prototype instanceof _class;
-    } catch(err) {
+    } catch (err) {
         return false;
     }
 }
 
 function paginate(items, page = 1, pageLength = 10) {
     const maxPage = Math.ceil(items.length / pageLength);
-    if(page < 1) page = 1;
-    if(page > maxPage) page = maxPage;
+    if (page < 1) page = 1;
+    if (page > maxPage) page = maxPage;
     const startIndex = (page - 1) * pageLength;
     return {
         items: items.length > pageLength ? items.slice(startIndex, startIndex + pageLength) : items,

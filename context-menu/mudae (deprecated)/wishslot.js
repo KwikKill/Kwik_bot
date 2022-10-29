@@ -8,12 +8,12 @@ module.exports = {
     type: "MESSAGE",
     async run(interaction) {
         const message = interaction.options.getMessage("message");
-        if(message.embeds[0] === undefined) {
+        if (message.embeds[0] === undefined) {
             interaction.reply("Ce message n'est pas un `$im` de mudae.");
             return;
         }
-        if(message.channel.name === "muda-industry") {
-            if(message.embeds[0].description.includes("female") && message.embeds[0].description.includes("Game")) {
+        if (message.channel.name === "muda-industry") {
+            if (message.embeds[0].description.includes("female") && message.embeds[0].description.includes("Game")) {
                 const date = new Date();
                 const today = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
 
@@ -75,7 +75,7 @@ module.exports = {
                 doc.on('data', buffers.push.bind(buffers));
                 doc.on('end', () => {
                     const pdfData = Buffer.concat(buffers);
-                    interaction.reply({content: "<@" + user.id + ">, voici votre contrat de location de slot de wish pour **" + perso + "**. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.\n /!\\ Ce contrat ne prendra effet qu'après acceptation de la Kiwi Industry /!\\ .", files: [ { attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" } ]});
+                    interaction.reply({ content: "<@" + user.id + ">, voici votre contrat de location de slot de wish pour **" + perso + "**. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.\n /!\\ Ce contrat ne prendra effet qu'après acceptation de la Kiwi Industry /!\\ .", files: [{ attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" }] });
                 });
 
                 doc
@@ -86,55 +86,55 @@ module.exports = {
                 doc.moveDown();
                 doc
                     .fontSize(15)
-                    .text(("CONTRAT DE WISHSLOT – KIWI INDUSTRY – " + nom + ":").toUpperCase(), {width: 450, align: 'center'});
+                    .text(("CONTRAT DE WISHSLOT – KIWI INDUSTRY – " + nom + ":").toUpperCase(), { width: 450, align: 'center' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text1, {width: 450, align: 'justify'});
+                    .text(text1, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text("Liste des conditions du contrat :", {width: 450, align: 'center'});
+                    .text("Liste des conditions du contrat :", { width: 450, align: 'center' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text2, {width: 450, align: 'justify'});
+                    .text(text2, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text3, {width: 450, align: 'justify'});
+                    .text(text3, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text4, {width: 450, align: 'justify'});
+                    .text(text4, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text5, {width: 450, align: 'justify'});
+                    .text(text5, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text6, {width: 450, align: 'justify'});
+                    .text(text6, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text7, {width: 450, align: 'justify'});
+                    .text(text7, { width: 450, align: 'justify' });
 
                 doc.moveDown();
                 doc
                     .fontSize(11)
-                    .text(text8, {width: 450, align: 'justify'});
+                    .text(text8, { width: 450, align: 'justify' });
 
                 await doc.end();
-            }else {
+            } else {
                 interaction.reply("KwikKill n'accepte que la location de slot de wishlist pour des personnages de type `wg`.");
             }
         }

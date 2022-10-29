@@ -34,9 +34,9 @@ module.exports = {
             required: true,
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction === undefined) return;
-        if(interaction.channel.name !== "muda-industry") return;
+    async run(message, client, interaction = undefined) {
+        if (interaction === undefined) return;
+        if (interaction.channel.name !== "muda-industry") return;
 
         const date = new Date();
         const today = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
@@ -49,12 +49,12 @@ module.exports = {
 
         let somme_interet = interet / 100 * somme;
         let time;
-        if(somme <= 1000) {
+        if (somme <= 1000) {
             time = 1;
-        }else {
+        } else {
             time = 1.9 * Math.log(somme / 1000) + Math.exp(somme / 11000);
         }
-        if(somme_interet === 0) {
+        if (somme_interet === 0) {
             somme_interet = 1;
         }
 
@@ -69,7 +69,7 @@ module.exports = {
             + " kakeras en accord avec la valeur des besoins du client et sur laquelle les deux parties sont tombées d’accord. Le non-respect de cette condition entrainera l’annulation du contrat."
         );
         let text3;
-        if(somme >= 200) {
+        if (somme >= 200) {
             text3 = (
                 "- Condition n°2 : "
                 + nom
@@ -77,7 +77,7 @@ module.exports = {
                 + somme
                 + " kakera dans les délais précisé en condition 4. Le non-respect de cette condition entrainera une augmentation du délai d’une semaine, des intérêts de 5% jusqu’à une date maximum correspondant au délai initial plus 4 semaine. La Kiwi Industry ne fera aucun rappel de date et ne tolèrera aucun dépassement de date, quelle qu’en soit la raison. Le remboursement de la somme avant la fin du délai met fin au contrat."
             );
-        }else {
+        } else {
             text3 = (
                 "- Condition n°2 : "
                 + nom
@@ -130,7 +130,7 @@ module.exports = {
         doc.on('end', () => {
 
             const pdfData = Buffer.concat(buffers);
-            interaction.reply({content: "<@" + user.user.id + ">, voici votre contrat d'emprunt de " + somme + " kakera à " + interet + "% d'interêts. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.", files: [ { attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" } ]});
+            interaction.reply({ content: "<@" + user.user.id + ">, voici votre contrat d'emprunt de " + somme + " kakera à " + interet + "% d'interêts. Lisez les conditions et répondez \"lu et approuvé\" pour accepter.", files: [{ attachment: pdfData, name: "contrat-" + today.replace("/", "-").replace("/", "-") + "-" + nom + ".pdf" }] });
 
 
         });
@@ -143,52 +143,52 @@ module.exports = {
         doc.moveDown();
         doc
             .fontSize(15)
-            .text(("CONTRAT DE PRÊT – KIWI INDUSTRY – " + nom + ":").toUpperCase(), {width: 450, align: 'center'});
+            .text(("CONTRAT DE PRÊT – KIWI INDUSTRY – " + nom + ":").toUpperCase(), { width: 450, align: 'center' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text1, {width: 450, align: 'justify'});
+            .text(text1, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text("Liste des conditions du contrat :", {width: 450, align: 'center'});
+            .text("Liste des conditions du contrat :", { width: 450, align: 'center' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text2, {width: 450, align: 'justify'});
+            .text(text2, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text3, {width: 450, align: 'justify'});
+            .text(text3, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text4, {width: 450, align: 'justify'});
+            .text(text4, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text5, {width: 450, align: 'justify'});
+            .text(text5, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text6, {width: 450, align: 'justify'});
+            .text(text6, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text7, {width: 450, align: 'justify'});
+            .text(text7, { width: 450, align: 'justify' });
 
         doc.moveDown();
         doc
             .fontSize(11)
-            .text(text8, {width: 450, align: 'justify'});
+            .text(text8, { width: 450, align: 'justify' });
 
         await doc.end();
 

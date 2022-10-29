@@ -11,16 +11,16 @@ module.exports = {
         const test = JSON.parse(JSON.stringify(client.commands.get("edt").codes));
         delete test["raph"];
         const keys = Object.keys(test);
-        if(keys.indexOf(classs) === 0) {
+        if (keys.indexOf(classs) === 0) {
             classs = keys[keys.length - 1];
-        }else {
+        } else {
             classs = keys[(keys.indexOf(classs) - 1) % keys.length];
         }
-        
+
         // edit
-        if(classs === "raph") {
+        if (classs === "raph") {
             client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
-        }else {
+        } else {
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
         interaction.deferUpdate();

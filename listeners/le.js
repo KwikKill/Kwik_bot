@@ -24,8 +24,8 @@ module.exports = {
         ];
 
 
-        if(msg.channel.name === "le") {
-            if(msg.content.toLowerCase() !== "le") {
+        if (msg.channel.name === "le") {
+            if (msg.content.toLowerCase() !== "le") {
                 msg.delete();
                 const rd = getRandomInt(phrases.length);
                 msg.author.send(phrases[rd]);

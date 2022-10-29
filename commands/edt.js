@@ -1,6 +1,6 @@
 const fs = require("fs");
 const https = require("https");
-const { MessageEmbed, MessageAttachment, MessageActionRow, MessageButton} = require('discord.js');
+const { MessageEmbed, MessageAttachment, MessageActionRow, MessageButton } = require('discord.js');
 const Canvas = require('canvas');
 const ical = require('node-ical');
 
@@ -100,12 +100,12 @@ module.exports = {
             required: true,
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction !== undefined) {
+    async run(message, client, interaction = undefined) {
+        if (interaction !== undefined) {
             // deferReply is necessary to send a delayed response
             await interaction.deferReply();
             // check if the class exists
-            if(codes[interaction.options.getString("classe").toLowerCase()] === undefined) {
+            if (codes[interaction.options.getString("classe").toLowerCase()] === undefined) {
                 await interaction.editReply("Cette classe n'existe pas, veuillez préciser un classe valide (A, B, C, ...)");
                 return;
             }
@@ -113,13 +113,13 @@ module.exports = {
             const today = new Date();
             let monday;
             let sunday;
-            if(today.getDay() !== 0 && today.getDay() !== 6) {
+            if (today.getDay() !== 0 && today.getDay() !== 6) {
                 monday = new Date(today);
                 monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
 
                 sunday = new Date(monday);
                 sunday = new Date(sunday.setDate(sunday.getDate() + 4));
-            }else {
+            } else {
                 monday = new Date(today);
                 monday.setDate(monday.getDate() + 7 - (monday.getDay() + 6) % 7);
 
@@ -129,7 +129,7 @@ module.exports = {
                 console.log(monday, sunday);
             }
             // if it's for raph the bg
-            if(interaction.options.getString("classe").toLowerCase() === "raph") {
+            if (interaction.options.getString("classe").toLowerCase() === "raph") {
                 await create_di_raph(client, monday, sunday, interaction);
                 return;
                 // or for the lambda people
@@ -145,20 +145,20 @@ module.exports = {
     codes
 };
 
-async function classic(client, monday, sunday, interaction, rt=false) {
+async function classic(client, monday, sunday, interaction, rt = false) {
     let arg;
-    if(rt !== false) {
+    if (rt !== false) {
         arg = rt;
-    }else {
+    } else {
         arg = interaction.options.getString("classe").toLowerCase();
     }
     const url_modified = url.replace("{0}", codes[arg]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate());
 
     const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
-    https.get(url_modified, function(response) {
+    https.get(url_modified, function (response) {
         //console.log(response)
         response.pipe(file);
-        file.on('finish', function() {
+        file.on('finish', function () {
             file.close();
             const events = ical.sync.parseFile('/opt/gab_bot/temp/file.ics');
 
@@ -167,7 +167,7 @@ async function classic(client, monday, sunday, interaction, rt=false) {
             //console.log(di)
 
             generate_canvas(di, monday).then(canvas => {
-                const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+                const attachment = new MessageAttachment(canvas.toBuffer(), 'edt.png');
 
                 const embed1 = new MessageEmbed()
                     .setColor("0x757575")
@@ -205,57 +205,57 @@ async function classic(client, monday, sunday, interaction, rt=false) {
                             .setStyle('PRIMARY'),
                     );
 
-                if(rt === false) {
-                    interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
-                }else {
-                    interaction.message.edit({embeds: [embed1], files: [attachment], components: [row]});
+                if (rt === false) {
+                    interaction.editReply({ embeds: [embed1], files: [attachment], components: [row] });
+                } else {
+                    interaction.message.edit({ embeds: [embed1], files: [attachment], components: [row] });
                 }
             });
         });
-    }).on('error', function(err) {
+    }).on('error', function (err) {
         fs.unlink(file);
         console.log(err.message);
     });
 }
 
 function create_di(events) {
-    const di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}};
+    const di = { 1: {}, 2: {}, 3: {}, 4: {}, 5: {} };
     for (const event of Object.values(events)) {
         const start = new Date(event.start.toISOString());
         start.setHours(start.getUTCHours() + 1);
         const end = new Date(event.end.toISOString());
         end.setHours(end.getUTCHours() + 1);
 
-        if(di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
-            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}];
-        }else {
-            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location});
+        if (di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
+            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
+        } else {
+            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
         }
     }
     return di;
 }
 
-async function create_di_raph(client, monday, sunday, interaction, rt=false) {
+async function create_di_raph(client, monday, sunday, interaction, rt = false) {
     let arg;
-    if(rt !== false) {
+    if (rt !== false) {
         arg = rt;
-    }else {
+    } else {
         arg = interaction.options.getString("classe").toLowerCase();
     }
-    const di = {1:{}, 2:{}, 3:{}, 4:{}, 5:{}};
+    const di = { 1: {}, 2: {}, 3: {}, 4: {}, 5: {} };
     const test = [];
-    for(const x in codes[arg]) {
+    for (const x in codes[arg]) {
         const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
         const url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate());
-        https.get(url_modified, function(response) {
+        https.get(url_modified, function (response) {
             response.pipe(file);
-            file.on('finish', function() {
+            file.on('finish', function () {
                 file.close();
                 const events = ical.sync.parseFile('/opt/gab_bot/temp/file' + x + '.ics');
 
 
                 for (const event of Object.values(events)) {
-                    if(codes[arg][x].includes(event.summary) || event.summary.includes("CC")) {
+                    if (codes[arg][x].includes(event.summary) || event.summary.includes("CC")) {
                         const start = new Date(event.start.toISOString());
                         start.setHours(start.getHours() + 1);
                         const end = new Date(event.end.toISOString());
@@ -263,26 +263,26 @@ async function create_di_raph(client, monday, sunday, interaction, rt=false) {
 
 
 
-                        if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] === undefined) {
-                            di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location}];
-                        }else {
+                        if (di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] === undefined) {
+                            di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
+                        } else {
                             let a = false;
-                            for(const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
-                                if(di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"] === event.summary) {
+                            for (const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
+                                if (di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"] === event.summary) {
                                     a = true;
                                 }
                             }
-                            if(a === false) {
-                                di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({"summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location});
+                            if (a === false) {
+                                di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
                             }
                         }
                     }
                 }
 
                 test.push(x);
-                if(test.length === Object.keys(codes[arg]).length) {
+                if (test.length === Object.keys(codes[arg]).length) {
                     generate_canvas(di, monday).then(canvas => {
-                        const attachment = new MessageAttachment(canvas.toBuffer(),'edt.png');
+                        const attachment = new MessageAttachment(canvas.toBuffer(), 'edt.png');
 
                         const embed1 = new MessageEmbed()
                             .setColor("0x757575")
@@ -307,19 +307,20 @@ async function create_di_raph(client, monday, sunday, interaction, rt=false) {
                                     .setLabel('▶️')
                                     .setStyle('PRIMARY'),
                             );
-                        if(rt === false) {
-                            interaction.editReply({embeds: [embed1], files: [attachment], components: [row]});
-                        }else {
-                            interaction.message.edit({embeds: [embed1], files: [attachment], components: [row]});
+                        if (rt === false) {
+                            interaction.editReply({ embeds: [embed1], files: [attachment], components: [row] });
+                        } else {
+                            interaction.message.edit({ embeds: [embed1], files: [attachment], components: [row] });
                         }
                         //interaction.editReply({content: "Emploi du temp de la classe : " + interaction.options.getString("classe").toLowerCase(), files: [canvas.toBuffer()]})
 
                     }
-                    );}
+                    );
+                }
 
 
             });
-        }).on('error', function(err) {
+        }).on('error', function (err) {
             fs.unlink(file);
             console.log(err.message);
         });
@@ -351,9 +352,9 @@ async function generate_canvas(di, monday) {
     day.setDate(day.getDate() + 1);
     context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
 
-    for(const j in di) {
-        for(const i in di[j]) {
-            for(const h in di[j][i]) {
+    for (const j in di) {
+        for (const i in di[j]) {
+            for (const h in di[j][i]) {
                 const start = di[j][i][h]["start"];
                 const end = di[j][i][h]["end"];
                 const summary = di[j][i][h]["summary"];
@@ -365,7 +366,7 @@ async function generate_canvas(di, monday) {
                 let description2 = description.trim();
                 description2 = location + "\n" + description2;
                 description2 = description2.split("\n");
-                description2 = description2.slice(0,description2.length - 1);
+                description2 = description2.slice(0, description2.length - 1);
 
                 let description3 = "";
                 let duration = Math.abs(start - end);
@@ -373,15 +374,15 @@ async function generate_canvas(di, monday) {
                 duration -= hours * 3600000;
                 const minutes = Math.floor(duration / 60000);
 
-                if(hours + minutes/60 <= 1.5) {
+                if (hours + minutes / 60 <= 1.5) {
                     description3 = location;
-                }else {
+                } else {
 
-                    for(const y in description2) {
-                        if(!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
+                    for (const y in description2) {
+                        if (!description2[y].includes("STPI") && !description2[y].includes("Grp") && !description2[y].includes("FIRE")) {
 
                             description3 += description2[y] + "\n";
-                        }else {
+                        } else {
                             //console.log(description2[y])
                         }
                     }
@@ -394,25 +395,25 @@ async function generate_canvas(di, monday) {
 
 
 
-                const width = 295/di[j][i].length;
-                if(summary.length > 45/di[j][i].length) {
+                const width = 295 / di[j][i].length;
+                if (summary.length > 45 / di[j][i].length) {
                     //console.log(summary, di[j][i].length)
                 }
                 let color = "yellow";
-                if(summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHJKL")) {
+                if (summary.includes("ABCDE") || summary.includes("FGHKL") || summary.includes("FGHJKL")) {
                     color = "#99FFFF";
-                }else {
-                    for(const y in TD) {
-                        if(summary.includes(TD[y])) {
+                } else {
+                    for (const y in TD) {
+                        if (summary.includes(TD[y])) {
                             color = "#99FF99";
                         }
                     }
-                    for(const y in LANGUES) {
-                        if(summary.includes(LANGUES[y])) {
+                    for (const y in LANGUES) {
+                        if (summary.includes(LANGUES[y])) {
                             color = "#80FF00";
                         }
                     }
-                    if(summary.includes("TP")) {
+                    if (summary.includes("TP")) {
                         color = "#FFCCFF";
                     }
                 }
@@ -422,7 +423,7 @@ async function generate_canvas(di, monday) {
                 //}
 
                 context.beginPath();
-                context.rect(Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))), width, Math.floor(45*(hours + (minutes/60))));
+                context.rect(Math.floor(47 + 296.85 * (start.getDay() - 1) + width * h), Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes() / 60))), width, Math.floor(45 * (hours + (minutes / 60))));
                 context.fillStyle = color;
                 context.fill();
                 context.lineWidth = 2;
@@ -432,12 +433,12 @@ async function generate_canvas(di, monday) {
                 context.textAlign = "center";
                 context.font = '12px sans-serif';
                 context.fillStyle = '#000000';
-                context.fillText(summary, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 15, width);
+                context.fillText(summary, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width * h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width * h) + width) / 2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes() / 60))) + 15, width);
 
                 context.textAlign = "center";
                 context.font = '12px sans-serif';
                 context.fillStyle = '#000000';
-                context.fillText(description3, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width*h) + width)/2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes()/60))) + 33 + Math.floor(8*(hours - 1 + (minutes/60))), width);
+                context.fillText(description3, (Math.floor(47 + 296.85 * (start.getDay() - 1) + width * h) + Math.floor(47 + 296.85 * (start.getDay() - 1) + width * h) + width) / 2, Math.floor(40 + 45.2 * (start.getHours() - 7 + (start.getMinutes() / 60))) + 33 + Math.floor(8 * (hours - 1 + (minutes / 60))), width);
 
             }
         }

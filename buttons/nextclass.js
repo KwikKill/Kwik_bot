@@ -15,9 +15,9 @@ module.exports = {
         const keys = Object.keys(test);
         classs = keys[(keys.indexOf(classs) + 1) % keys.length];
         // edit
-        if(classs === "raph") {
+        if (classs === "raph") {
             client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
-        }else {
+        } else {
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
         interaction.deferUpdate();

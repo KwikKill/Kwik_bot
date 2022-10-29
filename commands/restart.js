@@ -4,8 +4,8 @@ module.exports = {
     name: 'restart',
     group: 'moderation',
     deploy: false,
-	  description: "Commande de restart du bot",
-	  permission: "owner",
+    description: "Commande de restart du bot",
+    permission: "owner",
     hidden: false,
     help: [
         {
@@ -13,7 +13,7 @@ module.exports = {
             "value": "Redémarre le bot."
         }
     ],
-	  place: "dm",
+    place: "dm",
     options: undefined,
     async run() {
         console.log("Restarting...");

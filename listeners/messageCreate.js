@@ -15,13 +15,13 @@ module.exports = {
 
         if (message.author.bot) return;
         const args = message.content.split(/ |\n/);
-        if(message.content.charAt(0) === config["prefix"]) {
+        if (message.content.charAt(0) === config["prefix"]) {
             args[0] = args[0].slice(1);
             const commande = await client.commands.get(args[0]);
-            if(commande !== undefined) {
+            if (commande !== undefined) {
                 message.command = commande;
                 message.args = args;
-                if(client.canRunCommande(message, commande)) {
+                if (client.canRunCommande(message, commande)) {
                     await commande.run(message, client).catch(err => {
                         console.log(err);
                         message.channel.send("Une erreur inattendue s'est produite lors de l'exécution de la commande.\nCette erreur a été transmise et sera réglée au plus vite.");
@@ -31,7 +31,7 @@ module.exports = {
                     return;
                 }
             }
-        }else {
+        } else {
             message.command = undefined;
         }
     }

@@ -9,16 +9,16 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, channel1, channel2) {
-        if(channel2.archived === true && channel1.archived === false) {
-            if(channel2.name.startsWith("[A VENDRE]")) {
+        if (channel2.archived === true && channel1.archived === false) {
+            if (channel2.name.startsWith("[A VENDRE]")) {
                 let msg = await channel2.messages.fetchPinned();
                 msg = msg.last();
                 let messages = await channel2.messages.fetch();
                 messages = messages.filter(m => m.author.id === client.user.id && m.type !== 'THREAD_STARTER_MESSAGE' && m.embeds[0] !== undefined);
                 let build = "";
-                if(messages.size === 0) {
+                if (messages.size === 0) {
                     build = "Aucune proposition";
-                }else {
+                } else {
                     messages.forEach(async m => {
                         build = `- ${m.embeds[0].description}\n` + build;
                     });
@@ -30,7 +30,7 @@ module.exports = {
                     .setDescription(build)
                     .setTimestamp();
 
-                msg.mentions.users.first().send({embeds: [embed]});
+                msg.mentions.users.first().send({ embeds: [embed] });
             }
         }
     }

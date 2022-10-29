@@ -28,8 +28,8 @@ module.exports = {
             required: true,
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction !== undefined) {
+    async run(message, client, interaction = undefined) {
+        if (interaction !== undefined) {
             const user = interaction.options.getUser('user');
             const somme = interaction.options.getInteger('somme');
 
@@ -39,8 +39,8 @@ module.exports = {
                 .setDescription(`<@` + user.id + `> a proposé ${somme} kakera pour ce personnage.`)
                 .setFooter(`${user.username}#${user.discriminator}`, user.avatarURL())
                 .setTimestamp();
-            interaction.reply({content: "L'enchère a bien été changé", ephemeral: true});
-            await interaction.channel.send({embeds: [embed]});
+            interaction.reply({ content: "L'enchère a bien été changé", ephemeral: true });
+            await interaction.channel.send({ embeds: [embed] });
         }
     }
 };

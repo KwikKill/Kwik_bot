@@ -13,9 +13,9 @@ module.exports = {
         date1.setDate(date1.getDate() - 7);
         date2.setDate(date2.getDate() - 7);
         // edit
-        if(classs === "raph") {
+        if (classs === "raph") {
             client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
-        }else {
+        } else {
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
         interaction.deferUpdate();

@@ -19,7 +19,7 @@ module.exports = {
                 console.log(welcome[member.guild.id].message + ` ${member}`);
                 welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
             }
-        }catch(err) {
+        } catch (err) {
             console.log(err);
         }
     }

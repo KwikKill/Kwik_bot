@@ -56,16 +56,16 @@ module.exports = {
             ]
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction !== undefined) {
-            if(interaction.channel.name === "casino") {
-                if(interaction.options.getSubcommand() === "balance") {
-                    if(credits[interaction.user.id] === undefined) {
+    async run(message, client, interaction = undefined) {
+        if (interaction !== undefined) {
+            if (interaction.channel.name === "casino") {
+                if (interaction.options.getSubcommand() === "balance") {
+                    if (credits[interaction.user.id] === undefined) {
                         interaction.reply("Vous avez actuellement **0** jetons. Contactez KwikKill pour en acquérir");
-                    }else {
+                    } else {
                         interaction.reply("Vous avez actuellement **" + credits[interaction.user.id] + "** jetons.");
                     }
-                }else if(interaction.options.getSubcommand() === "rewards") {
+                } else if (interaction.options.getSubcommand() === "rewards") {
                     let prob = 10000;
                     let rw = "";
                     rewards.forEach(reward => {
@@ -79,25 +79,25 @@ module.exports = {
                         .setDescription(rw)
                         .setColor("0xffe402");
 
-                    interaction.reply({embeds: [embed]});
-                }else if(interaction.options.getSubcommand() === "play") {
+                    interaction.reply({ embeds: [embed] });
+                } else if (interaction.options.getSubcommand() === "play") {
                     let nombre = interaction.options.getInteger("nombre");
-                    if(nombre === undefined) {
+                    if (nombre === undefined) {
                         nombre = 1;
                     }
-                    if(credits[interaction.user.id] === undefined) {
+                    if (credits[interaction.user.id] === undefined) {
                         interaction.reply("Vous avez actuellement **0** jetons. Contactez KwikKill pour en acquérir");
-                    }else if(credits[interaction.user.id] < nombre) {
+                    } else if (credits[interaction.user.id] < nombre) {
                         interaction.reply("Vous n'avez pas assez de jetons pour jouer.");
-                    }else {
+                    } else {
                         credits[interaction.user.id] = credits[interaction.user.id] - nombre;
                         fs.writeFileSync(path.resolve(__dirname, '../credits.json'), JSON.stringify(credits, null, 4));
 
-                        if(nombre === 1) {
+                        if (nombre === 1) {
                             const nb = getRandomInt(10000);
                             let act = 0;
-                            for(const reward of rewards){
-                                if(nb <= reward[1] + act) {
+                            for (const reward of rewards) {
+                                if (nb <= reward[1] + act) {
                                     interaction.reply("Vous avez gagné " + reward[0] + ". Ce message fait office de preuve et vous permettra de retirer votre lot auprès de KwikKill (validation : " + nb + "/" + (reward[1] + act) + ").");
                                     return;
                                 }
@@ -108,12 +108,12 @@ module.exports = {
                         }
                         await interaction.deferReply();
                         const rws = [];
-                        for(let i = 0; i < nombre; i++) {
+                        for (let i = 0; i < nombre; i++) {
                             const nb = getRandomInt(10000);
                             let act = 0;
                             let all = false;
-                            for(const reward of rewards){
-                                if(nb <= reward[1] + act && all === false) {
+                            for (const reward of rewards) {
+                                if (nb <= reward[1] + act && all === false) {
                                     //console.log(nb, reward[1], act)
                                     all = true;
                                     rws.push(reward[0]);
@@ -122,20 +122,20 @@ module.exports = {
                             }
 
                         }
-                        if(rws.length === 0) {
+                        if (rws.length === 0) {
                             interaction.editReply("Vous n'avez rien gagné.");
-                        }else {
+                        } else {
                             const resultat = {};
                             rws.forEach(rw => {
-                                if(resultat[rw] === undefined) {
+                                if (resultat[rw] === undefined) {
                                     resultat[rw] = 1;
-                                }else {
+                                } else {
                                     resultat[rw] = resultat[rw] + 1;
                                 }
                             });
 
                             let mssg = "";
-                            for(const rw in resultat) {
+                            for (const rw in resultat) {
                                 mssg = mssg + " - " + rw + " x" + resultat[rw] + "\n";
                             }
                             interaction.editReply("Vous avez gagné :\n" + mssg + "Ce message fait office de preuve et vous permettra de retirer votre lot auprès de KwikKill.");

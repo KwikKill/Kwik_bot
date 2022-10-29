@@ -26,12 +26,12 @@ module.exports = {
             required: true,
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction === undefined) {
-            if(message.mentions.members.size === 1 && message.args.length === 3) {
+    async run(message, client, interaction = undefined) {
+        if (interaction === undefined) {
+            if (message.mentions.members.size === 1 && message.args.length === 3) {
                 const user = message.mentions.members.first();
                 const pseudo = message.args[2];
-                if(user !== undefined) {
+                if (user !== undefined) {
                     user.setNickname(pseudo).catch(() => {
                         message.channel.send(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
                         return;
@@ -39,7 +39,7 @@ module.exports = {
                     message.channel.send(`${user.user.username} a été renommé en ${pseudo}`);
                 }
             }
-        }else {
+        } else {
             const user = interaction.options.getMember('user');
             const pseudo = interaction.options.getString('pseudo');
 

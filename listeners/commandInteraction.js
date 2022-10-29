@@ -6,19 +6,19 @@ module.exports = {
     place: "guild",
     options: undefined,
     async run(client, interaction) {
-        if(interaction.isCommand()) {
+        if (interaction.isCommand()) {
 
             if (!client.commands.has(interaction.commandName)) return;
 
             try {
                 const can_run = client.canRunCommande(undefined, client.commands.get(interaction.commandName), interaction);
-                if(can_run) {
+                if (can_run) {
                     await client.commands.get(interaction.commandName).run(undefined, client, interaction);
                     return;
                 }
-                if(can_run === "perm") {
+                if (can_run === "perm") {
                     await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
-                }else {
+                } else {
                     await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
                 }
 
@@ -27,12 +27,12 @@ module.exports = {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
-        }else if(interaction.isAutocomplete()) {
+        } else if (interaction.isAutocomplete()) {
             if (!client.commands.has(interaction.commandName)) return;
 
             try {
                 const can_run = client.canRunCommande(undefined, client.commands.get(interaction.commandName), interaction);
-                if(can_run) {
+                if (can_run) {
                     await client.commands.get(interaction.commandName).autocomplete(client, interaction);
                     return;
                 }
@@ -40,19 +40,19 @@ module.exports = {
             } catch (error) {
                 console.error(error);
             }
-        } else if(interaction.isButton()) {
+        } else if (interaction.isButton()) {
             if (!client.buttons.has(interaction.customId)) return;
 
 
             try {
                 const can_run = client.canRunCommande(undefined, client.buttons.get(interaction.customId), interaction);
-                if(can_run) {
+                if (can_run) {
                     await client.buttons.get(interaction.customId).run(interaction, client);
                     return;
                 }
-                if(can_run === "perm") {
+                if (can_run === "perm") {
                     await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
-                }else {
+                } else {
                     await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
                 }
 
@@ -67,13 +67,13 @@ module.exports = {
 
             try {
                 const can_run = client.canRunCommande(undefined, client.context_menu.get(interaction.commandName), interaction);
-                if(can_run) {
+                if (can_run) {
                     await client.context_menu.get(interaction.commandName).run(interaction, client);
                     return;
                 }
-                if(can_run === "perm") {
+                if (can_run === "perm") {
                     await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
-                }else {
+                } else {
                     await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
                 }
 

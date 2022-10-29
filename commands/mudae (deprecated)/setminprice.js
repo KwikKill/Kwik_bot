@@ -20,12 +20,12 @@ module.exports = {
             required: true,
         },
     ],
-    async run(message, client, interaction=undefined) {
-        if(interaction !== undefined) {
-            if(interaction.channel.type === "GUILD_PUBLIC_THREAD") {
-                if(interaction.channel.name.startsWith("[A VENDRE]")) {
+    async run(message, client, interaction = undefined) {
+        if (interaction !== undefined) {
+            if (interaction.channel.type === "GUILD_PUBLIC_THREAD") {
+                if (interaction.channel.name.startsWith("[A VENDRE]")) {
                     const somme = interaction.options.getInteger('somme');
-                    if(somme < 1000) {
+                    if (somme < 1000) {
 
                         let msg = await interaction.channel.messages.fetchPinned();
                         msg = msg.last();

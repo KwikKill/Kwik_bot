@@ -28,10 +28,10 @@ module.exports = {
             required: false,
         },
     ],
-    async run(message, client, interaction=undefined) {
+    async run(message, client, interaction = undefined) {
         const config = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "config.json"), "utf8"));
 
-        if((interaction === undefined && message.args[1] === undefined) || (interaction === undefined && message.args[1] === "help") || (interaction.options.getString('commande') === null) || (interaction.options.getString('commande') === "help")) {
+        if ((interaction === undefined && message.args[1] === undefined) || (interaction === undefined && message.args[1] === "help") || (interaction.options.getString('commande') === null) || (interaction.options.getString('commande') === "help")) {
 
             const embed1 = new MessageEmbed()
                 .setColor("0xffe402")
@@ -39,9 +39,9 @@ module.exports = {
                 .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Gab_bot')
                 .setDescription(
                     "Pour avoir plus d'information sur une commande, utiliser la commande `help` suivie de la commande voulue.\n" +
-                '__Exemple__ : `' + config["prefix"] + 'help setup`\n' +
-                "Le préfix est `" + config["prefix"] + '` ou `@mention`\n' +
-                '__Exemple__ : `' + config["prefix"] + 'help` ou `@Gab_bot help`\n'
+                    '__Exemple__ : `' + config["prefix"] + 'help setup`\n' +
+                    "Le préfix est `" + config["prefix"] + '` ou `@mention`\n' +
+                    '__Exemple__ : `' + config["prefix"] + 'help` ou `@Gab_bot help`\n'
                 )
                 .setTimestamp();
 
@@ -56,17 +56,17 @@ module.exports = {
                 let commands = "";
                 //if(group.guarded === false) {
                 group.commands.each(cmd => {
-                    if(cmd.permission !== "owner") {
-                        if(commands !== "") {
+                    if (cmd.permission !== "owner") {
+                        if (commands !== "") {
                             commands = commands + ", ";
                         }
                         commands = commands + "`" + cmd.name + "`";
-                    }else {
-                        embed2.addFields({name: "- __" + cmd.name + "__:" , value: cmd.description});
+                    } else {
+                        embed2.addFields({ name: "- __" + cmd.name + "__:", value: cmd.description });
                     }
                 });
-                if(commands !== "") {
-                    embed1.addFields({name: "- __" + group.name + "__: ", value: commands});
+                if (commands !== "") {
+                    embed1.addFields({ name: "- __" + group.name + "__: ", value: commands });
                 }
                 //}else {
                 //	group.commands.each(cmd => {
@@ -74,27 +74,27 @@ module.exports = {
                 //	})
                 //}
             });
-            if(interaction === undefined) {
-                message.channel.send({embeds: [embed1], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false }});
-                if(client.isOwner(message.author)) {
-                    message.author.send({embeds: [embed2]});
+            if (interaction === undefined) {
+                message.channel.send({ embeds: [embed1], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
+                if (client.isOwner(message.author)) {
+                    message.author.send({ embeds: [embed2] });
                 }
-            }else {
-                interaction.reply({embeds: [embed1] });
+            } else {
+                interaction.reply({ embeds: [embed1] });
 
-                if(client.isOwner(interaction.user)) {
-                    interaction.user.send({embeds: [embed2]});
+                if (client.isOwner(interaction.user)) {
+                    interaction.user.send({ embeds: [embed2] });
                 }
             }
-        }else {
+        } else {
             let cmd;
-            if(interaction === undefined) {
+            if (interaction === undefined) {
                 cmd = client.commands.get(message.args[1]);
-            }else {
+            } else {
                 cmd = client.commands.get(interaction.options.getString('commande'));
             }
-            if(cmd) {
-                if(cmd.help !== undefined) {
+            if (cmd) {
+                if (cmd.help !== undefined) {
                     /*if(await checkpermission(this.client, message, message.author, this.cmd.name) === true || (message.member !== undefined && message.member.hasPermission("ADMINISTRATOR"))) {
                         message.author.send("__" + this.cmd.name + "__ :\n" + premessages[this.cmd.name]["help"])
                     }*/
@@ -105,17 +105,17 @@ module.exports = {
                         .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Gab_bot')
                         .addFields(cmd.help)
                         .setTimestamp();
-                    if(interaction === undefined) {
-                        message.channel.send({embeds: [embed], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false }});
-                    }else {
-                        interaction.reply({embeds: [embed] });
+                    if (interaction === undefined) {
+                        message.channel.send({ embeds: [embed], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
+                    } else {
+                        interaction.reply({ embeds: [embed] });
                     }
                 }
-            }else {
-                if(interaction === undefined) {
-                    message.channel.send({content: "Cette commande n'existe pas. Pour voir la liste complete des commandes, utilisez la commande **help**" , reply: { messageReference: message.id }, allowedMentions: { repliedUser: false }});
-                }else {
-                    interaction.reply({content: "La commande `" + interaction.options.getString('commande') + "` n'existe pas."});
+            } else {
+                if (interaction === undefined) {
+                    message.channel.send({ content: "Cette commande n'existe pas. Pour voir la liste complete des commandes, utilisez la commande **help**", reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
+                } else {
+                    interaction.reply({ content: "La commande `" + interaction.options.getString('commande') + "` n'existe pas." });
                 }
             }
         }

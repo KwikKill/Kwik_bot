@@ -14,17 +14,17 @@ module.exports = {
     place: "guild",
     options: undefined,
     commande_channel: true,
-    async run(message, client, interaction=undefined) {
-        if(interaction === undefined) return;
-        if(interaction.channel.type === "GUILD_PUBLIC_THREAD") {
-            if(interaction.channel.name.startsWith("[A VENDRE]")) {
+    async run(message, client, interaction = undefined) {
+        if (interaction === undefined) return;
+        if (interaction.channel.type === "GUILD_PUBLIC_THREAD") {
+            if (interaction.channel.name.startsWith("[A VENDRE]")) {
                 let msg = await interaction.channel.messages.fetchPinned();
                 msg = msg.last();
-                if(interaction.member.user.id === msg.mentions.users.first().id) {
+                if (interaction.member.user.id === msg.mentions.users.first().id) {
                     interaction.channel.setArchived(true, "fin de l'enchère");
                 }
             }
-        }else{
+        } else {
             interaction.reply("Cette commande n'est pas disponible dans ce channel.");
         }
     }

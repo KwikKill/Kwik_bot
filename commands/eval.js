@@ -17,13 +17,13 @@ module.exports = {
     place: "dm",
     async run(message) {
         val => {
-            if(val instanceof Error) {
+            if (val instanceof Error) {
                 message.reply(`Callback error: \`${val}\``);
             } else {
                 // eslint-disable-next-line no-undef
                 const result = makeResultMessages(val, process.hrtime(hrStart));
-                if(Array.isArray(result)) {
-                    for(const item of result) message.reply(item);
+                if (Array.isArray(result)) {
+                    for (const item of result) message.reply(item);
                 } else {
                     message.reply(result);
                 }
@@ -32,7 +32,7 @@ module.exports = {
         /* eslint-enable no-unused-vars */
 
         // Remove any surrounding code blocks before evaluation
-        if(message.content.substring(6).startsWith('```') && message.content.substring(6).endsWith('```')) {
+        if (message.content.substring(6).startsWith('```') && message.content.substring(6).endsWith('```')) {
             //message.content.substring(6) = message.content.substring(6).replace(/(^.*?\s)|(\n.*$)/g, '');
         }
 
@@ -42,14 +42,14 @@ module.exports = {
             const hrStart = process.hrtime();
             lastResult = eval(message.content.substring(6));
             hrDiff = process.hrtime(hrStart);
-        } catch(err) {
+        } catch (err) {
             return message.reply(`Error while evaluating: \`${err}\``);
         }
 
         // Prepare for callback time and respond
         const hrStart = process.hrtime();
         const result = makeResultMessages(lastResult, hrDiff, message.content.substring(6));
-        if(Array.isArray(result)) {
+        if (Array.isArray(result)) {
             return result.map(item => message.reply(item));
         }
         return message.reply(result);
@@ -70,7 +70,7 @@ function makeResultMessages(result, hrDiff, input = null) {
         inspected[last];
     const prepend = `\`\`\`javascript\n${prependPart}\n`;
     const append = `\n${appendPart}\n\`\`\``;
-    if(input) {
+    if (input) {
         return util.splitMessage(tags.stripIndents`
 			*Executed in ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
 			\`\`\`javascript
@@ -88,9 +88,9 @@ function makeResultMessages(result, hrDiff, input = null) {
 }
 
 function sensitivePattern(client) {
-    if(_sensitivePattern === undefined) {
+    if (_sensitivePattern === undefined) {
         let pattern = '';
-        if(client.token) pattern += escapeRegex(client.token);
+        if (client.token) pattern += escapeRegex(client.token);
         _sensitivePattern = new RegExp(pattern, 'gi');
     }
     return _sensitivePattern;

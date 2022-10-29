@@ -3,13 +3,13 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
     name: 'ping',
     group: 'fun',
-	  description: "gestionnaire de pings",
+    description: "gestionnaire de pings",
     type: "messageCreate",
-	  place: "guild",
+    place: "guild",
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-        if(msg.content.includes("<@!297409548703105035>")) {
+        if (msg.content.includes("<@!297409548703105035>")) {
 
             const embed = new MessageEmbed()
                 .setColor(msg.author.hexAccentColor)
@@ -20,7 +20,7 @@ module.exports = {
                 )
                 .setTimestamp();
 
-            msg.guild.members.cache.get("297409548703105035").send({embeds: [embed]});
+            msg.guild.members.cache.get("297409548703105035").send({ embeds: [embed] });
         }
     }
 };
