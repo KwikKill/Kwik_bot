@@ -55,6 +55,9 @@ module.exports = {
                         defaultPermission: item.permission === "none",
                     });
                 } else {
+                    if (item.description === undefined) {
+                        console.log(item.name);
+                    }
                     if (item.options !== undefined) {
                         commands.push({
                             name: item.name,
