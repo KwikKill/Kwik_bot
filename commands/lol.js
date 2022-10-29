@@ -3,7 +3,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
     name: 'lol',
     group: 'lol',
-    descriptiondescription: "Commande lol",
+    description: "Commande lol",
     permission: "none",
     serverid: ["513776796211085342", "962329252550807592", "890915473363980308"],
     hidden: false,
