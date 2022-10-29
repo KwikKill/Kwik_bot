@@ -297,6 +297,70 @@ async function championList(region, language) {
     return champions;
 }
 
+async function set_update(update) {
+    const discordid = update["discordid"];
+    const interaction = update["interaction"];
+
+    const ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'');
+    if (ids.rowCount === 0) {
+        return await interaction.editReply("<@" + discordid + ">, You don't have any account linked.");
+    }
+    const matchs = [];
+    for (const x of ids.rows) {
+        const matchIds = [];
+        let indexed = 0;
+        let gamesToIndex = true;
+        let listOfMatches = {};
+        //console.log(x)
+
+        do {
+            const options = "?startTime=" + startDate + "&start=" + indexed + "&count=100";
+            listOfMatches = { 'matches': await matchlistsByAccount(apiKey, route, x["puuid"], options) };
+            // If there are less than 100 matches in the object, then this is the last match list
+            if (listOfMatches['matches'].length < 100) {
+                gamesToIndex = false;
+            }
+
+            //console.log(listOfMatches)
+            // Populate matchIds Array
+            for (const match in listOfMatches['matches']) {
+                matchIds[indexed] = listOfMatches['matches'][match];
+                indexed++;
+            }
+
+            // Fail Safe
+            if (listOfMatches['matches'][0] === undefined) {
+                gamesToIndex = false;
+                indexed = 0;
+            }
+        } while (gamesToIndex);
+
+
+        //console.log(matchIds)
+        const al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordid + '\'');
+        const already = [];
+        for (const y of al.rows) {
+            already.push(y["puuid"]);
+        }
+        for (const y of client.requests["updates"][0]["matchs"]) {
+            already.push(y[1]);
+        }
+        for (const y of matchIds) {
+            if (!already.includes(y)) {
+                matchs.push([y, x["puuid"]]);
+            }
+        }
+    }
+    client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs);
+    client.requests["updates"][0]["total"] = matchs.length;
+    try {
+        await interaction.editReply("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
+    } catch {
+        await interaction.channel.send("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
+    }
+    return;
+}
+
 client.lol = async function () {
     //console.log(client.running, client.requests)
     if (client.running === true) { return; }
@@ -331,150 +395,99 @@ client.lol = async function () {
             client.running = false;
             return client.lol();
         }
-        const discordid = client.requests["updates"][0]["discordid"];
+
+        set_update(client.requests["updates"][0]);
+
         const interaction = client.requests["updates"][0]["interaction"];
+        const discordid = client.requests["updates"][0]["discordid"];
 
-        const ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'');
-        if (ids.rowCount === 0) {
-            await interaction.editReply("<@" + discordid + ">, You don't have any account linked.");
-        } else {
-            const matchs = [];
-            for (const x of ids.rows) {
-                const matchIds = [];
-                let indexed = 0;
-                let gamesToIndex = true;
-                let listOfMatches = {};
-                //console.log(x)
-
-                do {
-                    const options = "?startTime=" + startDate + "&start=" + indexed + "&count=100";
-                    listOfMatches = { 'matches': await matchlistsByAccount(apiKey, route, x["puuid"], options) };
-                    // If there are less than 100 matches in the object, then this is the last match list
-                    if (listOfMatches['matches'].length < 100) {
-                        gamesToIndex = false;
-                    }
-
-                    //console.log(listOfMatches)
-                    // Populate matchIds Array
-                    for (const match in listOfMatches['matches']) {
-                        matchIds[indexed] = listOfMatches['matches'][match];
-                        indexed++;
-                    }
-
-                    // Fail Safe
-                    if (listOfMatches['matches'][0] === undefined) {
-                        gamesToIndex = false;
-                        indexed = 0;
-                    }
-                } while (gamesToIndex);
-
-
-                //console.log(matchIds)
-                const al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordid + '\'');
-                const already = [];
-                for (const y of al.rows) {
-                    already.push(y["puuid"]);
-                }
-                for (const y of client.requests["updates"][0]["matchs"]) {
-                    already.push(y[1]);
-                }
-                for (const y of matchIds) {
-                    if (!already.includes(y)) {
-                        matchs.push([y, x["puuid"]]);
-                    }
+        while (client.requests["updates"][0]["matchs"].length > 0) {
+            for (const x of client.requests["updates"]) {
+                if (x["matchs"].length === 0) {
+                    set_update(x);
                 }
             }
-            client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs);
-            client.requests["updates"][0]["total"] = matchs.length;
-            try {
-                await interaction.editReply("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
-            } catch {
-                console.log("");
-            }
+            const matchId = client.requests["updates"][0]["matchs"].shift();
+            const match = await matchesById(apiKey, route, matchId[0]);
 
-            while (client.requests["updates"][0]["matchs"].length > 0) {
-                const matchId = client.requests["updates"][0]["matchs"].shift();
-                const match = await matchesById(apiKey, route, matchId[0]);
-
-                if (match?.status?.status_code !== 404) {
-                    const exit = await matchHistoryOutput(match, matchId[1]);
-                    if (exit !== null) {
-                        client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
-                        await client.pg.query("INSERT INTO matchs(" +
-                            "puuid, " +
-                            "player, " +
-                            "gamemode, " +
-                            "champion, " +
-                            "matchup, " +
-                            "support, " +
-                            "lane, " +
-                            "gold, " +
-                            "kill, " +
-                            "deaths, " +
-                            "assists, " +
-                            "result, " +
-                            "total_damage, " +
-                            "tanked_damage, " +
-                            "heal, " +
-                            "neutral_objectives, " +
-                            " wards, " +
-                            "pinks, " +
-                            "vision_score, " +
-                            "cs, " +
-                            "length, " +
-                            "total_kills, " +
-                            "first_gold, " +
-                            "first_damages, " +
-                            "first_tanked, " +
-                            "double, " +
-                            "tripple, " +
-                            "quadra, " +
-                            "penta, " +
-                            "time_spent_dead, " +
-                            "timestamp, " +
-                            "player2, " +
-                            "player3, " +
-                            "player4, " +
-                            "player5 " +
-                            ") VALUES (" +
-                            "'" + matchId[0] + "'," +
-                            "'" + exit["summonerpuuid"] + "'," +
-                            "'" + exit["queueName"] + "'," +
-                            "'" + exit["champion"] + "'," +
-                            "'" + exit["matchup"] + "'," +
-                            "'" + exit["support"] + "'," +
-                            "'" + exit["lane"] + "'," +
-                            "'" + exit["gold"] + "'," +
-                            "" + exit["kills"] + "," +
-                            "" + exit["deaths"] + "," +
-                            "" + exit["assists"] + "," +
-                            "'" + exit["result"] + "'," +
-                            "" + exit["dealt"] + "," +
-                            "" + exit["taken"] + "," +
-                            "" + exit["healed"] + "," +
-                            "" + exit["objectifs"] + "," +
-                            "" + exit["wardsPlaced"] + "," +
-                            "" + exit["pinkPlaced"] + "," +
-                            "" + exit["visionScore"] + "," +
-                            "" + exit["CS"] + "," +
-                            "" + exit["duration"] + "," +
-                            "" + exit["teamKills"] + "," +
-                            "" + exit["firstGold"] + "," +
-                            "" + exit["firstDamage"] + "," +
-                            "" + exit["firstTanked"] + "," +
-                            "" + exit["doubles"] + "," +
-                            "" + exit["triples"] + "," +
-                            "" + exit["quadras"] + "," +
-                            "" + exit["penta"] + "," +
-                            "" + exit["totalTimeSpentDead"] + "," +
-                            "" + exit["date"] + "," +
-                            "'" + exit["player2"] + "'," +
-                            "'" + exit["player3"] + "'," +
-                            "'" + exit["player4"] + "'," +
-                            "'" + exit["player5"] + "'" +
-                            ")"
-                        );
-                    }
+            if (match?.status?.status_code !== 404) {
+                const exit = await matchHistoryOutput(match, matchId[1]);
+                if (exit !== null) {
+                    client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
+                    await client.pg.query("INSERT INTO matchs(" +
+                        "puuid, " +
+                        "player, " +
+                        "gamemode, " +
+                        "champion, " +
+                        "matchup, " +
+                        "support, " +
+                        "lane, " +
+                        "gold, " +
+                        "kill, " +
+                        "deaths, " +
+                        "assists, " +
+                        "result, " +
+                        "total_damage, " +
+                        "tanked_damage, " +
+                        "heal, " +
+                        "neutral_objectives, " +
+                        " wards, " +
+                        "pinks, " +
+                        "vision_score, " +
+                        "cs, " +
+                        "length, " +
+                        "total_kills, " +
+                        "first_gold, " +
+                        "first_damages, " +
+                        "first_tanked, " +
+                        "double, " +
+                        "tripple, " +
+                        "quadra, " +
+                        "penta, " +
+                        "time_spent_dead, " +
+                        "timestamp, " +
+                        "player2, " +
+                        "player3, " +
+                        "player4, " +
+                        "player5 " +
+                        ") VALUES (" +
+                        "'" + matchId[0] + "'," +
+                        "'" + exit["summonerpuuid"] + "'," +
+                        "'" + exit["queueName"] + "'," +
+                        "'" + exit["champion"] + "'," +
+                        "'" + exit["matchup"] + "'," +
+                        "'" + exit["support"] + "'," +
+                        "'" + exit["lane"] + "'," +
+                        "'" + exit["gold"] + "'," +
+                        "" + exit["kills"] + "," +
+                        "" + exit["deaths"] + "," +
+                        "" + exit["assists"] + "," +
+                        "'" + exit["result"] + "'," +
+                        "" + exit["dealt"] + "," +
+                        "" + exit["taken"] + "," +
+                        "" + exit["healed"] + "," +
+                        "" + exit["objectifs"] + "," +
+                        "" + exit["wardsPlaced"] + "," +
+                        "" + exit["pinkPlaced"] + "," +
+                        "" + exit["visionScore"] + "," +
+                        "" + exit["CS"] + "," +
+                        "" + exit["duration"] + "," +
+                        "" + exit["teamKills"] + "," +
+                        "" + exit["firstGold"] + "," +
+                        "" + exit["firstDamage"] + "," +
+                        "" + exit["firstTanked"] + "," +
+                        "" + exit["doubles"] + "," +
+                        "" + exit["triples"] + "," +
+                        "" + exit["quadras"] + "," +
+                        "" + exit["penta"] + "," +
+                        "" + exit["totalTimeSpentDead"] + "," +
+                        "" + exit["date"] + "," +
+                        "'" + exit["player2"] + "'," +
+                        "'" + exit["player3"] + "'," +
+                        "'" + exit["player4"] + "'," +
+                        "'" + exit["player5"] + "'" +
+                        ")"
+                    );
                 }
             }
         }

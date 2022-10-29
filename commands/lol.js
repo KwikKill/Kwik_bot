@@ -1511,7 +1511,18 @@ module.exports = {
                     }
 
                     const query = "" +
-                        "SELECT mate, count(*) FROM (" +
+                        "SELECT " +
+
+                        "mate, " +
+                        "count(*), " +
+                        "(cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*)) as WR, " +
+                        "(cast(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100 as float)/count(*)) as CARRY, " +
+                        "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+                        "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
+                        "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
+                        "(cast(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100 as float)/count(*)) as hardcarry " +
+
+                        "FROM (" +
                         "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player2 as mate " +
                         "FROM matchs, summoners " +
                         //"WHERE discordid = '297409548703105035'" +

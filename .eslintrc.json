@@ -28,7 +28,7 @@
         "eqeqeq": "error",
         "no-console": "warn",
         "no-else-return": "warn",
-        "no-magic-numbers": "warn",
+        //"no-magic-numbers": "warn",
         "no-var": "error",
         "curly": "error",
         "prefer-const": "error",
