@@ -353,11 +353,6 @@ async function set_update(update) {
     }
     client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs);
     client.requests["updates"][0]["total"] = matchs.length;
-    try {
-        await interaction.editReply("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
-    } catch {
-        await interaction.channel.send("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
-    }
     return;
 }
 
@@ -400,6 +395,12 @@ client.lol = async function () {
 
         const interaction = client.requests["updates"][0]["interaction"];
         const discordid = client.requests["updates"][0]["discordid"];
+
+        try {
+            await interaction.editReply("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
+        } catch {
+            await interaction.channel.send("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
+        }
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
             for (const x of client.requests["updates"]) {
