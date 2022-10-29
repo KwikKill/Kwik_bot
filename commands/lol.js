@@ -1550,7 +1550,7 @@ module.exports = {
                         "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player2 as mate " +
                         "FROM matchs, summoners " +
                         //"WHERE discordid = '297409548703105035'" +
-                        "WHERE player = '" + discordaccount + "'" +
+                        "WHERE summoners.discordid = '" + discordaccount + "'" +
                         " AND matchs.player = summoners.puuid" +
                         queryaccount +
                         querygamemode +
@@ -1559,7 +1559,7 @@ module.exports = {
                         " UNION " +
                         "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player3 as mate " +
                         "FROM matchs, summoners " +
-                        "WHERE player = '" + discordaccount + "'" +
+                        "WHERE summoners.discordid = '" + discordaccount + "'" +
                         //"WHERE discordid = '297409548703105035'" +
                         " AND matchs.player = summoners.puuid" +
                         queryaccount +
@@ -1569,7 +1569,7 @@ module.exports = {
                         " UNION " +
                         "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player4 as mate " +
                         "FROM matchs, summoners " +
-                        "WHERE player = '" + discordaccount + "'" +
+                        "WHERE summoners.discordid = '" + discordaccount + "'" +
                         //"WHERE discordid = '297409548703105035'" +
                         " AND matchs.player = summoners.puuid" +
                         queryaccount +
@@ -1579,7 +1579,7 @@ module.exports = {
                         " UNION " +
                         "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player5 as mate " +
                         "FROM matchs, summoners " +
-                        "WHERE player = '" + discordaccount + "'" +
+                        "WHERE summoners.discordid = '" + discordaccount + "'" +
                         //"WHERE discordid = '297409548703105035'" +
                         " AND matchs.player = summoners.puuid" +
                         queryaccount +
