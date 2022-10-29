@@ -1,11 +1,14 @@
+const fs = require("fs");
+const path = require('path');
+const { MessageEmbed, Util } = require('discord.js');
 const util = require('util');
 const tags = require('common-tags');
 const { escapeRegex } = require('../util/util');
 
 const nl = '!!NL!!';
 const nlPattern = new RegExp(nl, 'g');
-let _sensitivePattern = undefined;
-let lastResult = null;
+var _sensitivePattern = undefined;
+var lastResult = null;
 
 module.exports = {
     name: 'eval',
@@ -15,15 +18,14 @@ module.exports = {
     hidden: false,
     deploy: false,
     place: "dm",
-    async run(message) {
-        val => {
+    async run(message, client, interaction = undefined) {
+        const doReply = val => {
             if (val instanceof Error) {
                 message.reply(`Callback error: \`${val}\``);
             } else {
-                // eslint-disable-next-line no-undef
                 const result = makeResultMessages(val, process.hrtime(hrStart));
                 if (Array.isArray(result)) {
-                    for (const item of result) { message.reply(item); }
+                    for (const item of result) message.reply(item);
                 } else {
                     message.reply(result);
                 }
@@ -33,7 +35,7 @@ module.exports = {
 
         // Remove any surrounding code blocks before evaluation
         if (message.content.substring(6).startsWith('```') && message.content.substring(6).endsWith('```')) {
-            //message.content.substring(6) = message.content.substring(6).replace(/(^.*?\s)|(\n.*$)/g, '');
+            message.content.substring(6) = message.content.substring(6).replace(/(^.*?\s)|(\n.*$)/g, '');
         }
 
         // Run the code and measure its execution time
@@ -47,15 +49,15 @@ module.exports = {
         }
 
         // Prepare for callback time and respond
-        const hrStart = process.hrtime();
+        hrStart = process.hrtime();
         const result = makeResultMessages(lastResult, hrDiff, message.content.substring(6));
         if (Array.isArray(result)) {
             return result.map(item => message.reply(item));
+        } else {
+            return message.reply(result);
         }
-        return message.reply(result);
-
     }
-};
+}
 
 
 function makeResultMessages(result, hrDiff, input = null) {
@@ -71,27 +73,27 @@ function makeResultMessages(result, hrDiff, input = null) {
     const prepend = `\`\`\`javascript\n${prependPart}\n`;
     const append = `\n${appendPart}\n\`\`\``;
     if (input) {
-        return util.splitMessage(tags.stripIndents`
+        return Util.splitMessage(tags.stripIndents`
 			*Executed in ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
 			\`\`\`javascript
 			${inspected}
 			\`\`\`
 		`, { maxLength: 1900, prepend, append });
-    }
-    return util.splitMessage(tags.stripIndents`
+    } else {
+        return Util.splitMessage(tags.stripIndents`
 			*Callback executed after ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
 			\`\`\`javascript
 			${inspected}
 			\`\`\`
 		`, { maxLength: 1900, prepend, append });
-
+    }
 }
 
 function sensitivePattern(client) {
-    if (_sensitivePattern === undefined) {
+    if (_sensitivePattern == undefined) {
         let pattern = '';
-        if (client.token) { pattern += escapeRegex(client.token); }
-        _sensitivePattern = new RegExp(pattern, 'gi');
+        if (client.token) pattern += escapeRegex(client.token);
+        _sensitivePattern = new RegExp(pattern, 'gi')
     }
     return _sensitivePattern;
 }
