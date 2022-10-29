@@ -1551,7 +1551,7 @@ module.exports = {
                         querygamemode +
                         queryrole +
                         querychamp +
-                        ") AS SUB GROUP BY mate GROUP BY COUNT(*) DESC;";
+                        ") AS SUB GROUP BY mate ORDER BY COUNT(*) DESC;";
                     console.log(query);
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
