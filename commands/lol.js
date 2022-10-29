@@ -1480,13 +1480,13 @@ module.exports = {
 
                 } else if (interaction.options.getSubcommand() === "friends") {
 
-                    /*
-                    let discordusername = "";
+
+                    //let discordusername = "";
                     if (discordaccount === null) {
                         discordaccount = interaction.user.id;
-                        discordusername = interaction.user.username;
+                        //discordusername = interaction.user.username;
                     } else {
-                        discordusername = discordaccount.username;
+                        //discordusername = discordaccount.username;
                         discordaccount = discordaccount.id;
                     }
 
@@ -1508,21 +1508,42 @@ module.exports = {
                     let querychamp = "";
                     if (champion !== undefined) {
                         querychamp = " AND matchs.champion='" + champion + "'";
-                    }*/
+                    }
 
-                    const query =
-                        "SELECT player2 " +
+                    const query = "SELECT " +
+                        "(" +
+                        "SELECT champion, result, player2 as mate" +
                         "FROM matchs " +
-                        "UNION " +
-                        "SELECT player3 " +
+                        "WHERE player = '" + discordaccount + "'" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        " UNION " +
+                        "SELECT champion, result, player3 as mate" +
                         "FROM matchs " +
-                        "UNION " +
-                        "SELECT player4 " +
+                        "WHERE player = '" + discordaccount + "'" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        " UNION " +
+                        "SELECT champion, result, player4 as mate" +
                         "FROM matchs " +
-                        "UNION " +
-                        "SELECT player5 " +
+                        "WHERE player = '" + discordaccount + "'" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        " UNION " +
+                        "SELECT champion, result, player5 as mate" +
                         "FROM matchs " +
-                        ";";
+                        "WHERE player = '" + discordaccount + "'" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        ");";
 
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {

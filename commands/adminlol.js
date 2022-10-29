@@ -32,6 +32,7 @@ module.exports = {
             await interaction.deferReply();
             if (interaction.options.getSubcommandGroup() === "update") {
                 if (interaction.options.getSubcommand() === "all") {
+                    await interaction.editReply("Processing.");
                     await update(client, interaction);
                     await interaction.editReply("All lol accounts updated.");
                 }
