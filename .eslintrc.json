@@ -1,0 +1,31 @@
+{
+    "env": {
+        "node": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "rules": {
+        "semi": "error",
+        //"no-await-in-loop": "error",
+        "eqeqeq": "error",
+        "no-console": "warn",
+        "no-else-return": "warn",
+        "no-magic-numbers": "warn",
+        "no-var": "error",
+        "prefer-const": "error",
+        "indent": ["error", 4],
+        "jsx-quotes": ["error", "prefer-double"],
+        "no-trailing-spaces": "error",
+        "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+        "no-irregular-whitespace": "error",
+        "no-multi-spaces": "error"
+        //"camelcase": "warn"
+    },
+    "extends": ["eslint:recommended"]
+
+}

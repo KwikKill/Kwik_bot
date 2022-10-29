@@ -6,12 +6,15 @@
   "author": "Gab_351",
   "license": "GPL v3+",
   "dependencies": {
-    "canvas": "^2.9.0",
+    "canvas": "^2.10.1",
     "common-tags": "^1.8.2",
     "discord.js": "^13.10.3",
     "node-fetch": "^2.6.7",
     "node-ical": "^0.14.1",
     "pdfkit": "^0.13.0",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.26.0"
   }
 }

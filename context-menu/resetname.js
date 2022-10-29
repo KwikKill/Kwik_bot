@@ -1,20 +1,15 @@
-const fs = require("fs");
-const path = require('path');
-const { MessageEmbed } = require('discord.js');
-//const { oneLine } = require('common-tags');
-
 module.exports = {
     name: 'resetname',
-	description: "Reset le nom d'un utilisateur.",
-	permission: "modo",
-	serverid: ["513776796211085342", "480142959501901845"],
+    description: "Reset le nom d'un utilisateur.",
+    permission: "modo",
+    serverid: ["513776796211085342", "480142959501901845"],
     type: "USER",
-    async run(interaction, client) {
-        user = interaction.options.getMember("user")
-        user.setNickname(null).catch(err => {
+    async run(interaction) {
+        const user = interaction.options.getMember("user");
+        user.setNickname(null).catch(() => {
             interaction.reply(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
             return;
         });
         interaction.reply(`${user.user.username} a été renommé en ${user.user.username}`);
-  }
-}
+    }
+};

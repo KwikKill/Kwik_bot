@@ -1,18 +1,14 @@
-const fs = require("fs");
-const path = require('path');
-const { MessageEmbed, Interaction } = require('discord.js');
-
 module.exports = {
     name: 'le',
     group: 'util',
-	description: "gestion des messages dans le salon le",
+    description: "gestion des messages dans le salon le",
     type: "messageCreate",
-	place: "guild",
+    place: "guild",
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-        // rule not respected 
-        phrases = [
+        // rule not respected
+        const phrases = [
             "D'où tu respecte pas les règles du salon le ?!",
             "Tu n'as pas respecté les règles du salon le !",
             "Je te jure, je vais te retrouver !",
@@ -25,18 +21,18 @@ module.exports = {
             "Je passe le bonjour de ta part à ta mère",
             "Ton insolence est une insulte à la république française",
             "Ton irrespect prend plus de place que le fiak de matt"
-        ]
+        ];
 
 
-        if(msg.channel.name == "le") {
-            if(msg.content.toLowerCase() != "le") {
-                msg.delete()
-                rd = getRandomInt(phrases.length)
-                msg.author.send(phrases[rd])
+        if(msg.channel.name === "le") {
+            if(msg.content.toLowerCase() !== "le") {
+                msg.delete();
+                const rd = getRandomInt(phrases.length);
+                msg.author.send(phrases[rd]);
             }
         }
     }
-}
+};
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);

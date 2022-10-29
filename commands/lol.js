@@ -1,13 +1,11 @@
-const fs = require("fs");
-const path = require('path');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'lol',
     group: 'lol',
-	description: "Commande lol",
-	permission: "none",
-	serverid: ["513776796211085342", "962329252550807592", "890915473363980308"],
+    descriptiondescription: "Commande lol",
+    permission: "none",
+    serverid: ["513776796211085342", "962329252550807592", "890915473363980308"],
     hidden: false,
     help: [
         {
@@ -15,12 +13,12 @@ module.exports = {
             "value": "Test lol."
         },
     ],
-	place: "guild",
+    place: "guild",
     options: [
         {
-			name: 'account',
-			description: 'Manage lol accounts',
-			type: 'SUB_COMMAND_GROUP',
+            name: 'account',
+            description: 'Manage lol accounts',
+            type: 'SUB_COMMAND_GROUP',
             options: [
                 {
                     name: 'add',
@@ -54,7 +52,7 @@ module.exports = {
                     type: 'SUB_COMMAND',
                 },
             ]
-		},
+        },
         {
             name: 'matchs',
             description: 'Manage lol matchs',
@@ -683,22 +681,21 @@ module.exports = {
         }
     ],
     commande_channel: true,
-    async run(message, client, interaction=undefined, mssg=true) {
-        if(interaction != undefined) {
-            await interaction.deferReply()
-            if(interaction.options.getSubcommandGroup() == "account") {
-                if(interaction.options.getSubcommand() == "add") {
-                    summoner_name = interaction.options.getString("name");
-                    response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND LOWER(username)=LOWER('" + summoner_name + "');")
-                    if(!client.requests["summoners"].includes({"username": summoner_name, "discordid":interaction.user.id }) && response.rows.length == 0) {
+    async run(message, client, interaction=undefined) {
+        if(interaction !== undefined) {
+            await interaction.deferReply();
+            if(interaction.options.getSubcommandGroup() === "account") {
+                if(interaction.options.getSubcommand() === "add") {
+                    const summoner_name = interaction.options.getString("name");
+                    const response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND LOWER(username)=LOWER('" + summoner_name + "');");
+                    if(!client.requests["summoners"].includes({"username": summoner_name, "discordid":interaction.user.id }) && response.rows.length === 0) {
                         await interaction.editReply("The request was added to the queue, this can take several minutes.");
                         return await addSumoner(client, summoner_name, interaction);
-                    }else {
-                        return await interaction.editReply("This account is already in the database or requested.");
                     }
-                }else if(interaction.options.getSubcommand() == "remove") {
-                    summoner_name = interaction.options.getString("name");
-                    response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND username='" + summoner_name + "';")
+                    return await interaction.editReply("This account is already in the database or requested.");
+                }else if(interaction.options.getSubcommand() === "remove") {
+                    const summoner_name = interaction.options.getString("name");
+                    const response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND username='" + summoner_name + "';");
                     if(response.rows.length > 0) {
                         await client.pg.query("DELETE FROM matchs "+
                                               "WHERE player IN ("+
@@ -706,21 +703,21 @@ module.exports = {
                                                 "FROM summoners "+
                                                 "WHERE username='" + summoner_name + "'" +
                                               ");"
-                                            );
+                        );
                         await client.pg.query("DELETE FROM summoners "+
                                               "WHERE discordid='" + interaction.user.id + "' "+
                                                 "AND username='" + summoner_name + "'" +
                                               ";"
-                                            )
+                        );
                         return await interaction.editReply("The account has been removed.");
                     }
                     return await interaction.editReply("This account is not in the database.");
-                }else if(interaction.options.getSubcommand() == "list") {
-                    response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "';")
-                    if(response.rows.length == 0) {
+                }else if(interaction.options.getSubcommand() === "list") {
+                    const response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "';");
+                    if(response.rows.length === 0) {
                         return await interaction.editReply("You don't have any account linked. Please use the command `/lol account add <name>` to add an account.");
-                    }else {
-                        embed = new MessageEmbed()
+                    }
+                    const embed = new MessageEmbed()
                         .setTitle("Your accounts")
                         .setColor("#00FF00")
                         .setFooter({
@@ -728,88 +725,87 @@ module.exports = {
                             //iconURL: interaction.user.displayAvatarURL()
                         })
                         .setTimestamp();
-                        accounts = "";
-                        for(i=0; i<response.rows.length; i++) {
-                            accounts += "-" + response.rows[i].username + "\n";
-                        }
-                        embed.addFields(
-                            {
-                                name: "Linked Accounts :", 
-                                value: accounts
-                            }
-                        );
-
-                        return await interaction.editReply({embeds: [embed]});
+                    let accounts = "";
+                    for(let i=0; i<response.rows.length; i++) {
+                        accounts += "-" + response.rows[i].username + "\n";
                     }
+                    embed.addFields(
+                        {
+                            name: "Linked Accounts :",
+                            value: accounts
+                        }
+                    );
+
+                    return await interaction.editReply({embeds: [embed]});
                 }
-            }else if(interaction.options.getSubcommandGroup() == "matchs") {
-                if(interaction.options.getSubcommand() == "update") {
-                    for(var x of client.requests["updates"]) {
-                        if(x["discordid"] == interaction.user.id) {
-                            return await interaction.editReply("You already have a request in the queue.");
+            }else if(interaction.options.getSubcommandGroup() === "matchs") {
+                if(interaction.options.getSubcommand() === "update") {
+                    for(const x of client.requests["updates"]) {
+                        if(x["discordid"] === interaction.user.id) {
+                            return interaction.editReply("You already have a request in the queue.");
                         }
                     }
                     await interaction.editReply("The request was added to the queue, this can take several minutes.");
                     return await update(client, interaction);
                 }
-            }else if(interaction.options.getSubcommandGroup() == "queue") {
-                if(interaction.options.getSubcommand() == "status") {
-                    embed = new MessageEmbed()
-                    .setTitle("Queue status")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+            }else if(interaction.options.getSubcommandGroup() === "queue") {
+                if(interaction.options.getSubcommand() === "status") {
+                    const embed = new MessageEmbed()
+                        .setTitle("Queue status")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                        })
+                        .setTimestamp();
                     embed.addFields(
                         {
                             name: "Updates in queue :",
-                            value: "- Number : " + client.requests["updates"].length + "\n" + "- Current : " + (client.requests["updates"].length > 0 ? "<@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games" : "None")
+                            value: "- Length : " + client.requests["updates"].length + "\n" + "- Current : " + (client.requests["updates"].length > 0 ? "<@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games" : "None")
                         }
                     );
                     return await interaction.editReply({embeds: [embed]});
                 }
-            }else if(interaction.options.getSubcommandGroup() == "stats") {
-                if(interaction.options.getSubcommand() == "summarized") {
-                    champion = interaction.options.getString("champion");
-                    role = interaction.options.getString("lane");
-                    gamemode = interaction.options.getString("gamemode");
-                    account = interaction.options.getString("account");
-                    discordaccount = interaction.options.getUser("discordaccount");
-                    discordusername = ""
-                    if(discordaccount == undefined) {
+            }else if(interaction.options.getSubcommandGroup() === "stats") {
+                if(interaction.options.getSubcommand() === "summarized") {
+                    const champion = interaction.options.getString("champion");
+                    const role = interaction.options.getString("lane");
+                    const gamemode = interaction.options.getString("gamemode");
+                    const account = interaction.options.getString("account");
+                    let discordaccount = interaction.options.getUser("discordaccount");
+                    let discordusername = "";
+                    if(discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     }else {
                         discordusername = discordaccount.username;
                         discordaccount = discordaccount.id;
                     }
-                    
-                    query = "SELECT * " + 
+
+                    let query = "SELECT * " +
                             "FROM matchs, summoners " +
                             "WHERE summoners.discordid='" + discordaccount + "' " +
                                 "AND matchs.player = summoners.puuid";
-                    if(champion != undefined) {
+                    if(champion !== undefined) {
                         query += " AND matchs.champion='" + champion + "'";
                     }
-                    if(role != undefined) {
+                    if(role !== undefined) {
                         query += " AND matchs.lane='" + role + "'";
                     }
-                    if(gamemode != undefined) {
+                    if(gamemode !== undefined) {
                         query += " AND matchs.gamemode='" + gamemode + "'";
                     }
-                    if(account != undefined) {
+                    if(account !== undefined) {
                         query += " AND summoners.username='" + account + "'";
                     }
-                    query += ";"
-                    response = await client.pg.query(query);
-                    if(response.rows.length == 0) {
+                    query += ";";
+                    const response = await client.pg.query(query);
+                    if(response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
 
                     // Query 2
-                    query2 = "SELECT " + 
+                    let query2 = "SELECT " +
                                 "avg(length) as duration, "+
                                 "avg(kill) as kill, "+
                                 "avg(deaths) as deaths, "+
@@ -824,71 +820,71 @@ module.exports = {
                                 "avg(total_kills) as total_kills " +
                             "FROM matchs, summoners "+
                             "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                    if(champion != undefined) {
+                    if(champion !== undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
                     }
-                    if(role != undefined) {
+                    if(role !== undefined) {
                         query2 += " AND matchs.lane='" + role + "'";
                     }
-                    if(gamemode != undefined) {
+                    if(gamemode !== undefined) {
                         query2 += " AND matchs.gamemode='" + gamemode + "'";
                     }
-                    if(account != undefined) {
+                    if(account !== undefined) {
                         query2 += " AND summoners.username='" + account + "'";
                     }
-                    query2 += ";"
-                    response2 = await client.pg.query(query2);
+                    query2 += ";";
+                    const response2 = await client.pg.query(query2);
 
                     // query 3
-                    query3 = "SELECT " + 
+                    let query3 = "SELECT " +
                                 "gamemode, "+
-                                "count(gamemode) " + 
+                                "count(gamemode) " +
                             "FROM matchs, summoners "+
                             "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                    if(champion != undefined) {
+                    if(champion !== undefined) {
                         query3 += " AND matchs.champion='" + champion + "'";
                     }
-                    if(role != undefined) {
+                    if(role !== undefined) {
                         query3 += " AND matchs.lane='" + role + "'";
                     }
-                    if(account != undefined) {
+                    if(account !== undefined) {
                         query3 += " AND summoners.username='" + account + "'";
                     }
-                    query3 += " GROUP BY gamemode;"
-                    response3 = await client.pg.query(query3);
-                    if(response3.rows.length == 0) {
+                    query3 += " GROUP BY gamemode;";
+                    const response3 = await client.pg.query(query3);
+                    if(response3.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
 
                     // plot
 
-                    url = "https://chart.googleapis.com/chart?cht=p&chs=500x300&chd=t:"
-                    
-                    values = ""
-                    labels = ""
+                    const url = "https://chart.googleapis.com/chart?cht=p&chs=500x300&chd=t:";
 
-                    for(i = 0; i < response3.rows.length; i++) {
+                    let values = "";
+                    let labels = "";
+
+                    for(let i = 0; i < response3.rows.length; i++) {
                         values += response3.rows[i].count + ",";
                         labels += response3.rows[i].gamemode + "|";
                     }
                     values = values.substring(0, values.length - 1);
                     labels = labels.substring(0, labels.length - 1);
-                    
-                    url2 = url + values + "&chl=" + labels + "&chco=FFC6A5|FFFF42|DEF3BD|00A5C6|DEBDDE|FF0000|0000CC|660033|66FF66";
+
+                    const url2 = url + values + "&chl=" + labels + "&chco=FFC6A5|FFFF42|DEF3BD|00A5C6|DEBDDE|FF0000|0000CC|660033|66FF66";
 
 
                     // 1) Carry stats
 
-                    carry_damage = 0;
-                    carry_tanked = 0;
-                    carry_gold = 0;
-                    overall = 0;
-                    hard_carry = 0;
-                    win = 0;
-                    
+                    let carry_damage = 0;
+                    let carry_tanked = 0;
+                    let carry_gold = 0;
+                    let overall = 0;
+                    let hard_carry = 0;
+                    let win = 0;
 
-                    for(i=0; i<response.rows.length; i++) {
-                        if(response.rows[i].result == "Win") {
+
+                    for(let i=0; i<response.rows.length; i++) {
+                        if(response.rows[i].result === "Win") {
                             win += 1;
                         }
                         if(response.rows[i].first_gold) {
@@ -910,18 +906,18 @@ module.exports = {
 
                     // 2) Average stats
 
-                    length = response2.rows[0].duration;
+                    const length = response2.rows[0].duration;
 
-                    average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(2);
-                    average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(2);
-                    average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(2);
-                    average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(2);
-                    average_gold = response2.rows[0].gold;
-                    average_damages = response2.rows[0].damage;
-                    average_tanked = response2.rows[0].damage_taken;
-                    average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(2);
-                    average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(2);
-                    average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(2);
+                    const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(2);
+                    const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(2);
+                    const average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(2);
+                    let average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(2);
+                    let average_gold = response2.rows[0].gold;
+                    let average_damages = response2.rows[0].damage;
+                    let average_tanked = response2.rows[0].damage_taken;
+                    const average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(2);
+                    const average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(2);
+                    const average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(2);
 
                     average_cs = (average_cs / (length/60)).toFixed(2);
                     average_gold = (average_gold / (length/60)).toFixed(2);
@@ -930,39 +926,39 @@ module.exports = {
 
                     // KwikScore
 
-                    score = 0;
-                    score += overall/response.rows.length*100
-                    score += win/response.rows.length*100
-                    score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists))/average_total_kills*100
-                    score += 5*(((Number.parseFloat(average_vision_score))/(length/60))/0.2)
-                    score += 10*average_cs
+                    let score = 0;
+                    score += overall/response.rows.length*100;
+                    score += win/response.rows.length*100;
+                    score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists))/average_total_kills*100;
+                    score += 5*(((Number.parseFloat(average_vision_score))/(length/60))/0.2);
+                    score += 10*average_cs;
                     if(100 - response.rows.length > 0) {
                         score = score * 0.99**(100 - response.rows.length);
                     }
 
-                    title = "" + discordusername + "'s stats"
-                    if(champion != undefined) {
+                    let title = "" + discordusername + "'s stats";
+                    if(champion !== undefined) {
                         title += " with " + champion;
                     }
-                    if(role != undefined) {
+                    if(role !== undefined) {
                         title += " in " + role;
                     }
-                    if(account != undefined) {
+                    if(account !== undefined) {
                         title += " on \"" + account + "\"";
                     }
-                    
+
                     // send embed
-                    embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                        })
+                        .setTimestamp();
                     embed.addFields(
                         {
-                            name: "Number of matchs :", 
+                            name: "Number of matchs :",
                             value: "" + response.rows.length,
                             inline: true
                         },
@@ -988,44 +984,44 @@ module.exports = {
                         },
                         {
                             name: "Average stats :",
-                            value: "Kills : " + average_kills + 
-                                    "\nDeaths : " + average_deaths + 
-                                    "\nAssists : " + average_assists + 
-                                    "\nCS/min : " + average_cs + 
-                                    "\nDamages/min : " + average_damages + 
-                                    "\nTanked/min : " + average_tanked + 
-                                    "\nPinks : " + average_pinks + 
-                                    "\nVision Score : " + average_vision_score + 
+                            value: "Kills : " + average_kills +
+                                    "\nDeaths : " + average_deaths +
+                                    "\nAssists : " + average_assists +
+                                    "\nCS/min : " + average_cs +
+                                    "\nDamages/min : " + average_damages +
+                                    "\nTanked/min : " + average_tanked +
+                                    "\nPinks : " + average_pinks +
+                                    "\nVision Score : " + average_vision_score +
                                     "\nGold/min : " + average_gold,
                             inline: true
                         }
                     ).setImage(url2);
                     return await interaction.editReply({embeds: [embed]});
-                }else if(interaction.options.getSubcommand() == "matchups") {
-                    champion = interaction.options.getString("champion");
-                    role = interaction.options.getString("lane");
-                    gamemode = interaction.options.getString("gamemode");
-                    account = interaction.options.getString("account");
-                    querychamp = ""
-                    if(champion != undefined) {
+                }else if(interaction.options.getSubcommand() === "matchups") {
+                    const champion = interaction.options.getString("champion");
+                    const role = interaction.options.getString("lane");
+                    const gamemode = interaction.options.getString("gamemode");
+                    const account = interaction.options.getString("account");
+                    let querychamp = "";
+                    if(champion !== undefined) {
                         querychamp = " AND matchs.champion='" + champion + "'";
                     }
-                    queryrole = ""
-                    if(role != undefined) {
+                    let queryrole = "";
+                    if(role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
-                    querygamemode = ""
-                    if(gamemode != undefined) {
+                    let querygamemode = "";
+                    if(gamemode !== undefined) {
                         querygamemode = " AND matchs.gamemode='" + gamemode + "'";
                     }
-                    queryaccount = ""
-                    if(account != undefined) {
+                    let queryaccount = "";
+                    if(account !== undefined) {
                         queryaccount = " AND summoners.username='" + account + "'";
                     }
 
-                    discordaccount = interaction.options.getUser("discordaccount");
-                    discordusername = ""
-                    if(discordaccount == undefined) {
+                    let discordaccount = interaction.options.getUser("discordaccount");
+                    let discordusername = "";
+                    if(discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     }else {
@@ -1034,34 +1030,34 @@ module.exports = {
                     }
 
 
-                    query = "SELECT matchs.matchup, count(*) AS count1, (cast(" + 
+                    let query = "SELECT matchs.matchup, count(*) AS count1, (cast(" +
                                 "count(*) FILTER ("+
                                     "WHERE result = 'Win'" +
-                                ")*100 as float)/count(*)) AS winrate, (cast(" + 
+                                ")*100 as float)/count(*)) AS winrate, (cast(" +
                                 "count(*) FILTER ("+
                                     "WHERE (first_tanked OR first_gold OR first_damages)" +
                                 ")*100 as float)/count(*)) AS carry " +
-                            "FROM matchs, summoners " + 
+                            "FROM matchs, summoners " +
                             "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
                     query += querychamp;
                     query += queryrole;
                     query += querygamemode;
                     query += queryaccount;
-                    query += " GROUP BY matchs.matchup ORDER BY count1 DESC;"
-                    response = await client.pg.query(query);
-                    if(response.rows.length == 0) {
+                    query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
+                    const response = await client.pg.query(query);
+                    if(response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
 
-                    url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:"
+                    const url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:";
 
-                    values1 = ""
-                    values2 = ""
-                    champ = ""
+                    let values1 = "";
+                    let values2 = "";
+                    let champ = "";
 
-                    data = []
-                    for(i=0; i<response.rows.length; i++) {
-                        if(response.rows[i].count1 > 4 && response.rows[i].matchup != "" && response.rows[i].matchup != "Invalid") {
+                    const data = [];
+                    for(let i=0; i<response.rows.length; i++) {
+                        if(response.rows[i].count1 > 4 && response.rows[i].matchup !== "" && response.rows[i].matchup !== "Invalid") {
                             data.push("- " + response.rows[i].matchup + " : " + response.rows[i].count1 + " matchs (" + response.rows[i].winrate.toFixed(1) + "% winrate, " + response.rows[i].carry.toFixed(1) + "% carry)\n");
                             if(i < 17) {
                                 values1 += response.rows[i].winrate + ",";
@@ -1074,58 +1070,58 @@ module.exports = {
                     values2 = values2.substring(0, values2.length - 1);
                     champ = champ.substring(0, champ.length - 1);
 
-                    if(data.length == 0) {
+                    if(data.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
 
-                    url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
+                    const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
 
-                    title = "" + discordusername + "'s matchups"
-                    if(champion != undefined) {
+                    let title = "" + discordusername + "'s matchups";
+                    if(champion !== undefined) {
                         title += " with " + champion;
                     }
-                    if(role != undefined) {
+                    if(role !== undefined) {
                         title += " in " + role;
                     }
-                    if(account != undefined) {
+                    if(account !== undefined) {
                         title += " on \"" + account + "\"";
                     }
 
                     // send embed
-                    embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                        })
+                        .setTimestamp();
                     embed.addFields(
                         {
                             name: "Number of matchups :",
                             value: "" + response.rows.length
                         },
                     )
-                    .setImage(url2);
+                        .setImage(url2);
 
-                    for(i=0; i<5; i++) {
-                        text = ""
-                        if(data[i*5] != undefined) {
+                    for(let i=0; i<5; i++) {
+                        let text = "";
+                        if(data[i*5] !== undefined) {
                             text += data[i*5];
                         }
-                        if(data[i*5+1] != undefined) {
+                        if(data[i*5+1] !== undefined) {
                             text += data[i*5+1];
                         }
-                        if(data[i*5+2] != undefined) {
+                        if(data[i*5+2] !== undefined) {
                             text += data[i*5+2];
                         }
-                        if(data[i*5+3] != undefined) {
+                        if(data[i*5+3] !== undefined) {
                             text += data[i*5+3];
                         }
-                        if(data[i*5+4] != undefined) {
+                        if(data[i*5+4] !== undefined) {
                             text += data[i*5+4];
                         }
-                        if(text != "") {
+                        if(text !== "") {
                             embed.addFields(
                                 {
                                     name: "Matchup " + (i+1) + " :",
@@ -1136,26 +1132,26 @@ module.exports = {
                     }
 
                     return await interaction.editReply({embeds: [embed]});
-                }else if(interaction.options.getSubcommand() == "champions") {
-                    role = interaction.options.getString("lane");
-                    gamemode = interaction.options.getString("gamemode");
-                    account = interaction.options.getString("account");
-                    queryrole = ""
-                    if(role != undefined) {
+                }else if(interaction.options.getSubcommand() === "champions") {
+                    const role = interaction.options.getString("lane");
+                    const gamemode = interaction.options.getString("gamemode");
+                    const account = interaction.options.getString("account");
+                    let queryrole = "";
+                    if(role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
-                    querygamemode = ""
-                    if(gamemode != undefined) {
+                    let querygamemode = "";
+                    if(gamemode !== undefined) {
                         querygamemode = " AND matchs.gamemode='" + gamemode + "'";
                     }
-                    queryaccount = ""
-                    if(account != undefined) {
+                    let queryaccount = "";
+                    if(account !== undefined) {
                         queryaccount = " AND summoners.username='" + account + "'";
                     }
 
-                    discordaccount = interaction.options.getUser("discordaccount");
-                    discordusername = ""
-                    if(discordaccount == undefined) {
+                    let discordaccount = interaction.options.getUser("discordaccount");
+                    let discordusername = "";
+                    if(discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     }else {
@@ -1163,13 +1159,13 @@ module.exports = {
                         discordaccount = discordaccount.id;
                     }
 
-                    query = "SELECT champion, "+
+                    const query = "SELECT champion, "+
                                 "count(*) AS count, "+
-                                "(cast(" + 
+                                "(cast(" +
                                     "count(*) FILTER ("+
                                         "WHERE result = 'Win'" +
                                 ")*100 as float)/count(*)) as winrate, " +
-                                "(cast(" + 
+                                "(cast(" +
                                     "count(*) FILTER ("+
                                         "WHERE (first_tanked OR first_gold OR first_damages)" +
                                 ")*100 as float)/count(*)) AS carry " +
@@ -1181,19 +1177,19 @@ module.exports = {
                                 queryaccount +
                             " GROUP BY champion "+
                             "ORDER BY count(*) DESC;";
-                    response = await client.pg.query(query);
-                    if(response.rows.length == 0) {
+                    const response = await client.pg.query(query);
+                    if(response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database.");
                     }
 
-                    url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:"
+                    const url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:";
 
-                    values1 = ""
-                    values2 = ""
-                    champ = ""
+                    let values1 = "";
+                    let values2 = "";
+                    let champ = "";
 
-                    for(i=0; i<response.rows.length; i++) {
-                        if(response.rows[i].count > 4 && response.rows[i].champion != "" && response.rows[i].champion != "Invalid") {
+                    for(let i=0; i<response.rows.length; i++) {
+                        if(response.rows[i].count > 4 && response.rows[i].champion !== "" && response.rows[i].champion !== "Invalid") {
                             if(i < 17) {
                                 values1 += response.rows[i].winrate + ",";
                                 values2 += response.rows[i].carry + ",";
@@ -1204,51 +1200,51 @@ module.exports = {
                     values1 = values1.substring(0, values1.length - 1);
                     values2 = values2.substring(0, values2.length - 1);
                     champ = champ.substring(0, champ.length - 1);
-                    url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
+                    const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
 
-                    title = "" + discordusername + "'s champions"
-                    if(role != undefined) {
+                    let title = "" + discordusername + "'s champions";
+                    if(role !== undefined) {
                         title += " in " + role;
                     }
-                    if(account != undefined) {
+                    if(account !== undefined) {
                         title += " on \"" + account + "\"";
                     }
 
                     // send embed
-                    embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp()
-                    .addFields(
-                        {
-                            name: "Number of champions :",
-                            value: "" + response.rows.length
-                        },
-                    )
-                    .setImage(url2);
+                        })
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "Number of champions :",
+                                value: "" + response.rows.length
+                            },
+                        )
+                        .setImage(url2);
 
-                    for(i=0; i<5; i++) {
-                        text = ""
-                        if(response.rows[i*5] != undefined && response.rows[i*5].champion != "" && response.rows[i*5].count > 4) {
+                    for(let i=0; i<5; i++) {
+                        let text = "";
+                        if(response.rows[i*5] !== undefined && response.rows[i*5].champion !== "" && response.rows[i*5].count > 4) {
                             text += "- " + response.rows[i*5].champion + " : " + response.rows[i*5].count + " matchs (" + response.rows[i*5].winrate.toFixed(1) + "% winrate, " + response.rows[i*5].carry.toFixed(1) + "% carry)\n";
                         }
-                        if(response.rows[i*5+1] != undefined && response.rows[i*5+1].champion != "" && response.rows[i*5+1].count > 4) {
+                        if(response.rows[i*5+1] !== undefined && response.rows[i*5+1].champion !== "" && response.rows[i*5+1].count > 4) {
                             text += "- " + response.rows[i*5+1].champion + " : " + response.rows[i*5+1].count + " matchs (" + response.rows[i*5+1].winrate.toFixed(1) + "% winrate, " + response.rows[i*5+1].carry.toFixed(1) + "% carry)\n";
                         }
-                        if(response.rows[i*5+2] != undefined && response.rows[i*5+2].champion != "" && response.rows[i*5+2].count > 4) {
+                        if(response.rows[i*5+2] !== undefined && response.rows[i*5+2].champion !== "" && response.rows[i*5+2].count > 4) {
                             text += "- " + response.rows[i*5+2].champion + " : " + response.rows[i*5+2].count + " matchs (" + response.rows[i*5+2].winrate.toFixed(1) + "% winrate, " + response.rows[i*5+2].carry.toFixed(1) + "% carry)\n";
                         }
-                        if(response.rows[i*5+3] != undefined && response.rows[i*5+3].champion != "" && response.rows[i*5+3].count > 4) {
+                        if(response.rows[i*5+3] !== undefined && response.rows[i*5+3].champion !== "" && response.rows[i*5+3].count > 4) {
                             text += "- " + response.rows[i*5+3].champion + " : " + response.rows[i*5+3].count + " matchs (" + response.rows[i*5+3].winrate.toFixed(1) + "% winrate, " + response.rows[i*5+3].carry.toFixed(1) + "% carry)\n";
                         }
-                        if(response.rows[i*5+4] != undefined && response.rows[i*5+4].champion != "" && response.rows[i*5+4].count > 4) {
+                        if(response.rows[i*5+4] !== undefined && response.rows[i*5+4].champion !== "" && response.rows[i*5+4].count > 4) {
                             text += "- " + response.rows[i*5+4].champion + " : " + response.rows[i*5+4].count + " matchs (" + response.rows[i*5+4].winrate.toFixed(1) + "% winrate, " + response.rows[i*5+4].carry.toFixed(1) + "% carry)\n";
                         }
-                        if(text != "") {
+                        if(text !== "") {
                             embed.addFields(
                                 {
                                     name: "Champion " + (i+1) + " :",
@@ -1259,28 +1255,28 @@ module.exports = {
                     }
 
                     return await interaction.editReply({embeds: [embed]});
-                }else if(interaction.options.getSubcommand() == "match") {
-                    puuid = interaction.options.getString("id");
-                    if(puuid != undefined) {
-                        query = "SELECT * FROM matchs WHERE puuid='" + puuid + "';";
-                        response = await client.pg.query(query);
-                        if(response.rows.length == 0) {
+                }else if(interaction.options.getSubcommand() === "match") {
+                    const puuid = interaction.options.getString("id");
+                    if(puuid !== undefined) {
+                        const query = "SELECT * FROM matchs WHERE puuid='" + puuid + "';";
+                        const response = await client.pg.query(query);
+                        if(response.rows.length === 0) {
                             return await interaction.editReply("This match doesn't exist.");
                         }
-                        match = response.rows[0];
-                        console.log(match)
+                        const match = response.rows[0];
+                        console.log(match);
                     }else {
-                        account = interaction.options.getString("account");
-                        queryaccount = ""
-                        if(account != undefined) {
-                            queryaccount = " AND summoners.account = '" + account + "' ";
+                        const account = interaction.options.getString("account");
+                        //let queryaccount = ""
+                        if(account !== undefined) {
+                            //queryaccount = " AND summoners.account = '" + account + "' ";
                         }
 
                     }
-                }else if(interaction.options.getSubcommand() == "ks") {
-                    discordaccount = interaction.options.getUser("discordaccount");
-                    discordusername = ""
-                    if(discordaccount == undefined) {
+                }else if(interaction.options.getSubcommand() === "ks") {
+                    let discordaccount = interaction.options.getUser("discordaccount");
+                    let discordusername = "";
+                    if(discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     }else {
@@ -1288,51 +1284,51 @@ module.exports = {
                         discordaccount = discordaccount.id;
                     }
 
-                    account = interaction.options.getString("account");
-                    queryaccount = ""
-                    queryaccount2 = ""
-                    if(account != undefined) {
+                    const account = interaction.options.getString("account");
+                    let queryaccount = "";
+                    let queryaccount2 = "";
+                    if(account !== undefined) {
                         queryaccount = " AND summoners.account = '" + account + "'";
                         queryaccount2 = " AND s2.account = '" + account + "'";
                     }
 
-                    gamemode = interaction.options.getString("gamemode");
-                    querygamemode = ""
-                    querygamemode2 = ""
-                    if(gamemode != undefined) {
+                    const gamemode = interaction.options.getString("gamemode");
+                    let querygamemode = "";
+                    let querygamemode2 = "";
+                    if(gamemode !== undefined) {
                         querygamemode = " AND matchs.gamemode = '" + gamemode + "'";
                         querygamemode2 = " AND m2.gamemode = '" + gamemode + "'";
                     }
 
-                    role = interaction.options.getString("role");
-                    queryrole = ""
-                    queryrole2 = ""
-                    if(role != undefined) {
+                    const role = interaction.options.getString("role");
+                    let queryrole = "";
+                    let queryrole2 = "";
+                    if(role !== undefined) {
                         queryrole = " AND matchs.lane = '" + role + "'";
                         queryrole2 = " AND m2.lane = '" + role + "'";
                     }
 
-                    champion = interaction.options.getString("champion");
-                    querychamp = ""
-                    querychamp2 = ""
-                    if(champion != undefined) {
+                    const champion = interaction.options.getString("champion");
+                    let querychamp = "";
+                    let querychamp2 = "";
+                    if(champion !== undefined) {
                         querychamp = " AND matchs.champion='" + champion + "'";
                         querychamp2 = " AND m2.champion='" + champion + "'";
                     }
 
-                    query = 
+                    const query =
                     "SELECT timestamp*86400000 as time, " +
                         "count(*) as daily, " +
                         "("+
-                            "SELECT ARRAY[" + 
+                            "SELECT ARRAY[" +
                                 "count(*), " +
                                 "cast(count(*) FILTER (WHERE first_tanked OR first_gold OR first_damages)*100 as float)/count(*), " +
                                 "cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*), " +
                                 "cast((avg(m2.kill)+avg(m2.assists))*100 as float)/avg(m2.total_kills), " +
-                                "(avg(m2.vision_score))/(avg(m2.length)/60), "  +
+                                "(avg(m2.vision_score))/(avg(m2.length)/60), " +
                                 "(avg(m2.cs))/(avg(m2.length)/60), " +
                                 "cast(count(*) FILTER (WHERE first_tanked AND first_gold AND first_damages)*100 as float)/count(*) " +
-                            "] as stats " + 
+                            "] as stats " +
                             "FROM matchs m2, summoners s2 " +
                             "WHERE m2.player = s2.puuid " +
                             "AND s2.discordid = '" + discordaccount + "'" +
@@ -1356,93 +1352,93 @@ module.exports = {
                         "AND summoners.discordid = '" + discordaccount + "'" +
                         queryaccount +
                         querygamemode +
-                        queryrole + 
-                        querychamp + 
-                    " GROUP BY timestamp;"
+                        queryrole +
+                        querychamp +
+                    " GROUP BY timestamp;";
 
-                    response = await client.pg.query(query);
-                    if(response.rows.length == 0){
+                    const response = await client.pg.query(query);
+                    if(response.rows.length === 0){
                         interaction.editReply("No data found for this account");
                         return;
                     }
 
-                    ks = []
-                    for(i=0; i<response.rows.length; i++){
-                        score = 0;
-                        score += response.rows[i].stats[1]
-                        score += response.rows[i].stats[2]
-                        score += response.rows[i].stats[3]
-                        score += 5*response.rows[i].stats[4]
-                        score += 10*response.rows[i].stats[5]
+                    const ks = [];
+                    for(let i=0; i<response.rows.length; i++){
+                        let score = 0;
+                        score += response.rows[i].stats[1];
+                        score += response.rows[i].stats[2];
+                        score += response.rows[i].stats[3];
+                        score += 5*response.rows[i].stats[4];
+                        score += 10*response.rows[i].stats[5];
                         if(100 - response.rows[i].stats[0] > 0) {
                             score = score * 0.99**(100 - response.rows[i].stats[0]);
                         }
-                        ks.push({x: response.rows[i].time, y: score})
+                        ks.push({x: response.rows[i].time, y: score});
                     }
                     //console.log(ks)
 
-                    url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chdl=ks&chd=t:"
-                    values = ""
-                    for(i=0; i<ks.length; i++){
-                        values += (ks[i].y/5).toFixed(0) + ","
+                    let url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chdl=ks&chd=t:";
+                    let values = "";
+                    for(let i=0; i<ks.length; i++){
+                        values += (ks[i].y/5).toFixed(0) + ",";
                     }
-                    values = values.slice(0, -1)
-                    url += values
+                    values = values.slice(0, -1);
+                    url += values;
                     //console.log(url)
 
 
                     // create embed
-                    embed = new MessageEmbed()
-                    .setTitle("" + discordusername + "'s ks")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+                    const embed = new MessageEmbed()
+                        .setTitle("" + discordusername + "'s ks")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp()
-                    .addFields(
-                        {
-                            name: "Number of days played :",
-                            value: "" + response.rows.length
-                        },
-                    )
-                    .setImage(url);
-                    
+                        })
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "Number of days played :",
+                                value: "" + response.rows.length
+                            },
+                        )
+                        .setImage(url);
+
                     interaction.editReply({embeds: [embed]});
 
                 }
-            }else if(interaction.options.getSubcommandGroup() == "top") {
-                if(interaction.options.getSubcommand() == "carry") {
-                    champion = interaction.options.getString("champion");
-                    query2 = ""
-                    if(champion != undefined) {
+            }else if(interaction.options.getSubcommandGroup() === "top") {
+                if(interaction.options.getSubcommand() === "carry") {
+                    const champion = interaction.options.getString("champion");
+                    let query2 = "";
+                    if(champion !== undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
                     }
 
-                    role = interaction.options.getString("lane");
-                    queryrole = ""
-                    if(role != undefined) {
+                    const role = interaction.options.getString("lane");
+                    let queryrole = "";
+                    if(role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
 
-                    all = interaction.options.getBoolean("all") == true
-                    queryall = ""
+                    const all = interaction.options.getBoolean("all") === true;
+                    let queryall = "";
                     if(!all) {
-                        members = await interaction.guild.members.fetch();
+                        let members = await interaction.guild.members.fetch();
                         members = members.filter(member => !member.user.bot);
-                        list = "("
+                        let list = "(";
                         members.forEach(member => {
-                            list += "'" + member.user.id + "',"
-                        })
+                            list += "'" + member.user.id + "',";
+                        });
                         list = list.slice(0, -1);
-                        list += ")"
-                        queryall = " AND summoners.discordid IN " + list
+                        list += ")";
+                        queryall = " AND summoners.discordid IN " + list;
                     }
 
-                    query = 
+                    let query =
                     "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                                 "WHERE (matchs.first_tanked OR first_gold OR first_damages)" +
                         ")*100 as float)/count(*)) as carry " +
@@ -1451,23 +1447,23 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
-                    " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;"
-                    response = await client.pg.query(query);
+                    " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;";
+                    let response = await client.pg.query(query);
 
-                    general = "";
-                    if(response.rows.length == 0) {
+                    let general = "";
+                    if(response.rows.length === 0) {
                         general = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
-                        for(var x of response.rows) {
+                        for(const x of response.rows) {
                             general += "- <@" + x.discordid + "> : " + x.carry.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // damage Carry
-                    query = 
+                    query =
                     "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                                 "WHERE matchs.first_damages" +
                         ")*100 as float)/count(*)) as damage " +
@@ -1476,23 +1472,23 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
-                    " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;"
+                    " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;";
                     response = await client.pg.query(query);
 
-                    damages = "";
-                    if(response.rows.length == 0) {
+                    let damages = "";
+                    if(response.rows.length === 0) {
                         damages = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
-                        for(var x of response.rows) {
+                        for(const x of response.rows) {
                             damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // tanked Carry
-                    query = 
+                    query =
                     "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                                 "WHERE matchs.first_tanked" +
                         ")*100 as float)/count(*)) as tanked " +
@@ -1501,23 +1497,23 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
-                    " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;"
+                    " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;";
                     response = await client.pg.query(query);
 
-                    tanked = "";
-                    if(response.rows.length == 0) {
+                    let tanked = "";
+                    if(response.rows.length === 0) {
                         tanked = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
-                        for(var x of response.rows) {
+                        for(const x of response.rows) {
                             tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // Gold carry
-                    query = 
+                    query =
                     "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                                 "WHERE matchs.first_gold" +
                         ")*100 as float)/count(*)) as gold " +
@@ -1526,23 +1522,23 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
-                    " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;"
+                    " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;";
                     response = await client.pg.query(query);
 
-                    gold = "";
-                    if(response.rows.length == 0) {
+                    let gold = "";
+                    if(response.rows.length === 0) {
                         gold = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
-                        for(var x of response.rows) {
+                        for(const x of response.rows) {
                             gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // Hard carry
-                    query = 
+                    query =
                     "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                                 "WHERE matchs.first_damages AND first_gold AND first_tanked" +
                         ")*100 as float)/count(*)) as hardcarry " +
@@ -1551,93 +1547,91 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
-                    " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;"
+                    " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;";
                     response = await client.pg.query(query);
-                    hard = "";
-                    if(response.rows.length == 0) {
+                    let hard = "";
+                    if(response.rows.length === 0) {
                         hard = "There are not enought summoners in the database or the filters are too restrictings.";
                     }else {
-                        for(var x of response.rows) {
+                        for(const x of response.rows) {
                             hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(2) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
                     // send embed
-                    embed = new MessageEmbed()
-                    .setTitle("Top carry :")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+                    const embed = new MessageEmbed()
+                        .setTitle("Top carry :")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                        })
+                        .setTimestamp();
                     embed.addFields(
                         {
-                            name: "General carry :", 
+                            name: "General carry :",
                             value: "" + general
                         },
                         {
-                            name: "Damage carry :", 
+                            name: "Damage carry :",
                             value: "" + damages
                         },
                         {
-                            name: "Tanked carry :", 
+                            name: "Tanked carry :",
                             value: "" + tanked
                         },
                         {
-                            name: "Gold carry :", 
+                            name: "Gold carry :",
                             value: "" + gold
                         },
                         {
-                            name: "Hard carry :", 
+                            name: "Hard carry :",
                             value: "" + hard
                         },
-                        
+
                     );
                     return await interaction.editReply({embeds: [embed]});
-                }else if(interaction.options.getSubcommand() == "kwikscore") {
-                    all = interaction.options.getBoolean("all") == true
-                    queryall = ""
+                }else if(interaction.options.getSubcommand() === "kwikscore") {
+                    const all = interaction.options.getBoolean("all") === true;
+                    let queryall = "";
                     if(!all) {
-                        members = await interaction.guild.members.fetch();
+                        let members = await interaction.guild.members.fetch();
                         members = members.filter(member => !member.user.bot);
-                        list = "("
+                        let list = "(";
                         members.forEach(member => {
-                            list += "'" + member.user.id + "',"
-                        })
+                            list += "'" + member.user.id + "',";
+                        });
                         list = list.slice(0, -1);
-                        list += ")"
-                        queryall = " AND summoners.discordid IN " + list
+                        list += ")";
+                        queryall = " AND summoners.discordid IN " + list;
                     }
-                    champion = interaction.options.getString("champion");
-                    query2 = ""
-                    query3 = ""
-                    if(champion != undefined) {
+                    const champion = interaction.options.getString("champion");
+                    let query2 = "";
+                    if(champion !== undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
                     }
 
-                    role = interaction.options.getString("lane");
-                    queryrole = ""
-                    queryrole2 = ""
-                    if(role != undefined) {
+                    const role = interaction.options.getString("lane");
+                    let queryrole = "";
+                    if(role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
 
-                    query = 
+                    const query =
                     "SELECT summoners.discordid, " +
                         "count(*), " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                             "WHERE result = 'Win'" +
                         ")*100 as float)/count(*)) as WR, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                             "WHERE (first_gold OR first_damages OR first_tanked)" +
                         ")*100 as float)/count(*)) as CARRY, " +
                         "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
                         "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
                         "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
-                        "(cast(" + 
+                        "(cast(" +
                             "count(*) FILTER ("+
                             "WHERE first_gold AND first_damages AND first_tanked" +
                         ")*100 as float)/count(*)) as hardcarry " +
@@ -1646,41 +1640,41 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
-                    " GROUP BY summoners.discordid"
+                    " GROUP BY summoners.discordid";
 
-                    query4 = "SELECT discordid, " +
+                    const query4 = "SELECT discordid, " +
                                 "count, " +
                                 "CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) "+
                                     "ELSE (carry+wr+kp+vs*25+10*cs) "+
                                 "END AS KS " +
                             "FROM (" + query + ") AS t1 "+
                             "ORDER BY KS DESC "+
-                            "LIMIT 10;"
-                    response = await client.pg.query(query4);
-                    
-                    if(response.rowCount == 0) {
+                            "LIMIT 10;";
+                    const response = await client.pg.query(query4);
+
+                    if(response.rowCount === 0) {
                         return message.channel.send("No data found");
                     }
 
-                    embed = new MessageEmbed()
-                    .setTitle("Top KS :")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
+                    const embed = new MessageEmbed()
+                        .setTitle("Top KS :")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
                         //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
+                        })
+                        .setTimestamp();
 
-                    text = ""
-                    for(i=0; i<response.rowCount; i++) {
-                        text += "- <@" + response.rows[i].discordid + "> : " + response.rows[i].ks.toFixed(0) + " (" + response.rows[i].count + " Games)\n"
+                    let text = "";
+                    for(let i=0; i<response.rowCount; i++) {
+                        text += "- <@" + response.rows[i].discordid + "> : " + response.rows[i].ks.toFixed(0) + " (" + response.rows[i].count + " Games)\n";
                     }
 
                     embed.addFields({
                         name: "Top 10 KwikScore : ",
                         value: "" + text,
-                    })
-                    
+                    });
+
                     return await interaction.editReply({embeds: [embed]});
                 }
             }
@@ -1688,15 +1682,15 @@ module.exports = {
     },
     async autocomplete(client, interaction) {
         const focusedValue = interaction.options.getFocused();
-        query = "SELECT DISTINCT champion " +
+        const query = "SELECT DISTINCT champion " +
                 "FROM matchs " +
                 "WHERE champion LIKE '" + focusedValue + "%'" +
                     "AND champion <> 'Invalid' " +
                 "ORDER BY champion " +
-                "LIMIT 15;"
-        response = await client.pg.query(query);
-        var champs = [];
-        for(var x of response.rows) {
+                "LIMIT 15;";
+        const response = await client.pg.query(query);
+        const champs = [];
+        for(const x of response.rows) {
             champs.push({
                 name: x.champion,
                 value: x.champion
@@ -1707,7 +1701,7 @@ module.exports = {
     addSumoner,
     update
 
-}
+};
 
 async function addSumoner(client, name, interaction) {
     client.requests["summoners"].push({"username":name, "discordid":interaction.user.id, "interaction": interaction});
