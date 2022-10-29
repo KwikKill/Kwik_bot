@@ -1,7 +1,7 @@
 //const { MessageEmbed } = require('discord.js');
 
 module.exports = {
-    name: 'lol',
+    name: 'adminlol',
     group: 'lol',
     description: "Commande lol",
     permission: "none",
