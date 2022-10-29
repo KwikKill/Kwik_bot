@@ -836,6 +836,7 @@ module.exports = {
                         query2 += " AND summoners.username='" + account + "'";
                     }
                     query2 += ";";
+                    console.log(query2);
                     const response2 = await client.pg.query(query2);
 
                     // query 3
@@ -854,6 +855,7 @@ module.exports = {
                         query3 += " AND summoners.username='" + account + "'";
                     }
                     query3 += " GROUP BY gamemode;";
+                    console.log(query3);
                     const response3 = await client.pg.query(query3);
                     if (response3.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
