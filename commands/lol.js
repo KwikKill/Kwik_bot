@@ -940,6 +940,7 @@ module.exports = {
                         query2 += " AND summoners.username='" + account + "'";
                     }
                     query2 += ";";
+                    console.log(query2);
                     const response2 = await client.pg.query(query2);
 
                     // query 3
