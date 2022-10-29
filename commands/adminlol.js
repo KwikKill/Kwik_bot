@@ -33,7 +33,7 @@ module.exports = {
             if (interaction.options.getSubcommandGroup() === "update") {
                 if (interaction.options.getSubcommand() === "all") {
                     await update(client, interaction);
-                    await interaction.editReply("Update all lol accounts");
+                    await interaction.editReply("All lol accounts updated.");
                 }
             }
         }

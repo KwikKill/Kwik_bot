@@ -51,7 +51,7 @@ module.exports = {
             content2 = content2.toLowerCase();
 
             if (client.owners.includes(msg.author.id)) {
-                if (msg.reference !== undefined && msg.reference.messageId !== undefined) {
+                if (msg.reference !== null && msg.reference.messageId !== undefined) {
                     const mmsg = await msg.channel.messages.fetch(msg.reference.messageId);
                     if (mmsg.author.id === client.user.id) {
                         await msg.reply("♥");
