@@ -690,6 +690,7 @@ module.exports = {
             const account = interaction.options.getString("account")?.replaceAll("'", "\\'");
             const puuid = interaction.options.getString("id")?.replaceAll("'", "\\'");
             let discordaccount = interaction.options.getUser("discordaccount")?.replaceAll("'", "\\'");
+            console.log(discordaccount);
 
             await interaction.deferReply();
             if (interaction.options.getSubcommandGroup() === "account") {
