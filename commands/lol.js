@@ -683,13 +683,13 @@ module.exports = {
     commande_channel: true,
     async run(message, client, interaction = undefined) {
         if (interaction !== undefined) {
-            const summoner_name = interaction.options.getString('name').replaceAll("'", "\\'");
-            const champion = interaction.options.getString("champion").replaceAll("'", "\\'");
-            const role = interaction.options.getString("lane").replaceAll("'", "\\'");
-            const gamemode = interaction.options.getString("gamemode").replaceAll("'", "\\'");
-            const account = interaction.options.getString("account").replaceAll("'", "\\'");
-            const puuid = interaction.options.getString("id").replaceAll("'", "\\'");
-            let discordaccount = interaction.options.getUser("discordaccount").replaceAll("'", "\\'");
+            const summoner_name = interaction.options.getString('name')?.replaceAll("'", "\\'");
+            const champion = interaction.options.getString("champion")?.replaceAll("'", "\\'");
+            const role = interaction.options.getString("lane")?.replaceAll("'", "\\'");
+            const gamemode = interaction.options.getString("gamemode")?.replaceAll("'", "\\'");
+            const account = interaction.options.getString("account")?.replaceAll("'", "\\'");
+            const puuid = interaction.options.getString("id")?.replaceAll("'", "\\'");
+            let discordaccount = interaction.options.getUser("discordaccount")?.replaceAll("'", "\\'");
 
             await interaction.deferReply();
             if (interaction.options.getSubcommandGroup() === "account") {
