@@ -1015,23 +1015,22 @@ module.exports = {
 
                     const length = response2.rows[0].duration;
 
-                    console.log(decimal);
-
                     const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
+                    console.log(average_kills);
                     const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
                     const average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
                     let average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
                     let average_gold = response2.rows[0].gold;
                     let average_damages = response2.rows[0].damage;
                     let average_tanked = response2.rows[0].damage_taken;
-                    const average_pinks = Number.parseFloat(response2.rows[0].pinks).decimal;
-                    const average_vision_score = Number.parseFloat(response2.rows[0].vision_score).decimal;
-                    const average_total_kills = Number.parseFloat(response2.rows[0].total_kills).decimal;
+                    const average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(decimal);
+                    const average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(decimal);
+                    const average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(decimal);
 
-                    average_cs = (average_cs / (length / 60)).decimal;
-                    average_gold = (average_gold / (length / 60)).decimal;
-                    average_damages = (average_damages / (length / 60)).decimal;
-                    average_tanked = (average_tanked / (length / 60)).decimal;
+                    average_cs = (average_cs / (length / 60)).toFixed(decimal);
+                    average_gold = (average_gold / (length / 60)).toFixed(decimal);
+                    average_damages = (average_damages / (length / 60)).toFixed(decimal);
+                    average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
 
                     // KwikScore
 
@@ -1073,17 +1072,17 @@ module.exports = {
                         },
                         {
                             name: "WR :",
-                            value: "" + (win / response.rows.length * 100).decimal + " %",
+                            value: "" + (win / response.rows.length * 100).toFixed(decimal) + " %",
                             inline: true,
                         },
                         {
                             name: "KillParticipation :",
-                            value: "" + ((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100).decimal + " %",
+                            value: "" + ((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100).toFixed(decimal) + " %",
                             inline: true,
                         },
                         {
                             name: "Carry stats :",
-                            value: "Overall : " + (overall / response.rows.length * 100).decimal + " %\nHard Carry : " + (hard_carry / response.rows.length * 100).decimal + " %\nDamage : " + (carry_damage / response.rows.length * 100).decimal + " %\nTanked : " + (carry_tanked / response.rows.length * 100).decimal + " %\nGold : " + (carry_gold / response.rows.length * 100).decimal + " %",
+                            value: "Overall : " + (overall / response.rows.length * 100).toFixed(decimal) + " %\nHard Carry : " + (hard_carry / response.rows.length * 100).toFixed(decimal) + " %\nDamage : " + (carry_damage / response.rows.length * 100).toFixed(decimal) + " %\nTanked : " + (carry_tanked / response.rows.length * 100).toFixed(decimal) + " %\nGold : " + (carry_gold / response.rows.length * 100).toFixed(decimal) + " %",
                             inline: true
                         },
                         {
@@ -1644,7 +1643,7 @@ module.exports = {
                         general = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            general += "- <@" + x.discordid + "> : " + x.carry.decimal + " % (" + x.count + " matchs)\n";
+                            general += "- <@" + x.discordid + "> : " + x.carry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1669,7 +1668,7 @@ module.exports = {
                         damages = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            damages += "- <@" + x.discordid + "> : " + x.damage.decimal + " % (" + x.count + " matchs)\n";
+                            damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(decimal) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1694,7 +1693,7 @@ module.exports = {
                         tanked = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            tanked += "- <@" + x.discordid + "> : " + x.tanked.decimal + " % (" + x.count + " matchs)\n";
+                            tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(decimal) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1719,7 +1718,7 @@ module.exports = {
                         gold = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            gold += "- <@" + x.discordid + "> : " + x.gold.decimal + " % (" + x.count + " matchs)\n";
+                            gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(decimal) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
@@ -1743,7 +1742,7 @@ module.exports = {
                         hard = "There are not enought summoners in the database or the filters are too restrictings.";
                     } else {
                         for (const x of response.rows) {
-                            hard += "- <@" + x.discordid + "> : " + x.hardcarry.decimal + " % (" + x.count + " matchs)\n";
+                            hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
                         }
                     }
 
