@@ -44,7 +44,7 @@ async function update(client, interaction) {
     const query = "SELECT discordid FROM summoners;";
     const result = await client.pg.query(query);
     for (let i = 0; i < result.rows.length; i++) {
-        client.requests["updates"].push({ "discordid": result.rows[i], "interaction": interaction, "matchs": [], "total": 0, "count": 0 });
+        client.requests["updates"].push({ "discordid": result.rows[i].discordid, "interaction": interaction, "matchs": [], "total": 0, "count": 0 });
     }
     await client.lol();
 }
