@@ -13,7 +13,7 @@ module.exports = {
             message = await message.fetch();
         }
 
-        if (message.author.bot) return;
+        if (message.author.bot) { return; }
         const args = message.content.split(/ |\n/);
         if (message.content.charAt(0) === config["prefix"]) {
             args[0] = args[0].slice(1);

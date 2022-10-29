@@ -15,7 +15,7 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(message, client, interaction = undefined) {
-        if (interaction === undefined) return;
+        if (interaction === undefined) { return; }
         if (interaction.channel.type === "GUILD_PUBLIC_THREAD") {
             if (interaction.channel.name.startsWith("[A VENDRE]")) {
                 let msg = await interaction.channel.messages.fetchPinned();

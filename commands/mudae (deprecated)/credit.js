@@ -136,13 +136,13 @@ module.exports = {
                 if (value === "true") {
                     config.credit = true;
                     await fs.writeFile(path.join(__dirname, "..", "config.json"), JSON.stringify(config, null, 4), (err) => {
-                        if (err) console.log(err);
+                        if (err) { console.log(err); }
                     });
                     interaction.reply("La fonctionnalité de crédit est activée.");
                 } else if (value === "false") {
                     config.credit = false;
                     await fs.writeFile(path.join(__dirname, "..", "config.json"), JSON.stringify(config, null, 4), (err) => {
-                        if (err) console.log(err);
+                        if (err) { console.log(err); }
                     });
                     interaction.reply("La fonctionnalité de crédit est désactivée.");
                 } else {
@@ -156,7 +156,7 @@ module.exports = {
                 }
                 credits[user.id] += somme;
                 await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
-                    if (err) console.log(err);
+                    if (err) { console.log(err); }
                 });
                 interaction.reply("**" + user.username + "** a bien reçu **" + somme + "** crédit(s).");
             } else if (interaction.options.getSubcommand() === "view") {
@@ -173,7 +173,7 @@ module.exports = {
                 }
                 credits[user.id] -= somme;
                 await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
-                    if (err) console.log(err);
+                    if (err) { console.log(err); }
                 });
                 interaction.reply("**" + user.username + "** a bien perdu **" + somme + "** crédit(s).");
             } else if (interaction.options.getSubcommand() === "set") {
@@ -184,7 +184,7 @@ module.exports = {
                 }
                 credits[user.id] = somme;
                 await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
-                    if (err) console.log(err);
+                    if (err) { console.log(err); }
                 });
                 interaction.reply("**" + user.username + "** a bien **" + somme + "** crédit(s).");
             }

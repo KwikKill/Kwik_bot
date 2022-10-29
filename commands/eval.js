@@ -23,7 +23,7 @@ module.exports = {
                 // eslint-disable-next-line no-undef
                 const result = makeResultMessages(val, process.hrtime(hrStart));
                 if (Array.isArray(result)) {
-                    for (const item of result) message.reply(item);
+                    for (const item of result) { message.reply(item); }
                 } else {
                     message.reply(result);
                 }
@@ -90,7 +90,7 @@ function makeResultMessages(result, hrDiff, input = null) {
 function sensitivePattern(client) {
     if (_sensitivePattern === undefined) {
         let pattern = '';
-        if (client.token) pattern += escapeRegex(client.token);
+        if (client.token) { pattern += escapeRegex(client.token); }
         _sensitivePattern = new RegExp(pattern, 'gi');
     }
     return _sensitivePattern;

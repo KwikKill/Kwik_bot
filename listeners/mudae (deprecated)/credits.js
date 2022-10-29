@@ -20,7 +20,7 @@ module.exports = {
                     }
                     credits[msg.mentions.users.first().id] += Math.floor(msg.content.split(" ")[4].split("**")[1] / 10);
                     await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
-                        if (err) console.log(err);
+                        if (err) { console.log(err); }
                     });
                     msg.reply("<@" + msg.mentions.users.first().id + ">, Vous avez bien reçu " + Math.floor(msg.content.split(" ")[4].split("**")[1] / 10) + " crédits.");
                 }

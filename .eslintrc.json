@@ -9,6 +9,20 @@
         "ecmaVersion": "latest"
     },
     "rules": {
+        "for-direction": "error",
+        "getter-return": "error",
+        "no-cond-assign": "error",
+        "no-const-assign": "error",
+        "no-constant-condition": "error",
+        "no-dupe-else-if": "error",
+        "no-duplicate-case": "error",
+        "no-loss-of-precision": "error",
+        "no-setter-return": "error",
+        "no-sparse-arrays": "error",
+        "no-unreachable": "error",
+        "no-unreachable-loop": "error",
+        "no-unused-vars": "error",
+        //"complexity": "error",
         "semi": "error",
         //"no-await-in-loop": "error",
         "eqeqeq": "error",
@@ -16,6 +30,7 @@
         "no-else-return": "warn",
         "no-magic-numbers": "warn",
         "no-var": "error",
+        "curly": "error",
         "prefer-const": "error",
         "indent": [
             "error",

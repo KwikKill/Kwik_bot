@@ -35,8 +35,8 @@ module.exports = {
         },
     ],
     async run(message, client, interaction = undefined) {
-        if (interaction === undefined) return;
-        if (interaction.channel.name !== "muda-industry") return;
+        if (interaction === undefined) { return; }
+        if (interaction.channel.name !== "muda-industry") { return; }
 
         const date = new Date();
         const today = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();

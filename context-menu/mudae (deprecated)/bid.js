@@ -26,7 +26,7 @@ module.exports = {
                         if (credits[interaction.user.id] !== undefined && credits[interaction.user.id] >= 1) {
                             credits[interaction.user.id] = credits[interaction.user.id] - 1;
                             await fs.writeFile(path.join(__dirname, "..", "credits.json"), JSON.stringify(credits, null, 4), (err) => {
-                                if (err) console.log(err);
+                                if (err) { console.log(err); }
                             });
 
                             message.startThread({ name: "[A VENDRE] : " + message.embeds[0].author.name }).then(thread => {

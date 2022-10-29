@@ -8,7 +8,7 @@ module.exports = {
     async run(client, interaction) {
         if (interaction.isCommand()) {
 
-            if (!client.commands.has(interaction.commandName)) return;
+            if (!client.commands.has(interaction.commandName)) { return; }
 
             try {
                 const can_run = client.canRunCommande(undefined, client.commands.get(interaction.commandName), interaction);
@@ -28,7 +28,7 @@ module.exports = {
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
         } else if (interaction.isAutocomplete()) {
-            if (!client.commands.has(interaction.commandName)) return;
+            if (!client.commands.has(interaction.commandName)) { return; }
 
             try {
                 const can_run = client.canRunCommande(undefined, client.commands.get(interaction.commandName), interaction);
@@ -41,7 +41,7 @@ module.exports = {
                 console.error(error);
             }
         } else if (interaction.isButton()) {
-            if (!client.buttons.has(interaction.customId)) return;
+            if (!client.buttons.has(interaction.customId)) { return; }
 
 
             try {
@@ -63,7 +63,7 @@ module.exports = {
             }
         } else {
             //console.log(interaction)
-            if (!client.context_menu.has(interaction.commandName)) return;
+            if (!client.context_menu.has(interaction.commandName)) { return; }
 
             try {
                 const can_run = client.canRunCommande(undefined, client.context_menu.get(interaction.commandName), interaction);

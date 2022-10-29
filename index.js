@@ -95,13 +95,13 @@ client.listeners.forEach((item) => {
 client.canRunCommande = function (message, commande, interaction = undefined) {
     if (interaction === undefined) {
         //if(commande.commande_channel === true && !message.channel.name.toLowerCase().includes("commande")) return false
-        if (!checkpermission(message, commande.permission)) return "perm";
-        if (commande.place === "dm" && message.channel.type !== "DM") return false;
-        if (commande.place === "guild" && message.channel.type !== "GUILD_TEXT") return false;
+        if (!checkpermission(message, commande.permission)) { return "perm"; }
+        if (commande.place === "dm" && message.channel.type !== "DM") { return false; }
+        if (commande.place === "guild" && message.channel.type !== "GUILD_TEXT") { return false; }
         return true;
     }
     //if(commande.commande_channel === true && !interaction.channel.name.toLowerCase().includes("commande")) return false;
-    if (!checkpermission(interaction, commande.permission)) return "perm";
+    if (!checkpermission(interaction, commande.permission)) { return "perm"; }
     return true;
 
 };
@@ -299,7 +299,7 @@ async function championList(region, language) {
 
 client.lol = async function () {
     //console.log(client.running, client.requests)
-    if (client.running === true) return;
+    if (client.running === true) { return; }
     client.running = true;
     while (client.requests["summoners"].length > 0) {
         const x = client.requests["summoners"].shift();

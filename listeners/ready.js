@@ -24,7 +24,7 @@ module.exports = {
             port: 5432,
         });
         pgclient.connect(function (err) {
-            if (err) throw err;
+            if (err) { throw err; }
             client.pg = pgclient;
             console.log("Connected!");
         });/*
