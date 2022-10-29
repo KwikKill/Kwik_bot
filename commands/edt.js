@@ -354,6 +354,9 @@ async function generate_canvas(di, monday) {
     context.fillText("Vendredi " + day.getDate() + "/" + (day.getMonth() + 1) + "/" + day.getFullYear(), 1320, 34);
 
     for (const j in di) {
+        if (j === 0 || j === 6) {
+            continue;
+        }
         for (const i in di[j]) {
             for (const h in di[j][i]) {
                 const start = di[j][i][h]["start"];
