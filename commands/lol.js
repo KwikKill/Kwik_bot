@@ -774,7 +774,7 @@ module.exports = {
                     const account = interaction.options.getString("account");
                     let discordaccount = interaction.options.getUser("discordaccount");
                     let discordusername = "";
-                    if(discordaccount === undefined) {
+                    if(discordaccount === 'undefined') {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     }else {
