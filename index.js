@@ -405,7 +405,7 @@ client.lol = async function () {
         }
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < client.requests["updates"].length; i++) {
                 if (client.requests["updates"][i]["matchs"].length === 0) {
                     await set_update(i);
                 }
