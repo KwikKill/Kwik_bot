@@ -1586,7 +1586,7 @@ module.exports = {
                         querygamemode +
                         queryrole +
                         querychamp +
-                        ") AS SUB GROUP BY mate HAVING count > 1 ORDER BY COUNT(*) DESC;";
+                        ") AS SUB GROUP BY mate HAVING count(*) > 1 ORDER BY COUNT(*) DESC;";
                     console.log(query);
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
