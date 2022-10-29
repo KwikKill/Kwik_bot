@@ -219,20 +219,17 @@ async function classic(client, monday, sunday, interaction, rt = false) {
 }
 
 function create_di(events) {
-    const di = { 1: {}, 2: {}, 3: {}, 4: {}, 5: {} };
+    const di = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} };
     for (const event of Object.values(events)) {
         const start = new Date(event.start.toISOString());
         start.setHours(start.getUTCHours() + 1);
         const end = new Date(event.end.toISOString());
         end.setHours(end.getUTCHours() + 1);
 
-        if (start.getDay() !== 0 || start.getDay() !== 6) {
-            console.log(start.getDay());
-            if (di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
-                di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
-            } else {
-                di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
-            }
+        if (di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
+            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
+        } else {
+            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
         }
 
     }
