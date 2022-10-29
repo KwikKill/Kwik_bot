@@ -11,7 +11,7 @@ module.exports = {
         console.log(date1.getDate(), date1.getDate() + 7);
         console.log(date1);
         date1.setDate(date1.getDate() + 7);
-        date1.setHours(0, 0, 0, 0);
+        date1.setTime(date1.getTime() + 1 * 60 * 60 * 1000);
         console.log(date1);
         date2.setDate(date2.getDate() + 7);
         // edit
