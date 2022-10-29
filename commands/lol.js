@@ -1667,7 +1667,7 @@ module.exports = {
         }
     },
     async autocomplete(client, interaction) {
-        const focusedValue = interaction.options.getFocused().replaceAll("'", "\\'");
+        const focusedValue = interaction.options.getFocused().replaceAll("'", "");
         const query = "SELECT DISTINCT champion " +
             "FROM matchs " +
             "WHERE champion LIKE '" + focusedValue + "%'" +
