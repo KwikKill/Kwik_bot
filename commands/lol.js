@@ -1537,7 +1537,6 @@ module.exports = {
                         "WHERE player = '" + discordaccount + "'" +
                         //"WHERE discordid = '297409548703105035'" +
                         " AND matchs.player = summoners.puuid" +
-                        "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
                         querygamemode +
                         queryrole +
@@ -1548,7 +1547,6 @@ module.exports = {
                         "WHERE player = '" + discordaccount + "'" +
                         //"WHERE discordid = '297409548703105035'" +
                         " AND matchs.player = summoners.puuid" +
-                        "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
                         querygamemode +
                         queryrole +
