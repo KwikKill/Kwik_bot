@@ -1541,7 +1541,7 @@ module.exports = {
                         "count(*), " +
                         "(cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*)) as WR, " +
                         "(cast(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100 as float)/count(*)) as CARRY, " +
-                        "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+                        "CASE WHEN avg(total_kills) > 0 THEN cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) ELSE cast((avg(kill)+avg(assists))*100 as float)/1 END as KP, " +
                         "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
                         "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
                         "(cast(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100 as float)/count(*)) as hardcarry " +
