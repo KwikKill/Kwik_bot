@@ -344,7 +344,7 @@ async function set_update(number) {
             already.push(y["puuid"]);
         }
         for (const y of client.requests["updates"][number]["matchs"]) {
-            already.push(y[1]);
+            already.push(y[0]);
         }
         for (const y of matchIds) {
             if (!already.includes(y)) {
@@ -418,80 +418,84 @@ client.lol = async function () {
                 const exit = await matchHistoryOutput(match, matchId[1]);
                 if (exit !== null) {
                     client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
-                    await client.pg.query("INSERT INTO matchs(" +
-                        "puuid, " +
-                        "player, " +
-                        "gamemode, " +
-                        "champion, " +
-                        "matchup, " +
-                        "support, " +
-                        "lane, " +
-                        "gold, " +
-                        "kill, " +
-                        "deaths, " +
-                        "assists, " +
-                        "result, " +
-                        "total_damage, " +
-                        "tanked_damage, " +
-                        "heal, " +
-                        "neutral_objectives, " +
-                        " wards, " +
-                        "pinks, " +
-                        "vision_score, " +
-                        "cs, " +
-                        "length, " +
-                        "total_kills, " +
-                        "first_gold, " +
-                        "first_damages, " +
-                        "first_tanked, " +
-                        "double, " +
-                        "tripple, " +
-                        "quadra, " +
-                        "penta, " +
-                        "time_spent_dead, " +
-                        "timestamp, " +
-                        "player2, " +
-                        "player3, " +
-                        "player4, " +
-                        "player5 " +
-                        ") VALUES (" +
-                        "'" + matchId[0] + "'," +
-                        "'" + exit["summonerpuuid"] + "'," +
-                        "'" + exit["queueName"] + "'," +
-                        "'" + exit["champion"] + "'," +
-                        "'" + exit["matchup"] + "'," +
-                        "'" + exit["support"] + "'," +
-                        "'" + exit["lane"] + "'," +
-                        "'" + exit["gold"] + "'," +
-                        "" + exit["kills"] + "," +
-                        "" + exit["deaths"] + "," +
-                        "" + exit["assists"] + "," +
-                        "'" + exit["result"] + "'," +
-                        "" + exit["dealt"] + "," +
-                        "" + exit["taken"] + "," +
-                        "" + exit["healed"] + "," +
-                        "" + exit["objectifs"] + "," +
-                        "" + exit["wardsPlaced"] + "," +
-                        "" + exit["pinkPlaced"] + "," +
-                        "" + exit["visionScore"] + "," +
-                        "" + exit["CS"] + "," +
-                        "" + exit["duration"] + "," +
-                        "" + exit["teamKills"] + "," +
-                        "" + exit["firstGold"] + "," +
-                        "" + exit["firstDamage"] + "," +
-                        "" + exit["firstTanked"] + "," +
-                        "" + exit["doubles"] + "," +
-                        "" + exit["triples"] + "," +
-                        "" + exit["quadras"] + "," +
-                        "" + exit["penta"] + "," +
-                        "" + exit["totalTimeSpentDead"] + "," +
-                        "" + exit["date"] + "," +
-                        "'" + exit["player2"] + "'," +
-                        "'" + exit["player3"] + "'," +
-                        "'" + exit["player4"] + "'," +
-                        "'" + exit["player5"] + "'" +
-                        ")"
-                    );
+                    try {
+                        await client.pg.query("INSERT INTO matchs(" +
+                            "puuid, " +
+                            "player, " +
+                            "gamemode, " +
+                            "champion, " +
+                            "matchup, " +
+                            "support, " +
+                            "lane, " +
+                            "gold, " +
+                            "kill, " +
+                            "deaths, " +
+                            "assists, " +
+                            "result, " +
+                            "total_damage, " +
+                            "tanked_damage, " +
+                            "heal, " +
+                            "neutral_objectives, " +
+                            " wards, " +
+                            "pinks, " +
+                            "vision_score, " +
+                            "cs, " +
+                            "length, " +
+                            "total_kills, " +
+                            "first_gold, " +
+                            "first_damages, " +
+                            "first_tanked, " +
+                            "double, " +
+                            "tripple, " +
+                            "quadra, " +
+                            "penta, " +
+                            "time_spent_dead, " +
+                            "timestamp, " +
+                            "player2, " +
+                            "player3, " +
+                            "player4, " +
+                            "player5 " +
+                            ") VALUES (" +
+                            "'" + matchId[0] + "'," +
+                            "'" + exit["summonerpuuid"] + "'," +
+                            "'" + exit["queueName"] + "'," +
+                            "'" + exit["champion"] + "'," +
+                            "'" + exit["matchup"] + "'," +
+                            "'" + exit["support"] + "'," +
+                            "'" + exit["lane"] + "'," +
+                            "'" + exit["gold"] + "'," +
+                            "" + exit["kills"] + "," +
+                            "" + exit["deaths"] + "," +
+                            "" + exit["assists"] + "," +
+                            "'" + exit["result"] + "'," +
+                            "" + exit["dealt"] + "," +
+                            "" + exit["taken"] + "," +
+                            "" + exit["healed"] + "," +
+                            "" + exit["objectifs"] + "," +
+                            "" + exit["wardsPlaced"] + "," +
+                            "" + exit["pinkPlaced"] + "," +
+                            "" + exit["visionScore"] + "," +
+                            "" + exit["CS"] + "," +
+                            "" + exit["duration"] + "," +
+                            "" + exit["teamKills"] + "," +
+                            "" + exit["firstGold"] + "," +
+                            "" + exit["firstDamage"] + "," +
+                            "" + exit["firstTanked"] + "," +
+                            "" + exit["doubles"] + "," +
+                            "" + exit["triples"] + "," +
+                            "" + exit["quadras"] + "," +
+                            "" + exit["penta"] + "," +
+                            "" + exit["totalTimeSpentDead"] + "," +
+                            "" + exit["date"] + "," +
+                            "'" + exit["player2"] + "'," +
+                            "'" + exit["player3"] + "'," +
+                            "'" + exit["player4"] + "'," +
+                            "'" + exit["player5"] + "'" +
+                            ")"
+                        );
+                    } catch (e) {
+                        console.log("");
+                    }
                 }
             }
         }
