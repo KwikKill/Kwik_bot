@@ -168,6 +168,91 @@ module.exports = {
                     ]
                 },
                 {
+                    name: 'friends',
+                    description: 'See friends stats',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'discordaccount',
+                            description: 'Discord account',
+                            type: 'USER',
+                        },
+                        {
+                            name: 'champion',
+                            description: 'Champion',
+                            type: 'STRING',
+                            autocomplete: true,
+                        },
+                        {
+                            name: 'lane',
+                            description: 'Lane',
+                            type: 'STRING',
+                            choices: [
+                                {
+                                    name: 'Top',
+                                    value: 'TOP'
+                                },
+                                {
+                                    name: 'Jungle',
+                                    value: 'JUNGLE'
+                                },
+                                {
+                                    name: 'Mid',
+                                    value: 'MIDDLE'
+                                },
+                                {
+                                    name: 'ADC',
+                                    value: 'ADC'
+                                },
+                                {
+                                    name: 'Support',
+                                    value: 'SUPPORT'
+                                },
+                            ]
+                        },
+                        {
+                            name: 'gamemode',
+                            description: 'GameMode',
+                            type: 'STRING',
+                            choices: [
+                                {
+                                    name: 'normal',
+                                    value: 'CLASSIC'
+                                },
+                                {
+                                    name: 'Ranked Solo/Duo',
+                                    value: 'RANKED_SOLO'
+                                },
+                                {
+                                    name: 'Ranked Flex',
+                                    value: 'RANKED_FLEX'
+                                },
+                                {
+                                    name: 'ARAM',
+                                    value: 'ARAM'
+                                },
+                                {
+                                    name: 'URF',
+                                    value: 'URF'
+                                },
+                                {
+                                    name: 'One for All',
+                                    value: 'ONEFORALL'
+                                },
+                                {
+                                    name: 'Ultimate spellbook',
+                                    value: 'ULTBOOK'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'account',
+                            description: 'account',
+                            type: 'STRING'
+                        },
+                    ]
+                },
+                {
                     name: 'matchups',
                     description: 'See matchups stats',
                     type: 'SUB_COMMAND',
@@ -683,12 +768,12 @@ module.exports = {
     commande_channel: true,
     async run(message, client, interaction = undefined) {
         if (interaction !== undefined) {
-            const summoner_name = interaction.options.getString('name')?.replaceAll("'", "");
-            const champion = interaction.options.getString("champion")?.replaceAll("'", "");
-            const role = interaction.options.getString("lane")?.replaceAll("'", "");
-            const gamemode = interaction.options.getString("gamemode")?.replaceAll("'", "");
-            const account = interaction.options.getString("account")?.replaceAll("'", "");
-            const puuid = interaction.options.getString("id")?.replaceAll("'", "");
+            const summoner_name = interaction.options.getString('name')?.replaceAll("'", "").replaceAll("\\", "");
+            const champion = interaction.options.getString("champion")?.replaceAll("'", "").replaceAll("\\", "");
+            const role = interaction.options.getString("lane")?.replaceAll("'", "").replaceAll("\\", "");
+            const gamemode = interaction.options.getString("gamemode")?.replaceAll("'", "").replaceAll("\\", "");
+            const account = interaction.options.getString("account")?.replaceAll("'", "").replaceAll("\\", "");
+            const puuid = interaction.options.getString("id")?.replaceAll("'", "").replaceAll("\\", "");
             let discordaccount = interaction.options.getUser("discordaccount");
 
             await interaction.deferReply();
@@ -801,7 +886,6 @@ module.exports = {
                         query += " AND summoners.username='" + account + "'";
                     }
                     query += ";";
-                    console.log(query);
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
@@ -836,7 +920,6 @@ module.exports = {
                         query2 += " AND summoners.username='" + account + "'";
                     }
                     query2 += ";";
-                    console.log(query2);
                     const response2 = await client.pg.query(query2);
 
                     // query 3
@@ -855,7 +938,6 @@ module.exports = {
                         query3 += " AND summoners.username='" + account + "'";
                     }
                     query3 += " GROUP BY gamemode;";
-                    console.log(query3);
                     const response3 = await client.pg.query(query3);
                     if (response3.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
@@ -1395,6 +1477,59 @@ module.exports = {
                         .setImage(url);
 
                     interaction.editReply({ embeds: [embed] });
+
+                } else if (interaction.options.getSubcommand() === "friends") {
+
+                    /*
+                    let discordusername = "";
+                    if (discordaccount === null) {
+                        discordaccount = interaction.user.id;
+                        discordusername = interaction.user.username;
+                    } else {
+                        discordusername = discordaccount.username;
+                        discordaccount = discordaccount.id;
+                    }
+
+                    let queryaccount = "";
+                    if (account !== undefined) {
+                        queryaccount = " AND summoners.account = '" + account + "'";
+                    }
+
+                    let querygamemode = "";
+                    if (gamemode !== undefined) {
+                        querygamemode = " AND matchs.gamemode = '" + gamemode + "'";
+                    }
+
+                    let queryrole = "";
+                    if (role !== undefined) {
+                        queryrole = " AND matchs.lane = '" + role + "'";
+                    }
+
+                    let querychamp = "";
+                    if (champion !== undefined) {
+                        querychamp = " AND matchs.champion='" + champion + "'";
+                    }*/
+
+                    const query =
+                        "SELECT player2 " +
+                        "FROM matchs " +
+                        "UNION " +
+                        "SELECT player3 " +
+                        "FROM matchs " +
+                        "UNION " +
+                        "SELECT player4 " +
+                        "FROM matchs " +
+                        "UNION " +
+                        "SELECT player5 " +
+                        "FROM matchs " +
+                        ";";
+
+                    const response = await client.pg.query(query);
+                    if (response.rows.length === 0) {
+                        interaction.editReply("No data found for this account");
+                        return;
+                    }
+                    console.log(response.rows);
 
                 }
             } else if (interaction.options.getSubcommandGroup() === "top") {
