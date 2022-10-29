@@ -801,6 +801,7 @@ module.exports = {
                         query += " AND summoners.username='" + account + "'";
                     }
                     query += ";";
+                    console.log(query);
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
