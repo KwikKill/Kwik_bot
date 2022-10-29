@@ -227,6 +227,7 @@ function create_di(events) {
         end.setHours(end.getUTCHours() + 1);
 
         if (start.getDay() !== 0 || start.getDay() !== 6) {
+            console.log(start.getDay());
             if (di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
                 di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
             } else {
