@@ -308,16 +308,22 @@ client.lol = async function () {
         const discordid = x["discordid"];
         const summonerObject = await summonersByName(apiKey, region, username);
         if (summonerObject === null) {
-
-            await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
-
+            try {
+                await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
+            } catch {
+                console.log("");
+            }
         } else {
             const id = summonerObject['id'];
             const accountId = summonerObject['accountId'];
             const puuid = summonerObject['puuid'];
 
             await client.pg.query('INSERT INTO summoners(puuid, username, accountid, id, discordid) VALUES(\'' + puuid + '\', \'' + username + '\', \'' + accountId + '\', \'' + id + '\', \'' + discordid + '\')');
-            await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
+            try {
+                await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
+            } catch {
+                console.log("");
+            }
         }
     }
     while (client.requests["updates"].length > 0) {
@@ -380,7 +386,11 @@ client.lol = async function () {
             }
             client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs);
             client.requests["updates"][0]["total"] = matchs.length;
-            await interaction.editReply("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
+            try {
+                await interaction.editReply("<@" + discordid + ">, starting : " + matchs.length + " matchs to update.");
+            } catch {
+                console.log("");
+            }
 
             while (client.requests["updates"][0]["matchs"].length > 0) {
                 const matchId = client.requests["updates"][0]["matchs"].shift();

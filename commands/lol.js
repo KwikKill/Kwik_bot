@@ -1682,6 +1682,7 @@ module.exports = {
         return await interaction.respond(champs);
     },
     addSumoner,
+    add_summoner_manual,
     update
 
 };
@@ -1693,5 +1694,10 @@ async function addSumoner(client, name, interaction) {
 
 async function update(client, interaction) {
     client.requests["updates"].push({ "discordid": interaction.user.id, "interaction": interaction, "matchs": [], "total": 0, "count": 0 });
+    await client.lol();
+}
+
+async function add_summoner_manual(client, name, discordid) {
+    client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined });
     await client.lol();
 }
