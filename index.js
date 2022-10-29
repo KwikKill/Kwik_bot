@@ -32,6 +32,7 @@ client.amonglegends = new Collection();
 
 client.requests = { "summoners": [], "updates": [] };
 client.running = false;
+client.queue_length = 0;
 
 const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
 for (const file of ListenerFiles) {
@@ -297,9 +298,9 @@ async function championList(region, language) {
     return champions;
 }
 
-async function set_update(update) {
-    const discordid = update["discordid"];
-    const interaction = update["interaction"];
+async function set_update(number) {
+    const discordid = client.requests["updates"][number]["discordid"];
+    const interaction = client.requests["updates"][number]["interaction"];
 
     const ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'');
     if (ids.rowCount === 0) {
@@ -342,7 +343,7 @@ async function set_update(update) {
         for (const y of al.rows) {
             already.push(y["puuid"]);
         }
-        for (const y of client.requests["updates"][0]["matchs"]) {
+        for (const y of client.requests["updates"][number]["matchs"]) {
             already.push(y[1]);
         }
         for (const y of matchIds) {
@@ -351,8 +352,9 @@ async function set_update(update) {
             }
         }
     }
-    client.requests["updates"][0]["matchs"] = client.requests["updates"][0]["matchs"].concat(matchs);
-    client.requests["updates"][0]["total"] = matchs.length;
+    client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
+    client.queue_length += matchs.length;
+    client.requests["updates"][number]["total"] = matchs.length;
     return;
 }
 
@@ -391,7 +393,7 @@ client.lol = async function () {
             return client.lol();
         }
 
-        await set_update(client.requests["updates"][0]);
+        await set_update(0);
 
         const interaction = client.requests["updates"][0]["interaction"];
         const discordid = client.requests["updates"][0]["discordid"];
@@ -403,12 +405,13 @@ client.lol = async function () {
         }
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
-            for (const x of client.requests["updates"]) {
-                if (x["matchs"].length === 0) {
-                    await set_update(x);
+            for (let i = 0; i < 10; i++) {
+                if (client.requests["updates"][i]["matchs"].length === 0) {
+                    await set_update(i);
                 }
             }
             const matchId = client.requests["updates"][0]["matchs"].shift();
+            client.queue_length -= 1;
             const match = await matchesById(apiKey, route, matchId[0]);
 
             if (match?.status?.status_code !== 404) {
