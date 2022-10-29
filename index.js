@@ -511,7 +511,7 @@ async function matchHistoryOutput(match, puuid) {
     const participants = [];
     for (const x of match["info"]["participants"]) {
         if (x.summonerName !== match["info"]["participants"][participantId].summonerName) {
-            participants.push(x.puuid);
+            participants.push(x.summonerName);
         }
     }
 
