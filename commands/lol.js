@@ -1510,9 +1510,8 @@ module.exports = {
                         querychamp = " AND matchs.champion='" + champion + "'";
                     }
 
-                    const query = "SELECT " +
-                        "(" +
-                        "SELECT champion, result, player2 as mate" +
+                    const query = "" +
+                        "SELECT champion, result, player2 as mate " +
                         "FROM matchs " +
                         "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
@@ -1520,7 +1519,7 @@ module.exports = {
                         queryrole +
                         querychamp +
                         " UNION " +
-                        "SELECT champion, result, player3 as mate" +
+                        "SELECT champion, result, player3 as mate " +
                         "FROM matchs " +
                         "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
@@ -1528,7 +1527,7 @@ module.exports = {
                         queryrole +
                         querychamp +
                         " UNION " +
-                        "SELECT champion, result, player4 as mate" +
+                        "SELECT champion, result, player4 as mate " +
                         "FROM matchs " +
                         "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
@@ -1536,14 +1535,14 @@ module.exports = {
                         queryrole +
                         querychamp +
                         " UNION " +
-                        "SELECT champion, result, player5 as mate" +
+                        "SELECT champion, result, player5 as mate " +
                         "FROM matchs " +
                         "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
                         querygamemode +
                         queryrole +
                         querychamp +
-                        ");";
+                        ";";
 
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
