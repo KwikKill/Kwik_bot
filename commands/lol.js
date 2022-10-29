@@ -940,7 +940,6 @@ module.exports = {
                         query2 += " AND summoners.username='" + account + "'";
                     }
                     query2 += ";";
-                    console.log(query2);
                     const response2 = await client.pg.query(query2);
 
                     // query 3
@@ -1015,6 +1014,8 @@ module.exports = {
                     // 2) Average stats
 
                     const length = response2.rows[0].duration;
+
+                    console.log(decimal);
 
                     const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
                     const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
