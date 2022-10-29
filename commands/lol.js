@@ -776,7 +776,7 @@ module.exports = {
             } else if (interaction.options.getSubcommandGroup() === "stats") {
                 if (interaction.options.getSubcommand() === "summarized") {
                     let discordusername = "";
-                    if (discordaccount === undefined) {
+                    if (discordaccount === null) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -1019,7 +1019,7 @@ module.exports = {
                     }
 
                     let discordusername = "";
-                    if (discordaccount === undefined) {
+                    if (discordaccount === null) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -1145,7 +1145,7 @@ module.exports = {
                     }
 
                     let discordusername = "";
-                    if (discordaccount === undefined) {
+                    if (discordaccount === null) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -1268,7 +1268,7 @@ module.exports = {
                     }
                 } else if (interaction.options.getSubcommand() === "ks") {
                     let discordusername = "";
-                    if (discordaccount === undefined) {
+                    if (discordaccount === null) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
