@@ -689,7 +689,7 @@ module.exports = {
             const gamemode = interaction.options.getString("gamemode")?.replaceAll("'", "\\'");
             const account = interaction.options.getString("account")?.replaceAll("'", "\\'");
             const puuid = interaction.options.getString("id")?.replaceAll("'", "\\'");
-            let discordaccount = interaction.options.getUser("discordaccount")?.replaceAll("'", "\\'");
+            let discordaccount = interaction.options.getUser("discordaccount");
 
             await interaction.deferReply();
             if (interaction.options.getSubcommandGroup() === "account") {
