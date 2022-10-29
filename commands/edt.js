@@ -226,6 +226,8 @@ function create_di(events) {
         const end = new Date(event.end.toISOString());
         end.setHours(end.getUTCHours() + 1);
 
+        console.log(di, start.getDay());
+
         if (di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
             di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
         } else {
