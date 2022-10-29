@@ -690,7 +690,6 @@ module.exports = {
             const account = interaction.options.getString("account")?.replaceAll("'", "\\'");
             const puuid = interaction.options.getString("id")?.replaceAll("'", "\\'");
             let discordaccount = interaction.options.getUser("discordaccount")?.replaceAll("'", "\\'");
-            console.log(discordaccount);
 
             await interaction.deferReply();
             if (interaction.options.getSubcommandGroup() === "account") {
@@ -777,7 +776,7 @@ module.exports = {
             } else if (interaction.options.getSubcommandGroup() === "stats") {
                 if (interaction.options.getSubcommand() === "summarized") {
                     let discordusername = "";
-                    if (discordaccount === null) {
+                    if (discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -789,16 +788,16 @@ module.exports = {
                         "FROM matchs, summoners " +
                         "WHERE summoners.discordid='" + discordaccount + "' " +
                         "AND matchs.player = summoners.puuid";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         query += " AND matchs.champion='" + champion + "'";
                     }
-                    if (role !== null) {
+                    if (role !== undefined) {
                         query += " AND matchs.lane='" + role + "'";
                     }
-                    if (gamemode !== null) {
+                    if (gamemode !== undefined) {
                         query += " AND matchs.gamemode='" + gamemode + "'";
                     }
-                    if (account !== null) {
+                    if (account !== undefined) {
                         query += " AND summoners.username='" + account + "'";
                     }
                     query += ";";
@@ -823,16 +822,16 @@ module.exports = {
                         "avg(total_kills) as total_kills " +
                         "FROM matchs, summoners " +
                         "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
                     }
-                    if (role !== null) {
+                    if (role !== undefined) {
                         query2 += " AND matchs.lane='" + role + "'";
                     }
-                    if (gamemode !== null) {
+                    if (gamemode !== undefined) {
                         query2 += " AND matchs.gamemode='" + gamemode + "'";
                     }
-                    if (account !== null) {
+                    if (account !== undefined) {
                         query2 += " AND summoners.username='" + account + "'";
                     }
                     query2 += ";";
@@ -844,13 +843,13 @@ module.exports = {
                         "count(gamemode) " +
                         "FROM matchs, summoners " +
                         "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         query3 += " AND matchs.champion='" + champion + "'";
                     }
-                    if (role !== null) {
+                    if (role !== undefined) {
                         query3 += " AND matchs.lane='" + role + "'";
                     }
-                    if (account !== null) {
+                    if (account !== undefined) {
                         query3 += " AND summoners.username='" + account + "'";
                     }
                     query3 += " GROUP BY gamemode;";
@@ -940,13 +939,13 @@ module.exports = {
                     }
 
                     let title = "" + discordusername + "'s stats";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         title += " with " + champion;
                     }
-                    if (role !== null) {
+                    if (role !== undefined) {
                         title += " in " + role;
                     }
-                    if (account !== null) {
+                    if (account !== undefined) {
                         title += " on \"" + account + "\"";
                     }
 
@@ -1002,24 +1001,24 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed] });
                 } else if (interaction.options.getSubcommand() === "matchups") {
                     let querychamp = "";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         querychamp = " AND matchs.champion='" + champion + "'";
                     }
                     let queryrole = "";
-                    if (role !== null) {
+                    if (role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
                     let querygamemode = "";
-                    if (gamemode !== null) {
+                    if (gamemode !== undefined) {
                         querygamemode = " AND matchs.gamemode='" + gamemode + "'";
                     }
                     let queryaccount = "";
-                    if (account !== null) {
+                    if (account !== undefined) {
                         queryaccount = " AND summoners.username='" + account + "'";
                     }
 
                     let discordusername = "";
-                    if (discordaccount === null) {
+                    if (discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -1075,13 +1074,13 @@ module.exports = {
                     const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
 
                     let title = "" + discordusername + "'s matchups";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         title += " with " + champion;
                     }
-                    if (role !== null) {
+                    if (role !== undefined) {
                         title += " in " + role;
                     }
-                    if (account !== null) {
+                    if (account !== undefined) {
                         title += " on \"" + account + "\"";
                     }
 
@@ -1132,20 +1131,20 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed] });
                 } else if (interaction.options.getSubcommand() === "champions") {
                     let queryrole = "";
-                    if (role !== null) {
+                    if (role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
                     let querygamemode = "";
-                    if (gamemode !== null) {
+                    if (gamemode !== undefined) {
                         querygamemode = " AND matchs.gamemode='" + gamemode + "'";
                     }
                     let queryaccount = "";
-                    if (account !== null) {
+                    if (account !== undefined) {
                         queryaccount = " AND summoners.username='" + account + "'";
                     }
 
                     let discordusername = "";
-                    if (discordaccount === null) {
+                    if (discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -1197,10 +1196,10 @@ module.exports = {
                     const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
 
                     let title = "" + discordusername + "'s champions";
-                    if (role !== null) {
+                    if (role !== undefined) {
                         title += " in " + role;
                     }
-                    if (account !== null) {
+                    if (account !== undefined) {
                         title += " on \"" + account + "\"";
                     }
 
@@ -1250,7 +1249,7 @@ module.exports = {
 
                     return await interaction.editReply({ embeds: [embed] });
                 } else if (interaction.options.getSubcommand() === "match") {
-                    if (puuid !== null) {
+                    if (puuid !== undefined) {
                         const query = "SELECT * FROM matchs WHERE puuid='" + puuid + "';";
                         const response = await client.pg.query(query);
                         if (response.rows.length === 0) {
@@ -1261,14 +1260,14 @@ module.exports = {
                     } else {
                         const account = interaction.options.getString("account");
                         //let queryaccount = ""
-                        if (account !== null) {
+                        if (account !== undefined) {
                             //queryaccount = " AND summoners.account = '" + account + "' ";
                         }
 
                     }
                 } else if (interaction.options.getSubcommand() === "ks") {
                     let discordusername = "";
-                    if (discordaccount === null) {
+                    if (discordaccount === undefined) {
                         discordaccount = interaction.user.id;
                         discordusername = interaction.user.username;
                     } else {
@@ -1278,28 +1277,28 @@ module.exports = {
 
                     let queryaccount = "";
                     let queryaccount2 = "";
-                    if (account !== null) {
+                    if (account !== undefined) {
                         queryaccount = " AND summoners.account = '" + account + "'";
                         queryaccount2 = " AND s2.account = '" + account + "'";
                     }
 
                     let querygamemode = "";
                     let querygamemode2 = "";
-                    if (gamemode !== null) {
+                    if (gamemode !== undefined) {
                         querygamemode = " AND matchs.gamemode = '" + gamemode + "'";
                         querygamemode2 = " AND m2.gamemode = '" + gamemode + "'";
                     }
 
                     let queryrole = "";
                     let queryrole2 = "";
-                    if (role !== null) {
+                    if (role !== undefined) {
                         queryrole = " AND matchs.lane = '" + role + "'";
                         queryrole2 = " AND m2.lane = '" + role + "'";
                     }
 
                     let querychamp = "";
                     let querychamp2 = "";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         querychamp = " AND matchs.champion='" + champion + "'";
                         querychamp2 = " AND m2.champion='" + champion + "'";
                     }
@@ -1398,12 +1397,12 @@ module.exports = {
             } else if (interaction.options.getSubcommandGroup() === "top") {
                 if (interaction.options.getSubcommand() === "carry") {
                     let query2 = "";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
                     }
 
                     let queryrole = "";
-                    if (role !== null) {
+                    if (role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
 
@@ -1592,12 +1591,12 @@ module.exports = {
                         queryall = " AND summoners.discordid IN " + list;
                     }
                     let query2 = "";
-                    if (champion !== null) {
+                    if (champion !== undefined) {
                         query2 += " AND matchs.champion='" + champion + "'";
                     }
 
                     let queryrole = "";
-                    if (role !== null) {
+                    if (role !== undefined) {
                         queryrole = " AND matchs.lane='" + role + "'";
                     }
 
