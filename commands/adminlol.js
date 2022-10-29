@@ -27,7 +27,7 @@ module.exports = {
             ]
         }
     ],
-    async execute(message, client, interaction = undefined) {
+    async run(message, client, interaction = undefined) {
         if (interaction !== undefined) {
             await interaction.deferReply();
             if (interaction.options.getSubcommandGroup() === "update") {
