@@ -354,7 +354,7 @@ async function set_update(number) {
     }
     client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
     client.queue_length += matchs.length;
-    client.requests["updates"][number]["total"] = matchs.length;
+    client.requests["updates"][number]["total"] = client.requests["updates"][number]["matchs"].length;
     return;
 }
 

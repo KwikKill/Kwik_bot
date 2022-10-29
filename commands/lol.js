@@ -850,10 +850,19 @@ module.exports = {
                             //iconURL: interaction.user.displayAvatarURL()
                         })
                         .setTimestamp();
+                    let step = "";
+                    if (client.requests["updates"][0]["count"] === 0) {
+                        step = "- Step : 1/2 - Fetching game list" +
+                            "";
+                    } else {
+                        step = "- Step : 2/2 - Fetching matchs details\n" +
+                            "- Current : <@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games";
+                    }
                     embed.addFields(
                         {
                             name: "Updates in queue :",
-                            value: "- Length : " + client.requests["updates"].length + "\n" + "- Current : " + (client.requests["updates"].length > 0 ? "<@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games" : "None")
+                            value: "- Length : " + client.requests["updates"].length + " Summoners | " + client.queue_length + " Matchs\n" +
+                                step + "\n"
                         }
                     );
                     return await interaction.editReply({ embeds: [embed] });
