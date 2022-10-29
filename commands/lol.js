@@ -1511,38 +1511,49 @@ module.exports = {
                     }
 
                     const query = "" +
-                        "SELECT champion, result, player2 as mate " +
-                        "FROM matchs " +
+                        "SELECT mate, count(*) FROM (" +
+                        "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player2 as mate " +
+                        "FROM matchs, summoners " +
+                        //"WHERE discordid = '297409548703105035'" +
+                        "WHERE player = '" + discordaccount + "'" +
+                        " AND matchs.player = summoners.puuid" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        " UNION " +
+                        "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player3 as mate " +
+                        "FROM matchs, summoners " +
+                        "WHERE player = '" + discordaccount + "'" +
+                        //"WHERE discordid = '297409548703105035'" +
+                        " AND matchs.player = summoners.puuid" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        " UNION " +
+                        "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player4 as mate " +
+                        "FROM matchs, summoners " +
+                        "WHERE player = '" + discordaccount + "'" +
+                        //"WHERE discordid = '297409548703105035'" +
+                        " AND matchs.player = summoners.puuid" +
                         "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
                         querygamemode +
                         queryrole +
                         querychamp +
                         " UNION " +
-                        "SELECT champion, result, player3 as mate " +
-                        "FROM matchs " +
+                        "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player5 as mate " +
+                        "FROM matchs, summoners " +
+                        "WHERE player = '" + discordaccount + "'" +
+                        //"WHERE discordid = '297409548703105035'" +
+                        " AND matchs.player = summoners.puuid" +
                         "WHERE player = '" + discordaccount + "'" +
                         queryaccount +
                         querygamemode +
                         queryrole +
                         querychamp +
-                        " UNION " +
-                        "SELECT champion, result, player4 as mate " +
-                        "FROM matchs " +
-                        "WHERE player = '" + discordaccount + "'" +
-                        queryaccount +
-                        querygamemode +
-                        queryrole +
-                        querychamp +
-                        " UNION " +
-                        "SELECT champion, result, player5 as mate " +
-                        "FROM matchs " +
-                        "WHERE player = '" + discordaccount + "'" +
-                        queryaccount +
-                        querygamemode +
-                        queryrole +
-                        querychamp +
-                        ";";
+                        ") AS SUB GROUP BY mate GROUP BY COUNT(*) DESC;";
 
                     const response = await client.pg.query(query);
                     if (response.rows.length === 0) {
