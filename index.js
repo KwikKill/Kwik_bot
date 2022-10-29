@@ -396,7 +396,7 @@ client.lol = async function () {
             return client.lol();
         }
 
-        set_update(client.requests["updates"][0]);
+        await set_update(client.requests["updates"][0]);
 
         const interaction = client.requests["updates"][0]["interaction"];
         const discordid = client.requests["updates"][0]["discordid"];
@@ -404,7 +404,7 @@ client.lol = async function () {
         while (client.requests["updates"][0]["matchs"].length > 0) {
             for (const x of client.requests["updates"]) {
                 if (x["matchs"].length === 0) {
-                    set_update(x);
+                    await set_update(x);
                 }
             }
             const matchId = client.requests["updates"][0]["matchs"].shift();
