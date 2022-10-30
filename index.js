@@ -13,7 +13,7 @@ const language = "en_US"; // Players Language - Only Used for Champion Names
 const startDate = "1641528000";
 let champions = [];
 const max_games = 100;
-lol_api.championList(region, language).then(list => {
+lol_api.championList(apiKey, region, language).then(list => {
     champions = list;
 });
 

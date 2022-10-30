@@ -284,11 +284,11 @@ module.exports = {
     * @param {*} language  language of the data
     * @returns {Object}    champion list
     */
-    async championList(region, language) {
+    async championList(api_key, region, language) {
 
         // Get New Champion List from Data Dragon
         const patch = await this.getCurrentPatch(region);
-        const championList = await this.championStaticData(language, patch['v']);
+        const championList = await this.championStaticData(api_key, language, patch['v']);
 
         //Logger.log(championList['data'])
 
