@@ -836,7 +836,7 @@ module.exports = {
                 if (interaction.options.getSubcommand() === "update") {
                     for (const x of client.requests["updates"]) {
                         if (x["discordid"] === interaction.user.id) {
-                            return interaction.editReply("You already have a request in the queue.");
+                            return await interaction.editReply("You already have a request in the queue.");
                         }
                     }
                     await interaction.editReply("The request was added to the queue, this can take several minutes.");
@@ -1503,7 +1503,6 @@ module.exports = {
                     interaction.editReply({ embeds: [embed] });
 
                 } else if (interaction.options.getSubcommand() === "friends") {
-
 
                     //let discordusername = "";
                     if (discordaccount === null) {
