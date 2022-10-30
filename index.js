@@ -1,7 +1,7 @@
 const { Client, Collection, Intents } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
-const fetch = require('node-fetch');
+const lol_api = require("./util/lol_api.js");
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
@@ -10,16 +10,12 @@ const apiKey = process.env.RIOT_API_KEY;
 const region = "EUW1"; // Players Region
 const route = "EUROPE"; // Regions Route
 const language = "en_US"; // Players Language - Only Used for Champion Names
-//var	timezone = 7200000; // Players Timezone - If Blank defaults to Server Timezone
 const startDate = "1641528000";
 let champions = [];
-championList(region, language).then(list => {
+const max_games = 100;
+lol_api.championList(region, language).then(list => {
     champions = list;
 });
-
-const max_games = 100;
-const delay_time = 10000;
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const RANKED_FLEX = 440;
 const RANKED_SOLO = 420;
@@ -98,6 +94,14 @@ client.listeners.forEach((item) => {
 });
 
 // -------------- Functions -----------------
+/**
+ * Check if the command can be run
+ * @function canRunCommande
+ * @param  {*} message      message send by the user
+ * @param  {*} commande     commande to run
+ * @param  {*} interaction  interaction send by the user
+ * @return {Boolean}        return true if the command can be run
+ */
 client.canRunCommande = function (message, commande, interaction = undefined) {
     if (interaction === undefined) {
         //if(commande.commande_channel === true && !message.channel.name.toLowerCase().includes("commande")) return false
@@ -112,6 +116,13 @@ client.canRunCommande = function (message, commande, interaction = undefined) {
 
 };
 
+/**
+ * Check if the user has the given permission
+ * @function checkpermission
+ * @param {*} message    message send by the user
+ * @param {*} perm       permission to check
+ * @returns {Boolean}    return true if the user has the permission
+ */
 function checkpermission(message, perm) {
     const id = message.author !== undefined ? message.author.id : message.user.id;
     if (client.owners.includes(id)) {
@@ -128,181 +139,11 @@ function checkpermission(message, perm) {
 
 }
 
-async function currentPatch(region) {
-    // Region Correction
-    switch (region) {
-        // These regions just need thier numbers removed
-        case "NA1": case "EUW1": case "TR1": case "BR1": case "JP1":
-            region = region.slice(0, -1).toLowerCase();
-            break;
-        case "RU":
-            region = "ru";
-            break;
-        case "KR":
-            region = "kr";
-            break;
-        case "EUN1":
-            region = "eune";
-            break;
-        case "OC1":
-            region = "oce";
-            break;
-        case "LA1":
-            region = "lan";
-            break;
-        case "LA2":
-            region = "las";
-            break;
-    }
-
-    const url = "https://ddragon.leagueoflegends.com/realms/" + region + ".json";
-    return await apiCall(url);
-}
-
-async function summonersByName(apiKey, region, summonerName) {
-    const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-/*
-async function challenge(apiKey, region) {
-    const url = "https://"+region+".api.riotgames.com/lol/challenges/v1/challenges/percentiles?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function challengeconfig(apiKey, region) {
-    const url = "https://"+region+".api.riotgames.com/lol/challenges/v1/challenges/config?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function challengebypuuid(apiKey, region, puuid) {
-    const url = "https://"+region+".api.riotgames.com/lol/challenges/v1/player-data/" + puuid + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function leaguesBySummoner(apiKey,region,summonerId){
-    const url = "https://"+region+".api.riotgames.com/lol/league/v4/entries/by-summoner/"+summonerId + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function challengerLeagues(apiKey,region,queue){
-    const url = "https://"+region+".api.riotgames.com/lol/league/v4/challengerleagues/by-queue/"+queue + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function grandmasterLeagues(apiKey,region,queue){
-    const url = "https://"+region+".api.riotgames.com/lol/league/v4/grandmasterleagues/by-queue/"+queue + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function masterLeagues(apiKey,region,queue){
-    const url = "https://"+region+".api.riotgames.com/lol/league/v4/masterleagues/by-queue/"+queue + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function leaguesByLeagueId(apiKey,region,leagueId){
-    const url = "https://"+region+".api.riotgames.com/lol/league/v4/leagues/"+leagueId + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-*/
-
-async function matchesById(apiKey, route, matchId) {
-    const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-
-async function matchlistsByAccount(apiKey, route, puuid, options) {
-    const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids" + options + "&api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-/*
-async function timelinesByMatchId(apiKey,route,matchId){
-    const url = "https://"+route+".api.riotgames.com/lol/match/v5/matches/"+matchId+"/timeline" + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-
-async function championmasteriesBySummoner(apiKey,region,summonerId){
-    const url = "https://"+region+".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+summonerId + "?api_key=" + apiKey;
-    return await apiCall(url);
-}
-*/
-
-async function apiCall(url) {
-    // Fetch Data from provided URL & Options
-    const responsefetch = await fetch(url);
-    const data = await responsefetch.json();
-    let statut = await responsefetch;
-    statut = statut.status;
-    switch (statut) {
-        case 200:
-            return data;
-        case 429:
-            // Special Handling here - 429 is Rate Limit Reached.
-            // Alert the User
-            /*try {
-                    console.log("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes. N'annulez pas l'éxecution, veuillez patienter.");
-                }catch(error) {
-
-                }*/
-            // Wait the time specified by the reponse header
-            //await client.
-            await delay(delay_time);
-            // Retry
-            return await apiCall(url);
-        case 404:
-            console.warn("404: La ressource demandée n'existe pas.", url);
-            return null;
-        case 400:
-            console.warn("400: La requête est invalide.", url);
-            return null;
-    }
-    return data;
-
-}
-
-async function championStaticData(language, patch) {
-    // If language isn't Set - Default to English
-    if (language === "") {
-        language = "en_US";
-    }
-
-    try {
-        const url = "https://ddragon.leagueoflegends.com/cdn/" + patch + "/data/" + language + "/champion.json" + "?api_key=" + apiKey;
-        //Logger.log(url)
-        return apiCall(url);
-    } catch (error) {
-        console.warn(error);
-    }
-
-    try {
-        const url = "https://ddragon.leagueoflegends.com/cdn/10.9.1/data/" + language + "/champion.json" + "?api_key=" + apiKey;
-        return await apiCall(url);
-    } catch (error) {
-        console.warn(error);
-    }
-}
-
-async function championList(region, language) {
-
-    // Get New Champion List from Data Dragon
-    const patch = await currentPatch(region);
-    const championList = await championStaticData(language, patch['v']);
-
-    //Logger.log(championList['data'])
-
-    // Champions Array
-    const champions = [];
-
-    // Add Champion Names & IDs to the array
-    for (const champion in championList['data']) {
-        champions[championList['data'][champion]['key']] = championList['data'][champion]['name'];
-    }
-
-    return champions;
-}
-
+/**
+ * Fetch summoner game list
+ * @function set_update
+ * @param {*} number  id of the summoner in client.requests["updates"]
+ */
 async function set_update(number) {
     const discordid = client.requests["updates"][number]["discordid"];
     const interaction = client.requests["updates"][number]["interaction"];
@@ -321,7 +162,7 @@ async function set_update(number) {
 
         do {
             const options = "?startTime=" + startDate + "&start=" + indexed + "&count=100";
-            listOfMatches = { 'matches': await matchlistsByAccount(apiKey, route, x["puuid"], options) };
+            listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, x["puuid"], options) };
             // If there are less than 100 matches in the object, then this is the last match list
             if (listOfMatches['matches'].length < max_games) {
                 gamesToIndex = false;
@@ -363,6 +204,10 @@ async function set_update(number) {
     return;
 }
 
+/**
+ * Fetch summoner game list and add games to the database
+ * @function lol
+ */
 client.lol = async function () {
     //console.log(client.running, client.requests)
     if (client.running === true) { return; }
@@ -372,7 +217,7 @@ client.lol = async function () {
         const username = x["username"];
         const interaction = x["interaction"];
         const discordid = x["discordid"];
-        const summonerObject = await summonersByName(apiKey, region, username);
+        const summonerObject = await lol_api.summonersByName(apiKey, region, username);
         if (summonerObject === null) {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
@@ -415,7 +260,7 @@ client.lol = async function () {
             }
             const matchId = client.requests["updates"][0]["matchs"].shift();
             client.queue_length -= 1;
-            const match = await matchesById(apiKey, route, matchId[0]);
+            const match = await lol_api.matchesById(apiKey, route, matchId[0]);
 
             if (match?.status?.status_code !== 404) {
                 const exit = await matchHistoryOutput(match, matchId[1]);
@@ -515,6 +360,13 @@ client.lol = async function () {
     await client.channels.cache.get("991052056657793124").send("Finished updating");
 };
 
+/**
+ * Return stats from a match
+ * @function matchHistoryOutput
+ * @param {*} match   Match data
+ * @param {*} puuid   Puuid of the summoner
+ * @returns {Object}  Stats of the match
+ */
 async function matchHistoryOutput(match, puuid) {
     if (match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10) {
         return null;

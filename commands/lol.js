@@ -1016,7 +1016,6 @@ module.exports = {
                     const length = response2.rows[0].duration;
 
                     const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
-                    console.log(average_kills);
                     const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
                     const average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
                     let average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
