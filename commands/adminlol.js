@@ -38,7 +38,8 @@ module.exports = {
                 }
             }
         }
-    }
+    },
+    update
 };
 
 async function update(client, interaction) {

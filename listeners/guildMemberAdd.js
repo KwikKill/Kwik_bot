@@ -16,7 +16,6 @@ module.exports = {
                 if (!welcomechannel) {
                     return undefined;
                 }
-                console.log(welcome[member.guild.id].message + ` ${member}`);
                 welcomechannel.send(welcome[member.guild.id].message + ` ${member}`);
             }
         } catch (err) {

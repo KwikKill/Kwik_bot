@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const config = require('../config.json');
 
 const delay_time = 10000;
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -215,6 +216,9 @@ module.exports = {
      * @returns {Object}  data from the API
      */
     async apiCall(url) {
+        if (config.verbose) {
+            console.log("API CALL: " + url);
+        }
         // Fetch Data from provided URL & Options
         const responsefetch = await fetch(url);
         const data = await responsefetch.json();
@@ -226,11 +230,9 @@ module.exports = {
             case 429:
                 // Special Handling here - 429 is Rate Limit Reached.
                 // Alert the User
-                /*try {
-                        console.log("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes. N'annulez pas l'éxecution, veuillez patienter.");
-                    }catch(error) {
-
-                    }*/
+                if (config.verbose) {
+                    console.log("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
+                }
                 // Wait the time specified by the reponse header
                 //await client.
                 await delay(delay_time);

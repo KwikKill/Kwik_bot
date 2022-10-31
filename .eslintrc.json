@@ -22,7 +22,7 @@
         "no-unreachable": "error",
         "no-unreachable-loop": "error",
         "no-unused-vars": "error",
-        //"complexity": "error",
+        //"complexity": "warn",
         "semi": "error",
         //"no-await-in-loop": "error",
         "eqeqeq": "error",

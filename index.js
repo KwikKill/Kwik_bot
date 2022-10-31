@@ -25,11 +25,14 @@ client.commands = new Collection();
 client.context_menu = new Collection();
 client.buttons = new Collection();
 client.groups = new Collection();
-client.owners = config["owner"];
+
+client.timers = new Collection();
 
 client.listeners = new Collection();
 
 client.amonglegends = new Collection();
+
+client.owners = config["owner"];
 
 client.requests = { "summoners": [], "updates": [] };
 client.running = false;
@@ -57,6 +60,12 @@ const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.j
 for (const file of buttonFiles) {
     const button = require(`./buttons/${file}`);
     client.buttons.set(button.name, button);
+}
+
+const TimersFiles = fs.readdirSync('./timers').filter(file => file.endsWith('.js'));
+for (const file of TimersFiles) {
+    const timer = require(`./timers/${file}`);
+    client.timers.set(timer.name, timer);
 }
 
 client.commands.forEach((item) => {
@@ -148,6 +157,10 @@ async function set_update(number) {
     const discordid = client.requests["updates"][number]["discordid"];
     const interaction = client.requests["updates"][number]["interaction"];
 
+    if (config.verbose) {
+        console.log("- lol (update 1) : " + discordid);
+    }
+
     const ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'');
     if (ids.rowCount === 0) {
         return await interaction.editReply("<@" + discordid + ">, You don't have any account linked.");
@@ -214,6 +227,9 @@ client.lol = async function () {
     client.running = true;
     while (client.requests["summoners"].length > 0) {
         const x = client.requests["summoners"].shift();
+        if (config.verbose) {
+            console.log("- lol (summoner) : " + x["username"], x["discordid"]);
+        }
         const username = x["username"];
         const interaction = x["interaction"];
         const discordid = x["discordid"];
@@ -222,6 +238,7 @@ client.lol = async function () {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
             } catch {
+
             }
         } else {
             const id = summonerObject['id'];
@@ -232,6 +249,7 @@ client.lol = async function () {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
             } catch {
+
             }
         }
     }
@@ -249,7 +267,11 @@ client.lol = async function () {
         try {
             await interaction.editReply("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
         } catch {
-            await interaction.channel.send("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
+            try {
+                await interaction.channel.send("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
+            } catch {
+
+            }
         }
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
@@ -259,6 +281,9 @@ client.lol = async function () {
                 }
             }
             const matchId = client.requests["updates"][0]["matchs"].shift();
+            if (config.verbose) {
+                console.log("- lol (update 2) : " + discordid, matchId);
+            }
             client.queue_length -= 1;
             const match = await lol_api.matchesById(apiKey, route, matchId[0]);
 
@@ -349,7 +374,11 @@ client.lol = async function () {
         try {
             await interaction.editReply("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database");
         } catch {
-            await interaction.channel.send("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database");
+            try {
+                await interaction.channel.send("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database");
+            } catch {
+
+            }
         }
         client.requests["updates"].shift();
     }
@@ -661,7 +690,6 @@ async function matchHistoryOutput(match, puuid) {
     // Create Output Array
     const output = {
         "matchId": matchId,
-        //"username": summoner["username"],
         "summonerpuuid": puuid,
         "queueName": queueName,
         "champion": champions[championId].replaceAll("'", "").replaceAll(" ", ""),
@@ -696,45 +724,6 @@ async function matchHistoryOutput(match, puuid) {
         "player3": participants[1],
         "player4": participants[2],
         "player5": participants[3],
-
-        //(last-14+outputRow),
-
-        //championId,
-
-
-
-        //kdaRatio,
-
-        //killParticipation,
-
-        //dealt/(duration/60),
-
-        //taken/(duration/60),
-
-        //healed/(duration/60),
-
-
-
-        //(laneCS+jungleCS)/(duration/60),
-        //gold/(duration/60),
-        //duration/60,
-        //visionScore/(duration/60),
-        //cary,
-        /*gold,laneCS+jungleCS,(laneCS+jungleCS)/(duration/60),farmA,farmB,farmC,
-    dealt,healed,taken,mitigated,turrets,objectives,
-    allyHealing,allyShielding,supportItemQuestA,supportItemQuestB,
-    wardsPlaced,denied,pinksPurchased,pinksPlaced,visionScore,visionShare,
-    (duration/86400),(creation/86400000)+25569,result,
-    rank['beforeLP'],rank['afterLP'],rank['afterLP']-rank['beforeLP'],rank['tier'],rank['division'],
-    '',rank['series'][0],rank['series'][1],rank['series'][2],rank['series'][3],rank['series'][4],
-    'DNG','','','','','','','','',
-    rank['ran'],"gpa",matchId,teamId,
-    kills,deaths,assists,laneCS,jungleCS,qCasts,wCasts,eCasts,rCasts,ssAId,ssACasts,ssBId,ssBCasts,
-    doubles,triples,quadras,pentas,highestmulti,
-    turretKills,inhibitorKills,dragonKills,baronKills,nexusKills,turretAssists,inhibitorAssists,nexusAssists,
-    firstBloodKill,firstBloodAssist,firstBrickKill,firstBrickAssist,
-    '','','','','','','','','','',
-    teamDamage,teamHealed,teamTaken,teamMitigated,teamKills,teamDeaths,teamGold,teamVisionScore*/
     };
     return output;
 }

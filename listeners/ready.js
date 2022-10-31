@@ -27,7 +27,9 @@ module.exports = {
             if (err) { throw err; }
             client.pg = pgclient;
             console.log("Connected!");
-        });/*
+        });
+
+        /*
         client.champions = []
         champions = await client.championList(region, language);
 
@@ -38,6 +40,14 @@ module.exports = {
             }
         }
         */
+
+
+        client.timers.forEach(timer => {
+            if (timer.onsetup) {
+                timer.run(client);
+            }
+            setInterval(timer.run, timer.timer, client);
+        });
 
         client.lol();
     }
