@@ -173,8 +173,14 @@ async function set_update(number) {
         let listOfMatches = {};
         //console.log(x)
 
+        let start = startDate;
+        const response = await client.pg.query("SELECT timestamp FROM matchs, summoners WHERE matchs.summonerid = summoners.summonerid AND summoners.discordid = '" + discordid + "' ORDER BY timestamp DESC LIMIT 1");
+        if (response.rowCount !== 0) {
+            start = Math.floor(response.rows[0].timestamp / 1000);
+        }
+
         do {
-            const options = "?startTime=" + startDate + "&start=" + indexed + "&count=100";
+            const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
             listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, x["puuid"], options) };
             // If there are less than 100 matches in the object, then this is the last match list
             if (listOfMatches['matches'].length < max_games) {
