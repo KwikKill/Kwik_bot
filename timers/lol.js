@@ -1,3 +1,5 @@
+const config = require('../config.json');
+
 module.exports = {
     name: 'lol',
     group: 'lol',
@@ -8,7 +10,9 @@ module.exports = {
         if (client.running) {
             return;
         }
-        client.commands.get("adminlol").update(client, undefined);
-        client.lol();
+        await client.commands.get("adminlol").update(client, undefined);
+        if (config.verbose) {
+            console.log("lol timer done");
+        }
     }
 };
