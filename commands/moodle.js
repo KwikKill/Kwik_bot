@@ -1,0 +1,41 @@
+const https = require('https');
+const { MessageEmbed } = require('discord.js');
+
+module.exports = {
+    name: 'moodle',
+    group: 'INSA',
+    description: "Vérifie si moodle marche",
+    permission: "none",
+    hidden: false,
+    serverid: ["513776796211085342", "480142959501901845", "890915473363980308"],
+    deploy: true,
+    place: "guild",
+    help: [
+        {
+            "name": "- __moodle__ :",
+            "value": "Vérifie si moodle marche."
+        },
+    ],
+    async run(message, client, interaction = undefined) {
+        if(interaction.user.bot) {return;}
+        if(interaction === undefined) {return await message.reply("Utilise les commandes slash");}
+
+        https.get('https://moodleng.insa-rennes.fr/', (res) => {
+            if(res.statusCode === 200) {
+                const embed = new MessageEmbed()
+                    .setColor("0xffe402")
+                    .setTitle("Moodle")
+                    .setDescription("Moodle marche")
+                    .setTimestamp();
+                interaction.reply({ embeds: [embed] });
+            } else {
+                const embed = new MessageEmbed()
+                    .setColor("0xffe402")
+                    .setTitle("Moodle")
+                    .setDescription("Moodle ne marche pas <:503:1036714015289782383>")
+                    .setTimestamp();
+                interaction.reply({ embeds: [embed] });
+            }
+        });
+    }
+};
