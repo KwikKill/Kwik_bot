@@ -1,7 +1,7 @@
 module.exports = {
     name: 'lol',
     group: 'lol',
-    onsetup: true,
+    onsetup: false,
     timer: 300000,
     description: "Fetch des utilisateurs toutes les heures",
     async run(client) {
