@@ -32,7 +32,7 @@ module.exports = {
                 const embed = new MessageEmbed()
                     .setColor("0xffe402")
                     .setTitle("Moodle")
-                    .setDescription("Moodle ne marche pas <:503:1036714015289782383>")
+                    .setDescription("Moodle ne marche pas <:503:1034543332283650169>")
                     .setTimestamp();
                 interaction.reply({ embeds: [embed] });
             }
