@@ -174,7 +174,7 @@ async function set_update(number) {
         //console.log(x)
 
         let start = startDate;
-        const response = await client.pg.query("SELECT timestamp FROM matchs, summoners WHERE matchs.summonerid = summoners.summonerid AND summoners.discordid = '" + discordid + "' ORDER BY timestamp DESC LIMIT 1");
+        const response = await client.pg.query("SELECT timestamp FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = '" + discordid + "' ORDER BY timestamp DESC LIMIT 1");
         if (response.rowCount !== 0) {
             start = Math.floor(response.rows[0].timestamp / 1000);
         }
