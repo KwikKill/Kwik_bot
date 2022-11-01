@@ -43,7 +43,7 @@ module.exports = {
 };
 
 async function update(client) {
-    const query = "SELECT DISTINCT puuid FROM summoners;";
+    const query = "SELECT DISTINCT puuid, id FROM summoners;";
     const result = await client.pg.query(query);
     for (let i = 0; i < result.rows.length; i++) {
         client.requests["updates"].push({ "puuid": result.rows[i].puuid, "id": result.rows[i].id, "matchs": [], "total": 0, "count": 0 });
