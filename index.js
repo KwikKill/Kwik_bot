@@ -425,7 +425,7 @@ client.lol = async function () {
         // read current rank and send message if rank changed
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
         if (current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] || current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] || current_rank.rows[0].LP_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] || current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] || current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] || current_rank.rows[0].LP_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]) {
-            await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_solo = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + client.requests["updates"][0]["id"] + "'");
+            await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + client.requests["updates"][0]["id"] + "'");
             const embed = new MessageEmbed()
                 .setColor("#0099ff")
                 .setTitle("Rank update")
