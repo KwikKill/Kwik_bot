@@ -34,7 +34,11 @@ module.exports = {
                 if (interaction.options.getSubcommand() === "all") {
                     await interaction.editReply("Processing.");
                     await update(client, interaction);
-                    await interaction.editReply("All lol accounts updated.");
+                    try {
+                        await interaction.editReply("All lol accounts updated.");
+                    } catch {
+                        await interaction.followUp("All lol accounts updated.");
+                    }
                 }
             }
         }
