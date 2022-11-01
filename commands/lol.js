@@ -56,18 +56,6 @@ module.exports = {
             ]
         },
         {
-            name: 'matchs',
-            description: 'Manage lol matchs',
-            type: 'SUB_COMMAND_GROUP',
-            options: [
-                {
-                    name: 'update',
-                    description: 'Update matchs',
-                    type: 'SUB_COMMAND',
-                }
-            ]
-        },
-        {
             name: 'queue',
             description: 'manage queue',
             type: 'SUB_COMMAND_GROUP',
@@ -832,16 +820,6 @@ module.exports = {
                 );
 
                 return await interaction.editReply({ embeds: [embed] });
-            }
-        } else if (interaction.options.getSubcommandGroup() === "matchs") {
-            if (interaction.options.getSubcommand() === "update") {
-                for (const x of client.requests["updates"]) {
-                    if (x["discordid"] === interaction.user.id) {
-                        return await interaction.editReply("You already have a request in the queue.");
-                    }
-                }
-                await interaction.editReply("The request was added to the queue, this can take several minutes.");
-                return await update(client, interaction);
             }
         } else if (interaction.options.getSubcommandGroup() === "queue") {
             if (interaction.options.getSubcommand() === "status") {

@@ -224,6 +224,37 @@ async function set_update(number) {
 }
 
 /**
+ * Update rank of user in the database
+ * @function update_rank
+ * @param {*} summoner_id  summoner id
+ */
+client.update_rank = async function (summoner_id) {
+    const response = await lol_api.leaguesBySummoner(apiKey, route, summoner_id);
+
+    const data = {
+        "RANKED_SOLO_5x5": {
+            "tier": "unranked",
+            "rank": "unranked",
+            "leaguePoints": 0,
+        },
+        "RANKED_FLEX_SR": {
+            "tier": "unranked",
+            "rank": "unranked",
+            "leaguePoints": 0,
+        }
+    };
+    for (const x of response) {
+        data[x.queueType] = {
+            "tier": x.tier,
+            "rank": x.rank,
+            "leaguePoints": x.leaguePoints,
+        };
+    }
+
+    return data;
+};
+
+/**
  * Fetch summoner game list and add games to the database
  * @function lol
  */
@@ -251,12 +282,41 @@ client.lol = async function () {
             const accountId = summonerObject['accountId'];
             const puuid = summonerObject['puuid'];
 
-            await client.pg.query('INSERT INTO summoners(puuid, username, accountid, id, discordid) VALUES(\'' + puuid + '\', \'' + username + '\', \'' + accountId + '\', \'' + id + '\', \'' + discordid + '\')');
+            const rank = await client.update_rank(id);
+
+            await client.pg.query('INSERT INTO summoners(' +
+                'puuid, ' +
+                'username, ' +
+                'accountid, ' +
+                'id, ' +
+                'discordid, ' +
+                'rank_solo' +
+                'tier_solo' +
+                'LP_solo' +
+                'rank_flex' +
+                'tier_flex' +
+                'LP_flex' +
+                ') ' +
+                'VALUES(\'' +
+                puuid + '\', \'' +
+                username + '\', ' + '\'' +
+                accountId + '\', \'' +
+                id + '\', \'' +
+                discordid + '\', \'' +
+                rank["RANKED_SOLO_5x5"]["rank"] + '\', \'' +
+                rank["RANKED_SOLO_5x5"]["tier"] + '\', \'' +
+                rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
+                rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
+                rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
+                rank["RANKED_FLEX_SR"]["leaguePoints"] +
+                '\')'
+            );
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
             } catch {
 
             }
+            client.requests["updates"].push({ "discordid": discordid, "interaction": undefined, "matchs": [], "total": 0, "count": 0 });
         }
     }
     while (client.requests["updates"].length > 0) {
