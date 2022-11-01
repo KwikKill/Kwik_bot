@@ -1,4 +1,4 @@
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol_api = require("./util/lol_api.js");
@@ -213,7 +213,7 @@ async function set_update(number) {
         }
         for (const y of matchIds) {
             if (!already.includes(y)) {
-                matchs.push([y, x["puuid"]]);
+                matchs.push(y);
             }
         }
     }
@@ -316,7 +316,7 @@ client.lol = async function () {
             } catch {
 
             }
-            client.requests["updates"].push({ "discordid": discordid, "interaction": undefined, "matchs": [], "total": 0, "count": 0 });
+            client.requests["updates"].push({ "puuid": puuid, "id": id, "matchs": [], "total": 0, "count": 0 });
         }
     }
     while (client.requests["updates"].length > 0) {
@@ -327,18 +327,7 @@ client.lol = async function () {
 
         await set_update(0);
 
-        const interaction = client.requests["updates"][0]["interaction"];
-        const discordid = client.requests["updates"][0]["discordid"];
-
-        try {
-            await interaction.editReply("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
-        } catch {
-            try {
-                await interaction.channel.send("<@" + discordid + ">, starting : " + client.requests["updates"][0]["matchs"].length + " matchs to update.");
-            } catch {
-
-            }
-        }
+        const puuid = client.requests["updates"][0]["puuid"];
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
             for (let i = 0; i < client.requests["updates"].length; i++) {
@@ -348,13 +337,13 @@ client.lol = async function () {
             }
             const matchId = client.requests["updates"][0]["matchs"].shift();
             if (config.verbose) {
-                console.log("- lol (update 2) : " + discordid, matchId);
+                console.log("- lol (update 2) : " + puuid, matchId);
             }
             client.queue_length -= 1;
-            const match = await lol_api.matchesById(apiKey, route, matchId[0]);
+            const match = await lol_api.matchesById(apiKey, route, matchId);
 
             if (match?.status?.status_code !== 404) {
-                const exit = await matchHistoryOutput(match, matchId[1]);
+                const exit = await matchHistoryOutput(match, puuid);
                 if (exit !== null) {
                     client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
                     try {
@@ -437,15 +426,21 @@ client.lol = async function () {
                 }
             }
         }
-        try {
-            await interaction.editReply("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database");
-        } catch {
-            try {
-                await interaction.channel.send("<@" + discordid + ">, " + client.requests["updates"][0]["count"] + " matchs added to the database");
-            } catch {
+        const rank = await client.update_rank(client.requests["updates"][0]["id"]);
 
-            }
+        // read current rank and send message if rank changed
+        const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
+        if (current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] || current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] || current_rank.rows[0].LP_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] || current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] || current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] || current_rank.rows[0].LP_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]) {
+            await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_solo = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + client.requests["updates"][0]["id"] + "'");
+            const embed = new MessageEmbed()
+                .setColor("#0099ff")
+                .setTitle("Rank update")
+                .setURL("https://euw.op.gg/summoner/userName=" + current_rank.rows[0]["name"])
+                .setAuthor("LoL Stats", "https://i.imgur.com/2K9X9XV.png");
+
+            await client.channel.cache.get("1034981867205697557").send(embed);
         }
+
         client.requests["updates"].shift();
     }
     client.running = false;

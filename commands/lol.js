@@ -1861,18 +1861,12 @@ module.exports = {
         return await interaction.respond(champs);
     },
     addSumoner,
-    add_summoner_manual,
-    update
+    add_summoner_manual
 
 };
 
 async function addSumoner(client, name, interaction) {
     client.requests["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction });
-    await client.lol();
-}
-
-async function update(client, interaction) {
-    client.requests["updates"].push({ "discordid": interaction.user.id, "interaction": interaction, "matchs": [], "total": 0, "count": 0 });
     await client.lol();
 }
 
