@@ -229,8 +229,7 @@ async function set_update(number) {
  * @param {*} summoner_id  summoner id
  */
 client.update_rank = async function (summoner_id) {
-    const response = await lol_api.leaguesBySummoner(apiKey, route, summoner_id);
-    console.log(response);
+    const response = await lol_api.leaguesBySummoner(apiKey, region, summoner_id);
 
     const data = {
         "RANKED_SOLO_5x5": {
