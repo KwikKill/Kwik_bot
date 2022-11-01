@@ -432,7 +432,7 @@ client.lol = async function () {
                 .setURL("https://euw.op.gg/summoner/userName=" + current_rank.rows[0]["name"])
                 .setAuthor("LoL Stats", "https://i.imgur.com/2K9X9XV.png");
 
-            await client.channels.cache.get("1034981867205697557").send(embed);
+            await client.channels.cache.get("1034981867205697557").send({ embeds: embed });
         }
 
         client.requests["updates"].shift();
