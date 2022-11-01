@@ -290,11 +290,11 @@ client.lol = async function () {
                 'accountid, ' +
                 'id, ' +
                 'discordid, ' +
-                'rank_solo' +
-                'tier_solo' +
-                'LP_solo' +
-                'rank_flex' +
-                'tier_flex' +
+                'rank_solo, ' +
+                'tier_solo, ' +
+                'LP_solo, ' +
+                'rank_flex, ' +
+                'tier_flex, ' +
                 'LP_flex' +
                 ') ' +
                 'VALUES(\'' +
