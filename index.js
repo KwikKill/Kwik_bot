@@ -377,7 +377,7 @@ client.lol = async function () {
                             "player4, " +
                             "player5 " +
                             ") VALUES (" +
-                            "'" + matchId[0] + "'," +
+                            "'" + matchId + "'," +
                             "'" + exit["summonerpuuid"] + "'," +
                             "'" + exit["queueName"] + "'," +
                             "'" + exit["champion"] + "'," +
