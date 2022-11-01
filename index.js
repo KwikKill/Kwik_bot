@@ -337,7 +337,6 @@ client.lol = async function () {
 
             if (match?.status?.status_code !== 404) {
                 const exit = await matchHistoryOutput(match, puuid);
-                console.log(exit);
                 if (exit !== null) {
                     client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
                     try {
@@ -415,7 +414,8 @@ client.lol = async function () {
                             "'" + exit["player5"] + "'" +
                             ")"
                         );
-                    } catch {
+                    } catch (e) {
+                        console.log(e);
                     }
                 }
             }
