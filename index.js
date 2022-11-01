@@ -429,8 +429,16 @@ client.lol = async function () {
             const embed = new MessageEmbed()
                 .setColor("#0099ff")
                 .setTitle("Rank update")
-                .setURL("https://euw.op.gg/summoner/userName=" + current_rank.rows[0]["name"])
-                .setAuthor("LoL Stats", "https://i.imgur.com/2K9X9XV.png");
+                .addFields(
+                    {
+                        name: "Solo/Duo",
+                        value: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + "LP",
+                    },
+                    {
+                        name: "Flex",
+                        value: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + "LP",
+                    }
+                );
 
             await client.channels.cache.get("1034981867205697557").send({ embeds: embed });
         }
