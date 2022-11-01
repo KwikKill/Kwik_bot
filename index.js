@@ -230,6 +230,7 @@ async function set_update(number) {
  */
 client.update_rank = async function (summoner_id) {
     const response = await lol_api.leaguesBySummoner(apiKey, route, summoner_id);
+    console.log(response);
 
     const data = {
         "RANKED_SOLO_5x5": {
