@@ -203,7 +203,7 @@ async function set_update(number) {
         already.push(y["puuid"]);
     }
     for (const y of client.requests["updates"][number]["matchs"]) {
-        already.push(y[0]);
+        already.push(y);
     }
     for (const y of matchIds) {
         if (!already.includes(y)) {
