@@ -423,8 +423,8 @@ client.lol = async function () {
         const rank = await client.update_rank(client.requests["updates"][0]["id"]);
         // read current rank and send message if rank changed
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
-        console.log(current_rank.rows[0].tier_solo, rank["RANKED_SOLO_5x5"]["tier"]);
-        console.log(current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"]);
+        console.log(current_rank.rows[0].LP_solo, rank["RANKED_SOLO_5x5"]["leaguePoints"]);
+        console.log(current_rank.rows[0].LP_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]);
         if (
             current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
             current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
