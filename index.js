@@ -457,7 +457,7 @@ client.lol = async function () {
         client.requests["updates"].shift();
     }
     client.running = false;
-    if (client.requests["summoners"].length > 0 || client.requests["update"].length > 0) {
+    if (client.requests["summoners"].length > 0 || client.requests["updates"].length > 0) {
         return await client.lol();
     }
     await client.channels.cache.get("991052056657793124").send("Finished updating");
