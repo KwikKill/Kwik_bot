@@ -1,4 +1,4 @@
-const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol_api = require("./util/lol_api.js");
@@ -426,21 +426,7 @@ client.lol = async function () {
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
         if (current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] || current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] || current_rank.rows[0].LP_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] || current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] || current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] || current_rank.rows[0].LP_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]) {
             await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + client.requests["updates"][0]["id"] + "'");
-            const embed = new MessageEmbed()
-                .setColor("#0099ff")
-                .setTitle("Rank update")
-                .addFields(
-                    {
-                        name: "Solo/Duo",
-                        value: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + "LP",
-                    },
-                    {
-                        name: "Flex",
-                        value: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + "LP",
-                    }
-                );
-
-            await client.channels.cache.get("1034981867205697557").send({ embeds: embed });
+            await client.channels.cache.get("1034981867205697557").send("Rank update for " + client.requests["updates"][0]["name"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP / " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
         }
 
         client.requests["updates"].shift();
