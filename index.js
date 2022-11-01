@@ -154,67 +154,60 @@ function checkpermission(message, perm) {
  * @param {*} number  id of the summoner in client.requests["updates"]
  */
 async function set_update(number) {
-    const discordid = client.requests["updates"][number]["discordid"];
-    const interaction = client.requests["updates"][number]["interaction"];
+    const puuid = client.requests["updates"][number]["puuid"];
 
     if (config.verbose) {
-        console.log("- lol (update 1) : " + discordid);
+        console.log("- lol (update 1) : " + puuid);
     }
 
-    const ids = await client.pg.query('SELECT * FROM summoners WHERE discordid = \'' + discordid + '\'');
-    if (ids.rowCount === 0) {
-        return await interaction.editReply("<@" + discordid + ">, You don't have any account linked.");
-    }
     const matchs = [];
-    for (const x of ids.rows) {
-        const matchIds = [];
-        let indexed = 0;
-        let gamesToIndex = true;
-        let listOfMatches = {};
-        //console.log(x)
+    const matchIds = [];
+    let indexed = 0;
+    let gamesToIndex = true;
+    let listOfMatches = {};
+    //console.log(x)
 
-        let start = startDate;
-        const response = await client.pg.query("SELECT timestamp FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = '" + discordid + "' ORDER BY timestamp DESC LIMIT 1");
-        if (response.rowCount !== 0) {
-            start = Math.floor(response.rows[0].timestamp / 1000);
+    let start = startDate;
+    const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = '" + puuid + "' ORDER BY timestamp DESC LIMIT 1");
+    if (response.rowCount !== 0) {
+        start = Math.floor(response.rows[0].timestamp / 1000);
+    }
+
+    do {
+        const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
+        listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, puuid, options) };
+        // If there are less than 100 matches in the object, then this is the last match list
+        if (listOfMatches['matches'].length < max_games) {
+            gamesToIndex = false;
         }
 
-        do {
-            const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
-            listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, x["puuid"], options) };
-            // If there are less than 100 matches in the object, then this is the last match list
-            if (listOfMatches['matches'].length < max_games) {
-                gamesToIndex = false;
-            }
-
-            //console.log(listOfMatches)
-            // Populate matchIds Array
-            for (const match in listOfMatches['matches']) {
-                matchIds[indexed] = listOfMatches['matches'][match];
-                indexed++;
-            }
-
-            // Fail Safe
-            if (listOfMatches['matches'][0] === undefined) {
-                gamesToIndex = false;
-                indexed = 0;
-            }
-        } while (gamesToIndex);
-
-
-        //console.log(matchIds)
-        const al = await client.pg.query('SELECT matchs.puuid FROM matchs,summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = \'' + discordid + '\'');
-        const already = [];
-        for (const y of al.rows) {
-            already.push(y["puuid"]);
+        //console.log(listOfMatches)
+        // Populate matchIds Array
+        for (const match in listOfMatches['matches']) {
+            matchIds[indexed] = listOfMatches['matches'][match];
+            indexed++;
         }
-        for (const y of client.requests["updates"][number]["matchs"]) {
-            already.push(y[0]);
+
+        // Fail Safe
+        if (listOfMatches['matches'][0] === undefined) {
+            gamesToIndex = false;
+            indexed = 0;
         }
-        for (const y of matchIds) {
-            if (!already.includes(y)) {
-                matchs.push(y);
-            }
+    } while (gamesToIndex);
+
+
+    //console.log(matchIds)
+    const al = await client.pg.query('SELECT matchs.puuid FROM matchs WHERE player = \'' + puuid + '\'');
+    const already = [];
+    for (const y of al.rows) {
+        already.push(y["puuid"]);
+    }
+    for (const y of client.requests["updates"][number]["matchs"]) {
+        already.push(y[0]);
+    }
+    for (const y of matchIds) {
+        if (!already.includes(y)) {
+            matchs.push(y);
         }
     }
     client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
