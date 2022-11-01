@@ -443,6 +443,9 @@ client.lol = async function () {
                 current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
                 current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
             ) {
+                console.log(current_rank.rows[0].rank_solo, rank["RANKED_SOLO_5x5"]["rank"]);
+                console.log(current_rank.rows[0].tier_solo, rank["RANKED_SOLO_5x5"]["tier"]);
+                console.log(current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["leaguePoints"]);
                 await client.channels.cache.get("1034981867205697557").send("Rank Solo/Duo update for " + client.requests["updates"][0]["username"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
             } else if (
                 current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
