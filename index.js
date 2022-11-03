@@ -277,34 +277,34 @@ client.update_mastery = async function (discordid) {
     console.log(masteries);
 
     const data = { "first_mastery_champ": "", "first_mastery": 0, "second_mastery_champ": "", "second_mastery": 0, "third_mastery_champ": "", "third_mastery": 0, "total_point": 0, "mastery7": 0, "mastery6": 0, "mastery5": 0 };
-    for (const x of masteries) {
+    for (const x in masteries) {
         data["total_point"] += x.championPoints;
-        if (x.championLevel === 7) {
+        if (masteries[x].championLevel === 7) {
             data["mastery7"]++;
         }
-        if (x.championLevel === 6) {
+        if (masteries[x].championLevel === 6) {
             data["mastery6"]++;
         }
-        if (x.championLevel === 5) {
+        if (masteries[x].championLevel === 5) {
             data["mastery5"]++;
         }
-        if (x.championPoints > data["first_mastery"]) {
+        if (masteries[x].championPoints > data["first_mastery"]) {
             data["third_mastery"] = data["second_mastery"];
             data["third_mastery_champ"] = data["second_mastery_champ"];
             data["second_mastery"] = data["first_mastery"];
             data["second_mastery_champ"] = data["first_mastery_champ"];
-            data["first_mastery"] = x.championPoints;
-            data["first_mastery_champ"] = champions[x.championId];
+            data["first_mastery"] = masteries[x].championPoints;
+            data["first_mastery_champ"] = champions[masteries[x].championId];
         }
-        else if (x.championPoints > data["second_mastery"]) {
+        else if (masteries[x].championPoints > data["second_mastery"]) {
             data["third_mastery"] = data["second_mastery"];
             data["third_mastery_champ"] = data["second_mastery_champ"];
-            data["second_mastery"] = x.championPoints;
-            data["second_mastery_champ"] = champions[x.championId];
+            data["second_mastery"] = masteries[x].championPoints;
+            data["second_mastery_champ"] = champions[masteries[x].championId];
         }
-        else if (x.championPoints > data["third_mastery"]) {
-            data["third_mastery"] = x.championPoints;
-            data["third_mastery_champ"] = champions[x.championId];
+        else if (masteries[x].championPoints > data["third_mastery"]) {
+            data["third_mastery"] = masteries[x].championPoints;
+            data["third_mastery_champ"] = champions[masteries[x].championId];
         }
     }
     console.log(data);
