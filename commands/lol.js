@@ -1677,7 +1677,7 @@ module.exports = {
                     },*/
                     {
                         name: "**Ranked Tiers :**",
-                        value: "**Ranked Solo :** " + best_solo_str + "\n**Ranked Flex :** " + best_flex_str,
+                        value: "Ranked Solo : **" + best_solo_str + "**\nRanked Flex : **" + best_flex_str + "**",
                         inline: true
                     },
                     {
