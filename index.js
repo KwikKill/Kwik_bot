@@ -257,7 +257,7 @@ client.update_mastery = async function (discordid) {
     const masteries = {};
     const query = await client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
     for (const x of query.rows) {
-        const response = await lol_api.championMasteriesBySummoner(apiKey, region, x.id);
+        const response = await lol_api.championmasteriesBySummoner(apiKey, region, x.id);
         for (const y of response) {
             if (masteries[y.championId] === undefined) {
                 masteries[y.championId] = y;
@@ -307,7 +307,7 @@ client.update_mastery = async function (discordid) {
             data["third_mastery_champ"] = champions[x.championId];
         }
     }
-    console.log(data)
+    console.log(data);
     return data;
 };
 
