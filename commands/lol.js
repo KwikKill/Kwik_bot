@@ -1607,16 +1607,14 @@ module.exports = {
                 let best_solo = ["unranked", "", 0];
                 let best_flex = ["unranked", "", 0];
                 for (const row of response.rows) {
-                    console.log(best_solo);
-                    console.log(row);
                     accounts += "EUW - " + row.username + "\n";
 
                     if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
                         best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
                     } else if (tiers.indexOf(row.tier_solo) === tiers.indexOf(best_solo[0])) {
-                        if (rank.indexOf(row.rank_solo) > tiers.indexOf(best_solo[1])) {
+                        if (rank.indexOf(row.rank_solo) > rank.indexOf(best_solo[1])) {
                             best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
-                        } else if (rank.indexOf(row.rank_solo) === tiers.indexOf(best_solo[1])) {
+                        } else if (rank.indexOf(row.rank_solo) === rank.indexOf(best_solo[1])) {
                             if (row.lp_solo > best_solo[2]) {
                                 best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
                             }
@@ -1626,9 +1624,9 @@ module.exports = {
                     if (tiers.indexOf(row.tier_flex) > tiers.indexOf(best_flex[0])) {
                         best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
                     } else if (tiers.indexOf(row.tier_flex) === tiers.indexOf(best_flex[0])) {
-                        if (rank.indexOf(row.rank_flex) > tiers.indexOf(best_flex[1])) {
+                        if (rank.indexOf(row.rank_flex) > rank.indexOf(best_flex[1])) {
                             best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
-                        } else if (rank.indexOf(row.rank_flex) === tiers.indexOf(best_flex[1])) {
+                        } else if (rank.indexOf(row.rank_flex) === rank.indexOf(best_flex[1])) {
                             if (row.lp_flex > best_flex[2]) {
                                 best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
                             }
