@@ -1660,21 +1660,21 @@ module.exports = {
                     })
                     .setTimestamp();
                 embed.addFields(
-                    {
+                    /*{
                         name: "**Top Champions :**",
-                        value: "",// + general,
+                        value: "" + general,
                         inline: true
                     },
                     {
                         name: "**Mastery Statistics :**",
-                        value: "",// + damages,
+                        value: "" + damages,
                         inline: true
                     },
                     {
                         name: "**Recently Played :**",
-                        value: "",// + tanked,
+                        value: "" + tanked,
                         inline: true
-                    },
+                    },*/
                     {
                         name: "**Ranked Tiers :**",
                         value: "**Ranked Solo :** " + best_solo_str + "\n**Ranked Flex :** " + best_flex_str,
