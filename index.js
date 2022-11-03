@@ -248,6 +248,48 @@ client.update_rank = async function (summoner_id) {
 };
 
 /**
+ * Update mastery data of user in the database
+ * @function update_mastery
+ * @param {*} summoner_id  summoner id
+ */
+client.update_mastery = async function (summoner_id) {
+    const response = await lol_api.championmasteriesBySummoner(apiKey, region, summoner_id);
+    const data = { "first_mastery_champ": "", "first_mastery": 0, "second_mastery_champ": "", "second_mastery": 0, "third_mastery_champ": "", "third_mastery": 0, "total_point": 0, "mastery7": 0, "mastery6": 0, "mastery5": 0 };
+    for (const x of response) {
+        data["total_point"] += x.championPoints;
+        if (x.championLevel === 7) {
+            data["mastery7"]++;
+        }
+        if (x.championLevel === 6) {
+            data["mastery6"]++;
+        }
+        if (x.championLevel === 5) {
+            data["mastery5"]++;
+        }
+        if (x.championPoints > data["first_mastery"]) {
+            data["third_mastery"] = data["second_mastery"];
+            data["third_mastery_champ"] = data["second_mastery_champ"];
+            data["second_mastery"] = data["first_mastery"];
+            data["second_mastery_champ"] = data["first_mastery_champ"];
+            data["first_mastery"] = x.championPoints;
+            data["first_mastery_champ"] = champions[x.championId];
+        }
+        else if (x.championPoints > data["second_mastery"]) {
+            data["third_mastery"] = data["second_mastery"];
+            data["third_mastery_champ"] = data["second_mastery_champ"];
+            data["second_mastery"] = x.championPoints;
+            data["second_mastery_champ"] = champions[x.championId];
+        }
+        else if (x.championPoints > data["third_mastery"]) {
+            data["third_mastery"] = x.championPoints;
+            data["third_mastery_champ"] = champions[x.championId];
+        }
+    }
+    return data;
+};
+
+
+/**
  * Fetch summoner game list and add games to the database
  * @function lol
  */
@@ -304,6 +346,36 @@ client.lol = async function () {
                 rank["RANKED_FLEX_SR"]["leaguePoints"] +
                 '\')'
             );
+
+            const mastery = await client.update_mastery(id);
+            await client.pg.query('INSERT INTO mastery(' +
+                'discordid, ' +
+                'first_mastery_champ, ' +
+                'first_mastery, ' +
+                'second_mastery_champ, ' +
+                'second_mastery, ' +
+                'third_mastery_champ, ' +
+                'third_mastery, ' +
+                'total_point, ' +
+                'mastery7, ' +
+                'mastery6, ' +
+                'mastery5' +
+                ') ' +
+                'VALUES(\'' +
+                discordid + '\', \'' +
+                mastery["first_mastery_champ"] + '\', \'' +
+                mastery["first_mastery"] + '\', \'' +
+                mastery["second_mastery_champ"] + '\', \'' +
+                mastery["second_mastery"] + '\', \'' +
+                mastery["third_mastery_champ"] + '\', \'' +
+                mastery["third_mastery"] + '\', \'' +
+                mastery["total_point"] + '\', \'' +
+                mastery["mastery7"] + '\', \'' +
+                mastery["mastery6"] + '\', \'' +
+                mastery["mastery5"] +
+                '\')'
+            );
+
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
             } catch {
@@ -462,6 +534,20 @@ client.lol = async function () {
 
 
         }
+
+        const mastery = await client.update_mastery(client.requests["updates"][0]["id"]);
+        await client.pg.query("UPDATE mastery " +
+            "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
+            "first_mastery = '" + mastery["first_mastery"] + "', " +
+            "second_mastery_champ = " + mastery["second_mastery_champ"] + ", " +
+            "third_mastery_champ = '" + rank["third_mastery_champ"] + "', " +
+            "third_mastery = '" + rank["third_mastery"] + "', " +
+            "mastery7 = '" + rank["mastery7"] + "', " +
+            "mastery6 = '" + rank["mastery6"] + "', " +
+            "mastery5 = '" + rank["mastery5"] + "', " +
+            "total_point = " + rank["total_point"] + " " +
+            "WHERE discordid = '" + client.requests["updates"][0]["discordid"] + "'"
+        );
 
         client.requests["updates"].shift();
     }
