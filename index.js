@@ -250,12 +250,34 @@ client.update_rank = async function (summoner_id) {
 /**
  * Update mastery data of user in the database
  * @function update_mastery
- * @param {*} summoner_id  summoner id
+ * @param {*} discordid  discord id
  */
-client.update_mastery = async function (summoner_id) {
-    const response = await lol_api.championmasteriesBySummoner(apiKey, region, summoner_id);
+client.update_mastery = async function (discordid) {
+
+    const masteries = {};
+    const query = await client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
+    for (const x of query.rows) {
+        const response = await lol_api.championMasteriesBySummoner(apiKey, region, x.id);
+        for (const y of response) {
+            if (masteries[y.championId] === undefined) {
+                masteries[y.championId] = y;
+            } else {
+                masteries[y.championId]["championPoints"] += y.championPoints;
+                if (y.lastPlayTime > masteries[y.championId]["lastPlayTime"]) {
+                    masteries[y.championId]["lastPlayTime"] = y.lastPlayTime;
+                }
+                if (y.championLevel > masteries[y.championId]["championLevel"]) {
+                    masteries[y.championId]["championLevel"] = y.championLevel;
+                }
+            }
+
+        }
+    }
+
+    console.log(masteries);
+
     const data = { "first_mastery_champ": "", "first_mastery": 0, "second_mastery_champ": "", "second_mastery": 0, "third_mastery_champ": "", "third_mastery": 0, "total_point": 0, "mastery7": 0, "mastery6": 0, "mastery5": 0 };
-    for (const x of response) {
+    for (const x of masteries) {
         data["total_point"] += x.championPoints;
         if (x.championLevel === 7) {
             data["mastery7"]++;
@@ -285,6 +307,7 @@ client.update_mastery = async function (summoner_id) {
             data["third_mastery_champ"] = champions[x.championId];
         }
     }
+    console.log(data)
     return data;
 };
 
@@ -347,7 +370,7 @@ client.lol = async function () {
                 '\')'
             );
 
-            const mastery = await client.update_mastery(id);
+            const mastery = await client.update_mastery(discordid);
             await client.pg.query('INSERT INTO mastery(' +
                 'discordid, ' +
                 'first_mastery_champ, ' +
@@ -535,7 +558,8 @@ client.lol = async function () {
 
         }
 
-        const mastery = await client.update_mastery(client.requests["updates"][0]["id"]);
+        const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"]);
+
         await client.pg.query("UPDATE mastery " +
             "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
             "first_mastery = '" + mastery["first_mastery"] + "', " +
