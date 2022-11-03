@@ -1610,25 +1610,25 @@ module.exports = {
                     accounts += "EUW - " + row.username + "\n";
 
                     if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
-                        best_solo = [row.tier_solo, row.rank_solo, row.LP_solo];
+                        best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
                     } else if (tiers.indexOf(row.tier_solo) === tiers.indexOf(best_solo[0])) {
                         if (rank.indexOf(row.rank_solo) > tiers.indexOf(best_solo[1])) {
-                            best_solo = [row.tier_solo, row.rank_solo, row.LP_solo];
+                            best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
                         } else if (rank.indexOf(row.rank_solo) === tiers.indexOf(best_solo[1])) {
-                            if (row.LP_solo > best_solo[2]) {
-                                best_solo = [row.tier_solo, row.rank_solo, row.LP_solo];
+                            if (row.lp_solo > best_solo[2]) {
+                                best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
                             }
                         }
                     }
 
                     if (tiers.indexOf(row.tier_flex) > tiers.indexOf(best_flex[0])) {
-                        best_flex = [row.tier_flex, row.rank_flex, row.LP_flex];
+                        best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
                     } else if (tiers.indexOf(row.tier_flex) === tiers.indexOf(best_flex[0])) {
                         if (rank.indexOf(row.rank_flex) > tiers.indexOf(best_flex[1])) {
-                            best_flex = [row.tier_flex, row.rank_flex, row.LP_flex];
+                            best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
                         } else if (rank.indexOf(row.rank_flex) === tiers.indexOf(best_flex[1])) {
-                            if (row.LP_flex > best_flex[2]) {
-                                best_flex = [row.tier_flex, row.rank_flex, row.LP_flex];
+                            if (row.lp_flex > best_flex[2]) {
+                                best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
                             }
                         }
                     }
