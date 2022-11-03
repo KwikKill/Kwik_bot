@@ -12,7 +12,7 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-        const guilds = ["513776796211085342", "890915473363980308", "480142959501901845"];
+        const guilds = ["513776796211085342", "890915473363980308", "480142959501901845", "768786745931333634" ];
 
         if (!msg.author.bot && msg.channel?.id !== "940543958394732555" && msg.guild?.id === "890915473363980308") {
             for (const x in japonais) {
