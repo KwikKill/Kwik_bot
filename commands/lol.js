@@ -1607,6 +1607,8 @@ module.exports = {
                 let best_solo = ["unranked", "", 0];
                 let best_flex = ["unranked", "", 0];
                 for (const row of response.rows) {
+                    console.log(best_solo);
+                    console.log(row);
                     accounts += "EUW - " + row.username + "\n";
 
                     if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
