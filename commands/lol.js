@@ -1,6 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 
 const decimal = 2;
+const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
+const rank = ["IV", "III", "II", "I"];
 
 module.exports = {
     name: 'lol',
@@ -154,6 +156,18 @@ module.exports = {
                             name: 'account',
                             description: 'account',
                             type: 'STRING'
+                        },
+                    ]
+                },
+                {
+                    name: 'profile',
+                    description: 'See profile stats',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'discordaccount',
+                            description: 'Discord account',
+                            type: 'USER',
                         },
                     ]
                 },
@@ -956,7 +970,7 @@ module.exports = {
                 values = values.substring(0, values.length - 1);
                 labels = labels.substring(0, labels.length - 1);
 
-                const url2 = url + values + "&chl=" + labels + "&chco=FFC6A5|FFFF42|DEF3BD|00A5C6|DEBDDE|FF0000|0000CC|660033|66FF66";
+                const url2 = url + values + "&chl=" + labels + "&chco=FFC6A5|FFFF42|DEF3BD|00A5C6|DEBDDE|FF0000|0000CC|660033|66FF66&chf=bg,s,00000a00";
 
 
                 // 1) Carry stats
@@ -1157,7 +1171,7 @@ module.exports = {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                 }
 
-                const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
+                const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
 
                 let title = "" + discordusername + "'s matchups";
                 if (champion !== undefined) {
@@ -1281,7 +1295,7 @@ module.exports = {
                 values1 = values1.substring(0, values1.length - 1);
                 values2 = values2.substring(0, values2.length - 1);
                 champ = champ.substring(0, champ.length - 1);
-                const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00");
+                const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
 
                 let title = "" + discordusername + "'s champions";
                 if (role !== undefined) {
@@ -1452,7 +1466,7 @@ module.exports = {
                 }
                 //console.log(ks)
 
-                let url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chdl=ks&chd=t:";
+                let url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chf=bg,s,00000a00&chdl=ks&chd=t:";
                 let values = "";
                 for (let i = 0; i < ks.length; i++) {
                     values += (ks[i].y / 5).toFixed(0) + ",";
@@ -1572,6 +1586,109 @@ module.exports = {
                     return;
                 }
                 console.log(response.rows);
+
+            } else if (interaction.options.getSubcommand() === "profile") {
+                let discordusername = "";
+                if (discordaccount === null) {
+                    discordaccount = interaction.user.id;
+                    discordusername = interaction.user.username;
+                } else {
+                    discordusername = discordaccount.username;
+                    discordaccount = discordaccount.id;
+                }
+
+                const response = await client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordaccount + "';");
+                if (response.rows.length === 0) {
+                    interaction.editReply("No data found. Try adding your account with /account add");
+                    return;
+                }
+
+                let accounts = "";
+                let best_solo = ["unranked", "", 0];
+                let best_flex = ["unranked", "", 0];
+                for (const row of response.rows) {
+                    accounts += "EUW - " + row.username + "\n";
+
+                    if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
+                        best_solo = [row.tier_solo, row.rank_solo, row.LP_solo];
+                    } else if (tiers.indexOf(row.tier_solo) === tiers.indexOf(best_solo[0])) {
+                        if (rank.indexOf(row.rank_solo) > tiers.indexOf(best_solo[1])) {
+                            best_solo = [row.tier_solo, row.rank_solo, row.LP_solo];
+                        } else if (rank.indexOf(row.rank_solo) === tiers.indexOf(best_solo[1])) {
+                            if (row.LP_solo > best_solo[2]) {
+                                best_solo = [row.tier_solo, row.rank_solo, row.LP_solo];
+                            }
+                        }
+                    }
+
+                    if (tiers.indexOf(row.tier_flex) > tiers.indexOf(best_flex[0])) {
+                        best_flex = [row.tier_flex, row.rank_flex, row.LP_flex];
+                    } else if (tiers.indexOf(row.tier_flex) === tiers.indexOf(best_flex[0])) {
+                        if (rank.indexOf(row.rank_flex) > tiers.indexOf(best_flex[1])) {
+                            best_flex = [row.tier_flex, row.rank_flex, row.LP_flex];
+                        } else if (rank.indexOf(row.rank_flex) === tiers.indexOf(best_flex[1])) {
+                            if (row.LP_flex > best_flex[2]) {
+                                best_flex = [row.tier_flex, row.rank_flex, row.LP_flex];
+                            }
+                        }
+                    }
+
+                }
+
+                let best_solo_str;
+                let best_flex_str;
+
+                if (best_solo[0] === "unranked") {
+                    best_solo_str = "Unranked";
+                } else {
+                    best_solo_str = best_solo[0] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+                }
+                if (best_flex[0] === "unranked") {
+                    best_flex_str = "Unranked";
+                } else {
+                    best_flex_str = best_solo[0] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+                }
+
+
+
+                const embed = new MessageEmbed()
+                    .setTitle("📖" + discordusername + "'s Profile :")
+                    .setColor("#00FF00")
+                    .setFooter({
+                        text: "Requested by " + interaction.user.username,
+                        //iconURL: interaction.user.displayAvatarURL()
+                    })
+                    .setTimestamp();
+                embed.addFields(
+                    {
+                        name: "**Top Champions :**",
+                        value: "",// + general,
+                        inline: true
+                    },
+                    {
+                        name: "**Mastery Statistics :**",
+                        value: "",// + damages,
+                        inline: true
+                    },
+                    {
+                        name: "**Recently Played :**",
+                        value: "",// + tanked,
+                        inline: true
+                    },
+                    {
+                        name: "**Ranked Tiers :**",
+                        value: "**Ranked Solo :** " + best_solo_str + "\n**Ranked Flex :** " + best_flex_str,
+                        inline: true
+                    },
+                    {
+                        name: "**Accounts :**",
+                        value: "" + accounts,
+                        inline: true
+                    },
+
+                );
+                //.setURL(url);
+                return await interaction.editReply({ embeds: [embed] });
 
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
