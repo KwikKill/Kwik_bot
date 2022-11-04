@@ -280,7 +280,7 @@ client.update_mastery = async function (discordid) {
     for (const x in masteries) {
         console.log(data["total_point"]);
         data["total_point"] += x.championPoints;
-        console.log(championPoints);
+        console.log(x.championPoints);
         if (masteries[x].championLevel === 7) {
             data["mastery7"]++;
         }
