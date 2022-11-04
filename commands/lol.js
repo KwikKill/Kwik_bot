@@ -1684,15 +1684,15 @@ module.exports = {
                     third_mastery = Math.floor(mastery.rows[0].third_mastery / 1000) + "k";
                 }
 
-                const Top_Champion = "**" + mastery.rows[0].first_mastery_champ + "** - " + first_mastery +
-                    "\n**" + mastery.rows[0].second_mastery_champ + "** - " + second_mastery +
-                    "\n**" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
+                const Top_Champion = " - **" + mastery.rows[0].first_mastery_champ + "** - " + first_mastery +
+                    "\n - **" + mastery.rows[0].second_mastery_champ + "** - " + second_mastery +
+                    "\n - **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
 
                 // Mastery statistics
                 const Mastery_statistics = mastery.rows[0].mastery7 + "x<:Level_7:411977489707958282> " +
                     mastery.rows[0].mastery6 + "x<:Level_6:411977489351704587> " +
                     mastery.rows[0].mastery5 + "x<:Level_5:411977803144364032> \n" +
-                    mastery.rows[0].total_point + " **Total Points";
+                    mastery.rows[0].total_point + " **Total Points**";
 
                 const embed = new MessageEmbed()
                     .setTitle("📖" + discordusername + "'s Profile :")
