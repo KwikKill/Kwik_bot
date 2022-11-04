@@ -368,34 +368,39 @@ client.lol = async function () {
                 '\')'
             );
 
-            const mastery = await client.update_mastery(discordid);
-            await client.pg.query("INSERT INTO mastery(" +
-                "discordid, " +
-                "first_mastery_champ, " +
-                "first_mastery, " +
-                "second_mastery_champ, " +
-                "second_mastery, " +
-                "third_mastery_champ, " +
-                "third_mastery, " +
-                "total_point, " +
-                "mastery7, " +
-                "mastery6, " +
-                "mastery5" +
-                ") " +
-                "VALUES('" +
-                discordid + "', '" +
-                mastery["first_mastery_champ"] + "', " +
-                mastery["first_mastery"] + ", '" +
-                mastery["second_mastery_champ"] + "', " +
-                mastery["second_mastery"] + ", '" +
-                mastery["third_mastery_champ"] + "', " +
-                mastery["third_mastery"] + ", " +
-                mastery["total_point"] + ", " +
-                mastery["mastery7"] + ", " +
-                mastery["mastery6"] + ", " +
-                mastery["mastery5"] +
-                ")"
-            );
+            const response = await client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordid + "'");
+            if (response.rowCount === 0) {
+                const mastery = await client.update_mastery(discordid);
+                await client.pg.query("INSERT INTO mastery(" +
+                    "discordid, " +
+                    "first_mastery_champ, " +
+                    "first_mastery, " +
+                    "second_mastery_champ, " +
+                    "second_mastery, " +
+                    "third_mastery_champ, " +
+                    "third_mastery, " +
+                    "total_point, " +
+                    "mastery7, " +
+                    "mastery6, " +
+                    "mastery5" +
+                    ") " +
+                    "VALUES('" +
+                    discordid + "', '" +
+                    mastery["first_mastery_champ"] + "', " +
+                    mastery["first_mastery"] + ", '" +
+                    mastery["second_mastery_champ"] + "', " +
+                    mastery["second_mastery"] + ", '" +
+                    mastery["third_mastery_champ"] + "', " +
+                    mastery["third_mastery"] + ", " +
+                    mastery["total_point"] + ", " +
+                    mastery["mastery7"] + ", " +
+                    mastery["mastery6"] + ", " +
+                    mastery["mastery5"] +
+                    ")"
+                );
+            }
+
+
 
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
