@@ -290,21 +290,21 @@ client.update_mastery = async function (discordid) {
         }
         if (masteries[x].championPoints > data["first_mastery"]) {
             data["third_mastery"] = data["second_mastery"];
-            data["third_mastery_champ"] = data["second_mastery_champ"];
+            data["third_mastery_champ"] = data["second_mastery_champ"].replaceAll("'", "");
             data["second_mastery"] = data["first_mastery"];
-            data["second_mastery_champ"] = data["first_mastery_champ"];
+            data["second_mastery_champ"] = data["first_mastery_champ"].replaceAll("'", "");
             data["first_mastery"] = masteries[x].championPoints;
-            data["first_mastery_champ"] = champions[masteries[x].championId];
+            data["first_mastery_champ"] = champions[masteries[x].championId].replaceAll("'", "");
         }
         else if (masteries[x].championPoints > data["second_mastery"]) {
             data["third_mastery"] = data["second_mastery"];
-            data["third_mastery_champ"] = data["second_mastery_champ"];
+            data["third_mastery_champ"] = data["second_mastery_champ"].replaceAll("'", "");
             data["second_mastery"] = masteries[x].championPoints;
-            data["second_mastery_champ"] = champions[masteries[x].championId];
+            data["second_mastery_champ"] = champions[masteries[x].championId].replaceAll("'", "");
         }
         else if (masteries[x].championPoints > data["third_mastery"]) {
             data["third_mastery"] = masteries[x].championPoints;
-            data["third_mastery_champ"] = champions[masteries[x].championId];
+            data["third_mastery_champ"] = champions[masteries[x].championId].replaceAll("'", "");
         }
     }
     console.log(data);
