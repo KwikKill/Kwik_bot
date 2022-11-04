@@ -371,32 +371,32 @@ client.lol = async function () {
             );
 
             const mastery = await client.update_mastery(discordid);
-            await client.pg.query('INSERT INTO mastery(' +
-                'discordid, ' +
-                'first_mastery_champ, ' +
-                'first_mastery, ' +
-                'second_mastery_champ, ' +
-                'second_mastery, ' +
-                'third_mastery_champ, ' +
-                'third_mastery, ' +
-                'total_point, ' +
-                'mastery7, ' +
-                'mastery6, ' +
-                'mastery5' +
-                ') ' +
-                'VALUES(\'' +
-                discordid + '\', \'' +
-                mastery["first_mastery_champ"] + '\', \'' +
-                mastery["first_mastery"] + '\', \'' +
-                mastery["second_mastery_champ"] + '\', \'' +
-                mastery["second_mastery"] + '\', \'' +
-                mastery["third_mastery_champ"] + '\', \'' +
-                mastery["third_mastery"] + '\', \'' +
-                mastery["total_point"] + '\', \'' +
-                mastery["mastery7"] + '\', \'' +
-                mastery["mastery6"] + '\', \'' +
+            await client.pg.query("INSERT INTO mastery(" +
+                "discordid, " +
+                "first_mastery_champ, " +
+                "first_mastery, " +
+                "second_mastery_champ, " +
+                "second_mastery, " +
+                "third_mastery_champ, " +
+                "third_mastery, " +
+                "total_point, " +
+                "mastery7, " +
+                "mastery6, " +
+                "mastery5" +
+                ") " +
+                "VALUES('" +
+                discordid + "', '" +
+                mastery["first_mastery_champ"] + "', " +
+                mastery["first_mastery"] + ", '" +
+                mastery["second_mastery_champ"] + "', " +
+                mastery["second_mastery"] + ", '" +
+                mastery["third_mastery_champ"] + "', " +
+                mastery["third_mastery"] + ", " +
+                mastery["total_point"] + ", " +
+                mastery["mastery7"] + ", " +
+                mastery["mastery6"] + ", " +
                 mastery["mastery5"] +
-                '\')'
+                ")"
             );
 
             try {
@@ -562,13 +562,14 @@ client.lol = async function () {
 
         await client.pg.query("UPDATE mastery " +
             "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
-            "first_mastery = '" + mastery["first_mastery"] + "', " +
-            "second_mastery_champ = " + mastery["second_mastery_champ"] + ", " +
+            "first_mastery = " + mastery["first_mastery"] + ", " +
+            "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
+            "second_mastery = " + mastery["second_mastery"] + ", " +
             "third_mastery_champ = '" + rank["third_mastery_champ"] + "', " +
-            "third_mastery = '" + rank["third_mastery"] + "', " +
-            "mastery7 = '" + rank["mastery7"] + "', " +
-            "mastery6 = '" + rank["mastery6"] + "', " +
-            "mastery5 = '" + rank["mastery5"] + "', " +
+            "third_mastery = " + rank["third_mastery"] + ", " +
+            "mastery7 = " + rank["mastery7"] + ", " +
+            "mastery6 = " + rank["mastery6"] + ", " +
+            "mastery5 = " + rank["mastery5"] + ", " +
             "total_point = " + rank["total_point"] + " " +
             "WHERE discordid = '" + client.requests["updates"][0]["discordid"] + "'"
         );
