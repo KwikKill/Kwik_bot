@@ -305,7 +305,6 @@ client.update_mastery = async function (discordid) {
             data["third_mastery_champ"] = champions[masteries[x].championId].replaceAll("'", "");
         }
     }
-    console.log(data);
     return data;
 };
 
