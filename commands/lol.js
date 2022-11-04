@@ -7,7 +7,7 @@ const emojis = {
     "unranked": "",
     "IRON": "<:Iron:519953534356160532>",
     "BRONZE": "<:Bronze:519953533517299722>",
-    "SILVER": "<Silver:519953533315973123>",
+    "SILVER": "<:Silver:519953533315973123>",
     "GOLD": "<:Gold:519953533152526337>",
     "PLATINUM": "<:Platinum:519953533500391445>",
     "DIAMOND": "<:Diamond:519953533769089044>",
@@ -1693,6 +1693,9 @@ module.exports = {
                     mastery.rows[0].mastery6 + "x<:Level_6:411977489351704587> " +
                     mastery.rows[0].mastery5 + "x<:Level_5:411977803144364032> \n" +
                     mastery.rows[0].total_point + " **Total Points**";
+
+                // Champion statistics
+                //const response2 = await client.pg.query("SELECT * FROM matchs,summoners WHERE matchs.player = summoners.puuid AND discordid = '" + discordaccount + "' ORDER BY timestamp DESC LIMIT 3;");
 
                 const embed = new MessageEmbed()
                     .setTitle("📖" + discordusername + "'s Profile :")
