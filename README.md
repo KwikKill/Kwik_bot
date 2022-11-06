@@ -1,4 +1,4 @@
-# Gab_bot
+# Kwik_bot
 
 This is my discord bot.
 
