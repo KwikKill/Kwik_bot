@@ -1820,13 +1820,6 @@ module.exports = {
                     }
                 }
 
-                oponent_carry_damage = oponent_carry_damage / response.rows.length * 100;
-                oponent_carry_tanked = oponent_carry_tanked / response.rows.length * 100;
-                oponent_carry_gold = oponent_carry_gold / response.rows.length * 100;
-                oponent_overall = oponent_overall / response.rows.length * 100;
-                oponent_hard_carry = oponent_hard_carry / response.rows.length * 100;
-                oponent_win = oponent_win / response.rows.length * 100;
-
                 // 2) Average stats
 
                 const oponent_length = response2.rows[0].duration;
@@ -1858,6 +1851,13 @@ module.exports = {
                 if (100 - response.rows.length > 0) {
                     oponent_score = oponent_score * 0.99 ** (100 - response.rows.length);
                 }
+
+                oponent_carry_damage = oponent_carry_damage / response.rows.length * 100;
+                oponent_carry_tanked = oponent_carry_tanked / response.rows.length * 100;
+                oponent_carry_gold = oponent_carry_gold / response.rows.length * 100;
+                oponent_overall = oponent_overall / response.rows.length * 100;
+                oponent_hard_carry = oponent_hard_carry / response.rows.length * 100;
+                oponent_win = oponent_win / response.rows.length * 100;
 
                 // Your stats
 
@@ -1939,13 +1939,6 @@ module.exports = {
                     }
                 }
 
-                carry_damage = carry_damage / response4.rows.length * 100;
-                carry_tanked = carry_tanked / response4.rows.length * 100;
-                carry_gold = carry_gold / response4.rows.length * 100;
-                overall = overall / response4.rows.length * 100;
-                hard_carry = hard_carry / response4.rows.length * 100;
-                win = win / response4.rows.length * 100;
-
                 // 2) Average stats
 
                 const length = response5.rows[0].duration;
@@ -1977,6 +1970,13 @@ module.exports = {
                 if (100 - response4.rows.length > 0) {
                     score = score * 0.99 ** (100 - response4.rows.length);
                 }
+
+                carry_damage = carry_damage / response4.rows.length * 100;
+                carry_tanked = carry_tanked / response4.rows.length * 100;
+                carry_gold = carry_gold / response4.rows.length * 100;
+                overall = overall / response4.rows.length * 100;
+                hard_carry = hard_carry / response4.rows.length * 100;
+                win = win / response4.rows.length * 100;
 
                 let title = "Stats comparaison with " + discordusername + "";
                 if (champion !== undefined) {
