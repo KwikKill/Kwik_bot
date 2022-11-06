@@ -431,7 +431,7 @@ module.exports = {
                             type: 'STRING'
                         }
                     ]
-                }/*,
+                },
                 {
                     name: 'compare',
                     description: 'compare stats',
@@ -440,6 +440,8 @@ module.exports = {
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
+                            type: 'USER',
+                            required: true
                         },
                         {
                             name: 'champion',
@@ -510,7 +512,7 @@ module.exports = {
                             ]
                         }
                     ]
-                }*/,
+                },
                 {
                     name: 'ks',
                     description: 'See ks stats',
@@ -1735,6 +1737,260 @@ module.exports = {
                 );
                 //.setURL(url);
                 return await interaction.editReply({ embeds: [embed] });
+
+            } else if (interaction.options.getSubcommand() === "compare") {
+                let discordusername = "";
+                discordaccount = interaction.user.id;
+                discordusername = interaction.user.username;
+
+                let query = "SELECT * " +
+                    "FROM matchs, summoners " +
+                    "WHERE summoners.discordid='" + discordaccount + "' " +
+                    "AND matchs.player = summoners.puuid";
+                if (champion !== undefined) {
+                    query += " AND matchs.champion='" + champion + "'";
+                }
+                if (role !== undefined) {
+                    query += " AND matchs.lane='" + role + "'";
+                }
+                if (gamemode !== undefined) {
+                    query += " AND matchs.gamemode='" + gamemode + "'";
+                }
+                query += ";";
+                const response = await client.pg.query(query);
+                if (response.rows.length === 0) {
+                    return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
+                }
+
+                // Query 2
+                let query2 = "SELECT " +
+                    "avg(length) as duration, " +
+                    "avg(kill) as kill, " +
+                    "avg(deaths) as deaths, " +
+                    "avg(assists) as assists, " +
+                    "avg(total_damage) as damage, " +
+                    "avg(tanked_damage) as damage_taken, " +
+                    "avg(heal) as heal, " +
+                    "avg(cs) as cs, " +
+                    "avg(gold) as gold, " +
+                    "avg(vision_score) as vision_score, " +
+                    "avg(pinks) as pinks, " +
+                    "avg(total_kills) as total_kills " +
+                    "FROM matchs, summoners " +
+                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
+                if (champion !== undefined) {
+                    query2 += " AND matchs.champion='" + champion + "'";
+                }
+                if (role !== undefined) {
+                    query2 += " AND matchs.lane='" + role + "'";
+                }
+                if (gamemode !== undefined) {
+                    query2 += " AND matchs.gamemode='" + gamemode + "'";
+                }
+                query2 += ";";
+                const response2 = await client.pg.query(query2);
+
+                // 1) Carry stats
+
+                let oponent_carry_damage = 0;
+                let oponent_carry_tanked = 0;
+                let oponent_carry_gold = 0;
+                let oponent_overall = 0;
+                let oponent_hard_carry = 0;
+                let oponent_win = 0;
+
+
+                for (let i = 0; i < response.rows.length; i++) {
+                    if (response.rows[i].result === "Win") {
+                        oponent_win += 1;
+                    }
+                    if (response.rows[i].first_gold) {
+                        oponent_carry_gold += 1;
+                    }
+                    if (response.rows[i].first_damages) {
+                        oponent_carry_damage += 1;
+                    }
+                    if (response.rows[i].first_tanked) {
+                        oponent_carry_tanked += 1;
+                    }
+                    if (response.rows[i].first_damages && response.rows[i].first_tanked && response.rows[i].first_gold) {
+                        oponent_hard_carry += 1;
+                    }
+                    if (response.rows[i].first_damages || response.rows[i].first_tanked || response.rows[i].first_gold) {
+                        oponent_overall += 1;
+                    }
+                }
+
+                // 2) Average stats
+
+                const oponent_length = response2.rows[0].duration;
+
+                const oponent_average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
+                const oponent_average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
+                const oponent_average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
+                let oponent_average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
+                let oponent_average_gold = response2.rows[0].gold;
+                let oponent_average_damages = response2.rows[0].damage;
+                let oponent_average_tanked = response2.rows[0].damage_taken;
+                const oponent_average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(decimal);
+                const oponent_average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(decimal);
+                const oponent_average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(decimal);
+
+                oponent_average_cs = (oponent_average_cs / (oponent_length / 60)).toFixed(decimal);
+                oponent_average_gold = (oponent_average_gold / (oponent_length / 60)).toFixed(decimal);
+                oponent_average_damages = (oponent_average_damages / (oponent_length / 60)).toFixed(decimal);
+                oponent_average_tanked = (oponent_average_tanked / (oponent_length / 60)).toFixed(decimal);
+
+                // KwikScore
+
+                let oponent_score = 0;
+                oponent_score += oponent_overall / response.rows.length * 100;
+                oponent_score += oponent_win / response.rows.length * 100;
+                oponent_score += (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills * 100;
+                oponent_score += 5 * (((Number.parseFloat(oponent_average_vision_score)) / (oponent_length / 60)) / 0.2);
+                oponent_score += 10 * oponent_average_cs;
+                if (100 - response.rows.length > 0) {
+                    oponent_score = oponent_score * 0.99 ** (100 - response.rows.length);
+                }
+
+                // Your stats
+
+                let query4 = "SELECT * " +
+                    "FROM matchs, summoners " +
+                    "WHERE summoners.discordid='" + discordaccount + "' " +
+                    "AND matchs.player = summoners.puuid";
+                if (champion !== undefined) {
+                    query4 += " AND matchs.champion='" + champion + "'";
+                }
+                if (role !== undefined) {
+                    query4 += " AND matchs.lane='" + role + "'";
+                }
+                if (gamemode !== undefined) {
+                    query4 += " AND matchs.gamemode='" + gamemode + "'";
+                }
+                query4 += ";";
+                const response4 = await client.pg.query(query4);
+                if (response.rows.length === 0) {
+                    return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
+                }
+
+                // Query 2
+                let query5 = "SELECT " +
+                    "avg(length) as duration, " +
+                    "avg(kill) as kill, " +
+                    "avg(deaths) as deaths, " +
+                    "avg(assists) as assists, " +
+                    "avg(total_damage) as damage, " +
+                    "avg(tanked_damage) as damage_taken, " +
+                    "avg(heal) as heal, " +
+                    "avg(cs) as cs, " +
+                    "avg(gold) as gold, " +
+                    "avg(vision_score) as vision_score, " +
+                    "avg(pinks) as pinks, " +
+                    "avg(total_kills) as total_kills " +
+                    "FROM matchs, summoners " +
+                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
+                if (champion !== undefined) {
+                    query5 += " AND matchs.champion='" + champion + "'";
+                }
+                if (role !== undefined) {
+                    query5 += " AND matchs.lane='" + role + "'";
+                }
+                if (gamemode !== undefined) {
+                    query5 += " AND matchs.gamemode='" + gamemode + "'";
+                }
+                query5 += ";";
+                const response5 = await client.pg.query(query5);
+
+                // 1) Carry stats
+
+                let carry_damage = 0;
+                let carry_tanked = 0;
+                let carry_gold = 0;
+                let overall = 0;
+                let hard_carry = 0;
+                let win = 0;
+
+
+                for (let i = 0; i < response4.rows.length; i++) {
+                    if (response4.rows[i].result === "Win") {
+                        win += 1;
+                    }
+                    if (response4.rows[i].first_gold) {
+                        carry_gold += 1;
+                    }
+                    if (response4.rows[i].first_damages) {
+                        carry_damage += 1;
+                    }
+                    if (response4.rows[i].first_tanked) {
+                        carry_tanked += 1;
+                    }
+                    if (response4.rows[i].first_damages && response4.rows[i].first_tanked && response4.rows[i].first_gold) {
+                        hard_carry += 1;
+                    }
+                    if (response4.rows[i].first_damages || response4.rows[i].first_tanked || response4.rows[i].first_gold) {
+                        overall += 1;
+                    }
+                }
+
+                // 2) Average stats
+
+                const length = response5.rows[0].duration;
+
+                const average_kills = Number.parseFloat(response5.rows[0].kill).toFixed(decimal);
+                const average_deaths = Number.parseFloat(response5.rows[0].deaths).toFixed(decimal);
+                const average_assists = Number.parseFloat(response5.rows[0].assists).toFixed(decimal);
+                let average_cs = Number.parseFloat(response5.rows[0].cs).toFixed(decimal);
+                let average_gold = response5.rows[0].gold;
+                let average_damages = response5.rows[0].damage;
+                let average_tanked = response5.rows[0].damage_taken;
+                const average_pinks = Number.parseFloat(response5.rows[0].pinks).toFixed(decimal);
+                const average_vision_score = Number.parseFloat(response5.rows[0].vision_score).toFixed(decimal);
+                const average_total_kills = Number.parseFloat(response5.rows[0].total_kills).toFixed(decimal);
+
+                average_cs = (average_cs / (length / 60)).toFixed(decimal);
+                average_gold = (average_gold / (length / 60)).toFixed(decimal);
+                average_damages = (average_damages / (length / 60)).toFixed(decimal);
+                average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
+
+                // KwikScore
+
+                let score = 0;
+                score += overall / response4.rows.length * 100;
+                score += win / response4.rows.length * 100;
+                score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
+                score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
+                score += 10 * average_cs;
+                if (100 - response4.rows.length > 0) {
+                    score = score * 0.99 ** (100 - response4.rows.length);
+                }
+
+                let title = "Stats comparaison with " + discordusername + "";
+                if (champion !== undefined) {
+                    title += " on " + champion;
+                }
+                if (role !== undefined) {
+                    title += " in " + role;
+                }
+
+                console.log('average_kills', average_kills, oponent_average_kills);
+                console.log('average_deaths', average_deaths, oponent_average_deaths);
+                console.log('average_assists', average_assists, oponent_average_assists);
+                console.log('average_cs', average_cs, oponent_average_cs);
+                console.log('average_gold', average_gold, oponent_average_gold);
+                console.log('average_damages', average_damages, oponent_average_damages);
+                console.log('average_tanked', average_tanked, oponent_average_tanked);
+                console.log('average_pinks', average_pinks, oponent_average_pinks);
+                console.log('average_vision_score', average_vision_score, oponent_average_vision_score);
+                console.log('average_total_kills', average_total_kills, oponent_average_total_kills);
+                console.log('score', score, oponent_score);
+                console.log('carry_gold', carry_gold, oponent_carry_gold);
+                console.log('carry_damage', carry_damage, oponent_carry_damage);
+                console.log('carry_tanked', carry_tanked, oponent_carry_tanked);
+                console.log('hard_carry', hard_carry, oponent_hard_carry);
+                console.log('overall', overall, oponent_overall);
+                console.log(title);
+
 
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
