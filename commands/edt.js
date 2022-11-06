@@ -66,7 +66,7 @@ const codes = {
         // 2A
         "348,2237": [
             "LV2_A allemand",
-            "#ANGLAIS_A"
+            "ANGLAIS_A"
         ]
 
     }
@@ -256,7 +256,11 @@ async function create_di_raph(client, monday, sunday, interaction, rt = false) {
 
 
                 for (const event of Object.values(events)) {
-                    if (codes[arg][x].includes(event.summary) || event.summary.includes("CC")) {
+                    if (codes[arg][x].includes(event.summary) ||
+                        event.summary.includes("CC") ||
+                        event.summary.includes("RIE") ||
+                        event.summary.includes("PPI")
+                    ) {
                         const start = new Date(event.start.toISOString());
                         start.setHours(start.getHours() - 1);
                         const end = new Date(event.end.toISOString());
