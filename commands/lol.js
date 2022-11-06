@@ -1739,9 +1739,9 @@ module.exports = {
                 return await interaction.editReply({ embeds: [embed] });
 
             } else if (interaction.options.getSubcommand() === "compare") {
-                let discordusername = "";
-                discordaccount = interaction.user.id;
-                discordusername = interaction.user.username;
+                discordaccount = discordaccount.id;
+                const discordusername = discordaccount.username;
+
 
                 let query = "SELECT * " +
                     "FROM matchs, summoners " +
@@ -1857,7 +1857,7 @@ module.exports = {
 
                 let query4 = "SELECT * " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' " +
+                    "WHERE summoners.discordid='" + interaction.user.id + "' " +
                     "AND matchs.player = summoners.puuid";
                 if (champion !== undefined) {
                     query4 += " AND matchs.champion='" + champion + "'";
@@ -1889,7 +1889,7 @@ module.exports = {
                     "avg(pinks) as pinks, " +
                     "avg(total_kills) as total_kills " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
+                    "WHERE summoners.discordid='" + interaction.user.id + "' AND matchs.player = summoners.puuid";
                 if (champion !== undefined) {
                     query5 += " AND matchs.champion='" + champion + "'";
                 }
