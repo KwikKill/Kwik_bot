@@ -222,9 +222,9 @@ function create_di(events) {
     const di = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} };
     for (const event of Object.values(events)) {
         const start = new Date(event.start.toISOString());
-        start.setHours(start.getHours() + 1);
+        start.setHours(start.getHours());
         const end = new Date(event.end.toISOString());
-        end.setHours(end.getHours() + 1);
+        end.setHours(end.getHours());
 
         if (di[start.getDay()][start.getHours() + "-" + start.getMinutes()] === undefined) {
             di[start.getDay()][start.getHours() + "-" + start.getMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
@@ -258,9 +258,9 @@ async function create_di_raph(client, monday, sunday, interaction, rt = false) {
                 for (const event of Object.values(events)) {
                     if (codes[arg][x].includes(event.summary) || event.summary.includes("CC")) {
                         const start = new Date(event.start.toISOString());
-                        start.setHours(start.getHours() + 1);
+                        start.setHours(start.getHours());
                         const end = new Date(event.end.toISOString());
-                        end.setHours(end.getHours() + 1);
+                        end.setHours(end.getHours());
 
 
 
