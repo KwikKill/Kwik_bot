@@ -1739,9 +1739,8 @@ module.exports = {
                 return await interaction.editReply({ embeds: [embed] });
 
             } else if (interaction.options.getSubcommand() === "compare") {
-                discordaccount = discordaccount.id;
                 const discordusername = discordaccount.username;
-
+                discordaccount = discordaccount.id;
 
                 let query = "SELECT * " +
                     "FROM matchs, summoners " +
@@ -1996,7 +1995,7 @@ module.exports = {
                 console.log('average_tanked', average_tanked, oponent_average_tanked);
                 console.log('average_pinks', average_pinks, oponent_average_pinks);
                 console.log('average_vision_score', average_vision_score, oponent_average_vision_score);
-                console.log('average_kp', (average_kills + average_assists) / average_total_kills, (oponent_average_kills + oponent_average_assists) / oponent_average_total_kills);
+                console.log('average_kp', (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills, (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills);
                 console.log('score', score, oponent_score);
                 console.log('carry_gold', carry_gold, oponent_carry_gold);
                 console.log('carry_damage', carry_damage, oponent_carry_damage);
