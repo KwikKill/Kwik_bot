@@ -36,6 +36,7 @@ const codes = {
             "ALGEBRE 2_ABCDE",
             "ANALYSE 1_ABCDE",
             "ANALYSE 2_ABCDE",
+            "ELECTRICITE 1_B",
             "ELECTRICITE 1_ABCDE",
             "ELECTRICITE 2_ABCDE",
             "MECANIQUE 1_ABCDE",
