@@ -152,7 +152,7 @@ async function classic(client, monday, sunday, interaction, rt = false) {
     } else {
         arg = interaction.options.getString("classe").toLowerCase();
     }
-    const url_modified = url.replace("{0}", codes[arg]).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate());
+    const url_modified = url.replace("{0}", codes[arg]).replace("{1}", monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate()).replace("{2}", sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate());
 
     const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
     https.get(url_modified, function (response) {
@@ -174,7 +174,7 @@ async function classic(client, monday, sunday, interaction, rt = false) {
                     .setTitle("Emploi du temp de la classe : " + arg)
                     .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
                     .setDescription(
-                        "Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
+                        "Semaine du " + monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate() + " au " + sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate()
                     )
                     .setTimestamp()
                     .setImage(`attachment://edt.png`);
@@ -222,14 +222,14 @@ function create_di(events) {
     const di = { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} };
     for (const event of Object.values(events)) {
         const start = new Date(event.start.toISOString());
-        start.setHours(start.getUTCHours() + 1);
+        start.setHours(start.getHours() + 1);
         const end = new Date(event.end.toISOString());
-        end.setHours(end.getUTCHours() + 1);
+        end.setHours(end.getHours() + 1);
 
-        if (di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] === undefined) {
-            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
+        if (di[start.getDay()][start.getHours() + "-" + start.getMinutes()] === undefined) {
+            di[start.getDay()][start.getHours() + "-" + start.getMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
         } else {
-            di[start.getDay()][start.getUTCHours() + "-" + start.getUTCMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
+            di[start.getDay()][start.getHours() + "-" + start.getMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
         }
 
     }
@@ -247,7 +247,7 @@ async function create_di_raph(client, monday, sunday, interaction, rt = false) {
     const test = [];
     for (const x in codes[arg]) {
         const file = fs.createWriteStream("/opt/gab_bot/temp/file" + x + ".ics");
-        const url_modified = url.replace("{0}", x).replace("{1}", monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate()).replace("{2}", sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate());
+        const url_modified = url.replace("{0}", x).replace("{1}", monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate()).replace("{2}", sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate());
         https.get(url_modified, function (response) {
             response.pipe(file);
             file.on('finish', function () {
@@ -264,17 +264,17 @@ async function create_di_raph(client, monday, sunday, interaction, rt = false) {
 
 
 
-                        if (di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] === undefined) {
-                            di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
+                        if (di[start.getDay()][start.getHours() + "-" + start.getMinutes()] === undefined) {
+                            di[start.getDay()][start.getHours() + "-" + start.getMinutes()] = [{ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location }];
                         } else {
                             let a = false;
-                            for (const x in di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()]) {
-                                if (di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()][x]["summary"] === event.summary) {
+                            for (const x in di[start.getDay()][start.getHours() + "-" + start.getMinutes()]) {
+                                if (di[start.getDay()][start.getHours() + "-" + start.getMinutes()][x]["summary"] === event.summary) {
                                     a = true;
                                 }
                             }
                             if (a === false) {
-                                di[start.getDay()][start.getHours() + "-" + start.getUTCMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
+                                di[start.getDay()][start.getHours() + "-" + start.getMinutes()].push({ "summary": event.summary, "start": start, "end": end, "description": event.description, "location": event.location });
                             }
                         }
                     }
@@ -290,7 +290,7 @@ async function create_di_raph(client, monday, sunday, interaction, rt = false) {
                             .setTitle("Emploi du temp de la classe : " + arg)
                             .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
                             .setDescription(
-                                "Semaine du " + monday.getUTCFullYear() + "-" + (monday.getUTCMonth() + 1) + "-" + monday.getUTCDate() + " au " + sunday.getUTCFullYear() + "-" + (sunday.getUTCMonth() + 1) + "-" + sunday.getUTCDate()
+                                "Semaine du " + monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate() + " au " + sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate()
                             )
                             .setTimestamp()
                             .setImage(`attachment://edt.png`);
