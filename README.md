@@ -2,7 +2,7 @@
 
 This is my discord bot.
 
-## 1 - Install and Run :
+## 1 - Install and Run
 
 * Clone this repo
 
@@ -36,15 +36,15 @@ cp environnement-example.sh environnement.sh
 node index.js
 ```
 
-## 2 - Organisation :
+## 2 - Organisation
 
 This repository is a discord bot using slash commands, listeners, componenents and using a local database.
 
-### 2.1 - Slash commands :
+### 2.1 - Slash commands
 
 Every slash commands are in the `commands` folder. Each command is in a `command.js` file that contains the command code and the command description and usage.
 
-Theses files are formated as bellow : 
+Theses files are formated as bellow :
 
 ```javascript
 module.exports = {
@@ -77,11 +77,11 @@ module.exports = {
 };
 ```
 
-### 2.2 - Listeners :
+### 2.2 - Listeners
 
 Every listeners are in the `listeners` folder. Each listener is in a `listener.js` file that contains the listener code and description.
 
-Theses files are formated as bellow : 
+Theses files are formated as bellow :
 
 ```javascript
 module.exports = {
@@ -95,11 +95,11 @@ module.exports = {
 };
 ```
 
-### 2.3 - Components :
+### 2.3 - Components
 
 Every components are separated in two folders. the `context-menu` folder and the `buttons` folder. Each component is in a `component.js` file that contains the component code and description.
 
-Theses files are formated as bellow (for context-menu) : 
+Theses files are formated as bellow (for context-menu) :
 
 ```javascript
 module.exports = {
@@ -114,7 +114,7 @@ module.exports = {
 };
 ```
 
-Or as bellow (for buttons) : 
+Or as bellow (for buttons) :
 
 ```javascript
 module.exports = {
@@ -128,11 +128,11 @@ module.exports = {
 };
 ```
 
-### 2.4 - Timers :
+### 2.4 - Timers
 
 Every timers are in the `timers` folder. Each timer is in a `timer.js` file that contains the timer code and description.
 
-Theses files are formated as bellow : 
+Theses files are formated as bellow :
 
 ```javascript
 module.exports = {
@@ -147,90 +147,90 @@ module.exports = {
 };
 ```
 
-### 2.5 - Database :
+### 2.5 - Database
 
 The database is a local postgresql database. The database is used to store league of legends matchs and summoners info.
 
-The database is formated as bellow : 
+The database is formated as bellow :
 
 ```sql
 CREATE TABLE summoners (
-	puuid TEXT NOT NULL,
-	username TEXT NOT NULL,
-	accountid TEXT NOT NULL,
-	id TEXT NOT NULL,
-	discordid TEXT NOT NULL,
-	
-	rank_solo TEXT NOT NULL,
-	tier_solo TEXT NOT NULL,
-	LP_solo INT NOT NULL,
+ puuid TEXT NOT NULL,
+ username TEXT NOT NULL,
+ accountid TEXT NOT NULL,
+ id TEXT NOT NULL,
+ discordid TEXT NOT NULL,
+ 
+ rank_solo TEXT NOT NULL,
+ tier_solo TEXT NOT NULL,
+ LP_solo INT NOT NULL,
 
-	rank_flex TEXT NOT NULL,
-	tier_flex TEXT NOT NULL,
-	LP_flex INT NOT NULL,
+ rank_flex TEXT NOT NULL,
+ tier_flex TEXT NOT NULL,
+ LP_flex INT NOT NULL,
 
-	PRIMARY KEY (puuid)
+ PRIMARY KEY (puuid)
 );
 ```
 
 ```sql
 CREATE TABLE matchs (
-	puuid TEXT NOT NULL,
-	player TEXT NOT NULL,
-	gamemode TEXT NOT NULL,
-	champion TEXT NOT NULL,
-	matchup TEXT NOT NULL,
-	support TEXT NOT NULL,
-	gold INT NOT NULL,
-	lane TEXT NOT NULL,
-	kill INT NOT NULL,
-	deaths INT NOT NULL,
-	assists INT NOT NULL,
-	result TEXT NOT NULL,
-	total_damage INT NOT NULL,
-	tanked_damage INT NOT NULL,
-	heal INT NOT NULL,
-	neutral_objectives INT NOT NULL,
-	wards INT NOT NULL,
-	pinks INT NOT NULL,
-	vision_score INT NOT NULL,
-	cs INT NOT NULL,
-	length DECIMAL NOT NULL,
-	total_kills INT NOT NULL,
-	first_gold BOOLEAN NOT NULL,
-	first_damages BOOLEAN NOT NULL,
-	first_tanked BOOLEAN NOT NULL,
-	double INT NOT NULL,
-	tripple INT NOT NULL,
-	quadra INT NOT NULL,
-	penta INT NOT NULL,
-	time_spent_dead INT NOT NULL,
-	timestamp BIGINT NOT NULL,
+ puuid TEXT NOT NULL,
+ player TEXT NOT NULL,
+ gamemode TEXT NOT NULL,
+ champion TEXT NOT NULL,
+ matchup TEXT NOT NULL,
+ support TEXT NOT NULL,
+ gold INT NOT NULL,
+ lane TEXT NOT NULL,
+ kill INT NOT NULL,
+ deaths INT NOT NULL,
+ assists INT NOT NULL,
+ result TEXT NOT NULL,
+ total_damage INT NOT NULL,
+ tanked_damage INT NOT NULL,
+ heal INT NOT NULL,
+ neutral_objectives INT NOT NULL,
+ wards INT NOT NULL,
+ pinks INT NOT NULL,
+ vision_score INT NOT NULL,
+ cs INT NOT NULL,
+ length DECIMAL NOT NULL,
+ total_kills INT NOT NULL,
+ first_gold BOOLEAN NOT NULL,
+ first_damages BOOLEAN NOT NULL,
+ first_tanked BOOLEAN NOT NULL,
+ double INT NOT NULL,
+ tripple INT NOT NULL,
+ quadra INT NOT NULL,
+ penta INT NOT NULL,
+ time_spent_dead INT NOT NULL,
+ timestamp BIGINT NOT NULL,
         player2 TEXT NOT NULL,
         player3 TEXT NOT NULL,
         player4 TEXT NOT NULL,
         player5 TEXT NOT NULL,
 
-	PRIMARY KEY (puuid, player),
-	FOREIGN KEY (player) REFERENCES summoners (puuid)
+ PRIMARY KEY (puuid, player),
+ FOREIGN KEY (player) REFERENCES summoners (puuid)
 );
 ```
 
 ```sql
 CREATE TABLE mastery (
-	discordid TEXT NOT NULL,
-	first_mastery_champ TEXT NOT NULL,
-	first_mastery INT NOT NULL,
-	second_mastery_champ TEXT NOT NULL,
-	second_mastery INT NOT NULL,
-	third_mastery_champ TEXT NOT NULL,
-	third_mastery INT NOT NULL,
-	total_point INT NOT NULL,
-	mastery7 INT NOT NULL,
-	mastery6 INT NOT NULL,
-	mastery5 INT NOT NULL,
+ discordid TEXT NOT NULL,
+ first_mastery_champ TEXT NOT NULL,
+ first_mastery INT NOT NULL,
+ second_mastery_champ TEXT NOT NULL,
+ second_mastery INT NOT NULL,
+ third_mastery_champ TEXT NOT NULL,
+ third_mastery INT NOT NULL,
+ total_point INT NOT NULL,
+ mastery7 INT NOT NULL,
+ mastery6 INT NOT NULL,
+ mastery5 INT NOT NULL,
 
-	PRIMARY KEY (discordid)
+ PRIMARY KEY (discordid)
 );
 ```
 

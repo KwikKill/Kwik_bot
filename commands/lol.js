@@ -1986,6 +1986,40 @@ module.exports = {
                     title += " in " + role;
                 }
 
+                let text = "```" +
+                    "─────────────────────┬─────────────────────\n" +
+                    "Average Kills        │ " + average_kills.toFixed(2);
+                if (average_kills > oponent_average_kills) {
+                    text += " ▲ ";
+                } else {
+                    text += " ▼ ";
+                }
+                text += oponent_average_kills.toFixed(2);
+                text += " (";
+                if (average_kills > oponent_average_kills) {
+                    text += "+";
+                } else {
+                    text += "-";
+                }
+                text += (average_kills - oponent_average_kills).toFixed(2) + ")\n";
+
+                const embed = new MessageEmbed()
+                    .setTitle(title)
+                    .setColor("#00FF00")
+                    .setFooter({
+                        text: "Requested by " + interaction.user.username,
+                        //iconURL: interaction.user.displayAvatarURL()
+                    })
+                    .setTimestamp()
+                    .addFields(
+                        {
+                            name: "Comparaison :",
+                            value: text
+                        }
+                    );
+
+                await interaction.editReply({ embeds: [embed] });
+
                 console.log('average_kills', average_kills, oponent_average_kills);
                 console.log('average_deaths', average_deaths, oponent_average_deaths);
                 console.log('average_assists', average_assists, oponent_average_assists);
