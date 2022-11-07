@@ -1994,7 +1994,7 @@ module.exports = {
                 } else {
                     text += " ▼ ";
                 }
-                text += Number.parseFloat(oponent_average_kill)s.toFixed(2);
+                text += Number.parseFloat(oponent_average_kills).toFixed(2);
                 text += " (";
                 if (average_kills > oponent_average_kills) {
                     text += "+";
