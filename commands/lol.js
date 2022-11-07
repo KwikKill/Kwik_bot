@@ -1988,20 +1988,20 @@ module.exports = {
 
                 let text = "```" +
                     "─────────────────────┬─────────────────────\n" +
-                    "Average Kills        │ " + average_kills.toFixed(2);
+                    "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2);
                 if (average_kills > oponent_average_kills) {
                     text += " ▲ ";
                 } else {
                     text += " ▼ ";
                 }
-                text += oponent_average_kills.toFixed(2);
+                text += Number.parseFloat(oponent_average_kill)s.toFixed(2);
                 text += " (";
                 if (average_kills > oponent_average_kills) {
                     text += "+";
                 } else {
                     text += "-";
                 }
-                text += (average_kills - oponent_average_kills).toFixed(2) + ")\n";
+                text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
 
                 const embed = new MessageEmbed()
                     .setTitle(title)
