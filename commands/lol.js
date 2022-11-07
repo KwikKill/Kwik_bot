@@ -1989,18 +1989,10 @@ module.exports = {
                 let text = "```" +
                     "─────────────────────┬─────────────────────\n" +
                     "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2);
-                if (average_kills > oponent_average_kills) {
-                    text += " ▲ ";
-                } else {
-                    text += " ▼ ";
-                }
+                text += (average_kills > oponent_average_kills) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_kills).toFixed(2);
                 text += " (";
-                if (average_kills > oponent_average_kills) {
-                    text += "+";
-                } else {
-                    text += "-";
-                }
+                text += (average_kills > oponent_average_kills) ? "+" : "-";
                 text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
                 text += "```";
 
