@@ -2003,6 +2003,13 @@ module.exports = {
                 text += (average_deaths > oponent_average_deaths) ? "+" : "-";
                 text += Number.parseFloat(average_deaths - oponent_average_deaths).toFixed(2) + ")\n";
 
+                text += "Average Assists      │ " + Number.parseFloat(average_assists).toFixed(2);
+                text += (average_assists > oponent_average_assists) ? " ▲ " : " ▼ ";
+                text += Number.parseFloat(oponent_average_assists).toFixed(2);
+                text += " (";
+                text += (average_assists > oponent_average_assists) ? "+" : "-";
+                text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
+
                 text += "```";
 
                 const embed = new MessageEmbed()
