@@ -1990,24 +1990,24 @@ module.exports = {
                     "─────────────────────┬─────────────────────\n";
 
                 text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2);
-                text += (average_kills >= oponent_average_kills) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_kills).toFixed(2);
                 text += " (";
-                text += (average_kills >= oponent_average_kills) ? "+" : "-";
+                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? "+" : "-";
                 text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
 
                 text += "Average Deaths       │ " + Number.parseFloat(average_deaths).toFixed(2);
-                text += (average_deaths >= oponent_average_deaths) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_deaths).toFixed(2);
                 text += " (";
-                text += (average_deaths >= oponent_average_deaths) ? "+" : "-";
+                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? "+" : "-";
                 text += Number.parseFloat(average_deaths - oponent_average_deaths).toFixed(2) + ")\n";
 
                 text += "Average Assists      │ " + Number.parseFloat(average_assists).toFixed(2);
-                text += (average_assists >= oponent_average_assists) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_assists).toFixed(2);
                 text += " (";
-                text += (average_assists >= oponent_average_assists) ? "+" : "";
+                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? "+" : "";
                 text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
 
                 text += "```";
@@ -2031,7 +2031,7 @@ module.exports = {
 
                 console.log('average_kills', average_kills, oponent_average_kills);
                 console.log('average_deaths', average_deaths, oponent_average_deaths);
-                console.log('average_assists', average_assists, oponent_average_assists, (average_assists >= oponent_average_assists));
+                console.log('average_assists', average_assists, oponent_average_assists, (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)));
                 console.log('average_cs', average_cs, oponent_average_cs);
                 console.log('average_gold', average_gold, oponent_average_gold);
                 console.log('average_damages', average_damages, oponent_average_damages);
