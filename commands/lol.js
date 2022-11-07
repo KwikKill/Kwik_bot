@@ -2002,6 +2002,7 @@ module.exports = {
                     text += "-";
                 }
                 text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
+                text += "```";
 
                 const embed = new MessageEmbed()
                     .setTitle(title)
