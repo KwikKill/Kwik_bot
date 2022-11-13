@@ -3,7 +3,6 @@ module.exports = {
     group: 'moderation',
     description: "Commande de déploiement des commandes slash",
     permission: "owner",
-    serverid: ["513776796211085342", "480142959501901845", "890915473363980308"],
     hidden: false,
     help: [
         {
@@ -36,7 +35,7 @@ module.exports = {
         });
 
         client.commands.forEach((item) => {
-            if (item.deploy !== false && ((item.serverid !== undefined && interaction !== undefined && item.serverid.includes(interaction.guild.id)) || (item.serverid !== undefined && message !== undefined && item.serverid.includes(message.guild.id)))) {
+            if (item.deploy !== false && (item.serverid === undefined || ((item.serverid !== undefined && interaction !== undefined && item.serverid.includes(interaction.guild.id)) || (item.serverid !== undefined && message !== undefined && item.serverid.includes(message.guild.id))))) {
                 if (item.name === "help") {
                     const choices = [];
                     client.commands.forEach((item2) => {
