@@ -2009,6 +2009,34 @@ module.exports = {
                 text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? "+" : "";
                 text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
 
+                text += "Average CS           │ " + Number.parseFloat(average_cs).toFixed(2);
+                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ▲ " : " ▼ ";
+                text += Number.parseFloat(oponent_average_cs).toFixed(2);
+                text += " (";
+                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? "+" : "";
+                text += Number.parseFloat(average_cs - oponent_average_cs).toFixed(2) + ")\n";
+
+                text += "Average Gold         │ " + Number.parseFloat(average_gold).toFixed(2);
+                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ▲ " : " ▼ ";
+                text += Number.parseFloat(oponent_average_gold).toFixed(2);
+                text += " (";
+                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? "+" : "";
+                text += Number.parseFloat(average_gold - oponent_average_gold).toFixed(2) + ")\n";
+
+                text += "Average Damages      │ " + Number.parseFloat(average_damages).toFixed(2);
+                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ▲ " : " ▼ ";
+                text += Number.parseFloat(oponent_average_damages).toFixed(2);
+                text += " (";
+                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? "+" : "";
+                text += Number.parseFloat(average_damages - oponent_average_damages).toFixed(2) + ")\n";
+
+                text += "Average Tanked       │ " + Number.parseFloat(average_tanked).toFixed(2);
+                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ▲ " : " ▼ ";
+                text += Number.parseFloat(oponent_average_tanked).toFixed(2);
+                text += " (";
+                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? "+" : "";
+                text += Number.parseFloat(average_tanked - oponent_average_tanked).toFixed(2) + ")\n";
+
                 text += "```";
 
                 const embed = new MessageEmbed()
