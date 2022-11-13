@@ -2119,25 +2119,6 @@ module.exports = {
 
                 await interaction.editReply({ embeds: [embed] });
 
-                console.log('average_kills', average_kills, oponent_average_kills);
-                console.log('average_deaths', average_deaths, oponent_average_deaths);
-                console.log('average_assists', average_assists, oponent_average_assists, (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)));
-                console.log('average_cs', average_cs, oponent_average_cs);
-                console.log('average_gold', average_gold, oponent_average_gold);
-                console.log('average_damages', average_damages, oponent_average_damages);
-                console.log('average_tanked', average_tanked, oponent_average_tanked);
-                console.log('average_pinks', average_pinks, oponent_average_pinks);
-                console.log('average_vision_score', average_vision_score, oponent_average_vision_score);
-                console.log('average_kp', (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills, (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills);
-                console.log('score', score, oponent_score);
-                console.log('carry_gold', carry_gold, oponent_carry_gold);
-                console.log('carry_damage', carry_damage, oponent_carry_damage);
-                console.log('carry_tanked', carry_tanked, oponent_carry_tanked);
-                console.log('hard_carry', hard_carry, oponent_hard_carry);
-                console.log('overall', overall, oponent_overall);
-                console.log(title);
-
-
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
             if (interaction.options.getSubcommand() === "carry") {

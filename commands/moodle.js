@@ -25,7 +25,7 @@ module.exports = {
                 const embed = new MessageEmbed()
                     .setColor("0xffe402")
                     .setTitle("Shibboleth")
-                    .setDescription("Shibboleth ne marche pas")
+                    .setDescription("Shibboleth ne marche pas (" + res.statusCode + ")")
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed] });
             }
