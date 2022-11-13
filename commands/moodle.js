@@ -17,25 +17,35 @@ module.exports = {
         },
     ],
     async run(message, client, interaction = undefined) {
-        if(interaction.user.bot) {return;}
-        if(interaction === undefined) {return await message.reply("Utilise les commandes slash");}
+        if (interaction.user.bot) { return; }
+        if (interaction === undefined) { return await message.reply("Utilise les commandes slash"); }
+
+        https.get('https://moodleng.insa-rennes.fr/Shibboleth.sso/SAML2/POST', (res) => {
+            if (res.statusCode !== 200) {
+                const embed = new MessageEmbed()
+                    .setColor("0xffe402")
+                    .setTitle("Shibboleth")
+                    .setDescription("Shibboleth ne marche pas")
+                    .setTimestamp();
+                return interaction.reply({ embeds: [embed] });
+            }
+        });
 
         https.get('https://moodleng.insa-rennes.fr/', (res) => {
-            if(res.statusCode === 200) {
+            if (res.statusCode === 200) {
                 const embed = new MessageEmbed()
                     .setColor("0xffe402")
                     .setTitle("Moodle")
                     .setDescription("Moodle marche")
                     .setTimestamp();
-                interaction.reply({ embeds: [embed] });
-            } else {
-                const embed = new MessageEmbed()
-                    .setColor("0xffe402")
-                    .setTitle("Moodle")
-                    .setDescription("Moodle ne marche pas <:503:1034543332283650169>")
-                    .setTimestamp();
-                interaction.reply({ embeds: [embed] });
+                return interaction.reply({ embeds: [embed] });
             }
+            const embed = new MessageEmbed()
+                .setColor("0xffe402")
+                .setTitle("Moodle")
+                .setDescription("Moodle ne marche pas <:503:1034543332283650169>")
+                .setTimestamp();
+            return interaction.reply({ embeds: [embed] });
         });
     }
 };
