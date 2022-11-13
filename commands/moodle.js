@@ -20,7 +20,7 @@ module.exports = {
         if (interaction.user.bot) { return; }
         if (interaction === undefined) { return await message.reply("Utilise les commandes slash"); }
 
-        https.get('https://moodleng.insa-rennes.fr/Shibboleth.sso/SAML2/POST', (res) => {
+        https.get('https://moodleng.insa-rennes.fr/auth/shibboleth/index.php', (res) => {
             if (res.statusCode !== 200) {
                 const embed = new MessageEmbed()
                     .setColor("0xffe402")
