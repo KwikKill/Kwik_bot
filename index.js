@@ -2,6 +2,8 @@ const { Client, Collection, Intents } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol_api = require("./util/lol_api.js");
+const path = require('path');
+const express = require('express');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
@@ -82,6 +84,51 @@ client.commands.forEach((item) => {
 client.isOwner = function (user) {
     return client.owners.includes(user.id);
 };
+
+// -------------- Express -----------------
+
+const app = express();
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/index.html'));
+});
+app.get('/blog.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite//blog.html'));
+});
+app.get('/about.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/about.html'));
+});
+app.get('/contact.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/contact.html'));
+});
+
+app.get('/posts/website-creation.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/posts/website-creation.html'));
+});
+
+app.get('/projects/kwik_bot.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/projects/kwik_bot.html'));
+});
+app.get('/projects/lol-database.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/projects/lol-database.html'));
+});
+app.get('/projects/mindustry.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/projects/mindustry.html'));
+});
+app.get('/projects/taunt_bot.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/projects/taunt_bot.html'));
+});
+app.get('/projects/virtual-fs.html', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/projects/virtual-fs.html'));
+});
+
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../KwiKSite/404.html'));
+});
+
+app.listen(8080, () => {
+    console.log("Serveur à l'écoute");
+});
 
 // -------------- Utils -----------------
 if (!String.prototype.format) {
