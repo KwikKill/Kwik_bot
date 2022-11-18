@@ -99,6 +99,21 @@ for (const file of indexFiles) {
         res.sendFile(path.join(__dirname, `../KwiKSite/${file}`));
     });
 }
+
+const cssFiles = fs.readdirSync('../KwiKSite/css/');
+for (const file of cssFiles) {
+    app.get(`/css/${file}`, function (req, res) {
+        res.sendFile(path.join(__dirname, `../KwiKSite/css/${file}`));
+    });
+}
+
+const imagesFiles = fs.readdirSync('../KwiKSite/images/');
+for (const file of imagesFiles) {
+    app.get(`/images/${file}`, function (req, res) {
+        res.sendFile(path.join(__dirname, `../KwiKSite/images/${file}`));
+    });
+}
+
 /*
 app.get('/blog.html', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite//blog.html'));
