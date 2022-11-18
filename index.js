@@ -92,6 +92,14 @@ const app = express();
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/index.html'));
 });
+
+const indexFiles = fs.readdirSync('../KwiKSite/');
+for (const file of indexFiles) {
+    app.get(`/${file}`, function (req, res) {
+        res.sendFile(path.join(__dirname, `../KwiKSite/${file}`));
+    });
+}
+/*
 app.get('/blog.html', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite//blog.html'));
 });
@@ -121,6 +129,7 @@ app.get('/projects/taunt_bot.html', function (req, res) {
 app.get('/projects/virtual-fs.html', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/projects/virtual-fs.html'));
 });
+*/
 
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/404.html'));
