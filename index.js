@@ -114,37 +114,20 @@ for (const file of imagesFiles) {
     });
 }
 
-/*
-app.get('/blog.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite//blog.html'));
-});
-app.get('/about.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/about.html'));
-});
-app.get('/contact.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/contact.html'));
-});
+const projetsFiles = fs.readdirSync('../KwiKSite/projects/');
+for (const file of projetsFiles) {
+    app.get(`/projects/${file}`, function (req, res) {
+        res.sendFile(path.join(__dirname, `../KwiKSite/projects/${file}`));
+    });
+}
 
-app.get('/posts/website-creation.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/posts/website-creation.html'));
-});
 
-app.get('/projects/kwik_bot.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/projects/kwik_bot.html'));
-});
-app.get('/projects/lol-database.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/projects/lol-database.html'));
-});
-app.get('/projects/mindustry.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/projects/mindustry.html'));
-});
-app.get('/projects/taunt_bot.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/projects/taunt_bot.html'));
-});
-app.get('/projects/virtual-fs.html', function (req, res) {
-    res.sendFile(path.join(__dirname, '../KwiKSite/projects/virtual-fs.html'));
-});
-*/
+const postsFiles = fs.readdirSync('../KwiKSite/posts/');
+for (const file of postsFiles) {
+    app.get(`/posts/${file}`, function (req, res) {
+        res.sendFile(path.join(__dirname, `../KwiKSite/posts/${file}`));
+    });
+}
 
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/404.html'));
