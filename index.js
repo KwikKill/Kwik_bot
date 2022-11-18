@@ -133,6 +133,11 @@ app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/404.html'));
 });
 
+app.post('/contact.html', function (req, res) {
+    console.log(req, res);
+    res.sendFile(path.join(__dirname, '../KwiKSite/index.html'));
+});
+
 app.listen(8080, () => {
     console.log("Serveur à l'écoute");
 });
