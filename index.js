@@ -129,6 +129,13 @@ for (const file of postsFiles) {
     });
 }
 
+const jsFiles = fs.readdirSync('../KwiKSite/js/');
+for (const file of jsFiles) {
+    app.get(`/js/${file}`, function (req, res) {
+        res.sendFile(path.join(__dirname, `../KwiKSite/js/${file}`));
+    });
+}
+
 app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/404.html'));
 });
