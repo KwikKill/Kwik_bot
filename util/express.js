@@ -58,9 +58,9 @@ function register(client) {
         });
     }
 
-    app.get("/lol/summoner", function (req, res) {
+    app.get("/lol/summoner", function (req, res) { //req.query.discordid
         if (req.query.discordid) {
-            client.pg.query('SELECT * FROM summoners WHERE discordid = \'$1\'', [req.query.discordid]).then((err, result) => {
+            client.pg.query('SELECT * FROM summoners WHERE discordid = \'$1\'', ["297409548703105035"]).then((err, result) => {
                 if (err) { throw err; }
                 if (result.rows.length > 0) {
                     return res.send(result.rows);
