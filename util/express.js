@@ -17,7 +17,7 @@ function register(client) {
 
     const indexFiles = fs.readdirSync('../KwiKSite/');
     for (const file of indexFiles) {
-        app.get(`/${file}`, function (req, res) {
+        app.get(`/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/${file}`));
         });
     }
@@ -38,7 +38,7 @@ function register(client) {
 
     const projetsFiles = fs.readdirSync('../KwiKSite/projects/');
     for (const file of projetsFiles) {
-        app.get(`/projects/${file}`, function (req, res) {
+        app.get(`/projects/${file}.replace(".html", "")`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/projects/${file}`));
         });
     }
@@ -46,7 +46,7 @@ function register(client) {
 
     const postsFiles = fs.readdirSync('../KwiKSite/posts/');
     for (const file of postsFiles) {
-        app.get(`/posts/${file}`, function (req, res) {
+        app.get(`/posts/${file}.replace(".html", "")`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/posts/${file}`));
         });
     }
@@ -70,7 +70,7 @@ function register(client) {
         }
     });
 
-    app.get("/lol/summoners", function (req, res) {
+    /*app.get("/lol/summoners", function (req, res) {
         client.pg.query(`SELECT * FROM summoners`, (err, result) => {
             if (err) { throw err; }
             if (result.rows.length > 0) {
@@ -78,7 +78,7 @@ function register(client) {
             }
             return res.sendStatus(400);
         });
-    });
+    });*/
 
     app.get("/lol/matchs", function (req, res) {
         console.log(req.query);
