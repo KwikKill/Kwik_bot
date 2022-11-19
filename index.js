@@ -141,8 +141,8 @@ app.get('*', function (req, res) {
 });
 
 app.post('/contact.html', function (req, res) {
-    console.log(res.body);
-    res.sendFile(path.join(__dirname, '../KwiKSite/index.html'));
+    console.log(req.body);
+    res.redirect("/");
 });
 
 app.listen(8080, () => {
