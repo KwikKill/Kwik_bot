@@ -89,6 +89,8 @@ client.isOwner = function (user) {
 
 const app = express();
 
+
+app.use(require('body-parser').urlencoded());
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname, '../KwiKSite/index.html'));
 });
