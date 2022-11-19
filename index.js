@@ -143,7 +143,9 @@ app.get('*', function (req, res) {
 });
 
 app.post('/contact.html', function (req, res) {
-    console.log(req.body);
+    if (req.body.email && req.body.message) {
+        client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.email}) ${req.body.tel} ${req.body.topic} : \`\`\`\n${req.body.message}\n\`\`\``);
+    }
     res.redirect("/");
 });
 
