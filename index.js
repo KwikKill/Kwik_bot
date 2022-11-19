@@ -144,7 +144,11 @@ app.get('*', function (req, res) {
 
 app.post('/contact.html', function (req, res) {
     if (req.body.mail && req.body.text) {
-        client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} ${req.body.topic} : \`\`\`\n${req.body.text}\n\`\`\``);
+        if (req.body.topic === "Topic :") {
+            client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} : \`\`\`\n${req.body.text}\n\`\`\``);
+        } else {
+            client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} ${req.body.topic} : \`\`\`\n${req.body.text}\n\`\`\``);
+        }
     }
     res.redirect("/");
 });
