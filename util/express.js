@@ -59,9 +59,8 @@ function register(client) {
     }
 
     app.get("/lol/summoner", function (req, res) {
-        console.log(req.query);
-        if (req.body.discordid) {
-            client.pg.query(`SELECT * FROM lol_account WHERE discordid = '${req.body.discordid}'`, (err, result) => {
+        if (req.query.discordid) {
+            client.pg.query(`SELECT * FROM lol_account WHERE discordid = '${req.query.discordid}'`, (err, result) => {
                 if (err) { throw err; }
                 res.send(result.rows);
             });
