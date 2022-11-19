@@ -58,6 +58,15 @@ function register(client) {
         });
     }
 
+    app.get("/lol/summoner", function (req, res) {
+        if (req.body.discordid) {
+            client.pg.query(`SELECT * FROM lol_account WHERE discordid = '${req.body.discordid}'`, (err, result) => {
+                if (err) { throw err; }
+                res.send(result.rows);
+            });
+        }
+    });
+
     app.get('*', function (req, res) {
         res.sendFile(path.join(__dirname, '../../KwiKSite/404.html'));
     });
@@ -71,15 +80,6 @@ function register(client) {
             }
         }
         res.redirect("/");
-    });
-
-    app.get("/lol/summoner", function (req, res) {
-        if (req.body.discordid) {
-            client.pg.query(`SELECT * FROM lol_account WHERE discordid = '${req.body.discordid}'`, (err, result) => {
-                if (err) { throw err; }
-                res.send(result.rows);
-            });
-        }
     });
 
     app.listen(8080, () => {
