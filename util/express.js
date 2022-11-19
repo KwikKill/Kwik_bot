@@ -59,6 +59,7 @@ function register(client) {
     }
 
     app.get("/lol/summoner", function (req, res) {
+        console.log(req.query);
         if (req.body.discordid) {
             client.pg.query(`SELECT * FROM lol_account WHERE discordid = '${req.body.discordid}'`, (err, result) => {
                 if (err) { throw err; }
@@ -72,6 +73,7 @@ function register(client) {
     });
 
     app.post('/contact.html', function (req, res) {
+        console.log(req.body);
         if (req.body.mail && req.body.text) {
             if (req.body.topic === "Topic :") {
                 client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} : \`\`\`\n${req.body.text}\n\`\`\``);
