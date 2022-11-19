@@ -83,7 +83,7 @@ function register(client) {
     app.get("/lol/matchs", function (req, res) {
         console.log(req.query);
         if (req.query.discordid) {
-            client.pg.query(`SELECT * FROM matchs, summoner WHERE player=summoners.puuid AND discordid = '${req.query.discordid}'`, (err, result) => {
+            client.pg.query(`SELECT * FROM matchs, summoners WHERE player=summoners.puuid AND discordid = '${req.query.discordid}'`, (err, result) => {
                 if (err) { throw err; }
                 if (result.rows.length > 0) {
                     return res.send(result.rows);
