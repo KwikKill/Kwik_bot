@@ -70,6 +70,18 @@ function register(client) {
         }
     });
 
+    app.get("/lol/matchs", function (req, res) {
+        if (req.query.puuid) {
+            client.pg.query(`SELECT * FROM matchs WHERE puuid = '${req.query.puuid}'`, (err, result) => {
+                if (err) { throw err; }
+                if (result.rows.length > 0) {
+                    return res.send(result.rows);
+                }
+                return res.sendStatus(404);
+            });
+        }
+    });
+
     app.get('*', function (req, res) {
         res.sendFile(path.join(__dirname, '../../KwiKSite/404.html'));
     });
