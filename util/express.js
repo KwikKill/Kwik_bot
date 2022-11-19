@@ -73,6 +73,15 @@ function register(client) {
         res.redirect("/");
     });
 
+    app.get("/lol/summoner", function (req, res) {
+        if (req.body.discordid) {
+            client.pg.query(`SELECT * FROM lol_account WHERE discordid = '${req.body.discordid}'`, (err, result) => {
+                if (err) { throw err; }
+                res.send(result.rows);
+            });
+        }
+    });
+
     app.listen(8080, () => {
         console.log("Serveur à l'écoute");
     });
