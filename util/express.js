@@ -62,7 +62,10 @@ function register(client) {
         if (req.query.discordid) {
             client.pg.query(`SELECT * FROM summoners WHERE discordid = '${req.query.discordid}'`, (err, result) => {
                 if (err) { throw err; }
-                res.send(result.rows);
+                if (result.rows.length > 0) {
+                    return res.send(result.rows);
+                }
+                return res.sendStatus(404);
             });
         }
     });
