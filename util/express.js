@@ -83,7 +83,7 @@ function register(client) {
     app.get("/lol/matchs", function (req, res) {
         console.log(req.query);
         if (req.query.discordid) {
-            client.pg.query('SELECT * FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [req.query.discordid], (err, result) => {
+            client.pg.query('SELECT matchs.puuid, player, gamemode, champion, matchup, support, gold, lane, kill, deaths, assists, result, total_damage, tanked_damage, heal, neutral_objectives, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, double, tripple, quadra, penta, time_spent_dead, timestamp, player2, player3, player4, player5 FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [req.query.discordid], (err, result) => {
                 if (err) { throw err; }
                 if (result.rows.length > 0) {
                     return res.send(result.rows);
