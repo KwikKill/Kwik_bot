@@ -65,7 +65,7 @@ function register(client) {
                 if (result.rows.length > 0) {
                     return res.send(result.rows);
                 }
-                return res.sendStatus(404);
+                return res.sendStatus(400);
             });
         }
     });
@@ -76,7 +76,7 @@ function register(client) {
             if (result.rows.length > 0) {
                 return res.send(result.rows);
             }
-            return res.sendStatus(404);
+            return res.sendStatus(400);
         });
     });
 
@@ -88,7 +88,7 @@ function register(client) {
                 if (result.rows.length > 0) {
                     return res.send(result.rows);
                 }
-                return res.sendStatus(403);
+                return res.sendStatus(400);
             });
         } else {
             if (req.query.puuid) {
@@ -97,11 +97,11 @@ function register(client) {
                     if (result.rows.length > 0) {
                         return res.send(result.rows);
                     }
-                    return res.sendStatus(403);
+                    return res.sendStatus(400);
                 });
             }
         }
-        return res.sendStatus(403);
+        return res.sendStatus(400);
 
     });
 
