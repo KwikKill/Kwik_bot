@@ -73,7 +73,7 @@ function register(client) {
     app.get("/lol/matchs", function (req, res) {
         console.log(req.query);
         if (req.query.puuid) {
-            client.pg.query(`SELECT * FROM matchs WHERE puuid = '${req.query.puuid}'`, (err, result) => {
+            client.pg.query(`SELECT * FROM matchs WHERE player = '${req.query.puuid}'`, (err, result) => {
                 if (err) { throw err; }
                 if (result.rows.length > 0) {
                     return res.send(result.rows);
