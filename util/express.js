@@ -71,15 +71,13 @@ function register(client) {
     });
 
     app.get("/lol/summoners", function (req, res) {
-        if (req.query.discordid) {
-            client.pg.query(`SELECT * FROM summoners`, (err, result) => {
-                if (err) { throw err; }
-                if (result.rows.length > 0) {
-                    return res.send(result.rows);
-                }
-                return res.sendStatus(404);
-            });
-        }
+        client.pg.query(`SELECT * FROM summoners`, (err, result) => {
+            if (err) { throw err; }
+            if (result.rows.length > 0) {
+                return res.send(result.rows);
+            }
+            return res.sendStatus(404);
+        });
     });
 
     app.get("/lol/matchs", function (req, res) {
