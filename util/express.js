@@ -38,7 +38,7 @@ function register(client) {
 
     const projetsFiles = fs.readdirSync('../KwiKSite/projects/');
     for (const file of projetsFiles) {
-        app.get(`/projects/${file}.replace(".html", "")`, function (req, res) {
+        app.get(`/projects/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/projects/${file}`));
         });
     }
@@ -46,7 +46,7 @@ function register(client) {
 
     const postsFiles = fs.readdirSync('../KwiKSite/posts/');
     for (const file of postsFiles) {
-        app.get(`/posts/${file}.replace(".html", "")`, function (req, res) {
+        app.get(`/posts/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/posts/${file}`));
         });
     }
