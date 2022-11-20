@@ -58,6 +58,13 @@ function register(client) {
         });
     }
 
+    const lolFiles = fs.readdirSync('../KwiKSite/lol/');
+    for (const file of lolFiles) {
+        app.get(`/js/${file}`, function (req, res) {
+            res.sendFile(path.join(__dirname, `../../KwiKSite/lol/${file}`));
+        });
+    }
+
     app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
