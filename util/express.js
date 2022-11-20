@@ -60,7 +60,7 @@ function register(client) {
 
     const lolFiles = fs.readdirSync('../KwiKSite/lol/');
     for (const file of lolFiles) {
-        app.get(`/lol/${file}`, function (req, res) {
+        app.get(`/lol/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/lol/${file}`));
         });
     }
