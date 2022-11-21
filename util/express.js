@@ -125,10 +125,9 @@ function register(client) {
                 headers: {
                     Authorization: "Bearer " + req.cookies['token']
                 }
-            }).then((body) => {
-                console.log("Bearer " + req.cookies['token'])
-                console.log(body);
-                res.send(body);
+            }).then(({ body }) => {
+                console.log(body.json());
+                res.send(body.json());
             });
             if (false) {
                 res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
