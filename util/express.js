@@ -12,8 +12,8 @@ module.exports = {
 function register(client) {
     const app = express();
 
-    app.use(require('body-parser').urlencoded());
     app.use(cookieParser());
+    app.use(require('body-parser').urlencoded());
     app.get('/', function (req, res) {
         res.sendFile(path.join(__dirname, '../../KwiKSite/index.html'));
     });
