@@ -112,6 +112,11 @@ function register(client) {
 
     });
 
+    app.post("/login", function (req, res) {
+        console.log(req.body);
+        res.redirect("/lol/profile");
+    });
+
     app.get('*', function (req, res) {
         res.sendFile(path.join(__dirname, '../../KwiKSite/404.html'));
     });
