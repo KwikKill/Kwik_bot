@@ -88,9 +88,16 @@ function register(client) {
                             if (err) { throw err; }
                             if (result.rows.length > 0) {
                                 const resultfile = filedata.replace("{{username}}", data.username);
+
+                                let tr = "";
+                                result.rows.forEach(function (value) {
+                                    tr += `<tr><td>${value.username}</td><td>${value.tier_solo}</td><td>${value.rank_solo}</td><td>${value.lp_solo}</td><td>${value.rank_flex}</td><td>${value.tier_flex}</td><td>${value.lp_flex}</td></tr>`;
+                                });
+                                const resultfile = resultfile.replace("{{Accounts}}", tr);
+
                                 return res.send(resultfile);
                             }
-                            return res.sendStatus(400);
+                            return res.redirect("/lol/register");
                         });
                     });
                 });
