@@ -87,8 +87,8 @@ function register(client) {
                         client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                             if (err) { throw err; }
                             if (result.rows.length > 0) {
-                                const result = filedata.replace("{{username}}", result.rows[0].username);
-                                res.send(result);
+                                const resultfile = filedata.replace("{{username}}", result.rows[0].username);
+                                res.send(resultfile);
                             }
                             return res.sendStatus(400);
                         });
