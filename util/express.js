@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
 const fs = require("fs");
+const { request } = require('undici');
 
 // -------------- Express -----------------
 module.exports = {
@@ -113,9 +114,34 @@ function register(client) {
     });
 
     app.get("/login", function (req, res) {
-        console.log(req.query);
-        if (req.query.code) {
-            res.redirect("/lol/profile");
+        const code = req.query.code;
+        if (code) {
+            try {
+                request('https://discord.com/api/oauth2/token', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        client_id: process.env.DISCORD_CLIENT_ID,
+                        client_secret: process.env.DISCORD_CLIENT_SECRET,
+                        code,
+                        grant_type: 'authorization_code',
+                        redirect_uri: `http://albert.blaisot.org:8080/login`,
+                        scope: 'identify',
+                    }).toString(),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                }).then(tokenResponseData => {
+                    tokenResponseData.body.json().then(oauthData => {
+                        console.log(oauthData);
+
+                        res.redirect("/lol/profile");
+                    });
+
+                });
+            } catch (error) {
+                console.error(error);
+                res.redirect("/404");
+            }
         } else {
             res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
         }
