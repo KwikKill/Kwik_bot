@@ -122,10 +122,9 @@ function register(client) {
             console.log(req.cookies['token']);
             request('https://discord.com/api/users/@me', {
                 method: 'GET',
-                body: new URLSearchParams({
-                    access_token: req.cookies['token'],
-                    token_type: 'Bearer'
-                })
+                headers: {
+                    Authorization: "Bearer " + req.cookies['token']
+                }
             }).then(({ body }) => {
                 console.log(body);
                 res.send(body);
