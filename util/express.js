@@ -125,9 +125,11 @@ function register(client) {
                 headers: {
                     Authorization: "Bearer " + req.cookies['token']
                 }
-            }).then(({ body }) => {
-                console.log(body.json());
-                res.send(body.json());
+            }).then(tokenResponseData => {
+                tokenResponseData.body.json().then(data => {
+                    console.log(data);
+                    res.send(data);
+                });
             });
             if (false) {
                 res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
@@ -157,7 +159,6 @@ function register(client) {
                         res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
                         res.redirect("/lol/profile");
                     });
-
                 });
             } catch (error) {
                 console.error(error);
