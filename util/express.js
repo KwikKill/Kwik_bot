@@ -112,7 +112,7 @@ function register(client) {
 
     });
 
-    app.post("/login", function (req, res) {
+    app.get("/login", function (req, res) {
         console.log(req.body);
         res.redirect("/lol/profile");
     });
