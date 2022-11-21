@@ -88,7 +88,7 @@ function register(client) {
                             if (err) { throw err; }
                             if (result.rows.length > 0) {
                                 const resultfile = filedata.replace("{{username}}", data.username);
-                                res.send(resultfile);
+                                return res.send(resultfile);
                             }
                             return res.sendStatus(400);
                         });
