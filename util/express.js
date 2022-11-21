@@ -115,6 +115,27 @@ function register(client) {
 
     });
 
+    app.get("/admin", function (req, res) {
+        if (!req.cookies['token']) {
+            res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
+        } else {
+            console.log(req.cookies['token']);
+            request('https://discord.com/api/users/@me', {
+                method: 'GET',
+                body: new URLSearchParams({
+                    access_token: req.cookies['token'],
+                    token_type: 'Bearer'
+                })
+            }).then(({ body }) => {
+                console.log(body);
+                res.send(body);
+            });
+            if (false) {
+                res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
+            }
+        }
+    });
+
     app.get("/login", function (req, res) {
         const code = req.query.code;
         if (code) {
