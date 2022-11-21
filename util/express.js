@@ -125,7 +125,7 @@ function register(client) {
                 headers: {
                     Authorization: "Bearer " + req.cookies['token']
                 }
-            }).then(({ body }) => {
+            }).then((body) => {
                 console.log("Bearer " + req.cookies['token'])
                 console.log(body);
                 res.send(body);
