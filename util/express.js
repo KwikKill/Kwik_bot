@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const fs = require("fs");
 const { request } = require('undici');
+const cookieParser = require('cookie-parser');
 
 // -------------- Express -----------------
 module.exports = {
@@ -12,6 +13,7 @@ function register(client) {
     const app = express();
 
     app.use(require('body-parser').urlencoded());
+    app.use(cookieParser());
     app.get('/', function (req, res) {
         res.sendFile(path.join(__dirname, '../../KwiKSite/index.html'));
     });
@@ -114,7 +116,6 @@ function register(client) {
     });
 
     app.get("/login", function (req, res) {
-        console.log(req.query);
         const code = req.query.code;
         if (code) {
             try {
@@ -133,8 +134,7 @@ function register(client) {
                     },
                 }).then(tokenResponseData => {
                     tokenResponseData.body.json().then(oauthData => {
-                        console.log('a', oauthData);
-
+                        res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
                         res.redirect("/lol/profile");
                     });
 
@@ -144,7 +144,12 @@ function register(client) {
                 res.redirect("/404");
             }
         } else {
-            res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
+            if (!req.cookies['token']) {
+                res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
+            } else {
+                console.log(req.cookies['token']);
+                request.redirect("/lol/profile");
+            }
         }
     });
 
