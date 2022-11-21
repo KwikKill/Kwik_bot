@@ -114,6 +114,7 @@ function register(client) {
     });
 
     app.get("/login", function (req, res) {
+        console.log(req.query);
         const code = req.query.code;
         if (code) {
             try {
@@ -132,7 +133,7 @@ function register(client) {
                     },
                 }).then(tokenResponseData => {
                     tokenResponseData.body.json().then(oauthData => {
-                        console.log(oauthData);
+                        console.log('a', oauthData);
 
                         res.redirect("/lol/profile");
                     });
