@@ -127,13 +127,14 @@ function register(client) {
                 }
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
-                    console.log(data);
-                    res.send(data);
+                    if (data.id === client.owners[0]) {
+                        res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
+                    } else {
+                        res.redirect("../../KwiKSite/404.html")
+                    }
+
                 });
             });
-            if (false) {
-                res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
-            }
         }
     });
 
