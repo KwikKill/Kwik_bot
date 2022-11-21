@@ -114,8 +114,8 @@ function register(client) {
 
     app.get("/login", function (req, res) {
         //res.cookie()
+        console.log(req.route);
         console.log(req.query);
-        console.log(req.body);
         res.redirect("/lol/profile");
     });
 
