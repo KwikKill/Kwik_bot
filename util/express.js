@@ -61,12 +61,42 @@ function register(client) {
         });
     }
 
-    const lolFiles = fs.readdirSync('../KwiKSite/lol/');
+    /*const lolFiles = fs.readdirSync('../KwiKSite/lol/');
     for (const file of lolFiles) {
         app.get(`/lol/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/lol/${file}`));
         });
-    }
+    }*/
+
+    app.get("/lol/profile", function (req, res) {
+        if (!req.cookies['token']) {
+            res.redirect("/login");
+        } else {
+            console.log(req.cookies['token']);
+            request('https://discord.com/api/users/@me', {
+                method: 'GET',
+                headers: {
+                    Authorization: "Bearer " + req.cookies['token']
+                }
+            }).then(tokenResponseData => {
+                tokenResponseData.body.json().then(data => {
+                    fs.readFile('../KwiKSite/lol/profile.html', 'utf8', function (err, filedata) {
+                        if (err) {
+                            return console.log(err);
+                        }
+                        client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                            if (err) { throw err; }
+                            if (result.rows.length > 0) {
+                                const result = filedata.replace("{{username}}", result.rows[0].username);
+                                res.send(result);
+                            }
+                            return res.sendStatus(400);
+                        });
+                    });
+                });
+            });
+        }
+    });
 
     app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
@@ -130,9 +160,8 @@ function register(client) {
                     if (data.id === client.owners[0]) {
                         res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
                     } else {
-                        res.redirect("../../KwiKSite/404.html")
+                        res.redirect("../../KwiKSite/404.html");
                     }
-
                 });
             });
         }
