@@ -148,7 +148,7 @@ function register(client) {
                 res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
             } else {
                 console.log(req.cookies['token']);
-                request.redirect("/lol/profile");
+                req.redirect("/lol/profile");
             }
         }
     });
