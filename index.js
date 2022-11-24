@@ -526,7 +526,7 @@ client.lol = async function () {
         const rank = await client.update_rank(client.requests["updates"][0]["id"]);
         // read current rank and send message if rank changed
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
-        const channels = ["1036963873422589972", "1035574298087280712"];
+        const channels = ["1036963873422589972", "1035574298087280712", "1032015463493947473"];
         for (const x of channels) {
             const channel = client.channels.cache.get(x);
             if (channel.guild.members.cache.get(discordid) || x === "1036963873422589972") {
