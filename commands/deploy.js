@@ -18,9 +18,9 @@ module.exports = {
         let number;
 
         if (interaction === undefined) {
-            number = deploy(client, message.guild);
+            number = await deploy(client, message.guild);
         } else {
-            number = deploy(client, interaction.guild);
+            number = await deploy(client, interaction.guild);
         }
 
         if (interaction === undefined) {
