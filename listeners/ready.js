@@ -49,6 +49,8 @@ module.exports = {
             setInterval(timer.run, timer.timer, client);
         });
 
+        await client.commands.get("deploy").auto_deploy(client);
+
         client.lol();
     }
 };
