@@ -38,7 +38,8 @@ module.exports = {
 
 
     },
-    auto_deploy
+    auto_deploy,
+    deploy
 };
 
 async function auto_deploy(client) {
