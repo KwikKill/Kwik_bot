@@ -529,7 +529,13 @@ client.lol = async function () {
         const channels = ["1036963873422589972", "1035574298087280712", "1032015463493947473"];
         for (const x of channels) {
             const channel = await client.channels.fetch(x);
-            const user = await channel.guild.members.fetch(discordid);
+            let user = false;
+            try {
+                user = await channel.guild.members.fetch(discordid);
+            } catch (e) {
+                user = false
+            }
+
             console.log(user !== null, discordid, channel.guild.name);
             if (user || x === "1036963873422589972") {
                 if (
