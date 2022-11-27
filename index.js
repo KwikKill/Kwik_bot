@@ -533,7 +533,7 @@ client.lol = async function () {
             try {
                 user = await channel.guild.members.fetch(discordid);
             } catch (e) {
-                user = false
+                user = false;
             }
 
             console.log(user !== null, discordid, channel.guild.name);
