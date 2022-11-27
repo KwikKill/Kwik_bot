@@ -536,8 +536,9 @@ client.lol = async function () {
                 user = false;
             }
 
-            console.log(user, discordid, channel.guild.name);
+
             if (user || x === "1036963873422589972") {
+                console.log(user.user.username, channel.guild.name);
                 if (
                     current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
                     current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
