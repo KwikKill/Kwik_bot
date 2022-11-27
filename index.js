@@ -528,9 +528,10 @@ client.lol = async function () {
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
         const channels = ["1036963873422589972", "1035574298087280712", "1032015463493947473"];
         for (const x of channels) {
-            const channel = client.channels.cache.get(x);
-            console.log(channel.guild.members.fetch(discordid) !== undefined, discordid, channel.guild.name);
-            if (channel.guild.members.fetch(discordid) || x === "1036963873422589972") {
+            const channel = await client.channels.fetch(x);
+            const user = channel.guild.members.fetch(discordid);
+            console.log(user !== null, discordid, channel.guild.name);
+            if (user || x === "1036963873422589972") {
                 if (
                     current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
                     current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
