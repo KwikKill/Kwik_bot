@@ -946,11 +946,11 @@ async function matchHistoryOutput(match, puuid) {
 }
 
 function LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
-    const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(rank) * 400
-        + ["IV", "III", "II", "I"].indexOf(tier) * 100
+    const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(tier) * 400
+        + ["IV", "III", "II", "I"].indexOf(rank) * 100
         + LP;
-    const old_value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(old_rank) * 400
-        + ["IV", "III", "II", "I"].indexOf(old_tier) * 100
+    const old_value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(old_tier) * 400
+        + ["IV", "III", "II", "I"].indexOf(old_rank) * 100
         + old_LP;
 
     return value - old_value;
