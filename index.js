@@ -14,7 +14,7 @@ const language = "en_US"; // Players Language - Only Used for Champion Names
 const startDate = "1641528000";
 let champions = [];
 const max_games = 100;
-lol_api.championList(apiKey, region, language).then(list => {
+lol_api.championList(apiKey, region, language, client).then(list => {
     champions = list;
 });
 
@@ -38,6 +38,7 @@ client.owners = config["owner"];
 client.requests = { "summoners": [], "updates": [] };
 client.running = false;
 client.queue_length = 0;
+client.api_limit = false;
 
 const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
 for (const file of ListenerFiles) {
@@ -180,7 +181,7 @@ async function set_update(number) {
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
-        listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, puuid, options) };
+        listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, puuid, options, client) };
         // If there are less than 100 matches in the object, then this is the last match list
         if (listOfMatches['matches'].length < max_games) {
             gamesToIndex = false;
@@ -227,7 +228,7 @@ async function set_update(number) {
  * @param {*} summoner_id  summoner id
  */
 client.update_rank = async function (summoner_id) {
-    const response = await lol_api.leaguesBySummoner(apiKey, region, summoner_id);
+    const response = await lol_api.leaguesBySummoner(apiKey, region, summoner_id, client);
 
     const data = {
         "RANKED_SOLO_5x5": {
@@ -262,7 +263,7 @@ client.update_mastery = async function (discordid) {
     const masteries = {};
     const query = await client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
     for (const x of query.rows) {
-        const response = await lol_api.championmasteriesBySummoner(apiKey, region, x.id);
+        const response = await lol_api.championmasteriesBySummoner(apiKey, region, x.id, client);
         for (const y of response) {
             if (masteries[y.championId] === undefined) {
                 masteries[y.championId] = y;
@@ -330,7 +331,7 @@ client.lol = async function () {
         const username = x["username"];
         const interaction = x["interaction"];
         const discordid = x["discordid"];
-        const summonerObject = await lol_api.summonersByName(apiKey, region, username);
+        const summonerObject = await lol_api.summonersByName(apiKey, region, username, client);
         if (summonerObject === null) {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
@@ -436,7 +437,7 @@ client.lol = async function () {
                 console.log("- lol (update 2) : " + puuid, matchId);
             }
             client.queue_length -= 1;
-            const match = await lol_api.matchesById(apiKey, route, matchId);
+            const match = await lol_api.matchesById(apiKey, route, matchId, client);
 
             if (match?.status?.status_code !== 404) {
                 const exit = await matchHistoryOutput(match, puuid);

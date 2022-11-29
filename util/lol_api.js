@@ -11,7 +11,7 @@ module.exports = {
      * @param {*} region   region of the player
      * @returns {Boolean}  return the current patch version
      */
-    async getCurrentPatch(region) {
+    async getCurrentPatch(region, client) {
         // Region Correction
         switch (region) {
             // These regions just need thier numbers removed
@@ -39,7 +39,7 @@ module.exports = {
         }
 
         const url = "https://ddragon.leagueoflegends.com/realms/" + region + ".json";
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -50,9 +50,9 @@ module.exports = {
      * @param {*} summonerName  name of the summoner
      * @returns {Object}        summoner's data
      */
-    async summonersByName(apiKey, region, summonerName) {
+    async summonersByName(apiKey, region, summonerName, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -62,9 +62,9 @@ module.exports = {
      * @param {*} region   region of the player
      * @returns {Object}   Challenge's data
      */
-    async challenge(apiKey, region) {
+    async challenge(apiKey, region, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/challenges/percentiles?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -74,9 +74,9 @@ module.exports = {
      * @param {*} region   region of the player
      * @returns {Object}   ChallengeConfig
      */
-    async challengeconfig(apiKey, region) {
+    async challengeconfig(apiKey, region, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/challenges/config?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -87,9 +87,9 @@ module.exports = {
      * @param {*} puuid    puuid of the player
      * @returns {Object}   Challenge data of the player
      */
-    async challengebypuuid(apiKey, region, puuid) {
+    async challengebypuuid(apiKey, region, puuid, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/player-data/" + puuid + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -100,9 +100,9 @@ module.exports = {
      * @param {*} summonerId  summoner id of the player
      * @returns {Object}      leagues of the player
      */
-    async leaguesBySummoner(apiKey, region, summonerId) {
+    async leaguesBySummoner(apiKey, region, summonerId, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerId + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -113,9 +113,9 @@ module.exports = {
      * @param {*} queue       queue of the league
      * @returns {Object}      challenger league
      */
-    async challengerLeagues(apiKey, region, queue) {
+    async challengerLeagues(apiKey, region, queue, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/challengerleagues/by-queue/" + queue + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -126,9 +126,9 @@ module.exports = {
      * @param {*} queue       queue of the league
      * @returns {Object}      grandmaster league
      */
-    async grandmasterLeagues(apiKey, region, queue) {
+    async grandmasterLeagues(apiKey, region, queue, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/grandmasterleagues/by-queue/" + queue + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -139,9 +139,9 @@ module.exports = {
      * @param {*} queue       queue of the league
      * @returns {Object}      master league
      */
-    async masterLeagues(apiKey, region, queue) {
+    async masterLeagues(apiKey, region, queue, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/masterleagues/by-queue/" + queue + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -152,9 +152,9 @@ module.exports = {
      * @param {*} leagueId    league id
      * @returns {Object}      league data
      */
-    async leaguesByLeagueId(apiKey, region, leagueId) {
+    async leaguesByLeagueId(apiKey, region, leagueId, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/leagues/" + leagueId + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -165,9 +165,9 @@ module.exports = {
      * @param {*} matchId     match id
      * @returns {Object}      match data
      */
-    async matchesById(apiKey, route, matchId) {
+    async matchesById(apiKey, route, matchId, client) {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -178,9 +178,9 @@ module.exports = {
      * @param {*} matchId     match id
      * @returns {Object}      match data
      */
-    async matchlistsByAccount(apiKey, route, puuid, options) {
+    async matchlistsByAccount(apiKey, route, puuid, options, client) {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids" + options + "&api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -191,9 +191,9 @@ module.exports = {
      * @param {*} matchId     match id
      * @returns {Object}      timeline data
      */
-    async timelinesByMatchId(apiKey, route, matchId) {
+    async timelinesByMatchId(apiKey, route, matchId, client) {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "/timeline" + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -204,9 +204,9 @@ module.exports = {
     * @param {*} summonerId  summoner id
     * @returns {Object}      champion mastery data
     */
-    async championmasteriesBySummoner(apiKey, region, summonerId) {
+    async championmasteriesBySummoner(apiKey, region, summonerId, client) {
         const url = "https://" + region + ".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/" + summonerId + "?api_key=" + apiKey;
-        return await this.apiCall(url);
+        return await this.apiCall(url, client);
     },
 
     /**
@@ -215,7 +215,7 @@ module.exports = {
      * @param {*} url     url to fetch
      * @returns {Object}  data from the API
      */
-    async apiCall(url) {
+    async apiCall(url, client) {
         if (config.verbose) {
             console.log("API CALL: " + url);
         }
@@ -226,6 +226,7 @@ module.exports = {
         statut = statut.status;
         switch (statut) {
             case 200:
+                client.api_limit = false;
                 return data;
             case 429:
                 // Special Handling here - 429 is Rate Limit Reached.
@@ -233,6 +234,7 @@ module.exports = {
                 if (config.verbose) {
                     console.log("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
                 }
+                client.api_limit = true;
                 // Wait the time specified by the reponse header
                 //await client.
                 await delay(delay_time);
@@ -257,7 +259,7 @@ module.exports = {
     * @param {*} patch     patch version
     * @returns {Object}    champion stats
     */
-    async championStaticData(apiKey, language, patch) {
+    async championStaticData(apiKey, language, patch, client) {
         // If language isn't Set - Default to English
         if (language === "") {
             language = "en_US";
@@ -266,14 +268,14 @@ module.exports = {
         try {
             const url = "https://ddragon.leagueoflegends.com/cdn/" + patch + "/data/" + language + "/champion.json" + "?api_key=" + apiKey;
             //Logger.log(url)
-            return this.apiCall(url);
+            return this.apiCall(url, client);
         } catch (error) {
             console.warn(error);
         }
 
         try {
             const url = "https://ddragon.leagueoflegends.com/cdn/10.9.1/data/" + language + "/champion.json" + "?api_key=" + apiKey;
-            return await this.apiCall(url);
+            return await this.apiCall(url, client);
         } catch (error) {
             console.warn(error);
         }
@@ -286,11 +288,11 @@ module.exports = {
     * @param {*} language  language of the data
     * @returns {Object}    champion list
     */
-    async championList(api_key, region, language) {
+    async championList(api_key, region, language, client) {
 
         // Get New Champion List from Data Dragon
-        const patch = await this.getCurrentPatch(region);
-        const championList = await this.championStaticData(api_key, language, patch['v']);
+        const patch = await this.getCurrentPatch(region, client);
+        const championList = await this.championStaticData(api_key, language, patch['v'], client);
 
         //Logger.log(championList['data'])
 
