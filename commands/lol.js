@@ -859,7 +859,7 @@ module.exports = {
                     })
                     .setTimestamp();
                 let step = "";
-                if (client.requests["summoners"].length > 0) {
+                if (client.requests["updates"].length > 0) {
                     if (client.requests["updates"][0]["count"] === 0) {
                         step = "- Step : 1/2 (Fetching game list)" +
                             "";
@@ -878,10 +878,16 @@ module.exports = {
                     embed.addFields(
                         {
                             name: "Updates in queue :",
-                            value: "- Length : 0 Summoners | 0 Matchs\n"
+                            value: "- 0 Matchs\n"
                         }
                     );
                 }
+                embed.addFields(
+                    {
+                        name: "Api limit reached :",
+                        value: "" + client.api_limit
+                    }
+                );
                 return await interaction.editReply({ embeds: [embed] });
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {
