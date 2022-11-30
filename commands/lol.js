@@ -882,12 +882,12 @@ module.exports = {
                         }
                     );
                 }
-                embed.addFields(
+                /*embed.addFields(
                     {
                         name: "Api limit reached :",
                         value: "" + client.api_limit
                     }
-                );
+                );*/
                 return await interaction.editReply({ embeds: [embed] });
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {
