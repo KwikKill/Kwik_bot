@@ -226,20 +226,20 @@ module.exports = {
         statut = statut.status;
         switch (statut) {
             case 200:
-                //client.api_limit = false;
+                client.api_limit = false;
                 return data;
             case 429:
                 // Special Handling here - 429 is Rate Limit Reached.
                 // Alert the User
                 if (config.verbose) {
-                    console.log("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
+                    console.warn("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
                 }
-                //client.api_limit = true;
+                client.api_limit = true;
                 // Wait the time specified by the reponse header
                 //await client.
                 await delay(delay_time);
                 // Retry
-                return await this.apiCall(url);
+                return await this.apiCall(url, client);
             case 404:
                 console.warn("404: La ressource demandée n'existe pas.", url);
                 return null;
