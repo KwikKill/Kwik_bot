@@ -1158,6 +1158,7 @@ module.exports = {
                 query += querygamemode;
                 query += queryaccount;
                 query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
+                console.log(query);
                 const response = await client.pg.query(query);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
