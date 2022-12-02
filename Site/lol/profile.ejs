@@ -169,13 +169,27 @@
             <tbody>
                 <% summoners.forEach(function(summoner) {%>
                     <tr>
-                        <td>${summoner.username}</td>
-                        <td>${summoner.tier_solo}</td>
-                        <td>${summoner.rank_solo}</td>
-                        <td>${summoner.lp_solo}</td>
-                        <td>${summoner.rank_flex}</td>
-                        <td>${summoner.tier_flex}</td>
-                        <td>${summoner.lp_flex}</td>
+                        <td>
+                            <%= summoner.username %>
+                        </td>
+                        <td>
+                            <%= summoner.tier_solo %>
+                        </td>
+                        <td>
+                            <%= summoner.rank_solo %>
+                        </td>
+                        <td>
+                            <%= summoner.lp_solo %>
+                        </td>
+                        <td>
+                            <%= summoner.rank_flex %>
+                        </td>
+                        <td>
+                            <%= summoner.tier_flex %>
+                        </td>
+                        <td>
+                            <%= summoner.lp_flex %>
+                        </td>
                     </tr>
                     <% });%>
             </tbody>
