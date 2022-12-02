@@ -24,7 +24,7 @@ function register(client) {
     const indexFiles = fs.readdirSync('Site/');
     for (const file of indexFiles) {
         app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../Site/${file}`));
+            res.render(`../Site/${file}`);
         });
     }
 
