@@ -64,15 +64,14 @@ function register(client) {
         });
     }
 
-    const lolFiles = fs.readdirSync('Site/lol/');
+    /*const lolFiles = fs.readdirSync('Site/lol/');
     for (const file of lolFiles) {
         app.get(`/lol/${file.replace(".ejs", "")}`, function (req, res) {
             res.render(`../Site/lol/${file}`);
         });
-    }
+    }*/
 
     app.get("/lol/profile", function (req, res) {
-        console.log("b");
         if (!req.cookies['token']) {
             res.redirect("/login");
         } else {
@@ -84,15 +83,13 @@ function register(client) {
                 }
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
-                    console.log(data);
                     client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                         if (err) {
                             res.redirect("/404");
                             throw err;
                         }
                         if (result.rows.length > 0) {
-                            console.log("a");
-                            //return res.render('../Site/lol/profile', { summoner: result.rows, username: "a" });
+                            return res.render('../Site/lol/profile', { summoner: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar });
                         }
                         return res.redirect("/lol/register");
                     });
