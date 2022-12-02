@@ -21,28 +21,28 @@ function register(client) {
 
     app.set('view engine', 'ejs');
 
-    const indexFiles = fs.readdirSync('../Site/');
+    const indexFiles = fs.readdirSync('Site/');
     for (const file of indexFiles) {
         app.get(`/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/${file}`));
         });
     }
 
-    const cssFiles = fs.readdirSync('../Site/css/');
+    const cssFiles = fs.readdirSync('Site/css/');
     for (const file of cssFiles) {
         app.get(`/css/${file}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/css/${file}`));
         });
     }
 
-    const imagesFiles = fs.readdirSync('../Site/images/');
+    const imagesFiles = fs.readdirSync('Site/images/');
     for (const file of imagesFiles) {
         app.get(`/images/${file}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/images/${file}`));
         });
     }
 
-    const jsFiles = fs.readdirSync('../Site/js/');
+    const jsFiles = fs.readdirSync('Site/js/');
     for (const file of jsFiles) {
         app.get(`/js/${file}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/js/${file}`));
