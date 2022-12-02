@@ -14,32 +14,42 @@ function register(client) {
 
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
+
     app.get('/', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../KwiKSite/index.html'));
+        res.render('../Site/index');
     });
 
-    const indexFiles = fs.readdirSync('../KwiKSite/');
+    app.set('view engine', 'ejs');
+
+    const indexFiles = fs.readdirSync('../Site/');
     for (const file of indexFiles) {
         app.get(`/${file.replace(".html", "")}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/${file}`));
+            res.sendFile(path.join(__dirname, `../Site/${file}`));
         });
     }
 
-    const cssFiles = fs.readdirSync('../KwiKSite/css/');
+    const cssFiles = fs.readdirSync('../Site/css/');
     for (const file of cssFiles) {
         app.get(`/css/${file}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/css/${file}`));
+            res.sendFile(path.join(__dirname, `../Site/css/${file}`));
         });
     }
 
-    const imagesFiles = fs.readdirSync('../KwiKSite/images/');
+    const imagesFiles = fs.readdirSync('../Site/images/');
     for (const file of imagesFiles) {
         app.get(`/images/${file}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/images/${file}`));
+            res.sendFile(path.join(__dirname, `../Site/images/${file}`));
         });
     }
 
-    const projetsFiles = fs.readdirSync('../KwiKSite/projects/');
+    const jsFiles = fs.readdirSync('../Site/js/');
+    for (const file of jsFiles) {
+        app.get(`/js/${file}`, function (req, res) {
+            res.sendFile(path.join(__dirname, `../Site/js/${file}`));
+        });
+    }
+
+    /*const projetsFiles = fs.readdirSync('../KwiKSite/projects/');
     for (const file of projetsFiles) {
         app.get(`/projects/${file.replace(".html", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../../KwiKSite/projects/${file}`));
@@ -54,13 +64,6 @@ function register(client) {
         });
     }
 
-    const jsFiles = fs.readdirSync('../KwiKSite/js/');
-    for (const file of jsFiles) {
-        app.get(`/js/${file}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/js/${file}`));
-        });
-    }
-
     /*const lolFiles = fs.readdirSync('../KwiKSite/lol/');
     for (const file of lolFiles) {
         app.get(`/lol/${file.replace(".html", "")}`, function (req, res) {
@@ -68,66 +71,66 @@ function register(client) {
         });
     }*/
 
-    app.get("/lol/profile", function (req, res) {
-        if (!req.cookies['token']) {
-            res.redirect("/login");
-        } else {
-            console.log(req.cookies['token']);
-            request('https://discord.com/api/users/@me', {
-                method: 'GET',
-                headers: {
-                    Authorization: "Bearer " + req.cookies['token']
-                }
-            }).then(tokenResponseData => {
-                tokenResponseData.body.json().then(data => {
-                    fs.readFile('../KwiKSite/lol/profile.html', 'utf8', function (err, filedata) {
-                        if (err) {
-                            return console.log(err);
-                        }
-                        client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
-                            if (err) { throw err; }
-                            if (result.rows.length > 0) {
-                                let resultfile = filedata.replace("{{username}}", data.username);
+    /* app.get("/lol/profile", function (req, res) {
+         if (!req.cookies['token']) {
+             res.redirect("/login");
+         } else {
+             console.log(req.cookies['token']);
+             request('https://discord.com/api/users/@me', {
+                 method: 'GET',
+                 headers: {
+                     Authorization: "Bearer " + req.cookies['token']
+                 }
+             }).then(tokenResponseData => {
+                 tokenResponseData.body.json().then(data => {
+                     fs.readFile('../KwiKSite/lol/profile.html', 'utf8', function (err, filedata) {
+                         if (err) {
+                             return console.log(err);
+                         }
+                         client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                             if (err) { throw err; }
+                             if (result.rows.length > 0) {
+                                 let resultfile = filedata.replace("{{username}}", data.username);
 
-                                let tr = "";
-                                result.rows.forEach(function (value) {
-                                    tr += `<tr><td>${value.username}</td><td>${value.tier_solo}</td><td>${value.rank_solo}</td><td>${value.lp_solo}</td><td>${value.rank_flex}</td><td>${value.tier_flex}</td><td>${value.lp_flex}</td></tr>`;
-                                });
-                                resultfile = resultfile.replace("{{Accounts}}", tr);
+                                 let tr = "";
+                                 result.rows.forEach(function (value) {
+                                     tr += `<tr><td>${value.username}</td><td>${value.tier_solo}</td><td>${value.rank_solo}</td><td>${value.lp_solo}</td><td>${value.rank_flex}</td><td>${value.tier_flex}</td><td>${value.lp_flex}</td></tr>`;
+                                 });
+                                 resultfile = resultfile.replace("{{Accounts}}", tr);
 
-                                return res.send(resultfile);
-                            }
-                            return res.redirect("/lol/register");
-                        });
-                    });
-                });
-            });
-        }
-    });
+                                 return res.send(resultfile);
+                             }
+                             return res.redirect("/lol/register");
+                         });
+                     });
+                 });
+             });
+         }
+     });
 
-    app.get("/lol/summoner", function (req, res) {
-        if (req.query.discordid) {
-            client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
-                if (err) { throw err; }
-                if (result.rows.length > 0) {
-                    return res.send(result.rows);
-                }
-                return res.sendStatus(400);
-            });
-        }
-    });
+     app.get("/lol/summoner", function (req, res) {
+         if (req.query.discordid) {
+             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
+                 if (err) { throw err; }
+                 if (result.rows.length > 0) {
+                     return res.send(result.rows);
+                 }
+                 return res.sendStatus(400);
+             });
+         }
+     });
 
-    /*app.get("/lol/summoners", function (req, res) {
-        client.pg.query(`SELECT * FROM summoners`, (err, result) => {
-            if (err) { throw err; }
-            if (result.rows.length > 0) {
-                return res.send(result.rows);
-            }
-            return res.sendStatus(400);
-        });
-    });*/
+     /*app.get("/lol/summoners", function (req, res) {
+         client.pg.query(`SELECT * FROM summoners`, (err, result) => {
+             if (err) { throw err; }
+             if (result.rows.length > 0) {
+                 return res.send(result.rows);
+             }
+             return res.sendStatus(400);
+         });
+     });*/
 
-    app.get("/lol/matchs", function (req, res) {
+    /*app.get("/lol/matchs", function (req, res) {
         console.log(req.query);
         if (req.query.discordid) {
             client.pg.query('SELECT matchs.puuid, player, gamemode, champion, matchup, support, gold, lane, kill, deaths, assists, result, total_damage, tanked_damage, heal, neutral_objectives, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, double, tripple, quadra, penta, time_spent_dead, timestamp, player2, player3, player4, player5 FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [req.query.discordid], (err, result) => {
@@ -225,7 +228,7 @@ function register(client) {
             }
         }
         res.redirect("/");
-    });
+    });*/
 
     app.listen(8080, () => {
         console.log("Express server started");
