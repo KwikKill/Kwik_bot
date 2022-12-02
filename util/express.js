@@ -23,7 +23,7 @@ function register(client) {
 
     const indexFiles = fs.readdirSync('Site/');
     for (const file of indexFiles) {
-        app.get(`/${file.replace(".html", "")}`, function (req, res) {
+        app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/${file}`));
         });
     }
@@ -59,7 +59,7 @@ function register(client) {
 
     const postsFiles = fs.readdirSync('Site/posts/');
     for (const file of postsFiles) {
-        app.get(`/posts/${file.replace(".html", "")}`, function (req, res) {
+        app.get(`/posts/${file.replace(".ejs", "")}`, function (req, res) {
             res.render(`../Site/posts/${file}`);
         });
     }
