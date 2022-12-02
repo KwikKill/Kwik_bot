@@ -83,6 +83,7 @@ function register(client) {
                 }
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
+                    console.log(data);
                     client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                         if (err) {
                             res.redirect("/404");
