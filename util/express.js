@@ -49,86 +49,76 @@ function register(client) {
         });
     }
 
-    /*const projetsFiles = fs.readdirSync('../KwiKSite/projects/');
+    const projetsFiles = fs.readdirSync('Site/projects/');
     for (const file of projetsFiles) {
-        app.get(`/projects/${file.replace(".html", "")}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/projects/${file}`));
+        app.get(`/projects/${file.replace(".ejs", "")}`, function (req, res) {
+            res.render(`../Site/projects/${file}`);
         });
     }
 
 
-    const postsFiles = fs.readdirSync('../KwiKSite/posts/');
+    const postsFiles = fs.readdirSync('Site/posts/');
     for (const file of postsFiles) {
         app.get(`/posts/${file.replace(".html", "")}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/posts/${file}`));
+            res.render(`../Site/posts/${file}`);
         });
     }
 
-    /*const lolFiles = fs.readdirSync('../KwiKSite/lol/');
+    const lolFiles = fs.readdirSync('Site/lol/');
     for (const file of lolFiles) {
-        app.get(`/lol/${file.replace(".html", "")}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../../KwiKSite/lol/${file}`));
+        app.get(`/lol/${file.replace(".ejs", "")}`, function (req, res) {
+            res.render(`../Site/lol/${file}`);
         });
-    }*/
+    }
 
-    /* app.get("/lol/profile", function (req, res) {
-         if (!req.cookies['token']) {
-             res.redirect("/login");
-         } else {
-             console.log(req.cookies['token']);
-             request('https://discord.com/api/users/@me', {
-                 method: 'GET',
-                 headers: {
-                     Authorization: "Bearer " + req.cookies['token']
-                 }
-             }).then(tokenResponseData => {
-                 tokenResponseData.body.json().then(data => {
-                     fs.readFile('../KwiKSite/lol/profile.html', 'utf8', function (err, filedata) {
-                         if (err) {
-                             return console.log(err);
-                         }
-                         client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
-                             if (err) { throw err; }
-                             if (result.rows.length > 0) {
-                                 let resultfile = filedata.replace("{{username}}", data.username);
+    app.get("/lol/profile", function (req, res) {
+        if (!req.cookies['token']) {
+            res.redirect("/login");
+        } else {
+            console.log(req.cookies['token']);
+            request('https://discord.com/api/users/@me', {
+                method: 'GET',
+                headers: {
+                    Authorization: "Bearer " + req.cookies['token']
+                }
+            }).then(tokenResponseData => {
+                tokenResponseData.body.json().then(data => {
+                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                        if (err) {
+                            res.redirect("/404");
+                            throw err;
+                        }
+                        if (result.rows.length > 0) {
+                            return res.render('../Site/lol/profile', { summoner: result.rows });
+                        }
+                        return res.redirect("/lol/register");
+                    });
+                });
+            });
+        }
+    });
 
-                                 let tr = "";
-                                 result.rows.forEach(function (value) {
-                                     tr += `<tr><td>${value.username}</td><td>${value.tier_solo}</td><td>${value.rank_solo}</td><td>${value.lp_solo}</td><td>${value.rank_flex}</td><td>${value.tier_flex}</td><td>${value.lp_flex}</td></tr>`;
-                                 });
-                                 resultfile = resultfile.replace("{{Accounts}}", tr);
+    app.get("/lol/summoner", function (req, res) {
+        if (req.query.discordid) {
+            client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
+                if (err) { throw err; }
+                if (result.rows.length > 0) {
+                    return res.send(result.rows);
+                }
+                return res.sendStatus(400);
+            });
+        }
+    });
 
-                                 return res.send(resultfile);
-                             }
-                             return res.redirect("/lol/register");
-                         });
-                     });
-                 });
-             });
-         }
-     });
-
-     app.get("/lol/summoner", function (req, res) {
-         if (req.query.discordid) {
-             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
-                 if (err) { throw err; }
-                 if (result.rows.length > 0) {
-                     return res.send(result.rows);
-                 }
-                 return res.sendStatus(400);
-             });
-         }
-     });
-
-     /*app.get("/lol/summoners", function (req, res) {
-         client.pg.query(`SELECT * FROM summoners`, (err, result) => {
-             if (err) { throw err; }
-             if (result.rows.length > 0) {
-                 return res.send(result.rows);
-             }
-             return res.sendStatus(400);
-         });
-     });*/
+    /*app.get("/lol/summoners", function (req, res) {
+        client.pg.query(`SELECT * FROM summoners`, (err, result) => {
+            if (err) { throw err; }
+            if (result.rows.length > 0) {
+                return res.send(result.rows);
+            }
+            return res.sendStatus(400);
+        });
+    });*/
 
     /*app.get("/lol/matchs", function (req, res) {
         console.log(req.query);
@@ -153,7 +143,7 @@ function register(client) {
         }
         return res.sendStatus(400);
 
-    });
+    });*/
 
     app.get("/admin", function (req, res) {
         if (!req.cookies['token']) {
@@ -168,9 +158,9 @@ function register(client) {
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
                     if (data.id === client.owners[0]) {
-                        res.sendFile(path.join(__dirname, `../../KwiKSite/admin/admin.html`));
+                        res.render(`../Site/admin/admin.ejs`);
                     } else {
-                        res.redirect("../../KwiKSite/404.html");
+                        res.redirect("/404");
                     }
                 });
             });
@@ -215,10 +205,10 @@ function register(client) {
     });
 
     app.get('*', function (req, res) {
-        res.sendFile(path.join(__dirname, '../../KwiKSite/404.html'));
+        res.render('../Site/404.ejs');
     });
 
-    app.post('/contact.html', function (req, res) {
+    app.post('/contact', function (req, res) {
         console.log(req.body);
         if (req.body.mail && req.body.text) {
             if (req.body.topic === "Topic :") {
@@ -228,7 +218,7 @@ function register(client) {
             }
         }
         res.redirect("/");
-    });*/
+    });
 
     app.listen(8080, () => {
         console.log("Express server started");

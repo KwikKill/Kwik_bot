@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>KwikKill WebSite</title>
+    <link rel="icon" href="/images/favicon.ico" />
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400,700" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <!-- PRE LOADER -->
+
+    <!--
+     <div class="preloader">
+          <div class="sk-spinner sk-spinner-wordpress">
+               <span class="sk-inner-circle"></span>
+          </div>
+     </div>
+     -->
+
+    <!-- Navigation section  -->
+
+    <div class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon icon-bar"></span>
+                    <span class="icon icon-bar"></span>
+                    <span class="icon icon-bar"></span>
+                </button>
+                <a href="../" class="navbar-brand"><img src="../images/logo.png" class="logo"></img></a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">Projects</a></li>
+                    <li><a href="/about">About Me</a></li>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Home Section -->
+
+    <section id="home">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 col-sm-12">
+                    <h2>{{username}} LOL stats</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- Stats Section-->
+    <section id="stats">
+        <div class="container">
+            <div class="row">
+                <div class="stats">
+                    <div class="sub-stats">
+                        <h2 style="border-bottom: 1px solid #2D3848;">Ranked</h2>
+                        <div class="img-align-block">
+
+                            <div>
+                                <img src="//lolg-cdn.porofessor.gg/img/s/league-icons-v3/160/4.png?v=8" alt="Gold IV"
+                                    title="Gold IV" class="" style="margin:auto;max-width:160px;" width="160"
+                                    height="137">
+                            </div>
+                            <div class="txt mainRankingDescriptionText">
+                                <h3 style="text-align:center;">Soloqueue :</h3>
+                                <div class="leagueTier">
+                                    Gold IV </div>
+                                <div class="queueLine">
+                                </div>
+                                <div class="league-points">LP: <span class="leaguePoints ">0</span></div>
+                                <div class="winslosses">
+                                    <span class="wins">
+                                        Wins: <span class="winsNumber">38</span>
+                                    </span>
+
+                                    <span class="winLossesSeparator"></span>
+                                    <span class="losses">
+                                        Losses: <span class="lossesNumber">33</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="img-align-block">
+
+                            <div>
+                                <img src="//lolg-cdn.porofessor.gg/img/s/league-icons-v3/160/4.png?v=8" alt="Gold IV"
+                                    title="Gold IV" class="" style="margin:auto;max-width:160px;" width="160"
+                                    height="137">
+                            </div>
+                            <div class="txt mainRankingDescriptionText">
+                                <h3 style="text-align:center;">Flex :</h3>
+                                <div class="leagueTier">
+                                    Gold IV </div>
+                                <div class="queueLine">
+                                </div>
+                                <div class="league-points">LP: <span class="leaguePoints ">0</span></div>
+                                <div class="winslosses">
+                                    <span class="wins">
+                                        Wins: <span class="winsNumber">38</span>
+                                    </span>
+
+                                    <span class="winLossesSeparator"></span>
+                                    <span class="losses">
+                                        Losses: <span class="lossesNumber">33</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="stats">
+                    <div class="sub-stats">
+                        <h2 style="border-bottom: 1px solid #2D3848;">Stats</h2>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Table Section -->
+
+    <div class="scrollmenu" id="table">
+        <table>
+            <!--<caption>Tableau stats lol</caption>-->
+            <thead>
+                <tr>
+                    <th scope="col">username</th>
+                    <th scope="col">tier solo</th>
+                    <th scope="col">rank solo</th>
+                    <th scope="col">lp solo</th>
+                    <th scope="col">rank flex</th>
+                    <th scope="col">tier flex</th>
+                    <th scope="col">lp flex</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{Accounts}}
+            </tbody>
+            <!--
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="2">Accounts number :</th>
+                    <td colspan="2">3</td>
+                </tr>
+            </tfoot>
+            -->
+        </table>
+    </div>
+
+
+    <!-- Footer Section -->
+
+    <footer>
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-6 col-sm-6">
+                    <div class="footer-copyright">
+                        <p>© 2022 KwikKill | All Rights Reserved.</p>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- SCRIPTS -->
+
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/custom.js"></script>
+    <!--
+    <script>
+        let x = document.cookie;
+        console.log(x)
+        httpGetAsync("/lol/summoner?discordid=297409548703105035", response => {
+            let data = JSON.parse(response);
+            let tr = '';
+            data.forEach(function (value) {
+                tr += `<tr><td>${value.username}</td><td>${value.tier_solo}</td><td>${value.rank_solo}</td><td>${value.lp_solo}</td><td>${value.rank_flex}</td><td>${value.tier_flex}</td><td>${value.lp_flex}</td></tr>`;
+            });
+            document.querySelector('#table tbody').innerHTML = tr;
+        });
+    </script>
+    -->
+
+</body>
+
+</html>
