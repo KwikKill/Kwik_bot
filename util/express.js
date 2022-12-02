@@ -89,7 +89,7 @@ function register(client) {
                             throw err;
                         }
                         if (result.rows.length > 0) {
-                            return res.render('../Site/lol/profile', { summoner: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar });
+                            return res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar });
                         }
                         return res.redirect("/lol/register");
                     });
