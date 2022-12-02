@@ -72,7 +72,7 @@ function register(client) {
     }
 
     app.get("/lol/profile", function (req, res) {
-        console.log("b")
+        console.log("b");
         if (!req.cookies['token']) {
             res.redirect("/login");
         } else {
@@ -91,8 +91,8 @@ function register(client) {
                             throw err;
                         }
                         if (result.rows.length > 0) {
-                            console.log("a")
-                            return res.render('../Site/lol/profile', { summoner: result.rows, username: "a" });
+                            console.log("a");
+                            //return res.render('../Site/lol/profile', { summoner: result.rows, username: "a" });
                         }
                         return res.redirect("/lol/register");
                     });
