@@ -26,13 +26,30 @@
         <hr>
 
         <!-- Status Section -->
-
         <section id="status">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
                         <h2>
-                            Status : <%= discordclient.user.presence.status %>
+                            Status
+                        </h2>
+                        <hr>
+                        <div class="col-md-12 col-sm-12">
+                            <h3>
+                                <%= discordclient.user.presence.status %>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!-- Log Section -->
+        <section id="log">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <h2>
+                            Log
                         </h2>
                         <hr>
                     </div>
