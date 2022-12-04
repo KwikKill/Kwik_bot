@@ -23,7 +23,7 @@ function register(client) {
 
     const indexFiles = fs.readdirSync('Site/');
     for (const file of indexFiles) {
-        if (!fs.lstatSync(`../Site/${file}`).isDirectory()) {
+        if (!fs.lstatSync(`Site/${file}`).isDirectory()) {
             app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
                 res.render(`../Site/${file}`);
             });
