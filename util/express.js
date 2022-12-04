@@ -158,7 +158,7 @@ function register(client) {
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
                     if (data.id === client.owners[0]) {
-                        res.render(`../Site/admin/admin.ejs`);
+                        res.render(`../Site/admin/admin`);
                     } else {
                         res.redirect("/404");
                     }
