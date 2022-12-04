@@ -172,7 +172,7 @@ async function classic(client, monday, sunday, interaction, rt = false) {
 
                 const embed1 = new MessageEmbed()
                     .setColor("0x757575")
-                    .setTitle("Emploi du temp de la classe : " + arg)
+                    .setTitle("Emploi du temps de la classe : " + arg)
                     .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Gab_bot')
                     .setDescription(
                         "Semaine du " + monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate() + " au " + sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate()
