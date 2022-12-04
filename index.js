@@ -531,6 +531,7 @@ client.lol = async function () {
         // read current rank and send message if rank changed
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
         for (const x of client.trackers) {
+            console.log(x);
             const channel = await client.channels.fetch(x);
             let user = false;
             try {
