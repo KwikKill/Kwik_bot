@@ -49,6 +49,19 @@
             }
         }
     }
+
+    let win = 0;
+    let played = 0;
+    let total = 0;
+    for (const row of games) {
+      if (row.result == "Win") {
+        win += 1;
+        played += 1;
+      } else if (row.result == "Lose") {
+        played += 1;
+      }
+      total += 1;
+    }
   %>
 
 </head>
@@ -168,7 +181,7 @@
             <h2 style="border-bottom: 1px solid #2D3848;">Stats</h2>
             <div style="width: 32%;display: inline-block;vertical-align: top;margin-bottom: 10px;">
               <h3>Number of matchs :</h3>
-              <div>1228</div>
+              <div><%= total %></div>
               <h3>Carry stats :</h3>
               <div>Overall : 69.71 %</div>
               <div>Hard Carry : 16.78 %</div>
@@ -178,7 +191,7 @@
             </div>
             <div style="width: 32%;display: inline-block;vertical-align: top;margin-bottom: 10px;">
               <h3>WR :</h3>
-              <div>50.49 %</div>
+              <div><%= win/played %>%</div>
               <h3>KS :</h3>
               <div>244 / 500</div>
             </div>
