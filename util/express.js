@@ -160,7 +160,7 @@ function register(client) {
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
                     if (data.id === client.owners[0]) {
-                        const data = fs.readFileSync('/var/log/syslog', 'utf8');
+                        //const data = fs.readFileSync('/var/log/syslog', 'utf8');
                         return res.render(`../Site/admin/admin`, { discordclient: client, log: data });
                     }
                     return res.redirect("/404");
