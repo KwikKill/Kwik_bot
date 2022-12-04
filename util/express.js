@@ -145,7 +145,7 @@ function register(client) {
 
     });*/
 
-    app.get("/admin", function (req, res) {
+    app.get("/a", function (req, res) {
         if (!req.cookies['token']) {
             res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
         } else {
@@ -158,10 +158,9 @@ function register(client) {
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
                     if (data.id === client.owners[0]) {
-                        res.render(`../Site/admin/admin`);
-                    } else {
-                        res.redirect("/404");
+                        return res.render(`../Site/admin/admin`);
                     }
+                    return res.redirect("/404");
                 });
             });
         }
