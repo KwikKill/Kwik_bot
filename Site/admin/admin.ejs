@@ -31,16 +31,11 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12">
                         <h2>
-                            Status
+                            Status : <%= discordclient.user.presence.status %>
                         </h2>
-                        <hr>
-                        <div class="col-md-12 col-sm-12">
-                            <h3>
-                                <%= discordclient.user.presence.status %>
-                            </h3>
-                        </div>
                     </div>
                 </div>
+            </div>
         </section>
 
         <!-- Log Section -->
@@ -52,9 +47,11 @@
                             Log
                         </h2>
                         <hr>
+                        <div class="log">
+                            <%- include('/var/log/syslog'); %>
+                        </div>
                     </div>
                 </div>
-            </div>
         </section>
 
         <!-- Footer Section -->
