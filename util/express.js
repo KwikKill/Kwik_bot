@@ -98,7 +98,7 @@ function register(client) {
         }
     });
 
-    app.get("/lol/summoner", function (req, res) {
+    /*app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
                 if (err) { throw err; }
@@ -108,7 +108,7 @@ function register(client) {
                 return res.sendStatus(400);
             });
         }
-    });
+    });*/
 
     /*app.get("/lol/summoners", function (req, res) {
         client.pg.query(`SELECT * FROM summoners`, (err, result) => {
