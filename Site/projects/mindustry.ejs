@@ -21,110 +21,91 @@
 
      <!-- Navigation section  -->
 
-     <div class="navbar navbar-default navbar-static-top" role="navigation">
-          <div class="container">
+     <%- include('../partials/header', {variant:''}); %>
 
-               <div class="navbar-header">
-                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                         <span class="icon icon-bar"></span>
-                         <span class="icon icon-bar"></span>
-                         <span class="icon icon-bar"></span>
-                    </button>
-                    <a href="../" class="navbar-brand"><img src="../images/logo.png" class="logo"></img></a>
+
+          <!-- Single Project Section -->
+
+          <section id="single-project">
+               <div class="container">
+                    <div class="row">
+
+                         <div class="col-md-offset-1 col-md-10 col-sm-12">
+                              <h1>Mindustry</h1>
+                              <p>My first dev experience was editing a java game named Mindustry and then cloning it to
+                                   add
+                                   items in the game.</p>
+                              <div class="col-md-12 col-sm-12">
+                                   <img src="../images/mindustry.png" class="img-responsive" alt="Portfolio">
+                              </div>
+
+                              <div class="clearfix"></div>
+
+                              <div class="col-md-4 col-sm-4">
+                                   <h3>Repository</h3>
+                                   <p>Deleted</p>
+                              </div>
+
+                              <div class="col-md-4 col-sm-4">
+                                   <h3>Creation's date</h3>
+                                   <p>2017</p>
+                              </div>
+
+                              <div class="col-md-4 col-sm-4">
+                                   <h3>Contributor</h3>
+                                   <p>KwikKill</p>
+                              </div>
+
+                              <div class="col-md-12 col-sm-12 text-center">
+                                   <p>This first development experience was simple but allowed me to learn a lot of
+                                        things,
+                                        from Git to CI to build a project, including Java syntax.</p>
+                              </div>
+                         </div>
+
+                    </div>
                </div>
-               <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                         <li><a href="../">Projects</a></li>
-                         <li><a href="../about">About Me</a></li>
-                         <li><a href="../blog">Blog</a></li>
-                         <li><a href="../contact">Contact</a></li>
-                    </ul>
+          </section>
+
+          <!-- Footer Section -->
+
+          <footer>
+               <div class="container">
+                    <div class="row">
+
+                         <div class="col-md-offset-1 col-md-4 col-sm-offset-1 col-sm-3">
+                              <p><a href="mailto:gabriel@blaisot.com">gabriel@blaisot.com</a></p>
+                         </div>
+
+                         <div class="col-md-6 col-sm-6">
+                              <ul class="social-icon">
+                                   <li><a href="https://www.linkedin.com/in/gabriel-blaisot-a89480233/"
+                                             class="fa fa-linkedin"></a></li>
+                              </ul>
+                         </div>
+
+                         <div class="clearfix col-md-12 col-sm-12">
+                              <hr>
+                         </div>
+
+                         <div class="col-md-6 col-sm-6">
+                              <div class="footer-copyright">
+                                   <p>© 2022 KwikKill | All Rights Reserved.</p>
+                              </div>
+                         </div>
+
+
+
+                    </div>
                </div>
-
-          </div>
-     </div>
+          </footer>
 
 
-     <!-- Single Project Section -->
+          <!-- SCRIPTS -->
 
-     <section id="single-project">
-          <div class="container">
-               <div class="row">
-
-                    <div class="col-md-offset-1 col-md-10 col-sm-12">
-                         <h1>Mindustry</h1>
-                         <p>My first dev experience was editing a java game named Mindustry and then cloning it to add
-                              items in the game.</p>
-                         <div class="col-md-12 col-sm-12">
-                              <img src="../images/mindustry.png" class="img-responsive" alt="Portfolio">
-                         </div>
-
-                         <div class="clearfix"></div>
-
-                         <div class="col-md-4 col-sm-4">
-                              <h3>Repository</h3>
-                              <p>Deleted</p>
-                         </div>
-
-                         <div class="col-md-4 col-sm-4">
-                              <h3>Creation's date</h3>
-                              <p>2017</p>
-                         </div>
-
-                         <div class="col-md-4 col-sm-4">
-                              <h3>Contributor</h3>
-                              <p>KwikKill</p>
-                         </div>
-
-                         <div class="col-md-12 col-sm-12 text-center">
-                              <p>This first development experience was simple but allowed me to learn a lot of things,
-                                   from Git to CI to build a project, including Java syntax.</p>
-                         </div>
-                    </div>
-
-               </div>
-          </div>
-     </section>
-
-     <!-- Footer Section -->
-
-     <footer>
-          <div class="container">
-               <div class="row">
-
-                    <div class="col-md-offset-1 col-md-4 col-sm-offset-1 col-sm-3">
-                         <p><a href="mailto:gabriel@blaisot.com">gabriel@blaisot.com</a></p>
-                    </div>
-
-                    <div class="col-md-6 col-sm-6">
-                         <ul class="social-icon">
-                              <li><a href="https://www.linkedin.com/in/gabriel-blaisot-a89480233/"
-                                        class="fa fa-linkedin"></a></li>
-                         </ul>
-                    </div>
-
-                    <div class="clearfix col-md-12 col-sm-12">
-                         <hr>
-                    </div>
-
-                    <div class="col-md-6 col-sm-6">
-                         <div class="footer-copyright">
-                              <p>© 2022 KwikKill | All Rights Reserved.</p>
-                         </div>
-                    </div>
-
-
-
-               </div>
-          </div>
-     </footer>
-
-
-     <!-- SCRIPTS -->
-
-     <script src="../js/jquery.js"></script>
-     <script src="../js/bootstrap.min.js"></script>
-     <script src="../js/custom.js"></script>
+          <script src="../js/jquery.js"></script>
+          <script src="../js/bootstrap.min.js"></script>
+          <script src="../js/custom.js"></script>
 
 </body>
 

@@ -21,115 +21,96 @@
 
      <!-- Navigation section  -->
 
-     <div class="navbar navbar-default navbar-static-top" role="navigation">
-          <div class="container">
-
-               <div class="navbar-header">
-                    <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                         <span class="icon icon-bar"></span>
-                         <span class="icon icon-bar"></span>
-                         <span class="icon icon-bar"></span>
-                    </button>
-                    <a href="/" class="navbar-brand"><img src="images/logo.png" class="logo"></img></a>
-               </div>
-               <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                         <li><a href="/">Projects</a></li>
-                         <li><a href="about">About Me</a></li>
-                         <li><a href="blog">Blog</a></li>
-                         <li class="active"><a href="contact">Contact</a></li>
-                    </ul>
-               </div>
-
-          </div>
-     </div>
+     <%- include('partials/header', {variant:'contact'}); %>
 
 
-     <!-- Contact Section -->
+          <!-- Contact Section -->
 
-     <section id="contact">
-          <div class="container">
-               <div class="row">
+          <section id="contact">
+               <div class="container">
+                    <div class="row">
 
-                    <div class="col-md-offset-1 col-md-10 col-sm-12">
-                         <div class="section-title">
-                              <h3>Send me a message !</h3>
-                              <h2>You can contact me by mail or from the form bellow.</h2>
+                         <div class="col-md-offset-1 col-md-10 col-sm-12">
+                              <div class="section-title">
+                                   <h3>Send me a message !</h3>
+                                   <h2>You can contact me by mail or from the form bellow.</h2>
+                              </div>
+
+                              <form action="/contact" method="post">
+                                   <div class="col-md-6 col-sm-6">
+                                        <input type="text" class="form-control" placeholder="Name" name="name"
+                                             id="name">
+                                   </div>
+                                   <div class="col-md-6 col-sm-6">
+                                        <input type="email" class="form-control" placeholder="Email" name="mail"
+                                             id="mail">
+                                   </div>
+                                   <div class="col-md-6 col-sm-6">
+                                        <input type="telephone" class="form-control" placeholder="Phone Number"
+                                             name="tel" id="tel">
+                                   </div>
+                                   <div class="col-md-6 col-sm-6">
+                                        <select class="form-control" name="topic" id="topic">
+                                             <option>Topic : </option>
+                                             <option>Project</option>
+                                             <option>Discussion</option>
+                                             <option>Job Proposal</option>
+                                        </select>
+                                   </div>
+                                   <div class="col-md-12 col-sm-12">
+                                        <textarea class="form-control" rows="8" placeholder="Details" name="text"
+                                             id="text"></textarea>
+                                   </div>
+                                   <div class="col-md-3 col-sm-4">
+                                        <input name="submit" id="submit" type="submit" class="form-control"
+                                             value="Send Message">
+                                   </div>
+                              </form>
                          </div>
 
-                         <form action="/contact" method="post">
-                              <div class="col-md-6 col-sm-6">
-                                   <input type="text" class="form-control" placeholder="Name" name="name" id="name">
-                              </div>
-                              <div class="col-md-6 col-sm-6">
-                                   <input type="email" class="form-control" placeholder="Email" name="mail" id="mail">
-                              </div>
-                              <div class="col-md-6 col-sm-6">
-                                   <input type="telephone" class="form-control" placeholder="Phone Number" name="tel"
-                                        id="tel">
-                              </div>
-                              <div class="col-md-6 col-sm-6">
-                                   <select class="form-control" name="topic" id="topic">
-                                        <option>Topic : </option>
-                                        <option>Project</option>
-                                        <option>Discussion</option>
-                                        <option>Job Proposal</option>
-                                   </select>
-                              </div>
-                              <div class="col-md-12 col-sm-12">
-                                   <textarea class="form-control" rows="8" placeholder="Details" name="text"
-                                        id="text"></textarea>
-                              </div>
-                              <div class="col-md-3 col-sm-4">
-                                   <input name="submit" id="submit" type="submit" class="form-control"
-                                        value="Send Message">
-                              </div>
-                         </form>
                     </div>
-
                </div>
-          </div>
-     </section>
+          </section>
 
-     <!-- Footer Section -->
+          <!-- Footer Section -->
 
-     <footer>
-          <div class="container">
-               <div class="row">
+          <footer>
+               <div class="container">
+                    <div class="row">
 
-                    <div class="col-md-offset-1 col-md-4 col-sm-offset-1 col-sm-3">
-                         <p><a href="mailto:gabriel@blaisot.com">gabriel@blaisot.com</a></p>
-                    </div>
-
-                    <div class="col-md-6 col-sm-6">
-                         <ul class="social-icon">
-                              <li><a href="https://www.linkedin.com/in/gabriel-blaisot-a89480233/"
-                                        class="fa fa-linkedin"></a></li>
-                         </ul>
-                    </div>
-
-                    <div class="clearfix col-md-12 col-sm-12">
-                         <hr>
-                    </div>
-
-                    <div class="col-md-6 col-sm-6">
-                         <div class="footer-copyright">
-                              <p>© 2022 KwikKill | All Rights Reserved.</p>
+                         <div class="col-md-offset-1 col-md-4 col-sm-offset-1 col-sm-3">
+                              <p><a href="mailto:gabriel@blaisot.com">gabriel@blaisot.com</a></p>
                          </div>
+
+                         <div class="col-md-6 col-sm-6">
+                              <ul class="social-icon">
+                                   <li><a href="https://www.linkedin.com/in/gabriel-blaisot-a89480233/"
+                                             class="fa fa-linkedin"></a></li>
+                              </ul>
+                         </div>
+
+                         <div class="clearfix col-md-12 col-sm-12">
+                              <hr>
+                         </div>
+
+                         <div class="col-md-6 col-sm-6">
+                              <div class="footer-copyright">
+                                   <p>© 2022 KwikKill | All Rights Reserved.</p>
+                              </div>
+                         </div>
+
+
+
                     </div>
-
-
-
                </div>
-          </div>
-     </footer>
+          </footer>
 
 
-     <!-- SCRIPTS -->
+          <!-- SCRIPTS -->
 
-     <script src="js/jquery.js"></script>
-     <script src="js/bootstrap.min.js"></script>
-     <script src="js/custom.js"></script>
+          <script src="js/jquery.js"></script>
+          <script src="js/bootstrap.min.js"></script>
+          <script src="js/custom.js"></script>
 
 </body>
 
