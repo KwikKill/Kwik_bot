@@ -11,6 +11,15 @@ body {
     Boxed Layout
 -----------------------------------------*/
 
+.substats {
+  width: 32%;
+  display: inline-block;
+  vertical-align: top;
+  margin-bottom: 10px;
+  background-color: #2f2c45;
+  border-radius: 25px;
+}
+
 .stats {
   background: #20232b;
   padding: 0px 20px 10px 10px;
