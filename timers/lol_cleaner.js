@@ -1,11 +1,11 @@
 const config = require('../config.json');
 
 module.exports = {
-    name: 'lol',
+    name: 'lol_cleaner',
     group: 'lol',
     onsetup: false,
     timer: 86400000,
-    description: "Fetch des utilisateurs toutes les heures",
+    description: "Clean up matchs older than 1 year",
     async run(client) {
         let timestamp = Date.now();
         timestamp = timestamp - 31536000000;
