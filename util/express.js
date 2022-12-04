@@ -23,9 +23,11 @@ function register(client) {
 
     const indexFiles = fs.readdirSync('Site/');
     for (const file of indexFiles) {
-        app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
-            res.render(`../Site/${file}`);
-        });
+        if (!fs.lstatSync(`../Site/${file}`).isDirectory()) {
+            app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
+                res.render(`../Site/${file}`);
+            });
+        }
     }
 
     const cssFiles = fs.readdirSync('Site/css/');
@@ -145,7 +147,7 @@ function register(client) {
 
     });*/
 
-    app.get("/a", function (req, res) {
+    app.get("/admin", function (req, res) {
         if (!req.cookies['token']) {
             res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
         } else {
