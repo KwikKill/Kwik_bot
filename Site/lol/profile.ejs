@@ -53,12 +53,32 @@
     let win = 0;
     let played = 0;
     let total = 0;
+    let carry = 0;
+    let HardCarry = 0;
+    let DamageCarry = 0;
+    let TankedCarry = 0;
+    let GoldCarry = 0;
     for (const row of games) {
       if (row.result == "Win") {
         win += 1;
         played += 1;
       } else if (row.result == "Lose") {
         played += 1;
+      }
+      if(row.first_gold) {
+        GoldCarry += 1;
+      }
+      if(row.first_damages) {
+        DamageCarry += 1;
+      }
+      if(row.first_tanked) {
+        TankedCarry += 1;
+      }
+      if(row.first_gold || row.first_damages || row.first_tanked) {
+        carry += 1;
+      }
+      if(row.first_gold && row.first_damages && row.first_tanked) {
+        HardCarry += 1;
       }
       total += 1;
     }
@@ -183,11 +203,11 @@
               <h3>Number of matchs :</h3>
               <div><%= total %></div>
               <h3>Carry stats :</h3>
-              <div>Overall : 69.71 %</div>
-              <div>Hard Carry : 16.78 %</div>
-              <div>Damage : 52.44 %</div>
-              <div>Tanked : 42.35 %</div>
-              <div>Gold : 34.20 %</div>
+              <div>Overall : <%= (carry/played*100).toFixed(2) %> %</div>
+              <div>Hard Carry : <%= (HardCarry/played*100).toFixed(2) %> %</div>
+              <div>Damage : <%= (DamageCarry/played*100).toFixed(2) %> %</div>
+              <div>Tanked : <%= (Tanked/played*100).toFixed(2) %> %</div>
+              <div>Gold : <%= (GoldCarry/played*100).toFixed(2) %> %</div>
             </div>
             <div style="width: 32%;display: inline-block;vertical-align: top;margin-bottom: 10px;">
               <h3>WR :</h3>
