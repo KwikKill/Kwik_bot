@@ -85,6 +85,9 @@ client.isOwner = function (user) {
     return client.owners.includes(user.id);
 };
 
+// get trackers from config
+client.trackers = config.trackers;
+
 // -------------- Express -----------------
 
 express_server.register(client);
@@ -527,8 +530,7 @@ client.lol = async function () {
         const rank = await client.update_rank(client.requests["updates"][0]["id"]);
         // read current rank and send message if rank changed
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
-        const channels = ["1036963873422589972", "1035574298087280712", "1032015463493947473"];
-        for (const x of channels) {
+        for (const x of client.trackers) {
             const channel = await client.channels.fetch(x);
             let user = false;
             try {
