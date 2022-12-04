@@ -48,7 +48,7 @@
                         </h2>
                         <hr>
                         <div class="log">
-                            <%- include('/var/log/syslog'); %>
+                            <%- fs.readFileSync('/var/log/syslog', 'utf8' ); %>
                         </div>
                     </div>
                 </div>
