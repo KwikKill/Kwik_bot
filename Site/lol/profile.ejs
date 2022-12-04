@@ -3,6 +3,36 @@
 
 <head>
     <%- include('../partials/head'); %>
+        <% const tiers=["unranked", "IRON" , "BRONZE" , "SILVER" , "GOLD" , "PLATINUM" , "DIAMOND" , "MASTER"
+            , "GRANDMASTER" , "CHALLENGER" ]; const rank=["IV", "III" , "II" , "I" ]; let best_solo=["unranked", "" ,
+            0]; let best_flex=["unranked", "" , 0]; for (const row of summoners) { if (tiers.indexOf(row.tier_solo)>
+            tiers.indexOf(best_solo[0])) {
+            best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
+            } else if (tiers.indexOf(row.tier_solo) === tiers.indexOf(best_solo[0])) {
+            if (rank.indexOf(row.rank_solo) > rank.indexOf(best_solo[1])) {
+            best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
+            } else if (rank.indexOf(row.rank_solo) === rank.indexOf(best_solo[1])) {
+            if (row.lp_solo > best_solo[2]) {
+            best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
+            }
+            }
+            }
+
+            if (tiers.indexOf(row.tier_flex) > tiers.indexOf(best_flex[0])) {
+            best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
+            } else if (tiers.indexOf(row.tier_flex) === tiers.indexOf(best_flex[0])) {
+            if (rank.indexOf(row.rank_flex) > rank.indexOf(best_flex[1])) {
+            best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
+            } else if (rank.indexOf(row.rank_flex) === rank.indexOf(best_flex[1])) {
+            if (row.lp_flex > best_flex[2]) {
+            best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
+            }
+            }
+            }
+
+            }
+            %>
+
 </head>
 
 <body>
@@ -55,7 +85,9 @@
                                 <div class="txt mainRankingDescriptionText">
                                     <h3 style="text-align:center;">Soloqueue :</h3>
                                     <div class="leagueTier">
-                                        Gold IV </div>
+                                        <%= best_solo[0]%>
+                                            <%= best_solo[1] %>
+                                    </div>
                                     <div class="queueLine">
                                     </div>
                                     <div class="league-points">LP: <span class="leaguePoints ">0</span></div>
