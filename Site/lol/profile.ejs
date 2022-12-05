@@ -66,6 +66,10 @@
     let time = 0;
     let cs = 0;
     let damages = 0;
+    let taken = 0;
+    let pinks = 0;
+    let vs = 0;
+    let gold = 0;
     for (const row of games) {
       if (row.result == "Win") {
         win += 1;
@@ -97,6 +101,10 @@
       time += row.length/60;
       cs += row.cs;
       damages += row.total_damage;
+      taken += row.tanked_damage;
+      pinks += row.pinks;
+      vs += row.vision_score;
+      gold += row.gold;
     }
   %>
 
@@ -240,10 +248,10 @@
               <div>Assists : <%= (assists/total).toFixed(2) %></div>
               <div>CS/min : <%= (cs/time).toFixed(2) %></div>
               <div>Damages/min : <%= (damages/time).toFixed(2) %></div>
-              <div>Tanked/min : PLACEHOLDER</div>
-              <div>Pinks : PLACEHOLDER</div>
-              <div>Vision Score : PLACEHOLDER</div>
-              <div>Gold/min : PLACEHOLDER</div>
+              <div>Tanked/min : <%= (taken/time).toFixed(2) %></div>
+              <div>Pinks : <%= (pinks/total).toFixed(2) %></div>
+              <div>Vision Score : <%= (vs/total).toFixed(2) %></div>
+              <div>Gold/min : <%= (gold/time).toFixed(2) %></div>
             </div>
           </div>
         </div>
