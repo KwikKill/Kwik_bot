@@ -29,7 +29,11 @@
                 count += 1
             });
             %>
+            <% if(number != undefined) { %>
             You are <%= number %>/<%= count %> in the queue.
+            <% } else { %>
+            You are not in the queue.
+            <% } %>
           </h2>
         </div>
       </div>
@@ -48,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        <% *eval client.requests.updates.forEach(function(update) {%>
+        <% client.requests.updates.forEach(function(update) {%>
         <tr>
           <td>
             <%= update.username %>
