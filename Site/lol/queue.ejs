@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head'); %>
+
+</head>
+
+<body>
+
+  <%- include('../partials/header', {variant:'lol'}); %>
+
+  <!-- Home Section -->
+
+  <% if(data !=== undefined) { %>
+  <section id="home">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-12 col-sm-12">
+          <h2>
+            <% 
+            let count = 1;
+            let number = undefined
+            client.requests.updates.forEach(function(update) {
+                if(update.discordid === data.id) {
+                    number = count
+                }
+                count += 1
+            }
+            %>
+            You are <%= number %>/<%= count %> in the queue.
+          </h2>
+        </div>
+      </div>
+    </div>
+  </section>
+  <% }%>
+
+  <div class="scrollmenu" id="table">
+    <table>
+      <!--<caption>Tableau stats lol</caption>-->
+      <thead>
+        <tr>
+          <th scope="col">username</th>
+          <th scope="col">count</th>
+          <th scope="col">total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% *eval client.requests.updates.forEach(function(update) {%>
+        <tr>
+          <td>
+            <%= update.username %>
+          </td>
+          <td>
+            <%= update.count %>
+          </td>
+          <td>
+            <%= update.total %>
+          </td>
+        </tr>
+        <% });%>
+      </tbody>
+      <!--
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="2">Accounts number :</th>
+                    <td colspan="2">3</td>
+                </tr>
+            </tfoot>
+            -->
+    </table>
+  </div>
+
+  <!-- Footer Section -->
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script src="/js/jquery.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/custom.js"></script>
+
+</body>
+
+</html>

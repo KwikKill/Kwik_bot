@@ -77,7 +77,7 @@ function register(client) {
         if (!req.cookies['token']) {
             res.redirect("/lol/profile");
         } else {
-            console.log(req.cookies['token']);
+            console.log("/lol/register", req.cookies['token']);
             request('https://discord.com/api/users/@me', {
                 method: 'GET',
                 headers: {
@@ -131,7 +131,6 @@ function register(client) {
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
                     client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
-                        console.log(result.rows);
                         if (err) {
                             res.redirect("/404");
                             throw err;
@@ -216,6 +215,23 @@ function register(client) {
                 });
             });
         }
+    });
+
+    app.get("/lol/queue", function (req, res) {
+        if (!req.cookies['token']) {
+            return res.render('../Site/lol/queue', { client: client, data: undefined });
+        }
+        console.log("/lol/queue", req.cookies['token']);
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                return res.render('../Site/lol/queue', { client: client, data: data });
+            });
+        });
     });
 
     app.get("/login", function (req, res) {
