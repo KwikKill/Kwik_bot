@@ -7,7 +7,7 @@ module.exports = {
     serverid: ["513776796211085342", "890915473363980308"],
     async run(interaction, client) {
         // parameters
-        const classs = interaction.message.embeds[0].title.replace("Emploi du temp de la classe : ", '');
+        const classs = interaction.message.embeds[0].title.replace("Emploi du temps de la classe : ", '');
         const date1 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[0]);
         const date2 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[2]);
         date1.setDate(date1.getDate() - 7);

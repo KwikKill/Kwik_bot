@@ -5,7 +5,7 @@ module.exports = {
     serverid: ["513776796211085342", "890915473363980308"],
     async run(interaction, client) {
         // parameters
-        const classs = interaction.message.embeds[0].title.replace("Emploi du temp de la classe : ", '');
+        const classs = interaction.message.embeds[0].title.replace("Emploi du temps de la classe : ", '');
         const date1 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[0]);
         const date2 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[2]);
         date1.setDate(date1.getDate() + 7);
@@ -16,7 +16,6 @@ module.exports = {
         if (classs === "raph") {
             client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
         } else {
-            console.log(classs);
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
         interaction.deferUpdate();
