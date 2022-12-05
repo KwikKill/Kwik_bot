@@ -16,8 +16,9 @@ function register(client) {
     app.use(require('body-parser').urlencoded());
 
     app.get('/', function (req, res) {
-        res.render('../Site/index');
-        return res.end();
+        res.render('../Site/index').then(() => {
+            return res.end();
+        });
     });
 
     app.set('view engine', 'ejs');
@@ -26,8 +27,9 @@ function register(client) {
     for (const file of indexFiles) {
         if (!fs.lstatSync(`Site/${file}`).isDirectory()) {
             app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
-                res.render(`../Site/${file}`);
-                return res.end();
+                res.render(`../Site/${file}`).then(() => {
+                    return res.end();
+                });
             });
         }
     }
@@ -35,32 +37,36 @@ function register(client) {
     const cssFiles = fs.readdirSync('Site/css/');
     for (const file of cssFiles) {
         app.get(`/css/${file}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../Site/css/${file}`));
-            return res.end();
+            res.sendFile(path.join(__dirname, `../Site/css/${file}`)).then(() => {
+                return res.end();
+            });
         });
     }
 
     const imagesFiles = fs.readdirSync('Site/images/');
     for (const file of imagesFiles) {
         app.get(`/images/${file}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../Site/images/${file}`));
-            return res.end();
+            res.sendFile(path.join(__dirname, `../Site/images/${file}`)).then(() => {
+                return res.end();
+            });
         });
     }
 
     const jsFiles = fs.readdirSync('Site/js/');
     for (const file of jsFiles) {
         app.get(`/js/${file}`, function (req, res) {
-            res.sendFile(path.join(__dirname, `../Site/js/${file}`));
-            return res.end();
+            res.sendFile(path.join(__dirname, `../Site/js/${file}`)).then(() => {
+                return res.end();
+            });
         });
     }
 
     const projetsFiles = fs.readdirSync('Site/projects/');
     for (const file of projetsFiles) {
         app.get(`/projects/${file.replace(".ejs", "")}`, function (req, res) {
-            res.render(`../Site/projects/${file}`);
-            return res.end();
+            res.render(`../Site/projects/${file}`).then(() => {
+                return res.end();
+            });
         });
     }
 
@@ -68,8 +74,9 @@ function register(client) {
     const postsFiles = fs.readdirSync('Site/posts/');
     for (const file of postsFiles) {
         app.get(`/posts/${file.replace(".ejs", "")}`, function (req, res) {
-            res.render(`../Site/posts/${file}`);
-            return res.end();
+            res.render(`../Site/posts/${file}`).then(() => {
+                return res.end();
+            });
         });
     }
 
@@ -82,8 +89,9 @@ function register(client) {
 
     app.get("/lol/register", function (req, res) {
         if (!req.cookies['token']) {
-            res.redirect("/lol/profile");
-            return res.end();
+            res.redirect("/lol/profile").then(() => {
+                return res.end();
+            });
         }
         console.log("/lol/register", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
@@ -95,15 +103,18 @@ function register(client) {
             tokenResponseData.body.json().then(data => {
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
-                        res.redirect("/404");
-                        return res.end();
+                        res.redirect("/404").then(() => {
+                            return res.end();
+                        });
                     }
                     if (result.rows.length === 0) {
-                        res.render("../Site/lol/register", { username: data.username, discordid: data.id });
-                        return res.end();
+                        res.render("../Site/lol/register", { username: data.username, discordid: data.id }).then(() => {
+                            return res.end();
+                        });
                     }
-                    res.redirect("/lol/profile");
-                    return res.end();
+                    res.redirect("/lol/profile").then(() => {
+                        return res.end();
+                    });
                 });
             });
         });
@@ -116,24 +127,28 @@ function register(client) {
                 if (err) {
                     console.error(err);
                     res.statusCode(500);
-                    res.render("../Site/lol/index", { text: "Internal server error" });
-                    return res.end();
+                    res.render("../Site/lol/index", { text: "Internal server error" }).then(() => {
+                        return res.end();
+                    });
                 }
                 if (result.rows.length === 0) {
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
-                    res.redirect("/lol/queue");
-                    return res.end();
+                    res.redirect("/lol/queue").then(() => {
+                        return res.end();
+                    });
                 }
-                res.render("../Site/lol/index", { text: "This account is already registered" });
-                return res.end();
+                res.render("../Site/lol/index", { text: "This account is already registered" }).then(() => {
+                    return res.end();
+                });
             });
         }
     });
 
     app.get("/lol/profile", function (req, res) {
         if (!req.cookies['token']) {
-            res.redirect("/login");
-            return res.end();
+            res.redirect("/login").then(() => {
+                return res.end();
+            });
         }
         console.log("/lol/profile", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
@@ -145,17 +160,20 @@ function register(client) {
             tokenResponseData.body.json().then(data => {
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
-                        res.redirect("/404");
-                        return res.end();
+                        res.redirect("/404").then(() => {
+                            return res.end();
+                        });
                     }
                     if (result.rows.length > 0) {
                         client.pg.query('SELECT * FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [data.id], (err2, result2) => {
-                            res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
-                            return res.end();
+                            res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows }).then(() => {
+                                return res.end();
+                            });
                         });
                     } else {
-                        res.redirect("/lol/register");
-                        return res.end();
+                        res.redirect("/lol/register").then(() => {
+                            return res.end();
+                        });
                     }
                 });
             });
@@ -211,8 +229,9 @@ function register(client) {
 
     app.get("/admin", function (req, res) {
         if (!req.cookies['token']) {
-            res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
-            return res.end();
+            res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify").then(() => {
+                return res.end();
+            });
         }
         console.log(req.cookies['token']);
         request('https://discord.com/api/users/@me', {
@@ -224,19 +243,22 @@ function register(client) {
             tokenResponseData.body.json().then(data => {
                 if (data.id === client.owners[0]) {
                     //const data = fs.readFileSync('/var/log/syslog', 'utf8');
-                    res.render(`../Site/admin/admin`, { discordclient: client, log: data });
-                    return res.end();
+                    res.render(`../Site/admin/admin`, { discordclient: client, log: data }).then(() => {
+                        return res.end();
+                    });
                 }
-                res.redirect("/404");
-                return res.end();
+                res.redirect("/404").then(() => {
+                    return res.end();
+                });
             });
         });
     });
 
     app.get("/lol/queue", function (req, res) {
         if (!req.cookies['token']) {
-            res.render('../Site/lol/queue', { jsclient: client, data: undefined });
-            return res.end();
+            res.render('../Site/lol/queue', { jsclient: client, data: undefined }).then(() => {
+                return res.end();
+            });
         }
         console.log("/lol/queue", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
@@ -246,8 +268,9 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                res.render('../Site/lol/queue', { jsclient: client, data: data });
-                return res.end();
+                res.render('../Site/lol/queue', { jsclient: client, data: data }).then(() => {
+                    return res.end();
+                });
             });
         });
     });
@@ -272,29 +295,34 @@ function register(client) {
                 }).then(tokenResponseData => {
                     tokenResponseData.body.json().then(oauthData => {
                         res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
-                        res.redirect("/lol/profile");
-                        return res.end();
+                        res.redirect("/lol/profile").then(() => {
+                            return res.end();
+                        });
                     });
                 });
             } catch (error) {
                 console.error(error);
-                res.redirect("/404");
-                return res.end();
+                res.redirect("/404").then(() => {
+                    return res.end();
+                });
             }
         } else {
             if (!req.cookies['token']) {
-                res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
-                return res.end();
+                res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify").then(() => {
+                    return res.end();
+                });
             }
             console.log(req.cookies['token']);
-            res.redirect("/lol/profile");
-            return res.end();
+            res.redirect("/lol/profile").then(() => {
+                return res.end();
+            });
         }
     });
 
     app.get('*', function (req, res) {
-        res.render('../Site/404.ejs');
-        return res.end();
+        res.render('../Site/404.ejs').then(() => {
+            return res.end();
+        });
     });
 
     app.post('/contact', function (req, res) {
@@ -305,8 +333,9 @@ function register(client) {
                 client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} ${req.body.topic} : \`\`\`\n${req.body.text}\n\`\`\``);
             }
         }
-        res.redirect("/");
-        return res.end();
+        res.redirect("/").then(() => {
+            return res.end();
+        });
     });
 
     app.listen(8080, () => {
