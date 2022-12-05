@@ -12,7 +12,7 @@
 
   <!-- Home Section -->
 
-  <% if(data !=== undefined) { %>
+  <% if(data != undefined) { %>
   <section id="home">
     <div class="container">
       <div class="row">
@@ -21,9 +21,9 @@
           <h2>
             <% 
             let count = 1;
-            let number = undefined
+            let number = undefined;
             client.requests.updates.forEach(function(update) {
-                if(update.discordid === data.id) {
+                if(update.discordid == data.id) {
                     number = count
                 }
                 count += 1
