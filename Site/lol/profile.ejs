@@ -108,11 +108,17 @@
     }
 
     let KS = 0;
+    console.log(KS)
     KS += carry/total*100
+    console.log(KS)
     KS += win/total*100
+    console.log(KS)
     KS += (kills+assists)/killstotal*100
+    console.log(KS)
     KS += (vs/(total*time))*5
+    console.log(KS)
     KS += cs/(total*time)*10
+    console.log(KS)
 
     if(total < 100) {
       KS = KS * 0.99 ** (100 - total);
