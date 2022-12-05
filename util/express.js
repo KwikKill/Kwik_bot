@@ -73,6 +73,18 @@ function register(client) {
         });
     }*/
 
+    app.get("/lol/register", function (req, res) {
+        if (req.cookies['token']) {
+            res.redirect("/lol/profile");
+        } else {
+            res.render("../Site/lol/register");
+        }
+    });
+
+    app.post("/lol/register", function (req, res) {
+        console.log(req.body);
+    });
+
     app.get("/lol/profile", function (req, res) {
         if (!req.cookies['token']) {
             res.redirect("/login");
@@ -214,7 +226,6 @@ function register(client) {
     });
 
     app.post('/contact', function (req, res) {
-        console.log(req.body);
         if (req.body.mail && req.body.text) {
             if (req.body.topic === "Topic :") {
                 client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} : \`\`\`\n${req.body.text}\n\`\`\``);

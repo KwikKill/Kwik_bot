@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head'); %>
+
+</head>
+
+<body>
+
+  <%- include('../partials/header', {variant:'lol'}); %>
+
+  <!-- Home Section -->
+
+  <section id="home">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-12 col-sm-12">
+          <h2>
+            <%= username %> Register
+          </h2>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+
+  <!-- Footer Section -->
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script src="/js/jquery.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/custom.js"></script>
+
+</body>
+
+</html>

@@ -113,8 +113,6 @@
     KS += (kills+assists)/killstotal*100
     KS += (((vs/total)/(time/total))/0.2)*5
     KS += (cs/total)/(time/total)*10
-    console.log(KS)
-
     if(total < 100) {
       KS = KS * 0.99 ** (100 - total);
     }
