@@ -16,6 +16,7 @@ module.exports = {
         if (classs === "raph") {
             client.commands.get("edt").create_di_raph(client, date1, date2, interaction, "raph");
         } else {
+            console.log(classs);
             client.commands.get("edt").classic(client, date1, date2, interaction, classs);
         }
         interaction.deferUpdate();

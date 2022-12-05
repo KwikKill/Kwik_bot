@@ -148,6 +148,7 @@ module.exports = {
 
 async function classic(client, monday, sunday, interaction, rt = false) {
     let arg;
+    console.log(rt);
     if (rt !== false) {
         arg = rt;
     } else {
