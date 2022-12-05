@@ -113,7 +113,7 @@ function register(client) {
         if (!req.cookies['token']) {
             res.redirect("/login");
         } else {
-            console.log(req.cookies['token']);
+            console.log("/lol/profile", req.cookies['token']);
             request('https://discord.com/api/users/@me', {
                 method: 'GET',
                 headers: {
@@ -122,6 +122,7 @@ function register(client) {
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
                     client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                        console.log(result.rows);
                         if (err) {
                             res.redirect("/404");
                             throw err;
