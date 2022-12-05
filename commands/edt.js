@@ -147,9 +147,6 @@ module.exports = {
 };
 
 async function classic(client, monday, sunday, interaction, rt = false) {
-    if (interaction.options === undefined) {
-        return;
-    }
     let arg;
     if (rt !== false) {
         arg = rt;
