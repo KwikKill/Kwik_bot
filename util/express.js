@@ -219,7 +219,7 @@ function register(client) {
 
     app.get("/lol/queue", function (req, res) {
         if (!req.cookies['token']) {
-            return res.render('../Site/lol/queue', { client: client, data: undefined });
+            return res.render('../Site/lol/queue', { jsclient: client, data: undefined });
         }
         console.log("/lol/queue", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
@@ -229,7 +229,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                return res.render('../Site/lol/queue', { client: client, data: data });
+                return res.render('../Site/lol/queue', { jsclient: client, data: data });
             });
         });
     });

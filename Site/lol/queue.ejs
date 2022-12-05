@@ -22,7 +22,7 @@
             <% 
             let count = 1;
             let number = undefined;
-            client.requests.updates.forEach(function(update) {
+            jsclient.requests.updates.forEach(function(update) {
                 if(update.discordid == data.id) {
                     number = count
                 }
@@ -52,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        <% client.requests.updates.forEach(function(update) {%>
+        <% jsclient.requests.updates.forEach(function(update) {%>
         <tr>
           <td>
             <%= update.username %>
