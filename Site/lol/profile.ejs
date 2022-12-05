@@ -63,6 +63,8 @@
     let assists = 0;
     let killstotal = 0;
     let KP = 0;
+    let time = 0;
+    let cs = 0;
     for (const row of games) {
       if (row.result == "Win") {
         win += 1;
@@ -91,6 +93,8 @@
       assists += row.assists;
       killstotal += row.total_kills;
       total += 1;
+      time += row.length/60;
+      cs += row.cs;
     }
   %>
 
@@ -232,7 +236,7 @@
               <div>Kills : <%= (kills/total).toFixed(2) %></div>
               <div>Deaths : <%= (deaths/total).toFixed(2) %></div>
               <div>Assists : <%= (assists/total).toFixed(2) %></div>
-              <div>CS/min : PLACEHOLDER</div>
+              <div>CS/min : <%= (cs/(time/total)).toFixed(2) %></div>
               <div>Damages/min : PLACEHOLDER</div>
               <div>Tanked/min : PLACEHOLDER</div>
               <div>Pinks : PLACEHOLDER</div>
