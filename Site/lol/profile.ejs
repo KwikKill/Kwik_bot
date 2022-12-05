@@ -106,6 +106,17 @@
       vs += row.vision_score;
       gold += row.gold;
     }
+
+    let KS = 0;
+    KS += carry/total*100
+    KS += win/total*100
+    KS += (kills+assists)/killstotal*100
+    KS += (vs/(total*time))*5
+    KS += cs/(total*time)*10
+
+    if(total < 100) {
+      KS = KS * 0.99 ** (100 - total);
+    }
   %>
 
 </head>
@@ -237,7 +248,7 @@
               <h3 style="text-decoration: underline;">WR :</h3>
               <div><%= (win/played*100).toFixed(2) %>%</div>
               <h3 style="text-decoration: underline;">KS :</h3>
-              <div>PLACEHOLDER / 500</div>
+              <div><%= KS.toFixed(0) %> / 500</div>
               <h3 style="text-decoration: underline;">KP :</h3>
               <div><%= ((kills + assists)/killstotal*100).toFixed(2) %> %</div>
             </div>
