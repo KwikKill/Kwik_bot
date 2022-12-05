@@ -1046,17 +1046,11 @@ module.exports = {
                 // KwikScore
 
                 let score = 0;
-                console.log(score);
                 score += overall / response.rows.length * 100;
-                console.log(score);
                 score += win / response.rows.length * 100;
-                console.log(score);
                 score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
-                console.log(score);
                 score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
-                console.log(score);
                 score += 10 * average_cs;
-                console.log(score);
                 if (100 - response.rows.length > 0) {
                     score = score * 0.99 ** (100 - response.rows.length);
                 }
