@@ -74,7 +74,7 @@ function register(client) {
     }*/
 
     app.get("/lol/register", function (req, res) {
-        if (req.cookies['token']) {
+        if (!req.cookies['token']) {
             res.redirect("/lol/profile");
         } else {
             console.log(req.cookies['token']);
