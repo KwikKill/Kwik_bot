@@ -77,7 +77,17 @@ function register(client) {
         //if (req.cookies['token']) {
         //    res.redirect("/lol/profile");
         //} else {
-        res.render("../Site/lol/register");
+        console.log(req.cookies['token']);
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                res.render("../Site/lol/register", { username: data.username });
+            });
+        });
         //}
     });
 
