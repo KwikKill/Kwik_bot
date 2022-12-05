@@ -74,15 +74,26 @@ function register(client) {
     }*/
 
     app.get("/lol/register", function (req, res) {
-        if (req.cookies['token']) {
-            res.redirect("/lol/profile");
-        } else {
-            res.render("../Site/lol/register");
-        }
+        //if (req.cookies['token']) {
+        //    res.redirect("/lol/profile");
+        //} else {
+        res.render("../Site/lol/register");
+        //}
     });
 
     app.post("/lol/register", function (req, res) {
         console.log(req.body);
+        if (req.body.username && req.body.discordid) {
+            client.pg.query('SELECT * FROM summoners WHERE discordid = $1 AND username = $2', [req.body.discordid, req.body.username], (err, result) => {
+                if (err) {
+                    res.statusCode(500);
+                    return console.error(err);
+                }
+                if (result.rows.length === 0) {
+                    client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
+                }
+            });
+        }
     });
 
     app.get("/lol/profile", function (req, res) {
