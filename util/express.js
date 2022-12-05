@@ -247,9 +247,7 @@ function register(client) {
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
                 res.render('../Site/lol/queue', { jsclient: client, data: data });
-                setTimeout(function () {
-                    return res.redirect("/lol/queue");
-                }, 10000);
+                return res.end();
             });
         });
     });
@@ -274,7 +272,7 @@ function register(client) {
                 }).then(tokenResponseData => {
                     tokenResponseData.body.json().then(oauthData => {
                         res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
-                        res.redirect('back');
+                        res.redirect("/lol/profile");
                         return res.end();
                     });
                 });
