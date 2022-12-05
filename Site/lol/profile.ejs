@@ -112,8 +112,7 @@
     KS += win/total*100
     KS += (kills+assists)/killstotal*100
     KS += (((vs/total)/(time/total))/0.2)*5
-    console.log(KS)
-    KS += cs/(total*time)*10
+    KS += (cs/total)/(time/total)*10
     console.log(KS)
 
     if(total < 100) {
