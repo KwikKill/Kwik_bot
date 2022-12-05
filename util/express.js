@@ -74,21 +74,21 @@ function register(client) {
     }*/
 
     app.get("/lol/register", function (req, res) {
-        //if (req.cookies['token']) {
-        //    res.redirect("/lol/profile");
-        //} else {
-        console.log(req.cookies['token']);
-        request('https://discord.com/api/users/@me', {
-            method: 'GET',
-            headers: {
-                Authorization: "Bearer " + req.cookies['token']
-            }
-        }).then(tokenResponseData => {
-            tokenResponseData.body.json().then(data => {
-                res.render("../Site/lol/register", { username: data.username, discordid: data.id });
+        if (req.cookies['token']) {
+            res.redirect("/lol/profile");
+        } else {
+            console.log(req.cookies['token']);
+            request('https://discord.com/api/users/@me', {
+                method: 'GET',
+                headers: {
+                    Authorization: "Bearer " + req.cookies['token']
+                }
+            }).then(tokenResponseData => {
+                tokenResponseData.body.json().then(data => {
+                    res.render("../Site/lol/register", { username: data.username, discordid: data.id });
+                });
             });
-        });
-        //}
+        }
     });
 
     app.post("/lol/register", function (req, res) {
