@@ -85,7 +85,16 @@ function register(client) {
                 }
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
-                    res.render("../Site/lol/register", { username: data.username, discordid: data.id });
+                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                        if (err) {
+                            res.redirect("/404");
+                            throw err;
+                        }
+                        if (result.rows.length === 0) {
+                            return res.render("../Site/lol/register", { username: data.username, discordid: data.id });
+                        }
+                        return res.redirect("/lol/profile");
+                    });
                 });
             });
         }
