@@ -85,7 +85,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                res.render("../Site/lol/register", { username: data.username });
+                res.render("../Site/lol/register", { username: data.username, discordid: data.id });
             });
         });
         //}
