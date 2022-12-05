@@ -30,7 +30,7 @@
             });
             %>
             <% if(number != undefined) { %>
-            You are <%= number %>/<%= count %> in the queue.
+            You are <%= number %>/<%= (count-1) %> in the queue.
             <% } else { %>
             You are not in the queue.
             <% } %>

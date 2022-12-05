@@ -17,6 +17,7 @@ function register(client) {
 
     app.get('/', function (req, res) {
         res.render('../Site/index');
+        return res.end();
     });
 
     app.set('view engine', 'ejs');
@@ -26,6 +27,7 @@ function register(client) {
         if (!fs.lstatSync(`Site/${file}`).isDirectory()) {
             app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
                 res.render(`../Site/${file}`);
+                return res.end();
             });
         }
     }
@@ -34,6 +36,7 @@ function register(client) {
     for (const file of cssFiles) {
         app.get(`/css/${file}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/css/${file}`));
+            return res.end();
         });
     }
 
@@ -41,6 +44,7 @@ function register(client) {
     for (const file of imagesFiles) {
         app.get(`/images/${file}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/images/${file}`));
+            return res.end();
         });
     }
 
@@ -48,6 +52,7 @@ function register(client) {
     for (const file of jsFiles) {
         app.get(`/js/${file}`, function (req, res) {
             res.sendFile(path.join(__dirname, `../Site/js/${file}`));
+            return res.end();
         });
     }
 
@@ -55,6 +60,7 @@ function register(client) {
     for (const file of projetsFiles) {
         app.get(`/projects/${file.replace(".ejs", "")}`, function (req, res) {
             res.render(`../Site/projects/${file}`);
+            return res.end();
         });
     }
 
@@ -63,6 +69,7 @@ function register(client) {
     for (const file of postsFiles) {
         app.get(`/posts/${file.replace(".ejs", "")}`, function (req, res) {
             res.render(`../Site/posts/${file}`);
+            return res.end();
         });
     }
 
@@ -76,28 +83,30 @@ function register(client) {
     app.get("/lol/register", function (req, res) {
         if (!req.cookies['token']) {
             res.redirect("/lol/profile");
-        } else {
-            console.log("/lol/register", req.cookies['token']);
-            request('https://discord.com/api/users/@me', {
-                method: 'GET',
-                headers: {
-                    Authorization: "Bearer " + req.cookies['token']
-                }
-            }).then(tokenResponseData => {
-                tokenResponseData.body.json().then(data => {
-                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
-                        if (err) {
-                            res.redirect("/404");
-                            throw err;
-                        }
-                        if (result.rows.length === 0) {
-                            return res.render("../Site/lol/register", { username: data.username, discordid: data.id });
-                        }
-                        return res.redirect("/lol/profile");
-                    });
+            return res.end();
+        }
+        console.log("/lol/register", req.cookies['token']);
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        res.redirect("/404");
+                        return res.end();
+                    }
+                    if (result.rows.length === 0) {
+                        res.render("../Site/lol/register", { username: data.username, discordid: data.id });
+                        return res.end();
+                    }
+                    res.redirect("/lol/profile");
+                    return res.end();
                 });
             });
-        }
+        });
     });
 
     app.post("/lol/register", function (req, res) {
@@ -107,13 +116,16 @@ function register(client) {
                 if (err) {
                     console.error(err);
                     res.statusCode(500);
-                    return res.render("../Site/lol/index", { text: "Internal server error" });
+                    res.render("../Site/lol/index", { text: "Internal server error" });
+                    return res.end();
                 }
                 if (result.rows.length === 0) {
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
-                    return res.redirect("/lol/queue");
+                    res.redirect("/lol/queue");
+                    return res.end();
                 }
-                return res.render("../Site/lol/index", { text: "This account is already registered" });
+                res.render("../Site/lol/index", { text: "This account is already registered" });
+                return res.end();
             });
         }
     });
@@ -121,31 +133,33 @@ function register(client) {
     app.get("/lol/profile", function (req, res) {
         if (!req.cookies['token']) {
             res.redirect("/login");
-        } else {
-            console.log("/lol/profile", req.cookies['token']);
-            request('https://discord.com/api/users/@me', {
-                method: 'GET',
-                headers: {
-                    Authorization: "Bearer " + req.cookies['token']
-                }
-            }).then(tokenResponseData => {
-                tokenResponseData.body.json().then(data => {
-                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
-                        if (err) {
-                            res.redirect("/404");
-                            throw err;
-                        }
-                        if (result.rows.length > 0) {
-                            client.pg.query('SELECT * FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [data.id], (err2, result2) => {
-                                return res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
-                            });
-                        } else {
-                            return res.redirect("/lol/register");
-                        }
-                    });
+            return res.end();
+        }
+        console.log("/lol/profile", req.cookies['token']);
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        res.redirect("/404");
+                        return res.end();
+                    }
+                    if (result.rows.length > 0) {
+                        client.pg.query('SELECT * FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [data.id], (err2, result2) => {
+                            res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
+                            return res.end();
+                        });
+                    } else {
+                        res.redirect("/lol/register");
+                        return res.end();
+                    }
                 });
             });
-        }
+        });
     });
 
     /*app.get("/lol/summoner", function (req, res) {
@@ -198,28 +212,31 @@ function register(client) {
     app.get("/admin", function (req, res) {
         if (!req.cookies['token']) {
             res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
-        } else {
-            console.log(req.cookies['token']);
-            request('https://discord.com/api/users/@me', {
-                method: 'GET',
-                headers: {
-                    Authorization: "Bearer " + req.cookies['token']
-                }
-            }).then(tokenResponseData => {
-                tokenResponseData.body.json().then(data => {
-                    if (data.id === client.owners[0]) {
-                        //const data = fs.readFileSync('/var/log/syslog', 'utf8');
-                        return res.render(`../Site/admin/admin`, { discordclient: client, log: data });
-                    }
-                    return res.redirect("/404");
-                });
-            });
+            return res.end();
         }
+        console.log(req.cookies['token']);
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                if (data.id === client.owners[0]) {
+                    //const data = fs.readFileSync('/var/log/syslog', 'utf8');
+                    res.render(`../Site/admin/admin`, { discordclient: client, log: data });
+                    return res.end();
+                }
+                res.redirect("/404");
+                return res.end();
+            });
+        });
     });
 
     app.get("/lol/queue", function (req, res) {
         if (!req.cookies['token']) {
-            return res.render('../Site/lol/queue', { jsclient: client, data: undefined });
+            res.render('../Site/lol/queue', { jsclient: client, data: undefined });
+            return res.end();
         }
         console.log("/lol/queue", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
@@ -229,7 +246,10 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                return res.render('../Site/lol/queue', { jsclient: client, data: data });
+                res.render('../Site/lol/queue', { jsclient: client, data: data });
+                setTimeout(function () {
+                    return res.redirect("/lol/queue");
+                }, 10000);
             });
         });
     });
@@ -254,25 +274,29 @@ function register(client) {
                 }).then(tokenResponseData => {
                     tokenResponseData.body.json().then(oauthData => {
                         res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
-                        res.redirect("/lol/profile");
+                        res.redirect('back');
+                        return res.end();
                     });
                 });
             } catch (error) {
                 console.error(error);
                 res.redirect("/404");
+                return res.end();
             }
         } else {
             if (!req.cookies['token']) {
                 res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
-            } else {
-                console.log(req.cookies['token']);
-                res.redirect("/lol/profile");
+                return res.end();
             }
+            console.log(req.cookies['token']);
+            res.redirect("/lol/profile");
+            return res.end();
         }
     });
 
     app.get('*', function (req, res) {
         res.render('../Site/404.ejs');
+        return res.end();
     });
 
     app.post('/contact', function (req, res) {
@@ -284,6 +308,7 @@ function register(client) {
             }
         }
         res.redirect("/");
+        return res.end();
     });
 
     app.listen(8080, () => {
