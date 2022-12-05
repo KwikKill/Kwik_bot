@@ -97,6 +97,7 @@ function register(client) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1 AND username = $2', [req.body.discordid, req.body.username], (err, result) => {
                 if (err) {
                     res.statusCode(500);
+                    res.send("Internal server error");
                     return console.error(err);
                 }
                 if (result.rows.length === 0) {
