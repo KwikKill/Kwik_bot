@@ -62,6 +62,7 @@
     let deaths = 0;
     let assists = 0;
     let killstotal = 0;
+    let KP = 0;
     for (const row of games) {
       if (row.result == "Win") {
         win += 1;
@@ -84,9 +85,10 @@
       if(row.first_gold && row.first_damages && row.first_tanked) {
         HardCarry += 1;
       }
+      KP += (row.kill + row.assist)/row.total_kills;
       deaths += row.deaths;
       kills += row.kill;
-      assists += row.assist;
+      assists += row.assists;
       killstotal += row.total_kills;
       total += 1;
     }
@@ -223,13 +225,13 @@
               <h3 style="text-decoration: underline;">KS :</h3>
               <div>244 / 500</div>
               <h3 style="text-decoration: underline;">KP :</h3>
-              <div><%= (kills/killstotal*100).toFixed(2) %> %</div>
+              <div><%= ((kills + assist)/killstotal*100).toFixed(2) %> %</div>
             </div>
             <div class="substats">
               <h3 style="text-decoration: underline;">Average stats :</h3>
-              <div>Kills : <%= (kills/total*100).toFixed(2) %></div>
-              <div>Deaths : <%= (deaths/total*100).toFixed(2) %></div>
-              <div>Assists : <%= (assists/total*100).toFixed(2) %></div>
+              <div>Kills : <%= (kills/total).toFixed(2) %></div>
+              <div>Deaths : <%= (deaths/total).toFixed(2) %></div>
+              <div>Assists : <%= (assists/total).toFixed(2) %></div>
               <div>CS/min : 5.23</div>
               <div>Damages/min : 1058.11</div>
               <div>Tanked/min : 1174.23</div>
