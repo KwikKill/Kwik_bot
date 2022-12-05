@@ -102,8 +102,9 @@ function register(client) {
                 }
                 if (result.rows.length === 0) {
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
-                    res.redirect("/lol/queue");
+                    return res.redirect("/lol/queue");
                 }
+                return res.send("This account is already registered");
             });
         }
     });
