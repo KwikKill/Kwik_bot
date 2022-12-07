@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head'); %>
+
+</head>
+
+<div class="scrollmenu" id="table">
+  <table>
+    <!--<caption>Tableau stats lol</caption>-->
+    <thead>
+      <tr>
+        <th scope="col">puuid</th>
+        <th scope="col">username</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% games.forEach(function(summoner) {%>
+      <tr>
+        <td>
+          <%= summoner.puuid %>
+        </td>
+        <td>
+          <%= summoner.username %>
+        </td>
+      </tr>
+      <% });%>
+    </tbody>
+    <!--
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="2">Accounts number :</th>
+                    <td colspan="2">3</td>
+                </tr>
+            </tfoot>
+            -->
+  </table>
+</div>

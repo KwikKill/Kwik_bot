@@ -166,30 +166,36 @@ function register(client) {
         });
     });*/
 
-    /*app.get("/lol/matchs", function (req, res) {
-        console.log(req.query);
-        if (req.query.discordid) {
-            client.pg.query('SELECT matchs.puuid, player, gamemode, champion, matchup, support, gold, lane, kill, deaths, assists, result, total_damage, tanked_damage, heal, neutral_objectives, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, double, tripple, quadra, penta, time_spent_dead, timestamp, player2, player3, player4, player5 FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [req.query.discordid], (err, result) => {
-                if (err) { throw err; }
-                if (result.rows.length > 0) {
-                    return res.send(result.rows);
-                }
-                return res.sendStatus(400);
-            });
-        } else {
-            if (req.query.puuid) {
-                client.pg.query('SELECT * FROM matchs WHERE player = $1', [req.query.puuid], (err, result) => {
-                    if (err) { throw err; }
-                    if (result.rows.length > 0) {
-                        return res.send(result.rows);
-                    }
-                    return res.sendStatus(400);
-                });
-            }
+    app.get("/lol/matchs", function (req, res) {
+        console.log("/lol/matchs", req.query);
+        if (!req.cookies['token']) {
+            return res.sendStatus(403);
         }
-        return res.sendStatus(400);
+        if (!(req.query.timestamp || req.query.champion)) {
+            request('https://discord.com/api/users/@me', {
+                method: 'GET',
+                headers: {
+                    Authorization: "Bearer " + req.cookies['token']
+                }
+            }).then(tokenResponseData => {
+                tokenResponseData.body.json().then(data => {
+                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                        if (err) {
+                            return res.sendStatus(403);
+                        }
+                        if (result.rows.length > 0) {
+                            client.pg.query('SELECT * FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
+                                return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
+                            });
+                        } else {
+                            return res.sendStatus(403);
+                        }
+                    });
+                });
+            });
+        }
 
-    });*/
+    });
 
     app.get("/admin", function (req, res) {
         if (!req.cookies['token']) {
