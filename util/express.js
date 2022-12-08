@@ -179,12 +179,12 @@ function register(client) {
                 }
             }).then(tokenResponseData => {
                 tokenResponseData.body.json().then(data => {
-                    client.pg.query('SELECT puuid, champion FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                         if (err) {
                             return res.sendStatus(403);
                         }
                         if (result.rows.length > 0) {
-                            client.pg.query('SELECT * FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
+                            client.pg.query('SELECT puuid, champion FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
                                 return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
                             });
                         } else {
