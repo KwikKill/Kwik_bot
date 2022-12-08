@@ -32,9 +32,7 @@ loadMore = function () {
 initial_load = function () {
   httpGetAsync("http://albert.blaisot.org:8080/lol/matchs", function (response) {
     console.log(response);
-    var table = document.getElementById("matchsList");
-    var row = table.insertRow(0);
-    var cell = row.insertCell(0);
-    cell.innerHTML = "Test2";
+    var table = document.getElementById("matchsListbody");
+    var row = table.innerHTML += response;
   });
 }
