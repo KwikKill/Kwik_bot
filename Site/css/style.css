@@ -14,6 +14,51 @@ body {
   background: none;
 }
 
+.perk-8128-12 {
+  background: url('https://lolg-cdn.porofessor.gg/img/d/sprites/12.23/tiny_perk0.png?v=12') no-repeat top left;
+  background-position-x: left;
+  background-position-y: top;
+  background-size: auto;
+  background-position: -108px -24px;
+  width: 12px;
+  height: 12px;
+  background-size: 1000% 600%;
+}
+
+.spell-4-12 {
+  background: url('https://lolg-cdn.porofessor.gg/img/d/sprites/12.23/tiny_spell7.png?v=12') no-repeat top left;
+  background-position-x: left;
+  background-position-y: top;
+  background-size: auto;
+  background-position: -12px -48px;
+  width: 12px;
+  height: 12px;
+  background-size: 1000% 600%;
+}
+
+
+élément {}
+
+a.requireTooltip,
+a .requireTooltip {
+
+  cursor: pointer;
+
+}
+
+.spell-14-12 {
+
+  background: url('https://lolg-cdn.porofessor.gg/img/d/sprites/12.23/tiny_spell2.png?v=12') no-repeat top left;
+  background-position-x: left;
+  background-position-y: top;
+  background-size: auto;
+  background-position: -108px -24px;
+  width: 12px;
+  height: 12px;
+  background-size: 1000% 600%;
+
+}
+
 .recentGamesTable .championCellDark .championContainer .spells {
   font-size: 0;
   margin: 0;
