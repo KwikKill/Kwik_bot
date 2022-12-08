@@ -21,3 +21,10 @@ function httpGetAsync(theUrl, callback) {
   xmlHttp.open("GET", theUrl, true); // true for asynchronous 
   xmlHttp.send(null);
 }
+
+loadMore = function () {
+  var table = document.getElementById("recentGamesTable");
+  var row = table.insertRow(0);
+  var cell = row.insertCell(0);
+  cell.innerHTML = "Test2";
+}
