@@ -80,6 +80,14 @@ a .requireTooltip {
   height: 36px;
 }
 
+.recentGamesTable .championCellDark .championContainer .spells .spell {
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  margin: 0;
+  padding: 0;
+}
+
 .recentGamesTable .championCellDark .winIndicator,
 .recentGamesTable .proCellDark .winIndicator {
   position: absolute;
