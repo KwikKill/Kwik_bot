@@ -24,7 +24,7 @@ function httpGetAsync(theUrl, callback) {
 
 loadMore = function () {
   var table = document.getElementById("matchsList");
-  var row = table.insertRow(table.rows.length);
+  var row = table.insertRow(table.rows.length - 1);
   var cell = row.insertCell(0);
   cell.innerHTML = "Test2";
 }
