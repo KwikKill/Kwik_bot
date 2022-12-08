@@ -10,6 +10,30 @@ body {
 /*---------------------------------------
     Boxed Layout
 -----------------------------------------*/
+.data_table.inverted_rows_color tr:nth-child(2n) {
+  background: none;
+}
+
+.data_table {
+  width: 100%;
+}
+
+.relative {
+  position: relative;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+*,
+::before,
+::after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
 
 .substats {
   width: 32%;
