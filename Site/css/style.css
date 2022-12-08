@@ -14,6 +14,42 @@ body {
   background: none;
 }
 
+.recentGamesTable .championCellDark .championContainer .spells {
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+  width: 36px;
+}
+
+.recentGamesTable .championCellDark .championContainer {
+  margin-top: 8px;
+  width: 36px;
+}
+
+.champion-50-36 {
+  background: url('https://lolg-cdn.porofessor.gg/img/d/sprites/12.23/small_champion1.png?v=12') no-repeat top left;
+  background-position-x: left;
+  background-position-y: top;
+  background-position: -216px -144px;
+  width: 36px;
+  height: 36px;
+}
+
+.recentGamesTable .championCellDark .winIndicator,
+.recentGamesTable .proCellDark .winIndicator {
+  position: absolute;
+  width: 4px;
+  height: 48px;
+  top: 20px;
+  left: -10px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.victory {
+  color: #2DEB90;
+}
+
 .data_table {
   width: 100%;
 }
