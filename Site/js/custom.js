@@ -28,3 +28,13 @@ loadMore = function () {
   var cell = row.insertCell(0);
   cell.innerHTML = "Test2";
 }
+
+initial_load = function () {
+  httpGetAsync("http://albert.blaisot.org:8080/lol/matchs", function (response) {
+    console.log(response);
+    var table = document.getElementById("matchsList");
+    var row = table.insertRow(0);
+    var cell = row.insertCell(0);
+    cell.innerHTML = "Test2";
+  });
+}
