@@ -23,7 +23,7 @@ function httpGetAsync(theUrl, callback) {
 }
 
 loadMore = function () {
-  var table = document.getElementById("recentGamesTable");
+  var table = document.getElementById("matchsList");
   var row = table.insertRow(0);
   var cell = row.insertCell(0);
   cell.innerHTML = "Test2";
