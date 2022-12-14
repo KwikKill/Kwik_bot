@@ -15,6 +15,14 @@ function register(client) {
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
 
+    app.use((err, req, res, next) => {
+        if (err && err.code === 'ECONNABORTED') {
+            res.status(400).end(); // Don't process this error any further to avoid its logging
+        } else {
+            next(err);
+        }
+    });
+
     app.get('/', function (req, res) {
         return res.render('../Site/index');
     });
