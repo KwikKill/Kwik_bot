@@ -105,7 +105,7 @@ function register(client) {
 
     app.get("/lol/register", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `/lol/register/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : /lol/register/ : " + err.stack);
             return res.redirect("/404");
 
         }
@@ -135,7 +135,7 @@ function register(client) {
 
     app.post("/lol/register", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `(post) /lol/register/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : (post) /lol/register/ : " + err.stack);
             return res.redirect("/404");
 
         }
@@ -158,7 +158,7 @@ function register(client) {
 
     app.get("/lol/profile", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `/lol/profile/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : /lol/profile/ : " + err.stack);
             return res.redirect("/404");
 
         }
@@ -213,7 +213,7 @@ function register(client) {
 
     app.get("/lol/matchs", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `/lol/matchs/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : /lol/matchs/ : " + err.stack);
             return res.redirect("/404");
 
         }
@@ -249,7 +249,7 @@ function register(client) {
 
     app.get("/admin", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `/admin/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : /admin/ : " + err.stack);
             return res.redirect("/404");
 
         }
@@ -275,7 +275,7 @@ function register(client) {
 
     app.get("/lol/queue", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `/lol/queue/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : /lol/queue/ : " + err.stack);
             return res.redirect("/404");
 
         }
@@ -297,7 +297,7 @@ function register(client) {
 
     app.get("/login", function (err, req, res) {
         if (err) {
-            console.log("Error : " + `/login/${file.replace(".ejs", "")}` + " : " + err.stack);
+            console.log("Error : /login/ : " + err.stack);
             return res.redirect("/404");
 
         }
