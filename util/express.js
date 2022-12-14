@@ -24,12 +24,7 @@ function register(client) {
     const indexFiles = fs.readdirSync('Site/');
     for (const file of indexFiles) {
         if (!fs.lstatSync(`Site/${file}`).isDirectory()) {
-            app.get(`/${file.replace(".ejs", "")}`, function (err, req, res) {
-                if (err) {
-                    console.log("Error : " + `/${file.replace(".ejs", "")}` + " : " + err.stack);
-                    return res.redirect("/404");
-
-                }
+            app.get(`/${file.replace(".ejs", "")}`, function (req, res) {
                 return res.render(`../Site/${file}`);
             });
         }
@@ -37,48 +32,28 @@ function register(client) {
 
     const cssFiles = fs.readdirSync('Site/css/');
     for (const file of cssFiles) {
-        app.get(`/css/${file}`, function (err, req, res) {
-            if (err) {
-                console.log("Error : " + `/css/${file.replace(".ejs", "")}` + " : " + err.stack);
-                return res.redirect("/404");
-
-            }
+        app.get(`/css/${file}`, function (req, res) {
             return res.sendFile(path.join(__dirname, `../Site/css/${file}`));
         });
     }
 
     const imagesFiles = fs.readdirSync('Site/images/');
     for (const file of imagesFiles) {
-        app.get(`/images/${file}`, function (err, req, res) {
-            if (err) {
-                console.log("Error : " + `/images/${file.replace(".ejs", "")}` + " : " + err.stack);
-                return res.redirect("/404");
-
-            }
+        app.get(`/images/${file}`, function (req, res) {
             return res.sendFile(path.join(__dirname, `../Site/images/${file}`));
         });
     }
 
     const jsFiles = fs.readdirSync('Site/js/');
     for (const file of jsFiles) {
-        app.get(`/js/${file}`, function (err, req, res) {
-            if (err) {
-                console.log("Error : " + `/js/${file.replace(".ejs", "")}` + " : " + err.stack);
-                return res.redirect("/404");
-
-            }
+        app.get(`/js/${file}`, function (req, res) {
             return res.sendFile(path.join(__dirname, `../Site/js/${file}`));
         });
     }
 
     const projetsFiles = fs.readdirSync('Site/projects/');
     for (const file of projetsFiles) {
-        app.get(`/projects/${file.replace(".ejs", "")}`, function (err, req, res) {
-            if (err) {
-                console.log("Error : " + `/projects/${file.replace(".ejs", "")}` + " : " + err.stack);
-                return res.redirect("/404");
-
-            }
+        app.get(`/projects/${file.replace(".ejs", "")}`, function (req, res) {
             return res.render(`../Site/projects/${file}`);
         });
     }
@@ -86,12 +61,7 @@ function register(client) {
 
     const postsFiles = fs.readdirSync('Site/posts/');
     for (const file of postsFiles) {
-        app.get(`/posts/${file.replace(".ejs", "")}`, function (err, req, res) {
-            if (err) {
-                console.log("Error : " + `/posts/${file.replace(".ejs", "")}` + " : " + err.stack);
-                return res.redirect("/404");
-
-            }
+        app.get(`/posts/${file.replace(".ejs", "")}`, function (req, res) {
             return res.render(`../Site/posts/${file}`);
         });
     }
@@ -103,12 +73,7 @@ function register(client) {
         });
     }*/
 
-    app.get("/lol/register", function (err, req, res) {
-        if (err) {
-            console.log("Error : /lol/register/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.get("/lol/register", function (req, res) {
         if (!req.cookies['token']) {
             return res.redirect("/lol/profile");
         }
@@ -133,12 +98,7 @@ function register(client) {
         });
     });
 
-    app.post("/lol/register", function (err, req, res) {
-        if (err) {
-            console.log("Error : (post) /lol/register/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.post("/lol/register", function (req, res) {
         console.log(req.body);
         if (req.body.username && req.body.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1 AND username = $2', [req.body.discordid, req.body.username], (err, result) => {
@@ -156,12 +116,7 @@ function register(client) {
         }
     });
 
-    app.get("/lol/profile", function (err, req, res) {
-        if (err) {
-            console.log("Error : /lol/profile/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.get("/lol/profile", function (req, res) {
         if (!req.cookies['token']) {
             return res.redirect("/login");
         }
@@ -211,12 +166,7 @@ function register(client) {
         });
     });*/
 
-    app.get("/lol/matchs", function (err, req, res) {
-        if (err) {
-            console.log("Error : /lol/matchs/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.get("/lol/matchs", function (req, res) {
         console.log("/lol/matchs", req.query);
         if (!req.cookies['token']) {
             return res.sendStatus(403);
@@ -247,12 +197,7 @@ function register(client) {
 
     });
 
-    app.get("/admin", function (err, req, res) {
-        if (err) {
-            console.log("Error : /admin/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.get("/admin", function (req, res) {
         if (!req.cookies['token']) {
             return res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
         }
@@ -273,12 +218,7 @@ function register(client) {
         });
     });
 
-    app.get("/lol/queue", function (err, req, res) {
-        if (err) {
-            console.log("Error : /lol/queue/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.get("/lol/queue", function (req, res) {
         if (!req.cookies['token']) {
             return res.render('../Site/lol/queue', { jsclient: client, data: undefined });
         }
@@ -295,12 +235,7 @@ function register(client) {
         });
     });
 
-    app.get("/login", function (err, req, res) {
-        if (err) {
-            console.log("Error : /login/ : " + err.stack);
-            return res.redirect("/404");
-
-        }
+    app.get("/login", function (req, res) {
         const code = req.query.code;
         if (code) {
             try {
