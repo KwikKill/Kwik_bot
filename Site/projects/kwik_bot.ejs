@@ -3,15 +3,15 @@
 
 <head>
 
-     <%- include('../partials/head'); %>
+  <%- include('../partials/head'); %>
 
 </head>
 
 <body>
 
-     <!-- PRE LOADER -->
+  <!-- PRE LOADER -->
 
-     <!--
+  <!--
      <div class="preloader">
           <div class="sk-spinner sk-spinner-wordpress">
                <span class="sk-inner-circle"></span>
@@ -19,87 +19,100 @@
      </div>
      -->
 
-     <!-- Navigation section  -->
+  <!-- Navigation section  -->
 
-     <%- include('../partials/header', {variant:''}); %>
-
-
-          <!-- Single Project Section -->
-
-          <section id="single-project">
-               <div class="container">
-                    <div class="row">
-
-                         <div class="col-md-offset-1 col-md-10 col-sm-12">
-                              <h1>Kwik Bot</h1>
-                              <p>While I was watching IT videos on youtube during my free time, I had the idea to make a
-                                   bot
-                                   discord. First without any real purpose, then as a base for future projects. Kwik Bot
-                                   was
-                                   born (I swear I'm not megalomaniac).</p>
-                              <div class="col-md-12 col-sm-12">
-                                   <img src="../images/lol.png" class="img-responsive" alt="Portfolio">
-                              </div>
-
-                              <div class="col-md-6 col-sm-6">
-                                   <img src="../images/kwik_bot.png" class="img-responsive" alt="Portfolio">
-                              </div>
-
-                              <div class="col-md-6 col-sm-6">
-                                   <img src="../images/kwik_help.png" class="img-responsive" alt="Portfolio">
-                              </div>
-
-                              <div class="clearfix"></div>
-
-                              <div class="col-md-4 col-sm-4">
-                                   <h3>Repository</h3>
-                                   <a href="https://github.com/KwikKill/Kwik_bot">Public repo</a>
-                              </div>
-
-                              <div class="col-md-4 col-sm-4">
-                                   <h3>Creation's date</h3>
-                                   <p>Mar 31, 2019</p>
-                              </div>
-
-                              <div class="col-md-4 col-sm-4">
-                                   <h3>Contributor</h3>
-                                   <p>KwikKill</p>
-                                   <p>TheBloodMan</p>
-                              </div>
-
-                              <div class="col-md-12 col-sm-12 text-center">
-                                   <p>This bot was quickly my biggest personal and self-taught project. I first
-                                        developed it
-                                        through trial and error with many tutorials, then I got comfortable and moved on
-                                        to
-                                        reading the Discord api documentation. Once the base was done, I put this bot on
-                                        a
-                                        vps and
-                                        added features over time. Some fun like the "B" response when someone writes
-                                        "AH" but
-                                        others useful like a command to get my school schedule. My biggest improvement
-                                        has
-                                        been my League of Legends stats analysis commands detailed in a separate
-                                        article.</p>
-                              </div>
-                         </div>
-
-                    </div>
-               </div>
-          </section>
-
-          <!-- Footer Section -->
-
-          <footer>
-               <%- include('../partials/footer'); %>
-          </footer>
+  <%- include('../partials/header', {variant:''}); %>
 
 
-          <!-- SCRIPTS -->
+  <!-- Single Project Section -->
 
-          <script src="../js/jquery.js"></script>
-          <script src="../js/bootstrap.min.js"></script>
-          <script src="../js/custom.js"></script>
+  <section id="single-project">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-offset-1 col-md-10 col-sm-12">
+          <h1>Kwik Bot</h1>
+          <p>While I was watching IT videos on youtube during my free time, I had the idea to make a
+            bot
+            discord. First without any real purpose, then as a base for future projects. Kwik Bot
+            was
+            born (I swear I'm not megalomaniac).</p>
+          <div class="col-md-12 col-sm-12">
+            <img src="../images/lol.png" class="img-responsive" alt="Portfolio">
+          </div>
+
+          <div class="col-md-6 col-sm-6">
+            <img src="../images/kwik_bot.png" class="img-responsive" alt="Portfolio">
+          </div>
+
+          <div class="col-md-6 col-sm-6">
+            <img src="../images/kwik_help.png" class="img-responsive" alt="Portfolio">
+          </div>
+
+          <div class="clearfix"></div>
+
+          <div class="col-md-4 col-sm-4">
+            <h3>Repository</h3>
+            <a href="https://github.com/KwikKill/Kwik_bot">Public repo</a>
+          </div>
+
+          <div class="col-md-4 col-sm-4">
+            <h3>Creation's date</h3>
+            <p>Mar 31, 2019</p>
+          </div>
+
+          <div class="col-md-4 col-sm-4">
+            <h3>Contributor</h3>
+            <p>KwikKill</p>
+            <p>TheBloodMan</p>
+          </div>
+
+          <div class="col-md-12 col-sm-12 text-center">
+            <p>This bot was quickly my biggest personal and self-taught project. I first
+              developed it
+              through trial and error with many tutorials, then I got comfortable and moved on
+              to
+              reading the Discord api documentation. Once the base was done, I put this bot on
+              a
+              vps and
+              added features over time. Some fun like the "B" response when someone writes
+              "AH" but
+              others useful like a command to get my school schedule. My biggest improvement
+              has
+              been my League of Legends stats analysis commands detailed in a separate
+              article.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script src="../js/jquery.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/custom.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CD70HY5J9Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CD70HY5J9Z');
+  </script>
 
 </body>
 

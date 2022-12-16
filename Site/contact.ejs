@@ -3,15 +3,15 @@
 
 <head>
 
-     <%- include('partials/head'); %>
+  <%- include('partials/head'); %>
 
 </head>
 
 <body>
 
-     <!-- PRE LOADER -->
+  <!-- PRE LOADER -->
 
-     <!--
+  <!--
      <div class="preloader">
           <div class="sk-spinner sk-spinner-wordpress">
                <span class="sk-inner-circle"></span>
@@ -19,71 +19,79 @@
      </div>
      -->
 
-     <!-- Navigation section  -->
+  <!-- Navigation section  -->
 
-     <%- include('partials/header', {variant:'contact'}); %>
-
-
-          <!-- Contact Section -->
-
-          <section id="contact">
-               <div class="container">
-                    <div class="row">
-
-                         <div class="col-md-offset-1 col-md-10 col-sm-12">
-                              <div class="section-title">
-                                   <h3>Send me a message !</h3>
-                                   <h2>You can contact me with the form bellow.</h2>
-                              </div>
-
-                              <form action="/contact" method="post">
-                                   <div class="col-md-6 col-sm-6">
-                                        <input type="text" class="form-control" placeholder="Name" name="name"
-                                             id="name">
-                                   </div>
-                                   <div class="col-md-6 col-sm-6">
-                                        <input type="email" class="form-control" placeholder="Email" name="mail"
-                                             id="mail">
-                                   </div>
-                                   <div class="col-md-6 col-sm-6">
-                                        <input type="telephone" class="form-control" placeholder="Phone Number"
-                                             name="tel" id="tel">
-                                   </div>
-                                   <div class="col-md-6 col-sm-6">
-                                        <select class="form-control" name="topic" id="topic">
-                                             <option>Topic : </option>
-                                             <option>Project</option>
-                                             <option>Discussion</option>
-                                             <option>Job Proposal</option>
-                                        </select>
-                                   </div>
-                                   <div class="col-md-12 col-sm-12">
-                                        <textarea class="form-control" rows="8" placeholder="Details" name="text"
-                                             id="text"></textarea>
-                                   </div>
-                                   <div class="col-md-3 col-sm-4">
-                                        <input name="submit" id="submit" type="submit" class="form-control"
-                                             value="Send Message">
-                                   </div>
-                              </form>
-                         </div>
-
-                    </div>
-               </div>
-          </section>
-
-          <!-- Footer Section -->
-
-          <footer>
-               <%- include('partials/footer'); %>
-          </footer>
+  <%- include('partials/header', {variant:'contact'}); %>
 
 
-          <!-- SCRIPTS -->
+  <!-- Contact Section -->
 
-          <script src="js/jquery.js"></script>
-          <script src="js/bootstrap.min.js"></script>
-          <script src="js/custom.js"></script>
+  <section id="contact">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-offset-1 col-md-10 col-sm-12">
+          <div class="section-title">
+            <h3>Send me a message !</h3>
+            <h2>You can contact me with the form bellow.</h2>
+          </div>
+
+          <form action="/contact" method="post">
+            <div class="col-md-6 col-sm-6">
+              <input type="text" class="form-control" placeholder="Name" name="name" id="name">
+            </div>
+            <div class="col-md-6 col-sm-6">
+              <input type="email" class="form-control" placeholder="Email" name="mail" id="mail">
+            </div>
+            <div class="col-md-6 col-sm-6">
+              <input type="telephone" class="form-control" placeholder="Phone Number" name="tel" id="tel">
+            </div>
+            <div class="col-md-6 col-sm-6">
+              <select class="form-control" name="topic" id="topic">
+                <option>Topic : </option>
+                <option>Project</option>
+                <option>Discussion</option>
+                <option>Job Proposal</option>
+              </select>
+            </div>
+            <div class="col-md-12 col-sm-12">
+              <textarea class="form-control" rows="8" placeholder="Details" name="text" id="text"></textarea>
+            </div>
+            <div class="col-md-3 col-sm-4">
+              <input name="submit" id="submit" type="submit" class="form-control" value="Send Message">
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+
+  <footer>
+    <%- include('partials/footer'); %>
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/custom.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CD70HY5J9Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CD70HY5J9Z');
+  </script>
 
 </body>
 

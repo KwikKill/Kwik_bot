@@ -3,15 +3,15 @@
 
 <head>
 
-     <%- include('../partials/head'); %>
+  <%- include('../partials/head'); %>
 
 </head>
 
 <body>
 
-     <!-- PRE LOADER -->
+  <!-- PRE LOADER -->
 
-     <!--
+  <!--
      <div class="preloader">
           <div class="sk-spinner sk-spinner-wordpress">
                <span class="sk-inner-circle"></span>
@@ -19,41 +19,40 @@
      </div>
      -->
 
-     <!-- Navigation section  -->
+  <!-- Navigation section  -->
 
-     <%- include('../partials/header', {variant:''}); %>
+  <%- include('../partials/header', {variant:''}); %>
 
-          <!-- Blog Single Post Section -->
+  <!-- Blog Single Post Section -->
 
-          <section id="blog-single-post">
-               <div class="container">
-                    <div class="row">
+  <section id="blog-single-post">
+    <div class="container">
+      <div class="row">
 
-                         <div class="col-md-offset-1 col-md-10 col-sm-12">
-                              <div class="blog-single-post-thumb">
-                                   <div class="blog-post-image">
-                                        <img src="../images/web.jpg" class="img-responsive" alt="Blog Image">
-                                   </div>
+        <div class="col-md-offset-1 col-md-10 col-sm-12">
+          <div class="blog-single-post-thumb">
+            <div class="blog-post-image">
+              <img src="../images/web.jpg" class="img-responsive" alt="Blog Image">
+            </div>
 
-                                   <div class="blog-post-title">
-                                        <h2>WebSite Creation</a></h2>
-                                   </div>
+            <div class="blog-post-title">
+              <h2>WebSite Creation</a></h2>
+            </div>
 
-                                   <div class="blog-post-format">
-                                        <span><a href="#"><img src="../images/logo.png"
-                                                       class="img-responsive img-circle">
-                                                  KwikKill</a></span>
-                                        <span><i class="fa fa-date"></i> Nov 15, 2022</span>
-                                   </div>
+            <div class="blog-post-format">
+              <span><a href="#"><img src="../images/logo.png" class="img-responsive img-circle">
+                  KwikKill</a></span>
+              <span><i class="fa fa-date"></i> Nov 15, 2022</span>
+            </div>
 
-                                   <div class="blog-post-des">
-                                        <p>This post need to be writen. <strong>Currently a placeholder</strong></p>
-                                        <blockquote>"You can sit on a throne, that doesn't make you a ruler. It only
-                                             means
-                                             you have an arse." - Jericho Swain
-                                        </blockquote>
-                                   </div>
-                                   <!--
+            <div class="blog-post-des">
+              <p>This post need to be writen. <strong>Currently a placeholder</strong></p>
+              <blockquote>"You can sit on a throne, that doesn't make you a ruler. It only
+                means
+                you have an arse." - Jericho Swain
+              </blockquote>
+            </div>
+            <!--
                               <div class="blog-author">
                                    <div class="media">
                                         <div class="media-object pull-left">
@@ -111,23 +110,36 @@
                                    </form>
                               </div>
                          -->
-                              </div>
-                         </div>
-                    </div>
-          </section>
+          </div>
+        </div>
+      </div>
+  </section>
 
-          <!-- Footer Section -->
+  <!-- Footer Section -->
 
-          <footer>
-               <%- include('../partials/footer'); %>
-          </footer>
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
 
 
-          <!-- SCRIPTS -->
+  <!-- SCRIPTS -->
 
-          <script src="../js/jquery.js"></script>
-          <script src="../js/bootstrap.min.js"></script>
-          <script src="../js/custom.js"></script>
+  <script src="../js/jquery.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/custom.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CD70HY5J9Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CD70HY5J9Z');
+  </script>
 
 </body>
 

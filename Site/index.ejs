@@ -3,139 +3,152 @@
 
 <head>
 
-     <%- include('partials/head'); %>
+  <%- include('partials/head'); %>
 
 </head>
 
 <body>
 
-     <!-- PRE LOADER -->
-     <!--
+  <!-- PRE LOADER -->
+  <!--
      <div class="preloader">
           <div class="sk-spinner sk-spinner-wordpress">
                <span class="sk-inner-circle"></span>
           </div>
      </div>
      -->
-     <!-- Navigation section  -->
+  <!-- Navigation section  -->
 
-     <%- include('partials/header', {variant:'index'}); %>
+  <%- include('partials/header', {variant:'index'}); %>
 
-          <!-- Home Section -->
+  <!-- Home Section -->
 
-          <section id="home">
-               <div class="container">
-                    <div class="row">
+  <section id="home">
+    <div class="container">
+      <div class="row">
 
-                         <div class="col-md-12 col-sm-12">
-                              <h2>Welcome on my website. You can navigate through my personnal projects bellow.
-                              </h2>
-                              <hr>
-                         </div>
+        <div class="col-md-12 col-sm-12">
+          <h2>Welcome on my website. You can navigate through my personnal projects bellow.
+          </h2>
+          <hr>
+        </div>
 
-                    </div>
-               </div>
-          </section>
+      </div>
+    </div>
+  </section>
 
-          <!-- Portfolio Section -->
+  <!-- Portfolio Section -->
 
-          <section id="portfolio">
-               <div class="container">
-                    <div class="row">
+  <section id="portfolio">
+    <div class="container">
+      <div class="row">
 
-                         <div class="col-md-4 col-sm-6">
-                              <a href="projects/mindustry">
-                                   <div class="portfolio-thumb">
-                                        <img src="images/mindustry.png" class="img-responsive" alt="Portfolio">
-                                        <div class="portfolio-overlay">
-                                             <div class="portfolio-item">
-                                                  <h3>Mindustry mod</h3>
-                                                  <small>A moded version of Mindustry. Does not work
-                                                       anymore</small>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </a>
-                         </div>
+        <div class="col-md-4 col-sm-6">
+          <a href="projects/mindustry">
+            <div class="portfolio-thumb">
+              <img src="images/mindustry.png" class="img-responsive" alt="Portfolio">
+              <div class="portfolio-overlay">
+                <div class="portfolio-item">
+                  <h3>Mindustry mod</h3>
+                  <small>A moded version of Mindustry. Does not work
+                    anymore</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
-                         <div class="col-md-4 col-sm-6">
-                              <a href="projects/virtual-fs">
-                                   <div class="portfolio-thumb">
-                                        <img src="images/fs.png" class="img-responsive" alt="Portfolio">
-                                        <div class="portfolio-overlay">
-                                             <div class="portfolio-item">
-                                                  <h3>File system</h3>
-                                                  <small>virtual file system created in IT class</small>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </a>
-                         </div>
+        <div class="col-md-4 col-sm-6">
+          <a href="projects/virtual-fs">
+            <div class="portfolio-thumb">
+              <img src="images/fs.png" class="img-responsive" alt="Portfolio">
+              <div class="portfolio-overlay">
+                <div class="portfolio-item">
+                  <h3>File system</h3>
+                  <small>virtual file system created in IT class</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
-                         <div class="col-md-4 col-sm-6">
-                              <a href="projects/taunt_bot">
-                                   <div class="portfolio-thumb">
-                                        <img src="images/taunt.png" class="img-responsive" alt="Portfolio">
-                                        <div class="portfolio-overlay">
-                                             <div class="portfolio-item">
-                                                  <h3>Taunt Bot</h3>
-                                                  <small>A Discord bot for the association Taunt.fr</small>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </a>
-                         </div>
+        <div class="col-md-4 col-sm-6">
+          <a href="projects/taunt_bot">
+            <div class="portfolio-thumb">
+              <img src="images/taunt.png" class="img-responsive" alt="Portfolio">
+              <div class="portfolio-overlay">
+                <div class="portfolio-item">
+                  <h3>Taunt Bot</h3>
+                  <small>A Discord bot for the association Taunt.fr</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
-                         <div class="col-md-4 col-sm-6">
-                              <a href="projects/kwik_bot">
-                                   <div class="portfolio-thumb">
-                                        <img src="images/kwik_bot.png" class="img-responsive" alt="Portfolio">
-                                        <div class="portfolio-overlay">
-                                             <div class="portfolio-item">
-                                                  <h3>Kwik_Bot</h3>
-                                                  <small>A Discord bot as support for personal projects</small>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </a>
-                         </div>
-
-
-                         <div class="col-md-4 col-sm-6">
-                              <a href="projects/lol-database">
-                                   <div class="portfolio-thumb">
-                                        <img src="images/lol.png" class="img-responsive" alt="Portfolio">
-                                        <div class="portfolio-overlay">
-                                             <div class="portfolio-item">
-                                                  <h3>Lol Database</h3>
-                                                  <small>An extension for my discord bot to analyze league of legends
-                                                       stats</small>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </a>
-                         </div>
-
-                         <div class="col-md-12 col-sm-12 text-center">
-                              <h3>If you want, you can send me a message on the <a href="contact">contact page</a></h3>
-                         </div>
-
-                    </div>
-               </div>
-          </section>
-
-          <!-- Footer Section -->
-
-          <footer>
-               <%- include('partials/footer'); %>
-          </footer>
+        <div class="col-md-4 col-sm-6">
+          <a href="projects/kwik_bot">
+            <div class="portfolio-thumb">
+              <img src="images/kwik_bot.png" class="img-responsive" alt="Portfolio">
+              <div class="portfolio-overlay">
+                <div class="portfolio-item">
+                  <h3>Kwik_Bot</h3>
+                  <small>A Discord bot as support for personal projects</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
 
-          <!-- SCRIPTS -->
+        <div class="col-md-4 col-sm-6">
+          <a href="projects/lol-database">
+            <div class="portfolio-thumb">
+              <img src="images/lol.png" class="img-responsive" alt="Portfolio">
+              <div class="portfolio-overlay">
+                <div class="portfolio-item">
+                  <h3>Lol Database</h3>
+                  <small>An extension for my discord bot to analyze league of legends
+                    stats</small>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
 
-          <script src="js/jquery.js"></script>
-          <script src="js/bootstrap.min.js"></script>
-          <script src="js/custom.js"></script>
+        <div class="col-md-12 col-sm-12 text-center">
+          <h3>If you want, you can send me a message on the <a href="contact">contact page</a></h3>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+
+  <footer>
+    <%- include('partials/footer'); %>
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script src="js/jquery.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/custom.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CD70HY5J9Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CD70HY5J9Z');
+  </script>
 
 </body>
 
