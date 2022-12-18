@@ -772,7 +772,7 @@ async function matchHistoryOutput(match, puuid) {
 
             }
             if (lanePlayed2 === "SUPPORT") {
-                support = match['info']['participants'][member]['championName'];
+                support = match['info']['participants'][member]['championId'];
             }
         }
     }
@@ -795,12 +795,12 @@ async function matchHistoryOutput(match, puuid) {
     const deaths = match['info']['participants'][participantId]['deaths'];
     const assists = match['info']['participants'][participantId]['assists'];
 
-    let matchup = "";
+    let matchupId;
     let x = 0;
     while (x < 10) {
         if (match['info']['participants'][x]["teamPosition"] === lane) {
             if (participantId !== x) {
-                matchup = match['info']['participants'][x]['championName'];
+                matchupId = match['info']['participants'][x]['championId'];
             }
         }
         x++;
@@ -945,6 +945,8 @@ async function matchHistoryOutput(match, puuid) {
     }
 
     const champname = champions[championId];
+    const matchupname = champions[matchupId];
+    const supportname = champions[support];
 
     // Create Output Array
     const output = {
@@ -952,8 +954,8 @@ async function matchHistoryOutput(match, puuid) {
         "summonerpuuid": puuid,
         "queueName": queueName,
         "champion": champname,
-        "matchup": matchup,
-        "support": support,
+        "matchup": matchupname,
+        "support": supportname,
         "gold": gold,
         "lane": lanePlayed,
         "kills": kills,
