@@ -780,6 +780,9 @@ async function matchHistoryOutput(match, puuid) {
     if (firstgold === 1 || firstdegats === 1 || firsttanked === 1) {
         //cary = 1;
     }
+    if (support === null) {
+        support = "None";
+    }
     //}
 
     //{ Played As

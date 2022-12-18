@@ -195,7 +195,8 @@ function register(client) {
                         if (result.rows.length > 0) {
                             client.pg.query('SELECT matchs.puuid FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
                                 const version = lol_api.getCurrentPatch("EUW1", client);
-                                return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows, version: version });
+                                const dict = lol_api.getChampsId("EUW1", client);
+                                return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows, version: version, dict: dict });
                             });
                         } else {
                             return res.sendStatus(403);

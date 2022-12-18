@@ -43,6 +43,24 @@ module.exports = {
     },
 
     /**
+     * Get a dict with champion name and champion id
+     * @function getChampsId
+     * @param {*} region   region of the player
+     * @returns {Boolean}  return the current patch version
+     */
+    async getChampsId(region, client) {
+        // Region Correction
+        const version = this.getCurrentPatch(region, client);
+        const url = "http://ddragon.leagueoflegends.com/cdn/" + version['v'] + "/data/en_US/champion.json";
+        const raw = await this.apiCall(url, client);
+        const data = {};
+        for (const champ in raw['data']) {
+            data[raw['data'][champ]['name']] = raw['data'][champ]['id'];
+        }
+        return data;
+    },
+
+    /**
      * Get the summoner data from the API by name
      * @function summonersByName
      * @param {*} apiKey        Riot API key
