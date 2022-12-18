@@ -14,6 +14,57 @@ body {
   background: none;
 }
 
+.recentGamesTable .resultCellDark {
+  width: 80px;
+}
+
+.data_table td {
+  position: relative;
+}
+
+.recentGamesTable .resultCellDark a.full-cell {
+  justify-content: left;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.data_table td a.full-cell {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: inherit;
+}
+
+.victory {
+  color: #2DEB90;
+}
+
+.recentGamesTable .resultCellDark a.full-cell .victoryDefeatText {
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.recentGamesTable .resultCellDark a.full-cell .gameMode {
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 16.5px;
+}
+
+.recentGamesTable .gameMode {
+  max-width: 80px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 12px;
+  color: #dbdcdd;
+}
+
 .perk-8128-12 {
   background: url('https://lolg-cdn.porofessor.gg/img/d/sprites/12.23/tiny_perk0.png?v=12') no-repeat top left;
   background-position-x: left;
