@@ -50,7 +50,7 @@ module.exports = {
      */
     async getChampsId(region, client) {
         // Region Correction
-        const version = this.getCurrentPatch(region, client);
+        const version = await this.getCurrentPatch(region, client);
         const url = "http://ddragon.leagueoflegends.com/cdn/" + version['v'] + "/data/en_US/champion.json";
         const raw = await this.apiCall(url, client);
         const data = {};
