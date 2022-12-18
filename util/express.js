@@ -3,6 +3,7 @@ const express = require('express');
 const fs = require("fs");
 const { request } = require('undici');
 const cookieParser = require('cookie-parser');
+const lol_api = require("./lol_api.js");
 
 // -------------- Express -----------------
 module.exports = {
@@ -193,7 +194,8 @@ function register(client) {
                         }
                         if (result.rows.length > 0) {
                             client.pg.query('SELECT matchs.puuid FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
-                                return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
+                                const version = lol_api.getCurrentPatch("EUW1", client);
+                                return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows, version: version });
                             });
                         } else {
                             return res.sendStatus(403);

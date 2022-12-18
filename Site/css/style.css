@@ -71,15 +71,6 @@ a .requireTooltip {
   width: 36px;
 }
 
-.champion-50-36 {
-  background: url('https://lolg-cdn.porofessor.gg/img/d/sprites/12.23/small_champion1.png?v=12') no-repeat top left;
-  background-position-x: left;
-  background-position-y: top;
-  background-position: -216px -144px;
-  width: 36px;
-  height: 36px;
-}
-
 .recentGamesTable .championCellDark .championContainer .spells .spell {
   display: inline-block;
   height: 12px;
