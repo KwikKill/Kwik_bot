@@ -484,42 +484,79 @@ client.lol = async function () {
                             "player4, " +
                             "player5 " +
                             ") VALUES (" +
-                            "'" + matchId + "'," +
-                            "'" + exit["summonerpuuid"] + "'," +
-                            "'" + exit["queueName"] + "'," +
-                            "'" + exit["champion"] + "'," +
-                            "'" + exit["matchup"] + "'," +
-                            "'" + exit["support"] + "'," +
-                            "'" + exit["lane"] + "'," +
-                            "'" + exit["gold"] + "'," +
-                            "" + exit["kills"] + "," +
-                            "" + exit["deaths"] + "," +
-                            "" + exit["assists"] + "," +
-                            "'" + exit["result"] + "'," +
-                            "" + exit["dealt"] + "," +
-                            "" + exit["taken"] + "," +
-                            "" + exit["healed"] + "," +
-                            "" + exit["objectifs"] + "," +
-                            "" + exit["wardsPlaced"] + "," +
-                            "" + exit["pinkPlaced"] + "," +
-                            "" + exit["visionScore"] + "," +
-                            "" + exit["CS"] + "," +
-                            "" + exit["duration"] + "," +
-                            "" + exit["teamKills"] + "," +
-                            "" + exit["firstGold"] + "," +
-                            "" + exit["firstDamage"] + "," +
-                            "" + exit["firstTanked"] + "," +
-                            "" + exit["doubles"] + "," +
-                            "" + exit["triples"] + "," +
-                            "" + exit["quadras"] + "," +
-                            "" + exit["penta"] + "," +
-                            "" + exit["totalTimeSpentDead"] + "," +
-                            "" + exit["date"] + "," +
-                            "'" + exit["player2"] + "'," +
-                            "'" + exit["player3"] + "'," +
-                            "'" + exit["player4"] + "'," +
-                            "'" + exit["player5"] + "'" +
-                            ")"
+                            "$1," +
+                            "$2," +
+                            "$3," +
+                            "$4," +
+                            "$5," +
+                            "$6," +
+                            "$7," +
+                            "$8," +
+                            "$9," +
+                            "$10," +
+                            "$11," +
+                            "$12," +
+                            "$13," +
+                            "$14," +
+                            "$15," +
+                            "$16," +
+                            "$17," +
+                            "$18," +
+                            "$19," +
+                            "$20," +
+                            "$21," +
+                            "$22," +
+                            "$23," +
+                            "$24," +
+                            "$25," +
+                            "$26," +
+                            "$27," +
+                            "$28," +
+                            "$29," +
+                            "$30," +
+                            "$31," +
+                            "$32," +
+                            "$33," +
+                            "$34," +
+                            "$35" +
+                            ")",
+                            [
+                                matchId,
+                                exit["summonerpuuid"],
+                                exit["queueName"],
+                                exit["champion"],
+                                exit["matchup"],
+                                exit["support"],
+                                exit["lane"],
+                                exit["gold"],
+                                exit["kills"],
+                                exit["deaths"],
+                                exit["assists"],
+                                exit["result"],
+                                exit["dealt"],
+                                exit["taken"],
+                                exit["healed"],
+                                exit["objectifs"],
+                                exit["wardsPlaced"],
+                                exit["pinkPlaced"],
+                                exit["visionScore"],
+                                exit["CS"],
+                                exit["duration"],
+                                exit["teamKills"],
+                                exit["firstGold"],
+                                exit["firstDamage"],
+                                exit["firstTanked"],
+                                exit["doubles"],
+                                exit["triples"],
+                                exit["quadras"],
+                                exit["penta"],
+                                exit["totalTimeSpentDead"],
+                                exit["date"],
+                                exit["player2"],
+                                exit["player3"],
+                                exit["player4"],
+                                exit["player5"]
+                            ]
                         );
                     } catch (e) {
                         console.log(e);
@@ -907,13 +944,15 @@ async function matchHistoryOutput(match, puuid) {
         queueName = "RANKED_SOLO";
     }
 
+    const champname = champions[championId];
+
     // Create Output Array
     const output = {
         "matchId": matchId,
         "summonerpuuid": puuid,
         "queueName": queueName,
-        "champion": champions[championId].replaceAll("'", "").replaceAll(" ", ""),
-        "matchup": matchup.replaceAll("'", "").replaceAll(" ", ""),
+        "champion": champname,
+        "matchup": matchup,
         "support": support,
         "gold": gold,
         "lane": lanePlayed,
