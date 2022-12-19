@@ -193,7 +193,7 @@ function register(client) {
                             return res.sendStatus(403);
                         }
                         if (result.rows.length > 0) {
-                            client.pg.query('SELECT matchs.puuid, matchs.champion, matchs.result, game.gamemode FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
+                            client.pg.query('SELECT matchs.puuid, matchs.champion, matchs.result, matchs.gamemode FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
                                 if (err2) {
                                     throw err2;
                                 }
