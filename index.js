@@ -795,7 +795,7 @@ async function matchHistoryOutput(match, puuid) {
     const deaths = match['info']['participants'][participantId]['deaths'];
     const assists = match['info']['participants'][participantId]['assists'];
 
-    let matchupId;
+    let matchupId = "None";
     let x = 0;
     while (x < 10) {
         if (match['info']['participants'][x]["teamPosition"] === lane) {
@@ -945,7 +945,13 @@ async function matchHistoryOutput(match, puuid) {
     }
 
     const champname = champions[championId];
-    const matchupname = champions[matchupId];
+    let matchupname;
+    if (matchupId === "None") {
+        matchupname = "None";
+    } else {
+        matchupname = champions[matchupId];
+    }
+
     let supportname;
     if (support === "None") {
         supportname = "None";
