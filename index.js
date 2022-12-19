@@ -947,7 +947,7 @@ async function matchHistoryOutput(match, puuid) {
     const champname = champions[championId];
     const matchupname = champions[matchupId];
     let supportname;
-    if (support === null) {
+    if (support === "None") {
         supportname = "None";
     } else {
         supportname = champions[support];
