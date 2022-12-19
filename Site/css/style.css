@@ -40,8 +40,12 @@ body {
   padding: inherit;
 }
 
-.victory {
+.Win {
   color: #2DEB90;
+}
+
+.Lose {
+  color: #ff5859;
 }
 
 .recentGamesTable .resultCellDark a.full-cell .victoryDefeatText {
@@ -86,9 +90,6 @@ body {
   height: 12px;
   background-size: 1000% 600%;
 }
-
-
-élément {}
 
 a.requireTooltip,
 a .requireTooltip {
