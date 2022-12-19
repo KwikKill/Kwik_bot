@@ -13,6 +13,8 @@ module.exports = {
 function register(client) {
     const app = express();
 
+    console.log(client);
+
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
 

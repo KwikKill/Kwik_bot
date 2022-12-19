@@ -1,7 +1,3 @@
-<% 
-
-%>
-
 <% games.forEach(function(game) {%>
 <tr id="<%= game.puuid%>">
   <td class="championCellDark">
@@ -26,10 +22,10 @@
       </div>
     </a>
   </td>
-  <!--td class="resultCellDark nopadding">
+  <td class="resultCellDark nopadding">
     <a class="full-cell">
       <!--href="/match/euw/6194583377#participant8"-->
-  <!--div class="display-block">
+      <div class="display-block">
         <div class="victoryDefeatText <%= game.result %>"><%= game.result %></div>
         <div class="gameMode  requireTooltip" tooltip-vertical-offset="0" tooltip="<%= game.gamemode %>">
 
@@ -37,6 +33,6 @@
 
       </div>
     </a>
-  </td-->
+  </td>
 </tr>
 <% });%>
