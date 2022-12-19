@@ -13,7 +13,7 @@ module.exports = {
 function register(client) {
     const app = express();
 
-    console.log(client);
+    console.log(client.pg);
 
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
