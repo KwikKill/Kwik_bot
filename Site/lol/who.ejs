@@ -39,9 +39,7 @@
       <% } %>
       <div class="row-game">
         <% } %>
-        <div class="champion" onclick="click('<%= x %>')">
-          <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" id="<%= x%>">
-        </div>
+        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion" id="<%= x%>" onclick="clicked('<%= x %>')">
         <% y += 1 %>
         <% } %>
       </div>
@@ -62,7 +60,7 @@
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
   <script>
-    function click(id) {
+    function clicked(id) {
       document.getElementById(id).style.filter = "grayscale(100%)";
     }
   </script>
