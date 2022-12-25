@@ -62,8 +62,13 @@
   <script src="/js/custom.js"></script>
   <script>
     function clicked(id) {
-      document.getElementById(id).classList.add("champion-disabled");
-      document.getElementById(id).classList.remove("champion-enabled");
+      if (document.getElementById(id).className == "champion-enabled") {
+        document.getElementById(id).classList.add("champion-disabled");
+        document.getElementById(id).classList.remove("champion-enabled");
+      } else {
+        document.getElementById(id).classList.add("champion-enabled");
+        document.getElementById(id).classList.remove("champion-disabled");
+      }
     }
   </script>
 
