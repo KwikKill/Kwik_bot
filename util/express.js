@@ -176,7 +176,9 @@ function register(client) {
     });*/
 
     app.get("/lol/who", function (req, res) {
-        return res.render("../Site/lol/who");
+        lol_api.getChampsId("EUW1", client).then(champs => {
+            return res.render("../Site/lol/who", { champs: champs });
+        });
     });
 
     app.get("/lol/matchs", function (req, res) {
