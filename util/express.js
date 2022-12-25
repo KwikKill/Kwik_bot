@@ -176,8 +176,10 @@ function register(client) {
     });*/
 
     app.get("/lol/who", function (req, res) {
-        lol_api.getChampsId("EUW1", client).then(champs => {
-            return res.render("../Site/lol/who", { champs: champs });
+        lol_api.getCurrentPatch("EUW1", client).then(version => {
+            lol_api.getChampsId("EUW1", client).then(champs => {
+                return res.render("../Site/lol/who", { champs: champs, version: version });
+            });
         });
     });
 
