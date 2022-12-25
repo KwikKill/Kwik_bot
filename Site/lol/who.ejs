@@ -39,7 +39,7 @@
       <% } %>
       <div class="row-game">
         <% } %>
-        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion">
+        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion" id="<%= x%>" onclick="click(x)">
         <% y += 1 %>
         <% } %>
       </div>
@@ -59,6 +59,11 @@
   <script src="/js/jquery.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
+  <script>
+    function click(id) {
+      console.log(id);
+    }
+  </script>
 
 </body>
 
