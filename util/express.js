@@ -175,6 +175,10 @@ function register(client) {
         });
     });*/
 
+    app.get("/lol/who", function (req, res) {
+        return res.render("../Site/lol/who");
+    });
+
     app.get("/lol/matchs", function (req, res) {
         console.log("/lol/matchs", req.query);
         if (!req.cookies['token']) {
