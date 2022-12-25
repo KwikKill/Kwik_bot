@@ -35,10 +35,11 @@
         <% for(const x in champs) { %>
         <% if(y % 7 == 0) { %>
         <div class="row-game">
-          <% }else if(y % 7 == 6) { %>
+          <% } %>
+          <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion">
+          <% if(y % 7 == 6) { %>
         </div>
         <% } %>
-        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion">
         <% y += 1 %>
         <% } %>
       </div>
