@@ -39,7 +39,7 @@
       <% } %>
       <div class="row-game">
         <% } %>
-        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion" id="<%= champs[x]%>" onclick="clicked('<%= champs[x] %>')">
+        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion-enabled" id="<%= champs[x]%>" onclick="clicked('<%= champs[x] %>')">
         <% y += 1 %>
         <% } %>
       </div>
@@ -62,7 +62,8 @@
   <script src="/js/custom.js"></script>
   <script>
     function clicked(id) {
-      document.getElementById(id).style.filter = "grayscale(100%)";
+      document.getElementById(id).classList.add("champion-disabled");
+      document.getElementById(id).classList.remove("champion-enabled");
     }
   </script>
 

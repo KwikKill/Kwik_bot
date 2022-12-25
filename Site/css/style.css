@@ -14,10 +14,19 @@ body {
   background: none;
 }
 
-.champion {
+.champion-enabled {
   margin: 1%;
   height: 13%;
   width: 13%;
+  border: 5px solid rgb(25, 174, 75);
+}
+
+.champion-disabled {
+  margin: 1%;
+  height: 13%;
+  width: 13%;
+  border: 5px solid rgb(174, 25, 25);
+  filter: grayscale(100%);
 }
 
 .recentGamesTable .resultCellDark {
