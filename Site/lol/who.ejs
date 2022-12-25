@@ -39,7 +39,9 @@
       <% } %>
       <div class="row-game">
         <% } %>
-        <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" class="champion" id="<%= x%>" onclick="click('<%= x %>')">
+        <div class="champion" onclick="click('<%= x %>')">
+          <img src="http://ddragon.leagueoflegends.com/cdn/<%= version %>/img/champion/<%= champs[x] %>.png" id="<%= x%>">
+        </div>
         <% y += 1 %>
         <% } %>
       </div>
