@@ -10,6 +10,9 @@ module.exports = {
     async run(client, member) {
         try {
             const welcome = JSON.parse(fs.readFileSync("./welcome.json", "utf8"));
+            if (welcome[member.guild.id] === undefined) {
+                return;
+            }
             if (welcome[member?.guild?.id].channel) {
                 const welcomechannel = member.guild.channels.cache.get(welcome[member.guild.id].channel);
 
