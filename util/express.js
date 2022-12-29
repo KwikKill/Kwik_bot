@@ -75,6 +75,10 @@ function register(client) {
         });
     }
 
+    app.get("/lol/", function (req, res) {
+        return res.render("../Site/lol/index");
+    });
+
     app.get("/lol/register", function (req, res) {
         if (!req.cookies['token']) {
             return res.redirect("/lol/profile");
