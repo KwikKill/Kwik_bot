@@ -46,9 +46,10 @@ module.exports = {
             user.setNickname(pseudo).catch(() => {
                 interaction.reply(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
                 return;
+            }).then(() => {
+                interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
+                return;
             });
-            interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
-
         }
     }
 };

@@ -1341,6 +1341,9 @@ module.exports = {
                     )
                     .setImage(url2);
 
+                console.log(embed);
+                console.log(url2);
+
                 for (let i = 0; i < 5; i++) {
                     let text = "";
                     if (response.rows[i * 5] !== undefined && response.rows[i * 5].champion !== "" && response.rows[i * 5].count > 4) {
