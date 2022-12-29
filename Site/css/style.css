@@ -52,6 +52,7 @@ body {
 
 .recentGamesTable .resultCellDark {
   width: 80px;
+  padding: 10px;
 }
 
 .data_table td {
@@ -65,11 +66,6 @@ body {
 }
 
 .data_table td a.full-cell {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
