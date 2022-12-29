@@ -27,7 +27,7 @@ loadMore = function () {
   var rowCount = table.rows.length;
   table.deleteRow(rowCount - 1);
 
-  id = table.rows[rowCount - 2].id;
+  id = table.rows[rowCount - 1].id;
 
   httpGetAsync("http://albert.blaisot.org:8080/lol/matchs?last=" + id, function (response) {
     var table = document.getElementById("matchsListbody");
