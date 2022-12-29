@@ -59,7 +59,7 @@ body {
 }
 
 .recentGamesTable .kdaColumn {
-  width: 105px;
+  width: 160px;
 }
 
 .champion-disabled {
@@ -71,7 +71,6 @@ body {
 }
 
 .recentGamesTable .resultCellDark {
-  width: 80px;
   padding: 10px;
 }
 
@@ -82,7 +81,6 @@ body {
 .recentGamesTable .resultCellDark a.full-cell {
   justify-content: left;
   padding-left: 3px;
-  padding-right: 3px;
 }
 
 .data_table td a.full-cell {
@@ -107,7 +105,7 @@ body {
 
 .recentGamesTable .resultCellDark a.full-cell .gameMode {
   font-weight: 400;
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.4);
   line-height: 16.5px;
 }
