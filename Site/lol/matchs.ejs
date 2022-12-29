@@ -41,7 +41,7 @@
         <div class="victoryDefeatText" style="color: white;"><%= game.kill %>/<%= game.deaths %>/<%= game.assists %></div>
         <div class="gameMode  requireTooltip" tooltip-vertical-offset="0">
 
-          <%= game.cs %> CS - <%= ((game.kill + game.assists)/(game.total_kills)).toFixed(0) %>% Kills P.</div>
+          <%= game.cs %> CS - <%= ((game.kill + game.assists)*100/(game.total_kills)).toFixed(0) %>% Kills P.</div>
 
       </div>
     </a>
