@@ -40,7 +40,7 @@
       <div class="display-block">
         <div class="victoryDefeatText" style="color: white;"><%= game.kill %>/<%= game.deaths %>/<%= game.assists %></div>
         <div class="cs" tooltip-vertical-offset="0">
-          <% if(total_kills != 0) { %>
+          <% if(game.total_kills != 0) { %>
           <%= game.cs %> CS - <%= ((game.kill + game.assists)*100/(game.total_kills)).toFixed(0) %>% Kills P.
           <% } else { %>
           <%= game.cs %> CS - 0% Kills P.
