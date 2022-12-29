@@ -34,11 +34,11 @@ loadMore = function () {
   httpGetAsync("http://albert.blaisot.org:8080/lol/matchs?last=" + id, function (response) {
     var table = document.getElementById("matchsListbody");
     table.innerHTML += response;
-    table.innerHTML += "<tr class=\"see_more_ajax_button_row\"><td colspan=\"10\" class=\"text-center\"><button type=\"button\" class=\"see_more\" onclick=\"loadMore()\">See more</button></td></tr>";
+    console.log(occurrences(response, "<tr"))
+    if (occurrences(response, "<tr") == 10) {
+      table.innerHTML += "<tr class=\"see_more_ajax_button_row\"><td colspan=\"10\" class=\"text-center\"><button type=\"button\" class=\"see_more\" onclick=\"loadMore()\">See more</button></td></tr>";
+    }
   });
-  //var row = table.insertRow(table.rows.length - 1);
-  //var cell = row.insertCell(0);
-  //cell.innerHTML = "Test2";
 }
 
 initial_load = function () {
@@ -46,6 +46,29 @@ initial_load = function () {
     console.log(response);
     var table = document.getElementById("matchsListbody");
     table.innerHTML += response;
-    table.innerHTML += "<tr class=\"see_more_ajax_button_row\"><td colspan=\"10\" class=\"text-center\"><button type=\"button\" class=\"see_more\" onclick=\"loadMore()\">See more</button></td></tr>";
+    console.log(occurrences(response, "<tr"))
+    if (occurrences(response, "<tr") == 10) {
+      table.innerHTML += "<tr class=\"see_more_ajax_button_row\"><td colspan=\"10\" class=\"text-center\"><button type=\"button\" class=\"see_more\" onclick=\"loadMore()\">See more</button></td></tr>";
+    }
   });
+}
+
+function occurrences(string, subString, allowOverlapping) {
+
+  string += "";
+  subString += "";
+  if (subString.length <= 0) return (string.length + 1);
+
+  var n = 0,
+    pos = 0,
+    step = allowOverlapping ? 1 : subString.length;
+
+  while (true) {
+    pos = string.indexOf(subString, pos);
+    if (pos >= 0) {
+      ++n;
+      pos += step;
+    } else break;
+  }
+  return n;
 }
