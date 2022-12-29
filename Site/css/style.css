@@ -42,6 +42,13 @@ body {
   border: 5px solid rgb(25, 174, 75);
 }
 
+.recentGamesTable .kdaColumn .kdaContainer .cs,
+.recentGamesTable .kdaColumn .kdaContainer .visionScore,
+.recentGamesTable .kdaColumn .kdaContainer .killParticipation {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+}
+
 .text-center {
   text-align: center !important;
 }
@@ -180,6 +187,10 @@ a .requireTooltip {
   left: -10px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
+}
+
+.recentGamesTable {
+  display: block;
 }
 
 .victory {
