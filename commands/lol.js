@@ -984,7 +984,7 @@ module.exports = {
 
                 for (let i = 0; i < response3.rows.length; i++) {
                     values += response3.rows[i].count + ",";
-                    labels += response3.rows[i].gamemode + "|";
+                    labels += response3.rows[i].gamemode.replaceAll(" ", "").replaceAll("&", "") + "|";
                 }
                 values = values.substring(0, values.length - 1);
                 labels = labels.substring(0, labels.length - 1);
@@ -1178,7 +1178,7 @@ module.exports = {
                         if (i < max) {
                             values1 += response.rows[i].winrate + ",";
                             values2 += response.rows[i].carry + ",";
-                            champ += response.rows[i].matchup + "|";
+                            champ += response.rows[i].matchup.replaceAll(" ", "").replaceAll("&", "") + "|";
                         }
                     }
                 }
@@ -1307,7 +1307,7 @@ module.exports = {
                         if (i < max) {
                             values1 += response.rows[i].winrate + ",";
                             values2 += response.rows[i].carry + ",";
-                            champ += response.rows[i].champion + "|";
+                            champ += response.rows[i].champion.replaceAll(" ", "").replaceAll("&", "") + "|";
                         }
                     }
                 }
@@ -1340,9 +1340,6 @@ module.exports = {
                         },
                     )
                     .setImage(url2);
-
-                console.log(embed);
-                console.log(url2);
 
                 for (let i = 0; i < 5; i++) {
                     let text = "";
