@@ -3,21 +3,10 @@
 
 <head>
   <%- include('../partials/head'); %>
+
 </head>
 
 <body>
-
-  <!-- PRE LOADER -->
-
-  <!--
-       <div class="preloader">
-            <div class="sk-spinner sk-spinner-wordpress">
-                 <span class="sk-inner-circle"></span>
-            </div>
-       </div>
-       -->
-
-  <!-- Navigation section  -->
 
   <%- include('../partials/header', {variant:'lol'}); %>
 
@@ -29,14 +18,15 @@
 
         <div class="col-md-12 col-sm-12">
           <h2>
-            Lol stats
+            <%= text %>
           </h2>
         </div>
       </div>
     </div>
   </section>
 
-  <hr>
+  <!-- Footer Section -->
+
   <footer>
     <%- include('../partials/footer'); %>
   </footer>
@@ -47,9 +37,6 @@
   <script src="/js/jquery.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
-  <script>
-    initial_load();
-  </script>
 
 </body>
 

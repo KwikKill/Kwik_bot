@@ -111,13 +111,13 @@ function register(client) {
                 if (err) {
                     console.error(err);
                     res.statusCode(500);
-                    return res.render("../Site/lol/index", { text: "Internal server error" });
+                    return res.render("../Site/lol/message", { text: "Internal server error" });
                 }
                 if (result.rows.length === 0) {
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
                     return res.redirect("/lol/queue");
                 }
-                return res.render("../Site/lol/index", { text: "This account is already registered" });
+                return res.render("../Site/lol/message", { text: "This account is already registered" });
             });
         }
     });
