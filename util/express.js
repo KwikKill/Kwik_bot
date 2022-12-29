@@ -75,13 +75,6 @@ function register(client) {
         });
     }
 
-    /*const lolFiles = fs.readdirSync('Site/lol/');
-    for (const file of lolFiles) {
-        app.get(`/lol/${file.replace(".ejs", "")}`, function (req, res) {
-            res.render(`../Site/lol/${file}`);
-        });
-    }*/
-
     app.get("/lol/register", function (req, res) {
         if (!req.cookies['token']) {
             return res.redirect("/lol/profile");
@@ -188,36 +181,51 @@ function register(client) {
         if (!req.cookies['token']) {
             return res.sendStatus(403);
         }
-        if (!(req.query.timestamp || req.query.champion)) {
-            request('https://discord.com/api/users/@me', {
-                method: 'GET',
-                headers: {
-                    Authorization: "Bearer " + req.cookies['token']
-                }
-            }).then(tokenResponseData => {
-                tokenResponseData.body.json().then(data => {
-                    client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
-                        if (err) {
-                            return res.sendStatus(403);
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.sendStatus(403);
+                    }
+                    if (result.rows.length > 0) {
+                        let query = 'SELECT matchs.puuid, matchs.champion, matchs.result, matchs.gamemode FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1';
+                        const values = [data.id];
+                        if (req.query.last) {
+                            query += ' AND matchs.puuid < $2';
+                            values.push(req.query.last);
+                        } else if (req.query.champion) {
+                            query += ' AND matchs.champion = $2';
+                            values.push(req.query.champion);
                         }
-                        if (result.rows.length > 0) {
-                            client.pg.query('SELECT matchs.puuid, matchs.champion, matchs.result, matchs.gamemode FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1 ORDER BY timestamp DESC LIMIT 10;', [data.id], (err2, result2) => {
-                                if (err2) {
-                                    throw err2;
-                                }
-                                lol_api.getCurrentPatch("EUW1", client).then(version => {
-                                    lol_api.getChampsId("EUW1", client).then(dict => {
-                                        return res.render('../Site/lol/matchs', { username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows, version: version, dict: dict });
+                        query += ' ORDER BY timestamp DESC LIMIT 10;';
+                        client.pg.query(query, values, (err2, result2) => {
+                            if (err2) {
+                                throw err2;
+                            }
+                            lol_api.getCurrentPatch("EUW1", client).then(version => {
+                                lol_api.getChampsId("EUW1", client).then(dict => {
+                                    return res.render('../Site/lol/matchs', {
+                                        username: data.username,
+                                        discriminator: data.discriminator,
+                                        avatar: data.avatar,
+                                        games: result2.rows,
+                                        version: version,
+                                        dict: dict
                                     });
                                 });
                             });
-                        } else {
-                            return res.sendStatus(403);
-                        }
-                    });
+                        });
+                    } else {
+                        return res.sendStatus(403);
+                    }
                 });
             });
-        }
+        });
 
     });
 
