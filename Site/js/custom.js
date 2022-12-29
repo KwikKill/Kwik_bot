@@ -25,9 +25,11 @@ function httpGetAsync(theUrl, callback) {
 loadMore = function () {
   var table = document.getElementById("matchsList");
   var rowCount = table.rows.length;
-  table.deleteRow(rowCount - 1);
+  var id = table.rows[rowCount - 2].id;
 
-  id = table.rows[rowCount - 1].id;
+  console.log(id)
+
+  table.deleteRow(rowCount - 1);
 
   httpGetAsync("http://albert.blaisot.org:8080/lol/matchs?last=" + id, function (response) {
     var table = document.getElementById("matchsListbody");
