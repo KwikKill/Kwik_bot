@@ -34,5 +34,17 @@
       </div>
     </a>
   </td>
+  <td class="resultCellDark nopadding">
+    <a class="full-cell">
+      <!--href="/match/euw/6194583377#participant8"-->
+      <div class="display-block">
+        <div class="victoryDefeatText" style="color: white;"><%= game.kill %>/<%= game.deaths %>/<%= game.assists %></div>
+        <div class="gameMode  requireTooltip" tooltip-vertical-offset="0">
+
+          <%= game.cs %> CS - <%= (game.kill + game.assists)/(game.total_kills) %>% Kills P.</div>
+
+      </div>
+    </a>
+  </td>
 </tr>
 <% });%>

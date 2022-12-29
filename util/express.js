@@ -193,7 +193,7 @@ function register(client) {
                         return res.sendStatus(403);
                     }
                     if (result.rows.length > 0) {
-                        let query = 'SELECT matchs.puuid, matchs.champion, matchs.result, matchs.gamemode FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1';
+                        let query = 'SELECT matchs.puuid, matchs.champion, matchs.result, matchs.gamemode, matchs.kill, matchs.deaths, matchs.assists, matchs.cs, matchs.total_kills FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid = $1';
                         const values = [data.id];
                         if (req.query.last) {
                             query += ' AND matchs.puuid < $2';

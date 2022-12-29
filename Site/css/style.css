@@ -15,10 +15,9 @@ body {
 }
 
 .see_more {
-  background-color: #2AA3CC;
+  background-color: #20232b;
   width: 120px;
   font-size: 15px;
-  color: #2A2A2A;
   cursor: pointer;
   padding: 5px;
   margin-top: 2px;
@@ -33,6 +32,7 @@ body {
   border-style: solid;
   border-color: #007095;
   border-width: 0;
+  color: white;
 }
 
 .champion-enabled {
