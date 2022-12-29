@@ -27,7 +27,9 @@ loadMore = function () {
   var rowCount = table.rows.length;
   table.deleteRow(rowCount - 1);
 
-  httpGetAsync("http://albert.blaisot.org:8080/lol/matchs", function (response) {
+  id = table.rows[rowCount - 2].id;
+
+  httpGetAsync("http://albert.blaisot.org:8080/lol/matchs?last=" + id, function (response) {
     var table = document.getElementById("matchsListbody");
     table.innerHTML += response;
     table.innerHTML += "<tr class=\"see_more_ajax_button_row\"><td colspan=\"10\" class=\"text-center\"><button type=\"button\" class=\"see_more\" onclick=\"loadMore()\">See more</button></td></tr>";
