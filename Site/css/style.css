@@ -84,10 +84,8 @@ body {
 }
 
 .data_table td a.full-cell {
-  display: flex;
   align-items: center;
   justify-content: center;
-  padding: inherit;
 }
 
 .Win {
@@ -190,10 +188,6 @@ a .requireTooltip {
   left: -10px;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
-}
-
-.recentGamesTable {
-  display: block;
 }
 
 .victory {
