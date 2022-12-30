@@ -48,6 +48,10 @@ initial_load = function () {
   });
 }
 
+remove_account = function (pseudo) {
+  console.log(pseudo);
+}
+
 function occurrences(string, subString, allowOverlapping) {
 
   string += "";

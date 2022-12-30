@@ -293,6 +293,7 @@
           <th scope="col">rank flex</th>
           <th scope="col">tier flex</th>
           <th scope="col">lp flex</th>
+          <th scope="col">remove account</th>
         </tr>
       </thead>
       <tbody>
@@ -318,6 +319,9 @@
           </td>
           <td>
             <%= summoner.lp_flex %>
+          </td>
+          <td onclick="remove_account('<%=summoner.username%>')">
+            X
           </td>
         </tr>
         <% });%>
