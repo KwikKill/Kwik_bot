@@ -126,6 +126,7 @@ function register(client) {
                     if (al) {
                         return res.render("../Site/lol/message", { text: "This account is already registered" });
                     }
+                    console.log(req.body.username, req.body.discordid);
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
                     delay(1800).then(() => {
                         return res.redirect("/lol/queue");
