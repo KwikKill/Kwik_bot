@@ -174,28 +174,30 @@ function register(client) {
                             "WHERE player IN (" +
                             "SELECT puuid " +
                             "FROM summoners " +
-                            "WHERE username=$1" +
+                            "WHERE username=$1 " +
                             "AND discordid=$2 " +
                             ");",
                             [req.query.pseudo, data.id],
                             (err2, result2) => {
                                 if (err2) {
                                     console.error(err2);
-                                } else {
-                                    client.pg.query("DELETE FROM summoners " +
-                                        "WHERE discordid=$1 " +
-                                        "AND username=$2" +
-                                        ";",
-                                        [data.id, req.query.pseudo],
-                                        (err3, result3) => {
-                                            if (err3) {
-                                                console.error(err3);
-                                            } else {
-                                                return res.render("../Site/lol/message", { text: "The account " + req.query.pseudo + " has been removed. You can go back to the profile page with the navbar." });
-                                            }
-                                        }
-                                    );
+                                    return res.sendStatus(403);
                                 }
+                                client.pg.query("DELETE FROM summoners " +
+                                    "WHERE discordid=$1 " +
+                                    "AND username=$2" +
+                                    ";",
+                                    [data.id, req.query.pseudo],
+                                    (err3) => {
+                                        if (err3) {
+                                            console.error(err3);
+                                            return res.sendStatus(403);
+                                        }
+                                        return res.render("../Site/lol/message", { text: "The account " + req.query.pseudo + " has been removed. You can go back to the profile page with the navbar." });
+
+                                    }
+                                );
+
                             }
                         );
                     } else {
