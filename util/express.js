@@ -5,6 +5,8 @@ const { request } = require('undici');
 const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 // -------------- Express -----------------
 module.exports = {
     register
@@ -115,7 +117,9 @@ function register(client) {
                 }
                 if (result.rows.length === 0) {
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
-                    return res.redirect("/lol/queue");
+                    delay(5000).then(() => {
+                        return res.redirect("/lol/queue");
+                    });
                 }
                 return res.render("../Site/lol/message", { text: "This account is already registered" });
             });
