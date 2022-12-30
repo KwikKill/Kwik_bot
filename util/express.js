@@ -109,20 +109,30 @@ function register(client) {
     app.post("/lol/register", function (req, res) {
         console.log(req.body);
         if (req.body.username && req.body.discordid) {
-            client.pg.query('SELECT * FROM summoners WHERE discordid = $1 AND username = $2', [req.body.discordid, req.body.username], (err, result) => {
+            client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.body.discordid], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.statusCode(500);
                     return res.render("../Site/lol/message", { text: "Internal server error" });
                 }
-                if (result.rows.length === 0) {
+                if (result.rows.length >= 3) {
+                    return res.render("../Site/lol/message", { text: "You already have 3 accounts registered" });
+                }
+                result.rows.forEach(element => {
+                    let al = false;
+                    if (element.username === req.body.username) {
+                        al = true;
+                    }
+                    if (al) {
+                        return res.render("../Site/lol/message", { text: "This account is already registered" });
+                    }
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
-                    delay(1500).then(() => {
+                    delay(1800).then(() => {
                         return res.redirect("/lol/queue");
                     });
-                } else {
-                    return res.render("../Site/lol/message", { text: "This account is already registered" });
-                }
+
+                });
+
             });
         }
     });
