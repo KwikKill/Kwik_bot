@@ -798,32 +798,34 @@ module.exports = {
         await interaction.deferReply();
         if (interaction.options.getSubcommandGroup() === "account") {
             if (interaction.options.getSubcommand() === "add") {
-                const response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND LOWER(username)=LOWER('" + summoner_name + "');");
+                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
                 if (!client.requests["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id }) && response.rows.length === 0) {
                     await interaction.editReply("The request was added to the queue, this can take several minutes.");
                     return await addSumoner(client, summoner_name, interaction);
                 }
                 return await interaction.editReply("This account is already in the database or requested.");
             } else if (interaction.options.getSubcommand() === "remove") {
-                const response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "' AND username='" + summoner_name + "';");
+                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND username=$2;", [interaction.user.id, summoner_name]);
                 if (response.rows.length > 0) {
                     await client.pg.query("DELETE FROM matchs " +
                         "WHERE player IN (" +
                         "SELECT puuid " +
                         "FROM summoners " +
-                        "WHERE username='" + summoner_name + "'" +
-                        ");"
+                        "WHERE username=$1" +
+                        ");",
+                        [summoner_name]
                     );
                     await client.pg.query("DELETE FROM summoners " +
-                        "WHERE discordid='" + interaction.user.id + "' " +
-                        "AND username='" + summoner_name + "'" +
-                        ";"
+                        "WHERE discordid=$1 " +
+                        "AND username=$2" +
+                        ";",
+                        [interaction.user.id, summoner_name]
                     );
                     return await interaction.editReply("The account has been removed.");
                 }
                 return await interaction.editReply("This account is not in the database.");
             } else if (interaction.options.getSubcommand() === "list") {
-                const response = await client.pg.query("SELECT * FROM summoners where discordid='" + interaction.user.id + "';");
+                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any account linked. Please use the command `/lol account add <name>` to add an account.");
                 }
@@ -1117,22 +1119,7 @@ module.exports = {
                 ).setImage(url2);
                 return await interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "matchups") {
-                let querychamp = "";
-                if (champion !== undefined) {
-                    querychamp = " AND matchs.champion='" + champion + "'";
-                }
-                let queryrole = "";
-                if (role !== undefined) {
-                    queryrole = " AND matchs.lane='" + role + "'";
-                }
-                let querygamemode = "";
-                if (gamemode !== undefined) {
-                    querygamemode = " AND matchs.gamemode='" + gamemode + "'";
-                }
-                let queryaccount = "";
-                if (account !== undefined) {
-                    queryaccount = " AND summoners.username='" + account + "'";
-                }
+                let i = 1;
 
                 let discordusername = "";
                 if (discordaccount === null) {
@@ -1142,7 +1129,7 @@ module.exports = {
                     discordusername = discordaccount.username;
                     discordaccount = discordaccount.id;
                 }
-
+                const query_values = [discordaccount];
 
                 let query = "SELECT matchs.matchup, count(*) AS count1, (cast(" +
                     "count(*) FILTER (" +
@@ -1152,13 +1139,32 @@ module.exports = {
                     "WHERE (first_tanked OR first_gold OR first_damages)" +
                     ")*100 as float)/count(*)) AS carry " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                query += querychamp;
-                query += queryrole;
-                query += querygamemode;
-                query += queryaccount;
+                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                i++;
+
+                if (champion !== null) {
+                    query += " AND matchs.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
+                }
+                if (role !== null) {
+                    query += " AND matchs.lane=$" + i;
+                    query_values.push(role);
+                    i++;
+                }
+                if (gamemode !== null) {
+                    query += " AND matchs.gamemode=$" + i;
+                    query_values.push(gamemode);
+                    i++;
+                }
+                if (account !== null) {
+                    query += " AND summoners.username=$" + i;
+                    query_values.push(account);
+                    i++;
+                }
                 query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
-                const response = await client.pg.query(query);
+
+                const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                 }
@@ -1193,13 +1199,13 @@ module.exports = {
                 const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
 
                 let title = "" + discordusername + "'s matchups";
-                if (champion !== undefined) {
+                if (champion !== null) {
                     title += " with " + champion;
                 }
-                if (role !== undefined) {
+                if (role !== null) {
                     title += " in " + role;
                 }
-                if (account !== undefined) {
+                if (account !== null) {
                     title += " on \"" + account + "\"";
                 }
 
@@ -1249,18 +1255,7 @@ module.exports = {
 
                 return await interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "champions") {
-                let queryrole = "";
-                if (role !== undefined) {
-                    queryrole = " AND matchs.lane='" + role + "'";
-                }
-                let querygamemode = "";
-                if (gamemode !== undefined) {
-                    querygamemode = " AND matchs.gamemode='" + gamemode + "'";
-                }
-                let queryaccount = "";
-                if (account !== undefined) {
-                    queryaccount = " AND summoners.username='" + account + "'";
-                }
+                let i = 1;
 
                 let discordusername = "";
                 if (discordaccount === null) {
@@ -1270,8 +1265,9 @@ module.exports = {
                     discordusername = discordaccount.username;
                     discordaccount = discordaccount.id;
                 }
+                const query_values = [discordaccount];
 
-                const query = "SELECT champion, " +
+                let query = "SELECT champion, " +
                     "count(*) AS count, " +
                     "(cast(" +
                     "count(*) FILTER (" +
@@ -1282,14 +1278,28 @@ module.exports = {
                     "WHERE (first_tanked OR first_gold OR first_damages)" +
                     ")*100 as float)/count(*)) AS carry " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' " +
-                    "AND matchs.player = summoners.puuid" +
-                    queryrole +
-                    querygamemode +
-                    queryaccount +
-                    " GROUP BY champion " +
-                    "ORDER BY count(*) DESC;";
-                const response = await client.pg.query(query);
+                    "WHERE summoners.discordid=$1 " +
+                    "AND matchs.player = summoners.puuid";
+                i++;
+
+                if (role !== null) {
+                    query += " AND matchs.lane=$" + i;
+                    query_values.push(role);
+                    i++;
+                }
+                if (gamemode !== null) {
+                    query += " AND matchs.gamemode=$" + i;
+                    query_values.push(gamemode);
+                    i++;
+                }
+                if (account !== null) {
+                    query += " AND summoners.username=$" + i;
+                    query_values.push(account);
+                    i++;
+                }
+                query += " GROUP BY champion ORDER BY count(*) DESC;";
+
+                const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database.");
                 }
@@ -1317,10 +1327,10 @@ module.exports = {
                 const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
 
                 let title = "" + discordusername + "'s champions";
-                if (role !== undefined) {
+                if (role !== null) {
                     title += " in " + role;
                 }
-                if (account !== undefined) {
+                if (account !== null) {
                     title += " on \"" + account + "\"";
                 }
 
@@ -1370,23 +1380,24 @@ module.exports = {
 
                 return await interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "match") {
-                if (puuid !== undefined) {
-                    const query = "SELECT * FROM matchs WHERE puuid='" + puuid + "';";
-                    const response = await client.pg.query(query);
+                if (puuid !== null) {
+                    const query = "SELECT * FROM matchs WHERE puuid=$1;";
+                    const response = await client.pg.query(query, [puuid]);
                     if (response.rows.length === 0) {
                         return await interaction.editReply("This match doesn't exist.");
                     }
                     const match = response.rows[0];
                     console.log(match);
                 } else {
-                    const account = interaction.options.getString("account");
                     //let queryaccount = ""
-                    if (account !== undefined) {
+                    if (account !== null) {
                         //queryaccount = " AND summoners.account = '" + account + "' ";
                     }
 
                 }
             } else if (interaction.options.getSubcommand() === "ks") {
+                let i = 1;
+
                 let discordusername = "";
                 if (discordaccount === null) {
                     discordaccount = interaction.user.id;
@@ -1395,33 +1406,43 @@ module.exports = {
                     discordusername = discordaccount.username;
                     discordaccount = discordaccount.id;
                 }
+                const query_values = [discordaccount];
+                i++;
 
                 let queryaccount = "";
                 let queryaccount2 = "";
-                if (account !== undefined) {
-                    queryaccount = " AND summoners.account = '" + account + "'";
-                    queryaccount2 = " AND s2.account = '" + account + "'";
+                if (account !== null) {
+                    queryaccount = " AND summoners.account = $" + i;
+                    queryaccount2 = " AND s2.account = $" + i;
+                    query_values.push(account);
+                    i++;
                 }
 
                 let querygamemode = "";
                 let querygamemode2 = "";
-                if (gamemode !== undefined) {
-                    querygamemode = " AND matchs.gamemode = '" + gamemode + "'";
-                    querygamemode2 = " AND m2.gamemode = '" + gamemode + "'";
+                if (gamemode !== null) {
+                    querygamemode = " AND matchs.gamemode = $" + i;
+                    querygamemode2 = " AND m2.gamemode = $" + i;
+                    query_values.push(gamemode);
+                    i++;
                 }
 
                 let queryrole = "";
                 let queryrole2 = "";
-                if (role !== undefined) {
-                    queryrole = " AND matchs.lane = '" + role + "'";
-                    queryrole2 = " AND m2.lane = '" + role + "'";
+                if (role !== null) {
+                    queryrole = " AND matchs.lane = $" + i;
+                    queryrole2 = " AND m2.lane = $" + i;
+                    query_values.push(role);
+                    i++;
                 }
 
                 let querychamp = "";
                 let querychamp2 = "";
-                if (champion !== undefined) {
-                    querychamp = " AND matchs.champion='" + champion + "'";
-                    querychamp2 = " AND m2.champion='" + champion + "'";
+                if (champion !== null) {
+                    querychamp = " AND matchs.champion=$" + i;
+                    querychamp2 = " AND m2.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
                 }
 
                 const query =
@@ -1439,7 +1460,7 @@ module.exports = {
                     "] as stats " +
                     "FROM matchs m2, summoners s2 " +
                     "WHERE m2.player = s2.puuid " +
-                    "AND s2.discordid = '" + discordaccount + "'" +
+                    "AND s2.discordid = $1" +
                     queryaccount2 +
                     querygamemode2 +
                     queryrole2 +
@@ -1457,14 +1478,14 @@ module.exports = {
                     "FROM matchs " +
                     ") as matchs, summoners " +
                     "WHERE matchs.player = summoners.puuid " +
-                    "AND summoners.discordid = '" + discordaccount + "'" +
+                    "AND summoners.discordid = $1" +
                     queryaccount +
                     querygamemode +
                     queryrole +
                     querychamp +
                     " GROUP BY timestamp;";
 
-                const response = await client.pg.query(query);
+                const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     interaction.editReply("No data found for this account");
                     return;
@@ -1515,6 +1536,7 @@ module.exports = {
                 interaction.editReply({ embeds: [embed] });
 
             } else if (interaction.options.getSubcommand() === "friends") {
+                let i = 1;
 
                 //let discordusername = "";
                 if (discordaccount === null) {
@@ -1525,24 +1547,35 @@ module.exports = {
                     discordaccount = discordaccount.id;
                 }
 
+                const query_values = [discordaccount];
+                i++;
+
                 let queryaccount = "";
-                if (account !== undefined) {
-                    queryaccount = " AND summoners.account = '" + account + "'";
+                if (account !== null) {
+                    queryaccount = " AND summoners.account = $" + i;
+                    query_values.push(account);
+                    i++;
                 }
 
                 let querygamemode = "";
-                if (gamemode !== undefined) {
-                    querygamemode = " AND matchs.gamemode = '" + gamemode + "'";
+                if (gamemode !== null) {
+                    querygamemode = " AND matchs.gamemode = $" + i;
+                    query_values.push(gamemode);
+                    i++;
                 }
 
                 let queryrole = "";
-                if (role !== undefined) {
-                    queryrole = " AND matchs.lane = '" + role + "'";
+                if (role !== null) {
+                    queryrole = " AND matchs.lane = $" + i;
+                    query_values.push(role);
+                    i++;
                 }
 
                 let querychamp = "";
-                if (champion !== undefined) {
-                    querychamp = " AND matchs.champion='" + champion + "'";
+                if (champion !== null) {
+                    querychamp = " AND matchs.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
                 }
 
                 const query = "" +
@@ -1561,7 +1594,7 @@ module.exports = {
                     "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player2 as mate " +
                     "FROM matchs, summoners " +
                     //"WHERE discordid = '297409548703105035'" +
-                    "WHERE summoners.discordid = '" + discordaccount + "'" +
+                    "WHERE summoners.discordid = $1" +
                     " AND matchs.player = summoners.puuid" +
                     queryaccount +
                     querygamemode +
@@ -1570,7 +1603,7 @@ module.exports = {
                     " UNION " +
                     "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player3 as mate " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid = '" + discordaccount + "'" +
+                    "WHERE summoners.discordid = $1" +
                     //"WHERE discordid = '297409548703105035'" +
                     " AND matchs.player = summoners.puuid" +
                     queryaccount +
@@ -1580,7 +1613,7 @@ module.exports = {
                     " UNION " +
                     "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player4 as mate " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid = '" + discordaccount + "'" +
+                    "WHERE summoners.discordid = $1" +
                     //"WHERE discordid = '297409548703105035'" +
                     " AND matchs.player = summoners.puuid" +
                     queryaccount +
@@ -1590,7 +1623,7 @@ module.exports = {
                     " UNION " +
                     "SELECT champion, result, kill, assists, deaths, gold, lane, support, total_damage, tanked_damage, heal, wards, pinks, vision_score, cs, length, total_kills, first_gold, first_damages, first_tanked, time_spent_dead, timestamp, player5 as mate " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid = '" + discordaccount + "'" +
+                    "WHERE summoners.discordid = $1" +
                     //"WHERE discordid = '297409548703105035'" +
                     " AND matchs.player = summoners.puuid" +
                     queryaccount +
@@ -1599,7 +1632,7 @@ module.exports = {
                     querychamp +
                     ") AS SUB GROUP BY mate HAVING count(*) > 1 ORDER BY COUNT(*) DESC;";
                 console.log(query);
-                const response = await client.pg.query(query);
+                const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     interaction.editReply("No data found for this account");
                     return;
@@ -1615,8 +1648,9 @@ module.exports = {
                     discordusername = discordaccount.username;
                     discordaccount = discordaccount.id;
                 }
+                const query_values = [discordaccount];
 
-                const response = await client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordaccount + "';");
+                const response = await client.pg.query("SELECT * FROM summoners WHERE discordid = $1;", query_values);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("No data found. Try adding your account with /account add");
                 }
@@ -1744,29 +1778,16 @@ module.exports = {
                 return await interaction.editReply({ embeds: [embed] });
 
             } else if (interaction.options.getSubcommand() === "compare") {
+                let i = 1;
+
                 const discordusername = discordaccount.username;
                 discordaccount = discordaccount.id;
+                const query_values = [discordaccount];
 
                 let query = "SELECT * " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' " +
+                    "WHERE summoners.discordid=$1 " +
                     "AND matchs.player = summoners.puuid";
-                if (champion !== undefined) {
-                    query += " AND matchs.champion='" + champion + "'";
-                }
-                if (role !== undefined) {
-                    query += " AND matchs.lane='" + role + "'";
-                }
-                if (gamemode !== undefined) {
-                    query += " AND matchs.gamemode='" + gamemode + "'";
-                }
-                query += ";";
-                const response = await client.pg.query(query);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
-                }
-
-                // Query 2
                 let query2 = "SELECT " +
                     "avg(length) as duration, " +
                     "avg(kill) as kill, " +
@@ -1781,18 +1802,36 @@ module.exports = {
                     "avg(pinks) as pinks, " +
                     "avg(total_kills) as total_kills " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                if (champion !== undefined) {
-                    query2 += " AND matchs.champion='" + champion + "'";
+                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                i++;
+
+                if (champion !== null) {
+                    query += " AND matchs.champion=$" + i;
+                    query2 += " AND matchs.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
                 }
-                if (role !== undefined) {
-                    query2 += " AND matchs.lane='" + role + "'";
+                if (role !== null) {
+                    query += " AND matchs.lane=$" + i;
+                    query2 += " AND matchs.lane=$" + i;
+                    query_values.push(role);
+                    i++;
                 }
-                if (gamemode !== undefined) {
-                    query2 += " AND matchs.gamemode='" + gamemode + "'";
+                if (gamemode !== null) {
+                    query += " AND matchs.gamemode=$" + i;
+                    query2 += " AND matchs.gamemode=$" + i;
+                    query_values.push(gamemode);
+                    i++;
                 }
+                query += ";";
                 query2 += ";";
-                const response2 = await client.pg.query(query2);
+
+                const response = await client.pg.query(query, query_values);
+                if (response.rows.length === 0) {
+                    return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
+                }
+
+                const response2 = await client.pg.query(query2, query_values);
 
                 // 1) Carry stats
 
@@ -1866,27 +1905,15 @@ module.exports = {
 
                 // Your stats
 
-                let query4 = "SELECT * " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + interaction.user.id + "' " +
-                    "AND matchs.player = summoners.puuid";
-                if (champion !== undefined) {
-                    query4 += " AND matchs.champion='" + champion + "'";
-                }
-                if (role !== undefined) {
-                    query4 += " AND matchs.lane='" + role + "'";
-                }
-                if (gamemode !== undefined) {
-                    query4 += " AND matchs.gamemode='" + gamemode + "'";
-                }
-                query4 += ";";
-                const response4 = await client.pg.query(query4);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
-                }
+                let j = 1;
 
-                // Query 2
-                let query5 = "SELECT " +
+                query_values[0] = [interaction.user.id];
+
+                let query3 = "SELECT * " +
+                    "FROM matchs, summoners " +
+                    "WHERE summoners.discordid=$1 " +
+                    "AND matchs.player = summoners.puuid";
+                let query4 = "SELECT " +
                     "avg(length) as duration, " +
                     "avg(kill) as kill, " +
                     "avg(deaths) as deaths, " +
@@ -1900,18 +1927,33 @@ module.exports = {
                     "avg(pinks) as pinks, " +
                     "avg(total_kills) as total_kills " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + interaction.user.id + "' AND matchs.player = summoners.puuid";
-                if (champion !== undefined) {
-                    query5 += " AND matchs.champion='" + champion + "'";
+                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                i++;
+
+                if (champion !== null) {
+                    query3 += " AND matchs.champion=$" + j;
+                    query4 += " AND matchs.champion=$" + j;
+                    j++;
                 }
-                if (role !== undefined) {
-                    query5 += " AND matchs.lane='" + role + "'";
+                if (role !== null) {
+                    query3 += " AND matchs.lane=$" + j;
+                    query4 += " AND matchs.lane=$" + j;
+                    j++;
                 }
-                if (gamemode !== undefined) {
-                    query5 += " AND matchs.gamemode='" + gamemode + "'";
+                if (gamemode !== null) {
+                    query3 += " AND matchs.gamemode=$" + j;
+                    query4 += " AND matchs.gamemode=$" + j;
+                    j++;
                 }
-                query5 += ";";
-                const response5 = await client.pg.query(query5);
+                query3 += ";";
+                query4 += ";";
+
+                const response4 = await client.pg.query(query3, query_values);
+                if (response4.rows.length === 0) {
+                    return await interaction.editReply("You dont have any matchs in the database or the filters are too restrictings.");
+                }
+
+                const response5 = await client.pg.query(query4, query_values);
 
                 // 1) Carry stats
 
@@ -1984,10 +2026,10 @@ module.exports = {
                 win = win / response4.rows.length * 100;
 
                 let title = "Stats comparaison with " + discordusername + "";
-                if (champion !== undefined) {
+                if (champion !== null) {
                     title += " on " + champion;
                 }
-                if (role !== undefined) {
+                if (role !== null) {
                     title += " in " + role;
                 }
 
