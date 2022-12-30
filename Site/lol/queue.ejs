@@ -21,10 +21,13 @@
           <h2>
             <% 
             let count = 1;
-            let number = [];
+            let number = "";
             jsclient.requests.updates.forEach(function(update) {
                 if(update.discordid == data.id) {
-                    number.push(count);
+                    if(number !== "") {
+                        number += ", ";
+                    }
+                    number += count;
                 }
                 count += 1
             });
