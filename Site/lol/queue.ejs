@@ -33,7 +33,7 @@
             });
             %>
             <% if(number != undefined) { %>
-            You are <%= number %>/<%= (count-1) %> in the queue.
+            You are <%= number %> in the queue.
             <% } else { %>
             You are not in the queue.
             <% } %>
@@ -56,7 +56,7 @@
       </thead>
       <tbody>
         <% jsclient.requests.updates.forEach(function(update) {%>
-        <tr <% if(update.discordid == data.id) { %> style="background-color: darkgreen;" <% } %>>
+        <tr <% if(update.discordid == data.id) { %> style="border: 3px solid darkgreen;" <% } %>>
           <td>
             <%= update.username %>
           </td>
