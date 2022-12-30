@@ -85,7 +85,6 @@ function register(client) {
         if (!req.cookies['token']) {
             return res.redirect("/lol/profile");
         }
-        console.log("/lol/register", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
             method: 'GET',
             headers: {
@@ -93,6 +92,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/register", data.username);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.redirect("/404");
@@ -107,7 +107,7 @@ function register(client) {
     });
 
     app.post("/lol/register", function (req, res) {
-        console.log(req.body);
+        console.log("[POST] /lol/register", req.body);
         if (req.body.username && req.body.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.body.discordid], (err, result) => {
                 if (err) {
@@ -139,7 +139,6 @@ function register(client) {
         if (!req.cookies['token']) {
             return res.redirect("/login");
         }
-        console.log("/lol/profile", req.cookies['token']);
         request('https://discord.com/api/users/@me', {
             method: 'GET',
             headers: {
@@ -147,6 +146,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/profile", data.username);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.redirect("/404");
@@ -164,7 +164,6 @@ function register(client) {
     });
 
     app.get("/lol/remove", function (req, res) {
-        console.log("/lol/remove", req.query);
         if (!req.query.pseudo) {
             return res.sendStatus(403);
         }
@@ -178,6 +177,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/remove", data.username);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.sendStatus(403);
@@ -253,7 +253,6 @@ function register(client) {
     });
 
     app.get("/lol/matchs", function (req, res) {
-        console.log("/lol/matchs", req.query);
         if (!req.cookies['token']) {
             return res.sendStatus(403);
         }
@@ -264,6 +263,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/matchs", data.username, req.query);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.sendStatus(403);
@@ -338,6 +338,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/queue", data.username);
                 return res.render('../Site/lol/queue', { jsclient: client, data: data });
             });
         });
