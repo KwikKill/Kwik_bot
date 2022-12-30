@@ -932,27 +932,27 @@ module.exports = {
                     "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
 
                 i++;
-                if (champion !== undefined) {
+                if (champion !== null) {
                     query += " AND matchs.champion=$" + i;
                     query2 += " AND matchs.champion=$" + i;
                     query3 += " AND matchs.champion=$" + i;
                     query_values.push(champion);
                     i++;
                 }
-                if (role !== undefined) {
+                if (role !== null) {
                     query += " AND matchs.lane=$" + i;
                     query2 += " AND matchs.lane=$" + i;
                     query3 += " AND matchs.lane=$" + i;
                     query_values.push(role);
                     i++;
                 }
-                if (gamemode !== undefined) {
+                if (gamemode !== null) {
                     query += " AND matchs.gamemode=$" + i;
                     query2 += " AND matchs.gamemode=$" + i;
                     query_values.push(gamemode);
                     i++;
                 }
-                if (account !== undefined) {
+                if (account !== null) {
                     query += " AND summoners.username=$" + i;
                     query2 += " AND summoners.username=$" + i;
                     query3 += " AND summoners.username=$" + (i - 1);
