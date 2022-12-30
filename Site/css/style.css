@@ -194,6 +194,10 @@ a .requireTooltip {
   color: #2DEB90;
 }
 
+.text {
+  text-align: justify;
+}
+
 .relative {
   position: relative;
 }
