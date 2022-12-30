@@ -53,7 +53,7 @@
       </thead>
       <tbody>
         <% jsclient.requests.updates.forEach(function(update) {%>
-        <tr>
+        <tr <% if(update.discordid == data.id) { %> class="active" <% } %>>
           <td>
             <%= update.username %>
           </td>
