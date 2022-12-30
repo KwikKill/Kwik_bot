@@ -150,6 +150,51 @@ function register(client) {
         });
     });
 
+    app.get("/lol/remove", function (req, res) {
+        console.log("/lol/remove", req.query);
+        if (!req.query.pseudo) {
+            return res.sendStatus(403);
+        }
+        if (!req.cookies['token']) {
+            return res.sendStatus(403);
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.sendStatus(403);
+                    }
+                    if (result.rows.length > 0) {
+                        client.pg.query("DELETE FROM matchs " +
+                            "WHERE player IN (" +
+                            "SELECT puuid " +
+                            "FROM summoners " +
+                            "WHERE username=$1" +
+                            "AND discordid=$2 " +
+                            ");",
+                            [req.query.pseudo, data.id]
+                        );
+                        client.pg.query("DELETE FROM summoners " +
+                            "WHERE discordid=$1 " +
+                            "AND username=$2" +
+                            ";",
+                            [data.id, req.query.pseudo]
+                        );
+                        return res.render("../Site/lol/message", { text: "The account " + req.query.pseudo + " has been removed. You can go back to the profile page by clicking <a href=\"/lol/profile\">this</a> link." });
+                    } else {
+                        return res.sendStatus(403);
+                    }
+                });
+            });
+        });
+
+    });
+
     /*app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
