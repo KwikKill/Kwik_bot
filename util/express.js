@@ -140,7 +140,7 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         client.pg.query('SELECT * FROM matchs, summoners WHERE player = summoners.puuid AND discordid = $1', [data.id], (err2, result2) => {
-                            return res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows });
+                            return res.render('../Site/lol/profile', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, games: result2.rows, discordid: data.id });
                         });
                     } else {
                         return res.redirect("/lol/register");
