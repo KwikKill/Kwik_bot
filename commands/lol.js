@@ -2099,12 +2099,12 @@ module.exports = {
                 text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? "+" : "";
                 text += Number.parseFloat(average_vision_score - oponent_average_vision_score).toFixed(2) + ")\n";
 
-                text += "Average KP           │ " + Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills).toFixed(2);
-                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills).toFixed(2);
+                text += "Average KP           │ " + Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2);
+                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ▲ " : " ▼ ";
+                text += Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2);
                 text += " (";
-                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills)) ? "+" : "";
-                text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills).toFixed(2) + ")\n";
+                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
+                text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
 
                 text += "Score                │ " + Number.parseFloat(score).toFixed(2);
                 text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
@@ -2170,14 +2170,22 @@ module.exports = {
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
             if (interaction.options.getSubcommand() === "carry") {
+                let i = 1;
+
+                const query_values = [];
+
                 let query2 = "";
-                if (champion !== undefined) {
-                    query2 += " AND matchs.champion='" + champion + "'";
+                if (champion !== null) {
+                    query2 += " AND matchs.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
                 }
 
                 let queryrole = "";
-                if (role !== undefined) {
-                    queryrole = " AND matchs.lane='" + role + "'";
+                if (role !== null) {
+                    queryrole = " AND matchs.lane=$" + i;
+                    query_values.push(role);
+                    i++;
                 }
 
                 const all = interaction.options.getBoolean("all") === true;
@@ -2191,7 +2199,9 @@ module.exports = {
                     });
                     list = list.slice(0, -1);
                     list += ")";
-                    queryall = " AND summoners.discordid IN " + list;
+                    queryall = " AND summoners.discordid IN $" + i;
+                    query_values.push(list);
+                    i++;
                 }
 
                 let query =
@@ -2207,7 +2217,7 @@ module.exports = {
                     queryrole +
                     queryall +
                     " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;";
-                let response = await client.pg.query(query);
+                let response = await client.pg.query(query, query_values);
 
                 let general = "";
                 if (response.rows.length === 0) {
@@ -2232,7 +2242,7 @@ module.exports = {
                     queryrole +
                     queryall +
                     " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;";
-                response = await client.pg.query(query);
+                response = await client.pg.query(query, query_values);
 
                 let damages = "";
                 if (response.rows.length === 0) {
@@ -2257,7 +2267,7 @@ module.exports = {
                     queryrole +
                     queryall +
                     " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;";
-                response = await client.pg.query(query);
+                response = await client.pg.query(query, query_values);
 
                 let tanked = "";
                 if (response.rows.length === 0) {
@@ -2282,7 +2292,7 @@ module.exports = {
                     queryrole +
                     queryall +
                     " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;";
-                response = await client.pg.query(query);
+                response = await client.pg.query(query, query_values);
 
                 let gold = "";
                 if (response.rows.length === 0) {
@@ -2307,7 +2317,7 @@ module.exports = {
                     queryrole +
                     queryall +
                     " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;";
-                response = await client.pg.query(query);
+                response = await client.pg.query(query, query_values);
                 let hard = "";
                 if (response.rows.length === 0) {
                     hard = "There are not enought summoners in the database or the filters are too restrictings.";
@@ -2351,6 +2361,9 @@ module.exports = {
                 );
                 return await interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "kwikscore") {
+                let i = 1;
+                const query_values = [];
+
                 const all = interaction.options.getBoolean("all") === true;
                 let queryall = "";
                 if (!all) {
@@ -2362,16 +2375,22 @@ module.exports = {
                     });
                     list = list.slice(0, -1);
                     list += ")";
-                    queryall = " AND summoners.discordid IN " + list;
+                    queryall = " AND summoners.discordid IN $" + i;
+                    query_values.push(list);
+                    i++;
                 }
                 let query2 = "";
-                if (champion !== undefined) {
-                    query2 += " AND matchs.champion='" + champion + "'";
+                if (champion !== null) {
+                    query2 += " AND matchs.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
                 }
 
                 let queryrole = "";
-                if (role !== undefined) {
-                    queryrole = " AND matchs.lane='" + role + "'";
+                if (role !== null) {
+                    queryrole = " AND matchs.lane=$" + i;
+                    query_values.push(role);
+                    i++;
                 }
 
                 const query =
@@ -2407,7 +2426,7 @@ module.exports = {
                     "FROM (" + query + ") AS t1 " +
                     "ORDER BY KS DESC " +
                     "LIMIT 10;";
-                const response = await client.pg.query(query4);
+                const response = await client.pg.query(query4, query_values);
 
                 if (response.rowCount === 0) {
                     return message.channel.send("No data found");
