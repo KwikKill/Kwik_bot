@@ -2199,9 +2199,7 @@ module.exports = {
                     });
                     list = list.slice(0, -1);
                     list += ")";
-                    queryall = " AND summoners.discordid IN $" + i;
-                    query_values.push(list);
-                    i++;
+                    queryall = " AND summoners.discordid IN " + list;
                 }
 
                 let query =
@@ -2375,9 +2373,7 @@ module.exports = {
                     });
                     list = list.slice(0, -1);
                     list += ")";
-                    queryall = " AND summoners.discordid IN $" + i;
-                    query_values.push(list);
-                    i++;
+                    queryall = " AND summoners.discordid IN " + list;
                 }
                 let query2 = "";
                 if (champion !== null) {
@@ -2426,8 +2422,6 @@ module.exports = {
                     "FROM (" + query + ") AS t1 " +
                     "ORDER BY KS DESC " +
                     "LIMIT 10;";
-                console.log(query4);
-                console.log(query_values);
                 const response = await client.pg.query(query4, query_values);
 
                 if (response.rowCount === 0) {
