@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <%- include('../partials/head'); %>
+
+</head>
+
+<body>
+
+  <!-- PRE LOADER -->
+
+  <!--
+     <div class="preloader">
+          <div class="sk-spinner sk-spinner-wordpress">
+               <span class="sk-inner-circle"></span>
+          </div>
+     </div>
+     -->
+
+  <!-- Navigation section  -->
+
+  <%- include('../partials/header', {variant:''}); %>
+
+
+  <!-- Single Project Section -->
+
+  <section id="single-project">
+    <div class="container">
+      <div class="row">
+
+        <div class="col-md-offset-1 col-md-10 col-sm-12">
+          <h1>Lol Site</h1>
+          <p>With my lol database ready, I then decided to build a front to the lol stat part of my discord bot.</p>
+          <div class="col-md-12 col-sm-12">
+            <img src="../images/lol-site-1.png" class="img-responsive" alt="Portfolio">
+          </div>
+
+          <div class="col-md-6 col-sm-6">
+            <img src="../images/lol-site-2.png" class="img-responsive" alt="Portfolio">
+          </div>
+
+          <div class="col-md-6 col-sm-6">
+            <img src="../images/lol-site-3.png" class="img-responsive" alt="Portfolio">
+          </div>
+
+          <div class="clearfix"></div>
+
+          <div class="col-md-4 col-sm-4">
+            <h3>Repository</h3>
+            <a href="https://github.com/KwikKill/Kwik_bot">Public repo</a>
+          </div>
+
+          <div class="col-md-4 col-sm-4">
+            <h3>Creation's date</h3>
+            <p>December 2022</p>
+          </div>
+
+          <div class="col-md-4 col-sm-4">
+            <h3>Contributor</h3>
+            <p>KwikKill</p>
+          </div>
+
+          <div class="col-md-12 col-sm-12 text-center">
+            <p>The first step was to crate a login page with discord Oauth2. Once ready, i used ejs with express to render pages with stats from the lol database. This part of my site is meant to be public for sharing everyone's stats. The page needed to show average stats, matchs history and accounts details. All the leagu of legends part is available on the <a href="/lol/">/lol/</a> page.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Section -->
+
+  <footer>
+    <%- include('../partials/footer'); %>
+  </footer>
+
+
+  <!-- SCRIPTS -->
+
+  <script src="../js/jquery.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/custom.js"></script>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-CD70HY5J9Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-CD70HY5J9Z');
+  </script>
+
+</body>
+
+</html>
