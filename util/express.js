@@ -117,7 +117,7 @@ function register(client) {
                 }
                 if (result.rows.length === 0) {
                     client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
-                    delay(5000).then(() => {
+                    delay(3000).then(() => {
                         return res.redirect("/lol/queue");
                     });
                 } else {
