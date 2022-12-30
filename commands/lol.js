@@ -1948,6 +1948,9 @@ module.exports = {
                 query3 += ";";
                 query4 += ";";
 
+                console.log(query3);
+                console.log(query_values);
+
                 const response4 = await client.pg.query(query3, query_values);
                 if (response4.rows.length === 0) {
                     return await interaction.editReply("You dont have any matchs in the database or the filters are too restrictings.");
