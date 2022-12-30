@@ -177,15 +177,27 @@ function register(client) {
                             "WHERE username=$1" +
                             "AND discordid=$2 " +
                             ");",
-                            [req.query.pseudo, data.id]
+                            [req.query.pseudo, data.id],
+                            (err2, result2) => {
+                                if (err2) {
+                                    console.error(err2);
+                                } else {
+                                    client.pg.query("DELETE FROM summoners " +
+                                        "WHERE discordid=$1 " +
+                                        "AND username=$2" +
+                                        ";",
+                                        [data.id, req.query.pseudo],
+                                        (err3, result3) => {
+                                            if (err3) {
+                                                console.error(err3);
+                                            } else {
+                                                return res.render("../Site/lol/message", { text: "The account " + req.query.pseudo + " has been removed. You can go back to the profile page with the navbar." });
+                                            }
+                                        }
+                                    );
+                                }
+                            }
                         );
-                        client.pg.query("DELETE FROM summoners " +
-                            "WHERE discordid=$1 " +
-                            "AND username=$2" +
-                            ";",
-                            [data.id, req.query.pseudo]
-                        );
-                        return res.render("../Site/lol/message", { text: "The account " + req.query.pseudo + " has been removed. You can go back to the profile page by clicking <a href=\"/lol/profile\">this</a> link." });
                     } else {
                         return res.sendStatus(403);
                     }
