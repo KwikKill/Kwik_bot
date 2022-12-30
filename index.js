@@ -482,7 +482,9 @@ client.lol = async function () {
                             "player2, " +
                             "player3, " +
                             "player4, " +
-                            "player5 " +
+                            "player5, " +
+                            "summoner1Id, " +
+                            "summoner2Id " +
                             ") VALUES (" +
                             "$1," +
                             "$2," +
@@ -519,6 +521,8 @@ client.lol = async function () {
                             "$33," +
                             "$34," +
                             "$35" +
+                            "$36," +
+                            "$37" +
                             ")",
                             [
                                 matchId,
@@ -555,7 +559,9 @@ client.lol = async function () {
                                 exit["player2"],
                                 exit["player3"],
                                 exit["player4"],
-                                exit["player5"]
+                                exit["player5"],
+                                exit["summoner1Id"],
+                                exit["summoner2Id"]
                             ]
                         );
                     } catch (e) {
@@ -858,13 +864,14 @@ async function matchHistoryOutput(match, puuid) {
     const wCasts = match['info']['participants'][participantId]['spell2Casts'];
     const eCasts = match['info']['participants'][participantId]['spell3Casts'];
     const rCasts = match['info']['participants'][participantId]['spell4Casts'];
+    */
     // Summoner Spells
-    const ssACasts = match['info']['participants'][participantId]['summoner1Casts'];
+    //const ssACasts = match['info']['participants'][participantId]['summoner1Casts'];
     const ssAId = match['info']['participants'][participantId]['summoner1Id'];
-    const ssBCasts = match['info']['participants'][participantId]['summoner2Casts'];
+    //const ssBCasts = match['info']['participants'][participantId]['summoner2Casts'];
     const ssBId = match['info']['participants'][participantId]['summoner2Id'];
     //}
-    */
+
 
     //{ Multi-Kills
     const doubles = match['info']['participants'][participantId]['doubleKills'];
@@ -996,6 +1003,8 @@ async function matchHistoryOutput(match, puuid) {
         "player3": participants[1],
         "player4": participants[2],
         "player5": participants[3],
+        "summoner1Id": ssAId,
+        "summoner2Id": ssBId
     };
     return output;
 }
