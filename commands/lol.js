@@ -892,7 +892,6 @@ module.exports = {
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {
             if (interaction.options.getSubcommand() === "summarized") {
-                const query_values = [discordaccount];
                 let i = 1;
 
                 let discordusername = "";
@@ -903,6 +902,7 @@ module.exports = {
                     discordusername = discordaccount.username;
                     discordaccount = discordaccount.id;
                 }
+                const query_values = [discordaccount];
 
                 let query = "SELECT * " +
                     "FROM matchs, summoners " +
