@@ -1907,7 +1907,7 @@ module.exports = {
 
                 let j = 1;
 
-                query_values[0] = [interaction.user.id];
+                query_values[0] = interaction.user.id;
 
                 let query3 = "SELECT * " +
                     "FROM matchs, summoners " +
@@ -1947,9 +1947,6 @@ module.exports = {
                 }
                 query3 += ";";
                 query4 += ";";
-
-                console.log(query3);
-                console.log(query_values);
 
                 const response4 = await client.pg.query(query3, query_values);
                 if (response4.rows.length === 0) {
