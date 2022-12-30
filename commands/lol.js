@@ -2427,6 +2427,7 @@ module.exports = {
                     "ORDER BY KS DESC " +
                     "LIMIT 10;";
                 console.log(query4);
+                console.log(query_values);
                 const response = await client.pg.query(query4, query_values);
 
                 if (response.rowCount === 0) {
