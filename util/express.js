@@ -120,8 +120,9 @@ function register(client) {
                     delay(5000).then(() => {
                         return res.redirect("/lol/queue");
                     });
+                } else {
+                    return res.render("../Site/lol/message", { text: "This account is already registered" });
                 }
-                return res.render("../Site/lol/message", { text: "This account is already registered" });
             });
         }
     });
