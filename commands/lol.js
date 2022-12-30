@@ -787,12 +787,12 @@ module.exports = {
         if (interaction === undefined) {
             return;
         }
-        const summoner_name = interaction.options.getString("name")?.replaceAll("'", "").replaceAll("\\", "");
-        const champion = interaction.options.getString("champion")?.replaceAll("'", "").replaceAll("\\", "");
-        const role = interaction.options.getString("lane")?.replaceAll("'", "").replaceAll("\\", "");
-        const gamemode = interaction.options.getString("gamemode")?.replaceAll("'", "").replaceAll("\\", "");
-        const account = interaction.options.getString("account")?.replaceAll("'", "").replaceAll("\\", "");
-        const puuid = interaction.options.getString("id")?.replaceAll("'", "").replaceAll("\\", "");
+        const summoner_name = interaction.options.getString("name");
+        const champion = interaction.options.getString("champion");
+        const role = interaction.options.getString("lane");
+        const gamemode = interaction.options.getString("gamemode");
+        const account = interaction.options.getString("account");
+        const puuid = interaction.options.getString("id");
         let discordaccount = interaction.options.getUser("discordaccount");
 
         await interaction.deferReply();
@@ -962,14 +962,20 @@ module.exports = {
                 query += ";";
                 query2 += ";";
                 query3 += " GROUP BY gamemode;";
+
+                console.log(query);
+                console.log(query2);
+                console.log(query3);
+                console.log(query_values);
+
                 const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                 }
 
-                const response2 = await client.pg.query(query2);
+                const response2 = await client.pg.query(query2, query_values);
 
-                const response3 = await client.pg.query(query3);
+                const response3 = await client.pg.query(query3, query_values);
                 if (response3.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                 }
