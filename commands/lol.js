@@ -963,11 +963,6 @@ module.exports = {
                 query2 += ";";
                 query3 += " GROUP BY gamemode;";
 
-                console.log(query);
-                console.log(query2);
-                console.log(query3);
-                console.log(query_values);
-
                 const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
