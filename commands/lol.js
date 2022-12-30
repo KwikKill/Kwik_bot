@@ -1061,13 +1061,13 @@ module.exports = {
                 }
 
                 let title = "" + discordusername + "'s stats";
-                if (champion !== undefined) {
+                if (champion !== null) {
                     title += " with " + champion;
                 }
-                if (role !== undefined) {
+                if (role !== null) {
                     title += " in " + role;
                 }
-                if (account !== undefined) {
+                if (account !== null) {
                     title += " on \"" + account + "\"";
                 }
 
