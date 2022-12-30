@@ -892,6 +892,9 @@ module.exports = {
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {
             if (interaction.options.getSubcommand() === "summarized") {
+                const query_values = [discordaccount];
+                let i = 1;
+
                 let discordusername = "";
                 if (discordaccount === null) {
                     discordaccount = interaction.user.id;
@@ -903,27 +906,9 @@ module.exports = {
 
                 let query = "SELECT * " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' " +
+                    "WHERE summoners.discordid=$" + i + " " +
                     "AND matchs.player = summoners.puuid";
-                if (champion !== undefined) {
-                    query += " AND matchs.champion='" + champion + "'";
-                }
-                if (role !== undefined) {
-                    query += " AND matchs.lane='" + role + "'";
-                }
-                if (gamemode !== undefined) {
-                    query += " AND matchs.gamemode='" + gamemode + "'";
-                }
-                if (account !== undefined) {
-                    query += " AND summoners.username='" + account + "'";
-                }
-                query += ";";
-                const response = await client.pg.query(query);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
-                }
 
-                // Query 2
                 let query2 = "SELECT " +
                     "avg(length) as duration, " +
                     "avg(kill) as kill, " +
@@ -938,38 +923,52 @@ module.exports = {
                     "avg(pinks) as pinks, " +
                     "avg(total_kills) as total_kills " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
-                if (champion !== undefined) {
-                    query2 += " AND matchs.champion='" + champion + "'";
-                }
-                if (role !== undefined) {
-                    query2 += " AND matchs.lane='" + role + "'";
-                }
-                if (gamemode !== undefined) {
-                    query2 += " AND matchs.gamemode='" + gamemode + "'";
-                }
-                if (account !== undefined) {
-                    query2 += " AND summoners.username='" + account + "'";
-                }
-                query2 += ";";
-                const response2 = await client.pg.query(query2);
+                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
 
-                // query 3
                 let query3 = "SELECT " +
                     "gamemode, " +
                     "count(gamemode) " +
                     "FROM matchs, summoners " +
-                    "WHERE summoners.discordid='" + discordaccount + "' AND matchs.player = summoners.puuid";
+                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+
+                i++;
                 if (champion !== undefined) {
-                    query3 += " AND matchs.champion='" + champion + "'";
+                    query += " AND matchs.champion=$" + i;
+                    query2 += " AND matchs.champion=$" + i;
+                    query3 += " AND matchs.champion=$" + i;
+                    query_values.push(champion);
+                    i++;
                 }
                 if (role !== undefined) {
-                    query3 += " AND matchs.lane='" + role + "'";
+                    query += " AND matchs.lane=$" + i;
+                    query2 += " AND matchs.lane=$" + i;
+                    query3 += " AND matchs.lane=$" + i;
+                    query_values.push(role);
+                    i++;
+                }
+                if (gamemode !== undefined) {
+                    query += " AND matchs.gamemode=$" + i;
+                    query2 += " AND matchs.gamemode=$" + i;
+                    query_values.push(gamemode);
+                    i++;
                 }
                 if (account !== undefined) {
-                    query3 += " AND summoners.username='" + account + "'";
+                    query += " AND summoners.username=$" + i;
+                    query2 += " AND summoners.username=$" + i;
+                    query3 += " AND summoners.username=$" + (i - 1);
+                    query_values.push(account);
+                    i++;
                 }
+                query += ";";
+                query2 += ";";
                 query3 += " GROUP BY gamemode;";
+                const response = await client.pg.query(query, query_values);
+                if (response.rows.length === 0) {
+                    return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
+                }
+
+                const response2 = await client.pg.query(query2);
+
                 const response3 = await client.pg.query(query3);
                 if (response3.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
