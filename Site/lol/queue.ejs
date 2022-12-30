@@ -21,10 +21,10 @@
           <h2>
             <% 
             let count = 1;
-            let number = undefined;
+            let number = [];
             jsclient.requests.updates.forEach(function(update) {
                 if(update.discordid == data.id) {
-                    number = count
+                    number.push(count);
                 }
                 count += 1
             });
@@ -53,7 +53,7 @@
       </thead>
       <tbody>
         <% jsclient.requests.updates.forEach(function(update) {%>
-        <tr <% if(update.discordid == data.id) { %> class="active" <% } %>>
+        <tr <% if(update.discordid == data.id) { %> style="background-color: darkgreen;" <% } %>>
           <td>
             <%= update.username %>
           </td>
