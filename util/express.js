@@ -247,6 +247,45 @@ function register(client) {
         });
     });
 
+    app.get("/lol/among/join", function (req, res) {
+        if (!req.query.game || client.amonglegends.get(req.query.game) === undefined || client.amonglegends.get(req.query.game).started) {
+            return res.redirect("/404");
+        }
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/among/join", data.username, req.query.game);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.redirect("/404");
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(req.query.game).players[data.id] === undefined) {
+                            if (client.amonglegends.get(req.query.game).players.length < 5) {
+                                client.amonglegends.get(req.query.game).players[data.id] = {
+                                    role: "",
+                                    vote: undefined,
+                                    score: 0
+                                };
+                                return res.render('../Site/lol/among-game', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id, game: req.query.game });
+                            }
+                            return res.render('../Site/lol/among', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id });
+                        }
+                        return res.render('../Site/lol/among-game', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id, game: req.query.game });
+                    }
+                    return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
     /*app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
