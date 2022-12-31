@@ -50,7 +50,7 @@
         </thead>
         <tbody>
           <% discordclient.amonglegends.forEach(function(room) {%>
-          <% if(room.public) { %>
+          <% if(room.public || (room.players.get(discordid) != undefined && room.players.get(discordid))) { %>
           <tr>
             <td>
               <%= room.name %>

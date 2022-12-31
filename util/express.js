@@ -315,11 +315,13 @@ function register(client) {
                                 started: false,
                                 id: data.id,
                                 finish: false,
+                                public: false,
                                 players: {
                                     [data.id]: {
                                         role: "",
                                         vote: undefined,
-                                        score: 0
+                                        score: 0,
+                                        admin: true
                                     }
                                 },
                                 interval1: undefined,
