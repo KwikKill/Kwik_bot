@@ -50,6 +50,7 @@
         </thead>
         <tbody>
           <% discordclient.amonglegends.forEach(function(room) {%>
+          <% if(room.public) { %>
           <tr>
             <td>
               <%= room.name %>
@@ -64,6 +65,7 @@
               <a href="/lol/among/join?game=<%= room.id %>">↪</a>
             </td>
           </tr>
+          <% } %>
           <% });%>
           <tr>
             <form action="/lol/among/create" method="post">

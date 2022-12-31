@@ -286,6 +286,62 @@ function register(client) {
         });
     });
 
+    app.post('/lol/among/create', function (req, res) {
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[POST] /lol/among/create", data.username, req.body);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.redirect("/404");
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(data.id) === undefined) {
+                            let df;
+                            if (Math.random() > 0.5) {
+                                df = "victoire";
+                            } else {
+                                df = "defaite";
+                            }
+                            client.amonglegends.set(data.id, {
+                                name: data.username + "'s Game",
+                                started: false,
+                                id: data.id,
+                                finish: false,
+                                players: {
+                                    [data.id]: {
+                                        role: "",
+                                        vote: undefined,
+                                        score: 0
+                                    }
+                                },
+                                interval1: undefined,
+                                interval2: undefined,
+                                stats: {
+                                    status: undefined,
+                                    kills: undefined,
+                                    assists: undefined,
+                                    damages: undefined,
+                                    deaths: undefined,
+                                },
+                                doubleface: df
+                            });
+                        }
+                        return res.redirect("/lol/among/join?game=" + data.id);
+                    }
+                    return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
     /*app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
