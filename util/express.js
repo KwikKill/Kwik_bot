@@ -239,7 +239,7 @@ function register(client) {
                         return res.redirect("/404");
                     }
                     if (result.rows.length > 0) {
-                        return res.render('../Site/lol/among', { client: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id });
+                        return res.render('../Site/lol/among', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id });
                     }
                     return res.redirect("/lol/register");
                 });
