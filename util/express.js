@@ -270,6 +270,7 @@ function register(client) {
                         if (client.amonglegends.get(req.query.game).players[data.id] === undefined) {
                             if (client.amonglegends.get(req.query.game).players.length < 5) {
                                 client.amonglegends.get(req.query.game).players[data.id] = {
+                                    username: data.username,
                                     role: "",
                                     vote: undefined,
                                     score: 0,
@@ -319,6 +320,7 @@ function register(client) {
                                 public: false,
                                 players: {
                                     [data.id]: {
+                                        username: data.username,
                                         role: "",
                                         vote: undefined,
                                         score: 0,

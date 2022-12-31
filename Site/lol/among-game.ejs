@@ -36,6 +36,48 @@
 
   <hr>
 
+  <section id="rooms">
+    <div class="scrollmenu" id="table">
+      <table>
+        <!--caption>Among legends Rooms</caption-->
+        <thead>
+          <tr>
+            <th scope="col">Username</th>
+            <th scope="col">Admin</th>
+            <th scope="col">Kick</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(const x in discordclient.amonglegends.get(game).players) {%>
+          <tr>
+            <td>
+              <%= discordclient.amonglegends.get(game).players[x].username %>
+            </td>
+            <td>
+              <%= discordclient.amonglegends.get(game).players[x].admin %>
+            </td>
+            <td>
+              <a href="/lol/among/kick?game=<%= game %>&player=<%=x%>">❌</a>
+            </td>
+          </tr>
+          <% };%>
+          <!--tr>
+            <form action="/lol/among/create" method="post">
+              <td>
+                <div class="col-md-3 col-sm-4" style="float: none;">
+                  <input name="submit" id="submit" type="submit" class="form-control" value="Create Game" style="width:auto;">
+                </div>
+              </td>
+              <td></td>
+              <td></td>
+            </form>
+          </tr-->
+        </tbody>
+
+      </table>
+    </div>
+  </section>
+
   <section id="room">
     <%= discordclient.amonglegends.get(game).name %>
   </section>
