@@ -368,8 +368,12 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game) !== undefined) {
-                            delete client.amonglegends.get(req.query.game).players[req.query.player];
-                            return res.redirect("/lol/among/join?game=" + data.id);
+                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true) {
+                                if (client.amonglegends.get(req.query.game).players[req.query.player] !== undefined && client.amonglegends.get(req.query.game).players[req.query.player].admin === false) {
+                                    delete client.amonglegends.get(req.query.game).players[req.query.player];
+                                    return res.redirect("/lol/among/join?game=" + data.id);
+                                }
+                            }
                         }
                         return res.redirect("/lol/among");
                     }
