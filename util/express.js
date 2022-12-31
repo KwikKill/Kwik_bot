@@ -222,6 +222,31 @@ function register(client) {
 
     });
 
+    app.get("/lol/among", function (req, res) {
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/among", data.username);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.redirect("/404");
+                    }
+                    if (result.rows.length > 0) {
+                        return res.render('../Site/lol/among', { summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id });
+                    }
+                    return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
     /*app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
