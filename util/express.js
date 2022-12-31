@@ -278,7 +278,7 @@ function register(client) {
                                 };
                                 return res.render('../Site/lol/among-game', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id, game: req.query.game });
                             }
-                            return res.render('../Site/lol/among', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id });
+                            return res.redirect("/lol/among");
                         }
                         return res.render('../Site/lol/among-game', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id, game: req.query.game });
                     }
