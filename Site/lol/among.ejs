@@ -37,18 +37,51 @@
   <hr>
 
   <section id="rooms">
-    <% console.log(discordclient.amonglegends) %>
-    <% discordclient.amonglegends.forEach(x => {%>
-    <% console.log(x) %>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12 col-sm-12">
-          <h2><%= x %></h2>
-          <hr>
-        </div>
-      </div>
+    <div class="scrollmenu" id="table">
+      <table>
+        <caption>Among legends Rooms</caption>
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Players</th>
+            <th scope="col">Started</th>
+            <th scope="col">Join</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% discordclient.amonglegends.forEach(function(room) {%>
+          <tr>
+            <td>
+              <%= room.name %>
+            </td>
+            <td>
+              <%= Object.keys(room.players).length %>
+            </td>
+            <td>
+              <%= room.started %>
+            </td>
+            <td>
+              <a href="/lol/among/join?game=<%= room.id %>">↪</a>
+            </td>
+          </tr>
+          <% });%>
+          <tr>
+            <form action="/lol/among/create" method="post">
+              <td></td>
+              <td></td>
+              <td>
+                <div class="col-md-3 col-sm-4" style="float: none;">
+                  <input name="submit" id="submit" type="submit" class="form-control" value="Create Game" style="width:auto;">
+                </div>
+              </td>
+              <td></td>
+              <td></td>
+            </form>
+          </tr>
+        </tbody>
+
+      </table>
     </div>
-    <% });%>
   </section>
 
   <!-- Footer Section -->
