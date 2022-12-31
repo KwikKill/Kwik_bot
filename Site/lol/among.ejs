@@ -38,7 +38,7 @@
 
   <section id="rooms">
     <% console.log(discordclient.amonglegends) %>
-    <% for(const x in discordclient.amonglegends) {%>
+    <% discordclient.amonglegends.forEach(x => {%>
     <% console.log(x) %>
     <div class="container">
       <div class="row">
