@@ -272,7 +272,8 @@ function register(client) {
                                 client.amonglegends.get(req.query.game).players[data.id] = {
                                     role: "",
                                     vote: undefined,
-                                    score: 0
+                                    score: 0,
+                                    admin: false
                                 };
                                 return res.render('../Site/lol/among-game', { discordclient: client, summoners: result.rows, username: data.username, discriminator: data.discriminator, avatar: data.avatar, discordid: data.id, game: req.query.game });
                             }
