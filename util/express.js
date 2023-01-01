@@ -268,8 +268,7 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game).players[data.id] === undefined) {
-                            console.log(client.amonglegends.get(req.query.game).players);
-                            if (client.amonglegends.get(req.query.game).players.length < 5) {
+                            if (Object.keys(client.amonglegends.get(req.query.game).players).length < 5) {
                                 client.amonglegends.get(req.query.game).players[data.id] = {
                                     username: data.username,
                                     role: "",
