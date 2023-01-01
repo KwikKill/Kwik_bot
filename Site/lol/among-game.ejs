@@ -36,7 +36,7 @@
 
   <hr>
 
-  <section id="rooms">
+  <section id="room">
     <div class="scrollmenu" id="table">
       <table>
         <!--caption>Among legends Rooms</caption-->
@@ -56,9 +56,13 @@
             <td>
               <%= discordclient.amonglegends.get(game).players[x].admin %>
             </td>
+            <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
             <td>
               <a href="/lol/among/kick?game=<%= game %>&player=<%=x%>">❌</a>
             </td>
+            <% } else {%>
+            <td></td>
+            <% } %>
           </tr>
           <% };%>
           <!--tr>
@@ -76,10 +80,12 @@
 
       </table>
     </div>
-  </section>
-
-  <section id="room">
-    <%= discordclient.amonglegends.get(game).name %>
+    <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
+    <div class="buttons">
+      <a href="/lol/among/launch?game=<%= game %>&player=<%=x%>">launch</a>
+      <a href="/lol/among/delete?game=<%= game %>&player=<%=x%>">delete</a>
+    </div>
+    <% } %>
   </section>
 
   <!-- Footer Section -->
