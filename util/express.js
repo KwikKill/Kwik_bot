@@ -367,7 +367,7 @@ function register(client) {
                         return res.redirect("/404");
                     }
                     if (result.rows.length > 0) {
-                        console.log(client.amonglegends.get(req.query.game).players[data.id], data.id);
+                        console.log(client.amonglegends.get(req.query.game).players[data.id].admin);
                         if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
                             data = "";
                             for (const x in client.amonglegends.get(req.query.game).players) {
