@@ -349,7 +349,6 @@ function register(client) {
 
     app.get('/lol/among/players', function (req, res) {
         if (!req.query.game || client.amonglegends.get(req.query.game) === undefined) {
-            console.log(req.query.game, client.amonglegends);
             return res.send("404");
         }
         if (!req.cookies['token']) {

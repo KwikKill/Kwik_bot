@@ -1,5 +1,6 @@
 loadPlayer = function (id) {
     httpGetAsync("http://albert.blaisot.org:8080/lol/among/players?game=" + id, function (response) {
+        console.log(id)
         var table = document.getElementById("PlayersListbody");
         table.innerHTML = response;
         /*if (occurrences(response, "<tr") == 10) {
