@@ -370,6 +370,7 @@ function register(client) {
                         if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
                             data = "";
                             for (const x in client.amonglegends.get(req.query.game).players) {
+                                console.log(client.amonglegends.get(req.query.game).players[data.id]);
                                 data += "<tr>" +
                                     "<td>" +
                                     client.amonglegends.get(req.query.game).players[x].username +
@@ -377,7 +378,6 @@ function register(client) {
                                     "<td>" +
                                     client.amonglegends.get(req.query.game).players[x].admin +
                                     "</td >";
-                                console.log(client.amonglegends.get(req.query.game).players[data.id].admin);
                                 if (client.amonglegends.get(req.query.game).players[data.id].admin) {
                                     data += "<td>" +
                                         "<a href=\"/lol/among/kick?game=" + req.query.game + "&player=" + x + "\">❌</a>"
