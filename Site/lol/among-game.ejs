@@ -47,7 +47,7 @@
             <th scope="col">Kick</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="PlayersListbody">
           <% for(const x in discordclient.amonglegends.get(game).players) {%>
           <tr>
             <td>
@@ -104,16 +104,9 @@
   <script src="/js/jquery.js"></script>
   <script src="/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
+  <script src="/js/among.js"></script>
   <script>
-    function clicked(id) {
-      if (document.getElementById(id).className == "champion-enabled") {
-        document.getElementById(id).classList.add("champion-disabled");
-        document.getElementById(id).classList.remove("champion-enabled");
-      } else {
-        document.getElementById(id).classList.add("champion-enabled");
-        document.getElementById(id).classList.remove("champion-disabled");
-      }
-    }
+    loadPlayer(<%= game %>)
   </script>
 
 </body>

@@ -347,6 +347,55 @@ function register(client) {
         });
     });
 
+    app.get('/lol/among/players', function (req, res) {
+        if (!req.query.game || client.amonglegends.get(req.query.game) === undefined) {
+            return res.redirect("/404");
+        }
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/among/join", data.username, req.query.game);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.redirect("/404");
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
+                            data = "";
+                            for (const x in client.amonglegends.get(req.query.game).players) {
+                                data += "<tr>" +
+                                    "<td>" +
+                                    client.amonglegends.get(req.query.game).players[x].username +
+                                    "</td>" +
+                                    "<td>" +
+                                    client.amonglegends.get(req.query.game).players[x].admin +
+                                    "</td >";
+                                if (client.amonglegends.get(req.query.game).players[data.id].admin) {
+                                    data += "<td>" +
+                                        "<a href=\"/lol/among/kick?game=" + req.query.game + "&player=" + x + "\">❌</a>"
+                                        + "</td>";
+                                } else {
+                                    data += "<td></td>";
+                                }
+                                data += "</tr>";
+                            }
+                            return res.send(data);
+                        }
+                        return res.redirect("/404");
+                    }
+                    return res.redirect("/404");
+                });
+            });
+        });
+    });
+
     app.get('/lol/among/kick', function (req, res) {
         if (!req.query.game && !req.query.player) {
             return res.redirect("/404");
