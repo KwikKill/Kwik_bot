@@ -432,6 +432,41 @@ function register(client) {
         });
     });
 
+    app.get('/lol/among/delete', function (req, res) {
+        if (!req.query.game) {
+            return res.redirect("/404");
+        }
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[POST] /lol/among/kick", data.username, req.query);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.redirect("/404");
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(req.query.game) !== undefined) {
+                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true) {
+                                client.amonglegends.delete(req.query.game);
+                                return res.redirect("/lol/among");
+                            }
+                            return res.redirect("/lol/among/join?game=" + data.id);
+                        }
+                        return res.redirect("/lol/among");
+                    }
+                    return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
     /*app.get("/lol/summoner", function (req, res) {
         if (req.query.discordid) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
