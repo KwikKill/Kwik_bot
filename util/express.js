@@ -368,10 +368,9 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
-                            data = "";
+                            let returneddata = "";
                             for (const x in client.amonglegends.get(req.query.game).players) {
-                                console.log(client.amonglegends.get(req.query.game).players[data.id]);
-                                data += "<tr>" +
+                                returneddata += "<tr>" +
                                     "<td>" +
                                     client.amonglegends.get(req.query.game).players[x].username +
                                     "</td>" +
@@ -379,15 +378,15 @@ function register(client) {
                                     client.amonglegends.get(req.query.game).players[x].admin +
                                     "</td >";
                                 if (client.amonglegends.get(req.query.game).players[data.id].admin) {
-                                    data += "<td>" +
+                                    returneddata += "<td>" +
                                         "<a href=\"/lol/among/kick?game=" + req.query.game + "&player=" + x + "\">❌</a>"
                                         + "</td>";
                                 } else {
-                                    data += "<td></td>";
+                                    returneddata += "<td></td>";
                                 }
-                                data += "</tr>";
+                                returneddata += "</tr>";
                             }
-                            return res.send(data);
+                            return res.send(returneddata);
                         }
                         return res.send("404");
                     }
