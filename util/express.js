@@ -349,6 +349,7 @@ function register(client) {
 
     app.get('/lol/among/players', function (req, res) {
         if (!req.query.game || client.amonglegends.get(req.query.game) === undefined) {
+            console.log(req.query.game, client.amonglegends.get(req.query.game));
             return res.send("404");
         }
         if (!req.cookies['token']) {
@@ -361,7 +362,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                console.log("[GET] /lol/among/join", data.username, req.query.game);
+                console.log("[GET] /lol/among/players", data.username, req.query.game);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.redirect("/404");
