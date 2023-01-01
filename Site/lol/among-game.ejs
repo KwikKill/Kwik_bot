@@ -83,10 +83,10 @@
     <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
     <div class="buttons">
       <a href="/lol/among/launch?game=<%= game %>">
-        <input name="submit" id="submit" type="button" class="form-control" value="start game" style="width:auto;">
+        <input name="submit" id="submit" type="button" class="form-control" value="start game" style="margin-left: auto;padding: 5px;">
       </a>
       <a href="/lol/among/delete?game=<%= game %>">
-        <input name="submit" id="submit" type="button" class="form-control" value="delete game" style="width:auto;">
+        <input name="submit" id="submit" type="button" class="form-control" value="delete game" style="margin-right: auto;padding: 5px;">
       </a>
     </div>
     <% } %>
