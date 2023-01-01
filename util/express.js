@@ -446,7 +446,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                console.log("[POST] /lol/among/kick", data.username, req.query);
+                console.log("[POST] /lol/among/delete", data.username, req.query);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.redirect("/404");
