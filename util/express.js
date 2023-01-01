@@ -349,7 +349,7 @@ function register(client) {
 
     app.get('/lol/among/players', function (req, res) {
         if (!req.query.game || client.amonglegends.get(req.query.game) === undefined) {
-            return res.redirect("/404");
+            return res.send("404");
         }
         if (!req.cookies['token']) {
             return res.redirect("/login");
@@ -367,6 +367,7 @@ function register(client) {
                         return res.redirect("/404");
                     }
                     if (result.rows.length > 0) {
+                        console.log(client.amonglegends.get(req.query.game));
                         if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
                             data = "";
                             for (const x in client.amonglegends.get(req.query.game).players) {
@@ -388,9 +389,9 @@ function register(client) {
                             }
                             return res.send(data);
                         }
-                        return res.redirect("/404");
+                        return res.send("404");
                     }
-                    return res.redirect("/404");
+                    return res.send("404");
                 });
             });
         });
