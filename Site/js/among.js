@@ -24,7 +24,7 @@ loadPlayer = function (id) {
                     buttonB.style = "padding: 5px; margin-right: auto; margin-left: auto;";
                     buttonB.removeAttribute("href");
                     submitB.value = "End game";
-                    submitB.onclick = httpGetAsync('/lol/among/roles?game=" + id + "', () => { });
+                    submitB.onclick = function () { httpGetAsync('/lol/among/roles?game=' + id, () => { }); };
                     buttonC.innerHTML = "";
                 }
             }
