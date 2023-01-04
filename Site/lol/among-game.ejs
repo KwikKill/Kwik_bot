@@ -58,7 +58,7 @@
             </td>
             <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
             <td>
-              <a href="/lol/among/kick?game=<%= game %>&player=<%=x%>">❌</a>
+              <a onclick="KickPlayer('/lol/among/kick?game=<%= game %>&player=<%= x %>')">❌</a>
             </td>
             <% } else {%>
             <td></td>

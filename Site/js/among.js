@@ -1,5 +1,5 @@
 loadPlayer = function (id) {
-    var table = document.getElementById("PlayersListbody");
+    /*var table = document.getElementById("PlayersListbody");
     const source = new EventSource("/lol/among/data?game=" + id);
 
     source.onmessage = (event) => {
@@ -9,7 +9,7 @@ loadPlayer = function (id) {
         } else {
             table.innerHTML = jsondata.players;
         }
-    };
+    };*/
     //httpGetAsync("http://albert.blaisot.org:8080/lol/among/players?game=" + id, function (response) {
     //    var table = document.getElementById("PlayersListbody");
     //    if (response == "404") {
