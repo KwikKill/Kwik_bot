@@ -14,6 +14,18 @@ loadPlayer = function (id) {
                 }
             } else {
                 roles.innerHTML = "La partie a commencé, n'oubliez pas de vérifier discord pour certains rôles";
+                var buttonA = document.getElementById("buttonA");
+                if (buttonA != null) {
+                    var buttonB = document.getElementById("buttonB");
+                    var submitB = document.getElementById("submitB");
+                    var buttonC = document.getElementById("buttonC");
+
+                    buttonA.disabled = true;
+                    buttonB.style = "margin-right: auto; margin-left: auto;";
+                    submitB.value = "End game";
+                    submitB.onclick = "httpGetAsync('/lol/among/roles?game=" + id + "', () => {})";
+                    buttonC.disabled = true;
+                }
             }
             table.innerHTML = jsondata.players;
         }
