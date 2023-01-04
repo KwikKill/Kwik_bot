@@ -422,7 +422,7 @@ function register(client) {
 
     app.get('/lol/among/kick', function (req, res) {
         if (!req.query.game && !req.query.player) {
-            return res.redirect("/404");
+            return res.sendStatus(403);
         }
         if (!req.cookies['token']) {
             return res.redirect("/login");
@@ -437,7 +437,7 @@ function register(client) {
                 console.log("[POST] /lol/among/kick", data.username, req.query);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
-                        return res.redirect("/404");
+                        return res.sendStatus(404);
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game) !== undefined) {
@@ -446,11 +446,11 @@ function register(client) {
                                     delete client.amonglegends.get(req.query.game).players[req.query.player];
                                 }
                             }
-                            return res.redirect("/lol/among/join?game=" + data.id);
+                            res.sendStatus(200);
                         }
-                        return res.redirect("/lol/among");
+                        res.sendStatus(404);
                     }
-                    return res.redirect("/lol/register");
+                    res.sendStatus(404);
                 });
             });
         });
