@@ -349,7 +349,7 @@ function register(client) {
         });
     });
 
-    app.get('/lol/among/players', function (req, res) {
+    app.get('/lol/among/data', function (req, res) {
         if (!req.query.game || client.amonglegends.get(req.query.game) === undefined) {
             return res.send("404");
         }
@@ -392,11 +392,12 @@ function register(client) {
                                     returneddata += "</tr>";
                                 }
                                 sse.send({
-                                    data: returneddata,
+                                    players: returneddata,
+                                    status: "200"
                                 });
                             } else {
                                 sse.send({
-                                    data: "404",
+                                    status: "404",
                                 });
                                 clearInterval(intervalId);
                                 return res.end();

@@ -1,12 +1,12 @@
 loadPlayer = function (id) {
     var table = document.getElementById("PlayersListbody");
-    const source = new EventSource("/lol/among/players?game=" + id);
+    const source = new EventSource("/lol/among/data?game=" + id);
 
     source.onmessage = (event) => {
-        if (event.data == "404") {
+        if (event.status == "404") {
             window.location.href = "/lol/among/";
         } else {
-            table.innerHTML = event.data;
+            table.innerHTML = event.players;
         }
     };
     //httpGetAsync("http://albert.blaisot.org:8080/lol/among/players?game=" + id, function (response) {
