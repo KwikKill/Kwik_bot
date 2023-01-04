@@ -4,7 +4,7 @@ const fs = require("fs");
 const { request } = require('undici');
 const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
-const sseMiddleware = require('express-sse-middleware').sseMiddleware;
+const { sseMiddleware } = require('express-sse-middleware');
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -15,11 +15,10 @@ module.exports = {
 
 function register(client) {
     const app = express();
-    const sse = sseMiddleware();
 
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
-    app.use(sse);
+    app.use(sseMiddleware);
 
     app.use((err, req, res, next) => {
         if (err && err.code === 'ECONNABORTED') {
@@ -370,6 +369,8 @@ function register(client) {
                         return res.redirect("/404");
                     }
                     if (result.rows.length > 0) {
+                        const sse = res.sse();
+
                         const intervalId = setInterval(() => {
                             if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
                                 let returneddata = "";
