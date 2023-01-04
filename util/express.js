@@ -407,8 +407,9 @@ function register(client) {
                             clearInterval(intervalId);
                             res.end();
                         });
+                    } else {
+                        return res.send("404");
                     }
-                    return res.send("404");
                 });
             });
         });
