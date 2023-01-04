@@ -8,7 +8,6 @@ loadPlayer = function (id) {
         } else {
             table.innerHTML = event.data;
         }
-        console.log(event.data);
     };
     //httpGetAsync("http://albert.blaisot.org:8080/lol/among/players?game=" + id, function (response) {
     //    var table = document.getElementById("PlayersListbody");
