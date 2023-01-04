@@ -595,7 +595,7 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game) !== undefined) {
-                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true) {
+                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true && client.amonglegends.get(req.query.game).started === false) {
                                 clearInterval(client.amonglegends.get(req.query.game).interval1);
                                 clearInterval(client.amonglegends.get(req.query.game).interval2);
 

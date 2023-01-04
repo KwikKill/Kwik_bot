@@ -20,11 +20,12 @@ loadPlayer = function (id) {
                     var submitB = document.getElementById("submitB");
                     var buttonC = document.getElementById("buttonC");
 
-                    buttonA.disabled = true;
-                    buttonB.style = "margin-right: auto; margin-left: auto;";
+                    buttonA.innerHTML = "";
+                    buttonB.style = "padding: 5px; margin-right: auto; margin-left: auto;";
+                    buttonB.href = ""
                     submitB.value = "End game";
                     submitB.onclick = "httpGetAsync('/lol/among/roles?game=" + id + "', () => {})";
-                    buttonC.disabled = true;
+                    buttonC.innerHTML = "";
                 }
             }
             table.innerHTML = jsondata.players;
