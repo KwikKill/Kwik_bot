@@ -7,6 +7,9 @@ loadPlayer = function (id) {
         if (jsondata.status == "404") {
             window.location.href = "/lol/among/";
         } else {
+            if (jsondata.started == true) {
+                console.log("started");
+            }
             table.innerHTML = jsondata.players;
         }
     };
@@ -20,8 +23,4 @@ loadPlayer = function (id) {
         table.innerHTML += "<tr class=\"see_more_ajax_button_row\"><td colspan=\"10\" class=\"text-center\"><button type=\"button\" class=\"see_more\" onclick=\"loadMore()\">See more</button></td></tr>";
     }*/
     //});
-}
-
-KickPlayer = function (url) {
-    httpGetAsync(url);
 }

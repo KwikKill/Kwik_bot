@@ -6,6 +6,77 @@ const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
 const { sseMiddleware } = require('express-sse-middleware');
 
+const Roles = [
+    "Serpentin",
+    "Droide",
+    "Double Face",
+    "Super Héro",
+    "Roméo",
+    "Escroc"
+];
+const Description = {
+    "Imposteur": "Doit absolument perdre la game sans se faire remarquer.",
+    "Serpentin": "Doit gagner la game en ayant le plus de mort et de dégats de son équipe.",
+    "Droide": "Doit gagner la game en suivant les instructions reçues en mp toutes les 5 minutes.",
+    "Double Face": "Démarre la game gentil ou méchant, puis change de camp de manière aléatoire. Il doit gagner ou perdre la game en fonction de son allégeance au moment donné.",
+    "Super Héro": "Doit absolument gagner la game, grosse pénalité en cas de défaite. Il doit avoir le plus de kills, d'assist et de dégats à la fin de la game. Il n'a pas de malus si il est démasqué.",
+    "Roméo": "Roméo se lie à une Juliette choisie aléatoirement (allié ou ennemi), à chaque fois qu'elle meurt, il a une minute pour mettre fin à ses jours. Si Juliette est une adversaire il n'a pas le droit de la tuer, si c'est une allié il ne doit pas prendre de kill si elle participe au fight.",
+    "Escroc": "L'escroc doit absolument gagner la game ET être voté en tant qu'imposteur, s'il obtient la majorité des votes les autres rôles ne gagnent pas les points de la victoire."
+};
+// funny things to do when playing lol
+const Droide = [
+    "On t'attaque ! Flash sur place !",
+    "Dance pendant 15s sur la mid lane (plus loin que la T3)",
+    "Il ne serait pas le temps de faire un drake ? Insister sur le fait de faire le drake ou de jouer autour",
+    "Build un item qui n'a rien à voir avec le rôle du champion et dit que cela est une bonne idée",
+    "Vole un camp à ton jungler. Si tu es jungler, tu doit smite le canon d'un allié",
+    "N'utilise pas ton Q spell pendant 30s",
+    "N'utilise pas ton W spell pendant 30s",
+    "N'utilise pas ton E spell pendant 30s",
+    "Tu te fais gank utilise ton R maintenant !",
+    "Tu dois aller a l'opposer de la map a pied (Top to Bot ou Bot to TOP)",
+    "Vend tes bottes et fais en des différentes",
+    "inverse ton clavier et ta souris de main pendant 30s",
+    "Tu es un guerrier, ne pas back avant ta prochaine mort",
+    "Fait un ALT+F4",
+    "Il faut backdoor ! Pose une ward dans la base adverse",
+    "Tu ne dois plus utiliser ton clavier pour lancer des compétences pendant 1 minutes",
+    "Tu dois donner des fausses informations ( faux SS, faux ping, Et cetera ",
+    "AFK à la base pendant 20s ou jusqu'à ce qu'un allié le remarque",
+    "Ignore ton midlaner pendant 30s",
+    "Soft int le prochain teamfight et dit à ton équipe qu'ils sont pas foutu capable de toucher leurs sorts",
+    "Change de type de ward",
+    "Achete une potion au prochain back",
+    "Vante toi d'avoir solo carry le prochain teamfight",
+    "Ne prend pas de cs pendant 20s",
+    "KS le prochain kill ou le blue/red",
+    "Campe dans un bush ennemi pendant 45s ou jusqu'à ce qu'on ennemi te tue/tu le tue",
+    "INT le prochain fight et accuse la connexion ( ping ta connexion )",
+    "Raconte une blague pendant le prochain teamfight",
+    "Tu dois rp le champion que tu joues pendant 1m",
+    "N'achète que des potions au prochain back",
+    "Lance une discussion sur le climat",
+    "Deveniens le duo de quelqu'un et suit le pendant 1m",
+    "Fait un podcast sur un champion présent dans la game au prochain teamfight",
+    "Lance un débat sur une question existencielle",
+    "Flash out le prochain sort qui se dirige vers toi (ciblé ou non)",
+    "Au prochain teamfight, ne focus que ton vis à vis (top: focus top,...) avec interdiction de taper les autres ennemis",
+    "Back à ta base à pied",
+    "Demande à swap avec le toplaner (le midlaner si tu es top)",
+    "Si tu le peut, pose deux wards au même endroit",
+    "Demande le red ou le blue mais ne va pas le prendre",
+    "Over react lors du prochain kill/mort",
+    "Fait le nashor instant",
+    "Éternue a cause du pollen",
+    "Fait un call aram au mid",
+    "Encense celui qui a le plus de mort",
+    "Fait l'Hérald mais ne le pose pas !",
+    "Demande a celui qui a le moins de KP de grouper",
+    "Chante une chanson pendant 10/15s",
+    "Crie lors de la prochaine mort"
+
+];
+
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 // -------------- Express -----------------
@@ -385,7 +456,7 @@ function register(client) {
                                             "</td >";
                                         if (client.amonglegends.get(req.query.game).players[data.id].admin) {
                                             returneddata += "<td>" +
-                                                "<a onclick=\"KickPlayer('/lol/among/kick?game=" + req.query.game + "&player=" + x + "')\">❌</a>"
+                                                "<a onclick=\"httpGetAsync('/lol/among/kick?game=" + req.query.game + "&player=" + x + "')\">❌</a>"
                                                 + "</td>";
                                         } else {
                                             returneddata += "<td></td>";
@@ -394,6 +465,7 @@ function register(client) {
                                     }
                                     sse.send({
                                         data: {
+                                            started: client.amonglegends.get(req.query.game).started,
                                             players: returneddata,
                                             status: "200"
                                         },
@@ -494,6 +566,115 @@ function register(client) {
                             return res.redirect("/lol/among/join?game=" + data.id);
                         }
                         return res.redirect("/lol/among");
+                    }
+                    return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
+    app.get('/lol/among/roles', function (req, res) {
+        if (!req.query.game) {
+            return res.sendStatus(404);
+        }
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[POST] /lol/among/roles", data.username, req.query);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.sendStatus(404);
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(req.query.game) !== undefined) {
+                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true) {
+                                clearInterval(client.amonglegends.get(req.query.game).interval1);
+                                clearInterval(client.amonglegends.get(req.query.game).interval2);
+
+                                const roles = [];
+                                roles.push("Imposteur");
+
+                                shuffle(Roles);
+                                for (let i = 0; i < Object.keys(client.amonglegends.get(req.query.game).players).length - 1; i++) {
+                                    roles.push(Roles[i]);
+                                }
+                                shuffle(roles);
+
+                                const pos = ["Top", "Jungle", "Mid", "ADC", "Support"];
+                                const romeo = pos[Math.round(Math.random() * 4)];
+                                let allie;
+                                if (Math.random() > 0.5) {
+                                    allie = "Allié";
+                                } else {
+                                    allie = "Ennemi";
+                                }
+
+                                let i = 0;
+                                //console.log(client.amonglegends.get(req.query.game))
+                                for (const player in client.amonglegends.get(req.query.game).players) {
+                                    // assigne role
+                                    const role = roles[i];
+                                    client.amonglegends.get(req.query.game).players[player].role = role;
+                                    // send a dm with the role and the description :
+                                    client.users.fetch(player).then(user => {
+                                        user.send("Vous êtes " + role + " : " + Description[role]);
+                                        if (role === "Roméo") {
+                                            user.send("Votre juliette est " + romeo + " " + allie + ".");
+                                        } else if (role === "Double Face") {
+                                            // start a cooldown, change double face side every 5 minutes and send a message to the player informing him
+                                            const interval1 = setInterval(function (pl) {
+                                                if (client.amonglegends.get(req.query.game).started === true) {
+                                                    client.users.fetch(pl).then(user => {
+                                                        if (client.amonglegends.get(req.query.game).doubleface === "victoire") {
+                                                            client.amonglegends.get(req.query.game).doubleface = "defaite";
+                                                            user.send("Vous devez maintenant perdre la partie.");
+                                                        } else {
+                                                            client.amonglegends.get(req.query.game).doubleface = "victoire";
+                                                            user.send("Vous devez maintenant perdre la partie.");
+                                                        }
+                                                    });
+                                                }
+                                            }, 300000, player);
+                                            client.amonglegends.get(req.query.game).interval1 = interval1;
+                                            if (client.amonglegends.get(req.query.game).doubleface === "victoire") {
+                                                user.send("Vous devez gagner la partie.");
+                                            } else {
+                                                user.send("Vous devez perdre la partie.");
+                                            }
+                                        } else if (role === "Droide") {
+                                            const interval2 = setInterval(function (pl) {
+                                                const rand = Math.round(Math.random() * 6);
+                                                if (rand === 2) {
+                                                    console.log("a");
+                                                    if (client.amonglegends.get(req.query.game).started === true) {
+                                                        console.log("b");
+                                                        console.log(pl);
+                                                        client.users.fetch(pl).then(user => {
+                                                            const random = Math.round(Math.random() * (Droide.length - 1));
+                                                            console.log(user, random);
+                                                            user.send(Droide[random]);
+                                                        });
+                                                    }
+                                                }
+                                                console.log(rand);
+                                            }, 60000, player);
+                                            client.amonglegends.get(req.query.game).interval2 = interval2;
+                                        }
+                                    });
+                                    i++;
+                                }
+                                return res.sendStatus(200);
+                            }
+                            return res.sendStatus(403);
+                        }
+                        return res.sendStatus(404);
                     }
                     return res.redirect("/lol/register");
                 });
@@ -677,4 +858,22 @@ function register(client) {
     app.listen(8080, () => {
         console.log("Express server started");
     });
+}
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex !== 0) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
 }
