@@ -446,11 +446,11 @@ function register(client) {
                                     delete client.amonglegends.get(req.query.game).players[req.query.player];
                                 }
                             }
-                            res.sendStatus(200);
+                            return res.sendStatus(200);
                         }
-                        res.sendStatus(404);
+                        return res.sendStatus(404);
                     }
-                    res.sendStatus(404);
+                    return res.sendStatus(404);
                 });
             });
         });
