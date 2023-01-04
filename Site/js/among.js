@@ -3,11 +3,11 @@ loadPlayer = function (id) {
     const source = new EventSource("/lol/among/data?game=" + id);
 
     source.onmessage = (event) => {
-        console.log(event.data)
-        if (event.data.status == "404") {
+        jsondata = JSON.parse(event.data);
+        if (jsondata.status == "404") {
             window.location.href = "/lol/among/";
         } else {
-            table.innerHTML = event.data.players;
+            table.innerHTML = jsondata.players;
         }
     };
     //httpGetAsync("http://albert.blaisot.org:8080/lol/among/players?game=" + id, function (response) {
