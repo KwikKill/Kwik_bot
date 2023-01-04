@@ -13,7 +13,7 @@ loadPlayer = function (id) {
                     roles.innerHTML = "Les rôles ont été attribué, regardez discord pour en prendre connaissance";
                 }
             } else {
-
+                roles.innerHTML = "La partie a commencé, n'oubliez pas de vérifier discord pour certains rôles";
             }
             table.innerHTML = jsondata.players;
         }

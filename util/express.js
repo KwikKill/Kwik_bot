@@ -341,7 +341,7 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game).players[data.id] === undefined) {
-                            if (Object.keys(client.amonglegends.get(req.query.game).players).length < 5) {
+                            if (Object.keys(client.amonglegends.get(req.query.game).players).length < 5 && client.amonglegends.get(req.query.game).players[Object.keys(client.amonglegends.get(req.query.game).players)[0]].role === "") {
                                 client.amonglegends.get(req.query.game).players[data.id] = {
                                     username: data.username,
                                     role: "",
@@ -454,7 +454,7 @@ function register(client) {
                                             "<td>" +
                                             client.amonglegends.get(req.query.game).players[x].admin +
                                             "</td >";
-                                        if (client.amonglegends.get(req.query.game).players[data.id].admin) {
+                                        if (client.amonglegends.get(req.query.game).players[data.id].admin && client.amonglegends.get(req.query.game).started === false) {
                                             returneddata += "<td>" +
                                                 "<a onclick=\"httpGetAsync('/lol/among/kick?game=" + req.query.game + "&player=" + x + "', () => {})\">❌</a>"
                                                 + "</td>";
@@ -465,7 +465,7 @@ function register(client) {
                                     }
                                     sse.send({
                                         data: {
-                                            roles: client.amonglegends.get(req.query.game).players[data.id].role === undefined ? "false" : "true",
+                                            roles: client.amonglegends.get(req.query.game).players[data.id].role === "" ? "false" : "true",
                                             started: client.amonglegends.get(req.query.game).started === false ? "false" : "true",
                                             players: returneddata,
                                             status: "200"
@@ -678,6 +678,38 @@ function register(client) {
                         return res.sendStatus(404);
                     }
                     return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
+    app.get('/lol/among/start', function (req, res) {
+        if (!req.query.game) {
+            return res.sendStatus(403);
+        }
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/among/start", data.username, req.query);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.sendStatus(404);
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(req.query.game).players[data.id].admin === true) {
+                            client.amonglegends.get(req.query.game).started = true;
+                            client.amonglegends.get(req.query.game).finish = false;
+                        }
+                        return res.sendStatus(200);
+                    }
+                    return res.sendStatus(404);
                 });
             });
         });

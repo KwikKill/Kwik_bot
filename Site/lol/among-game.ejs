@@ -86,13 +86,13 @@
     </div>
     <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
     <div class="buttons">
-      <a onclick="httpGetAsync('/lol/among/start?game=<%= game %>', () => {})" style="margin-left: auto;padding: 5px;">
+      <a onclick="httpGetAsync('/lol/among/start?game=<%= game %>', () => {})" style="margin-left: auto;padding: 5px;" id="buttonA">
         <input name="submit" id="submit" type="button" class="form-control" value="start game">
       </a>
-      <a href="/lol/among/delete?game=<%= game %>" style="padding: 5px;">
+      <a href="/lol/among/delete?game=<%= game %>" style="padding: 5px;" id="buttonB">
         <input name="submit" id="submit" type="button" class="form-control" value="delete game">
       </a>
-      <a onclick="httpGetAsync('/lol/among/roles?game=<%= game %>', () => {})" style="margin-right: auto;padding: 5px;">
+      <a onclick="httpGetAsync('/lol/among/roles?game=<%= game %>', () => {})" style="margin-right: auto;padding: 5px;" id="buttonC">
         <input name="submit" id="submit" type="button" class="form-control" value="Give roles">
       </a>
     </div>
