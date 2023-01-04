@@ -15,7 +15,7 @@ module.exports = {
 
 function register(client) {
     const app = express();
-    const sse = sseMiddleware();
+    const sse = sseMiddleware.sseMiddleware();
 
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
