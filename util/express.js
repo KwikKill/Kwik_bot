@@ -394,12 +394,13 @@ function register(client) {
                                 sse.send({
                                     data: returneddata,
                                 });
+                            } else {
+                                sse.send({
+                                    data: "404",
+                                });
+                                clearInterval(intervalId);
+                                return res.end();
                             }
-                            sse.send({
-                                data: "404",
-                            });
-                            clearInterval(intervalId);
-                            return res.end();
                         }, 1000);
 
                         req.on('close', () => {
