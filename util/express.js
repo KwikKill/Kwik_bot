@@ -4,7 +4,7 @@ const fs = require("fs");
 const { request } = require('undici');
 const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
-const sseMiddleware = require('express-sse-middleware');
+const sseMiddleware = require('express-sse-middleware').sseMiddleware;
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -15,7 +15,7 @@ module.exports = {
 
 function register(client) {
     const app = express();
-    const sse = sseMiddleware.sseMiddleware();
+    const sse = sseMiddleware();
 
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
