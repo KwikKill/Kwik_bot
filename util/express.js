@@ -406,7 +406,7 @@ function register(client) {
                                 clearInterval(intervalId);
                                 return res.end();
                             }
-                        }, 1000);
+                        }, 3000);
 
                         req.on('close', () => {
                             clearInterval(intervalId);
