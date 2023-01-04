@@ -372,31 +372,41 @@ function register(client) {
                         const sse = res.sse();
 
                         const intervalId = setInterval(() => {
-                            if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
-                                let returneddata = "";
-                                for (const x in client.amonglegends.get(req.query.game).players) {
-                                    returneddata += "<tr>" +
-                                        "<td>" +
-                                        client.amonglegends.get(req.query.game).players[x].username +
-                                        "</td>" +
-                                        "<td>" +
-                                        client.amonglegends.get(req.query.game).players[x].admin +
-                                        "</td >";
-                                    if (client.amonglegends.get(req.query.game).players[data.id].admin) {
-                                        returneddata += "<td>" +
-                                            "<a onclick=\"KickPlayer('/lol/among/kick?game=" + req.query.game + "&player=" + x + "')\">❌</a>"
-                                            + "</td>";
-                                    } else {
-                                        returneddata += "<td></td>";
+                            if (client.amonglegends.get(req.query.game) !== undefined) {
+                                if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
+                                    let returneddata = "";
+                                    for (const x in client.amonglegends.get(req.query.game).players) {
+                                        returneddata += "<tr>" +
+                                            "<td>" +
+                                            client.amonglegends.get(req.query.game).players[x].username +
+                                            "</td>" +
+                                            "<td>" +
+                                            client.amonglegends.get(req.query.game).players[x].admin +
+                                            "</td >";
+                                        if (client.amonglegends.get(req.query.game).players[data.id].admin) {
+                                            returneddata += "<td>" +
+                                                "<a onclick=\"KickPlayer('/lol/among/kick?game=" + req.query.game + "&player=" + x + "')\">❌</a>"
+                                                + "</td>";
+                                        } else {
+                                            returneddata += "<td></td>";
+                                        }
+                                        returneddata += "</tr>";
                                     }
-                                    returneddata += "</tr>";
+                                    sse.send({
+                                        data: {
+                                            players: returneddata,
+                                            status: "200"
+                                        },
+                                    });
+                                } else {
+                                    sse.send({
+                                        data: {
+                                            status: "404"
+                                        }
+                                    });
+                                    clearInterval(intervalId);
+                                    return res.end();
                                 }
-                                sse.send({
-                                    data: {
-                                        players: returneddata,
-                                        status: "200"
-                                    },
-                                });
                             } else {
                                 sse.send({
                                     data: {
