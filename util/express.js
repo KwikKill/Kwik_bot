@@ -456,7 +456,7 @@ function register(client) {
                                             "</td >";
                                         if (client.amonglegends.get(req.query.game).players[data.id].admin) {
                                             returneddata += "<td>" +
-                                                "<a onclick=\"httpGetAsync('/lol/among/kick?game=" + req.query.game + "&player=" + x + "')\">❌</a>"
+                                                "<a onclick=\"httpGetAsync('/lol/among/kick?game=" + req.query.game + "&player=" + x + "', () => {})\">❌</a>"
                                                 + "</td>";
                                         } else {
                                             returneddata += "<td></td>";
@@ -465,7 +465,7 @@ function register(client) {
                                     }
                                     sse.send({
                                         data: {
-                                            roles: client.amonglegends.get(req.query.game).interval1 === undefined ? "false" : "true",
+                                            roles: client.amonglegends.get(req.query.game).players[data.id].role === undefined ? "false" : "true",
                                             started: client.amonglegends.get(req.query.game).started === false ? "false" : "true",
                                             players: returneddata,
                                             status: "200"

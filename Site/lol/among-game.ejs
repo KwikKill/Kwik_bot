@@ -58,7 +58,7 @@
             </td>
             <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
             <td>
-              <a onclick="httpGetAsync('/lol/among/kick?game=<%= game %>&player=<%= x %>')">❌</a>
+              <a onclick="httpGetAsync('/lol/among/kick?game=<%= game %>&player=<%= x %>', () => {})">❌</a>
             </td>
             <% } else {%>
             <td></td>
@@ -81,17 +81,18 @@
       </table>
     </div>
     <div class="buttons">
-      <a id="roles"></a>
+      <a id="roles" style="margin: auto;font-family: 'Work Sans', sans-serif;overflow-x: hidden;color: #ffffff;font-weight: bold;">
+      </a>
     </div>
     <% if(discordclient.amonglegends.get(game).players[discordid].admin) {%>
     <div class="buttons">
-      <a onclick="httpGetAsync('/lol/among/start?game=<%= game %>')" style="margin-left: auto;padding: 5px;">
+      <a onclick="httpGetAsync('/lol/among/start?game=<%= game %>', () => {})" style="margin-left: auto;padding: 5px;">
         <input name="submit" id="submit" type="button" class="form-control" value="start game">
       </a>
       <a href="/lol/among/delete?game=<%= game %>" style="padding: 5px;">
         <input name="submit" id="submit" type="button" class="form-control" value="delete game">
       </a>
-      <a onclick="httpGetAsync('/lol/among/roles?game=<%= game %>')" style="margin-right: auto;padding: 5px;">
+      <a onclick="httpGetAsync('/lol/among/roles?game=<%= game %>', () => {})" style="margin-right: auto;padding: 5px;">
         <input name="submit" id="submit" type="button" class="form-control" value="Give roles">
       </a>
     </div>
