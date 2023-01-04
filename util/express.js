@@ -4,6 +4,7 @@ const fs = require("fs");
 const { request } = require('undici');
 const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
+const sseMiddleware = require('express-sse-middleware');
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -14,9 +15,11 @@ module.exports = {
 
 function register(client) {
     const app = express();
+    const sse = sseMiddleware();
 
     app.use(cookieParser());
     app.use(require('body-parser').urlencoded());
+    app.use(sse);
 
     app.use((err, req, res, next) => {
         if (err && err.code === 'ECONNABORTED') {
@@ -367,28 +370,41 @@ function register(client) {
                         return res.redirect("/404");
                     }
                     if (result.rows.length > 0) {
-                        if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
-                            let returneddata = "";
-                            for (const x in client.amonglegends.get(req.query.game).players) {
-                                returneddata += "<tr>" +
-                                    "<td>" +
-                                    client.amonglegends.get(req.query.game).players[x].username +
-                                    "</td>" +
-                                    "<td>" +
-                                    client.amonglegends.get(req.query.game).players[x].admin +
-                                    "</td >";
-                                if (client.amonglegends.get(req.query.game).players[data.id].admin) {
-                                    returneddata += "<td>" +
-                                        "<a href=\"/lol/among/kick?game=" + req.query.game + "&player=" + x + "\">❌</a>"
-                                        + "</td>";
-                                } else {
-                                    returneddata += "<td></td>";
+                        const intervalId = setInterval(() => {
+                            if (client.amonglegends.get(req.query.game).players[data.id] !== undefined) {
+                                let returneddata = "";
+                                for (const x in client.amonglegends.get(req.query.game).players) {
+                                    returneddata += "<tr>" +
+                                        "<td>" +
+                                        client.amonglegends.get(req.query.game).players[x].username +
+                                        "</td>" +
+                                        "<td>" +
+                                        client.amonglegends.get(req.query.game).players[x].admin +
+                                        "</td >";
+                                    if (client.amonglegends.get(req.query.game).players[data.id].admin) {
+                                        returneddata += "<td>" +
+                                            "<a href=\"/lol/among/kick?game=" + req.query.game + "&player=" + x + "\">❌</a>"
+                                            + "</td>";
+                                    } else {
+                                        returneddata += "<td></td>";
+                                    }
+                                    returneddata += "</tr>";
                                 }
-                                returneddata += "</tr>";
+                                sse.send({
+                                    data: returneddata,
+                                });
                             }
-                            return res.send(returneddata);
-                        }
-                        return res.send("404");
+                            sse.send({
+                                data: "404",
+                            });
+                            clearInterval(intervalId);
+                            return res.end();
+                        }, 1000);
+
+                        req.on('close', () => {
+                            clearInterval(intervalId);
+                            res.end();
+                        });
                     }
                     return res.send("404");
                 });
