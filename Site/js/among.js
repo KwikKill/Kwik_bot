@@ -1,5 +1,6 @@
 loadPlayer = function (id) {
     var table = document.getElementById("PlayersListbody");
+    var roles = document.getElementById("roles");
     const source = new EventSource("/lol/among/data?game=" + id);
 
     source.onmessage = (event) => {
@@ -7,8 +8,12 @@ loadPlayer = function (id) {
         if (jsondata.status == "404") {
             window.location.href = "/lol/among/";
         } else {
-            if (jsondata.started == true) {
-                console.log("started");
+            if (jsondata.started == "false") {
+                if (jsondata.roles == "true") {
+                    roles.innerHTML = "Les rôles ont été attribué, regardez discord pour en prendre connaissance";
+                }
+            } else {
+
             }
             table.innerHTML = jsondata.players;
         }

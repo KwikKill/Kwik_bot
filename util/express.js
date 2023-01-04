@@ -465,7 +465,8 @@ function register(client) {
                                     }
                                     sse.send({
                                         data: {
-                                            started: client.amonglegends.get(req.query.game).started,
+                                            roles: client.amonglegends.get(req.query.game).interval1 === undefined ? "false" : "true",
+                                            started: client.amonglegends.get(req.query.game).started === false ? "false" : "true",
                                             players: returneddata,
                                             status: "200"
                                         },
@@ -516,7 +517,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                console.log("[POST] /lol/among/kick", data.username, req.query);
+                console.log("[GET] /lol/among/kick", data.username, req.query);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.sendStatus(404);
@@ -552,7 +553,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                console.log("[POST] /lol/among/delete", data.username, req.query);
+                console.log("[GET] /lol/among/delete", data.username, req.query);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.redirect("/404");
@@ -587,7 +588,7 @@ function register(client) {
             }
         }).then(tokenResponseData => {
             tokenResponseData.body.json().then(data => {
-                console.log("[POST] /lol/among/roles", data.username, req.query);
+                console.log("[GET] /lol/among/roles", data.username, req.query);
                 client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
                     if (err) {
                         return res.sendStatus(404);
