@@ -10,7 +10,7 @@ loadPlayer = function (id) {
         } else {
             if (jsondata.started == "false") {
                 if (jsondata.roles == "true") {
-                    roles.innerHTML = "Les rôles ont été attribué, regardez discord pour en prendre connaissance";
+                    roles.innerHTML = "Les rôles ont été attribués, regardez discord pour en prendre connaissance";
                 }
             } else {
                 roles.innerHTML = "La partie a commencé, n'oubliez pas de vérifier discord pour certains rôles";
@@ -22,9 +22,9 @@ loadPlayer = function (id) {
 
                     buttonA.innerHTML = "";
                     buttonB.style = "padding: 5px; margin-right: auto; margin-left: auto;";
-                    buttonB.href = ""
+                    buttonB.removeAttribute("href");
                     submitB.value = "End game";
-                    submitB.onclick = "httpGetAsync('/lol/among/roles?game=" + id + "', () => {})";
+                    submitB.onclick = httpGetAsync('/lol/among/roles?game=" + id + "', () => { });
                     buttonC.innerHTML = "";
                 }
             }

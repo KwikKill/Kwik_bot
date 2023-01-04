@@ -653,18 +653,13 @@ function register(client) {
                                             const interval2 = setInterval(function (pl) {
                                                 const rand = Math.round(Math.random() * 6);
                                                 if (rand === 2) {
-                                                    console.log("a");
                                                     if (client.amonglegends.get(req.query.game).started === true) {
-                                                        console.log("b");
-                                                        console.log(pl);
                                                         client.users.fetch(pl).then(user => {
                                                             const random = Math.round(Math.random() * (Droide.length - 1));
-                                                            console.log(user, random);
                                                             user.send(Droide[random]);
                                                         });
                                                     }
                                                 }
-                                                console.log(rand);
                                             }, 60000, player);
                                             client.amonglegends.get(req.query.game).interval2 = interval2;
                                         }
