@@ -3,6 +3,7 @@ loadPlayer = function (id) {
     const source = new EventSource("/lol/among/data?game=" + id);
 
     source.onmessage = (event) => {
+        console.log(event)
         if (event.status == "404") {
             window.location.href = "/lol/among/";
         } else {

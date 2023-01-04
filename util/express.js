@@ -392,11 +392,13 @@ function register(client) {
                                     returneddata += "</tr>";
                                 }
                                 sse.send({
+                                    data: returneddata,
                                     players: returneddata,
                                     status: "200"
                                 });
                             } else {
                                 sse.send({
+                                    data: "404",
                                     status: "404",
                                 });
                                 clearInterval(intervalId);
