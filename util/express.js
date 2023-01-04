@@ -384,7 +384,7 @@ function register(client) {
                                         "</td >";
                                     if (client.amonglegends.get(req.query.game).players[data.id].admin) {
                                         returneddata += "<td>" +
-                                            "<a href=\"/lol/among/kick?game=" + req.query.game + "&player=" + x + "\">❌</a>"
+                                            "<a onclick=\"KickPlayer('/lol/among/kick?game=" + req.query.game + "&player=" + x + "'\">❌</a>"
                                             + "</td>";
                                     } else {
                                         returneddata += "<td></td>";

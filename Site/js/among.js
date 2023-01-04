@@ -21,3 +21,7 @@ loadPlayer = function (id) {
     }*/
     //});
 }
+
+KickPlayer = function (url) {
+    httpGetAsync(url);
+}
