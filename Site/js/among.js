@@ -1,10 +1,10 @@
 loadPlayer = function (id) {
     var table = document.getElementById("PlayersListbody");
-    const source = new EventSource("lol/among/players?game=" + id);
+    const source = new EventSource("/lol/among/players?game=" + id);
 
     source.onmessage = (event) => {
         if (event.data == "404") {
-            window.location.href = "http://albert.blaisot.org:8080/lol/among/";
+            window.location.href = "/lol/among/";
         } else {
             table.innerHTML = event.data;
         }
