@@ -800,7 +800,7 @@ module.exports = {
             if (interaction.options.getSubcommand() === "add") {
                 const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
                 if (!client.requests["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id }) && response.rows.length === 0) {
-                    const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id, summoner_name]);
+                    const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
                     let number = response2.rows.length;
                     for (let i = 0; i < client.requests["summoners"].length; i++) {
                         if (client.requests["summoners"][i].discordid === interaction.user.id) {
