@@ -12,21 +12,26 @@ loadPlayer = function (id) {
                 if (jsondata.roles == "true") {
                     roles.innerHTML = "Les rôles ont été attribués, regardez discord pour en prendre connaissance";
                 }
+            } else if (jsondata.started == "vote") {
+
             } else {
                 roles.innerHTML = "La partie a commencé, n'oubliez pas de vérifier discord pour certains rôles";
-                var buttonA = document.getElementById("buttonA");
+                var buttons = document.getElementById("buttons");
+                buttons.innerHTML = "";
+
+                /*var buttonA = document.getElementById("buttonA");
                 if (buttonA != null) {
                     var buttonB = document.getElementById("buttonB");
                     var submitB = document.getElementById("submitB");
                     var buttonC = document.getElementById("buttonC");
-
+    
                     buttonA.innerHTML = "";
                     buttonB.style = "padding: 5px; margin-right: auto; margin-left: auto;";
                     buttonB.removeAttribute("href");
                     submitB.value = "End game";
                     submitB.onclick = function () { httpGetAsync('/lol/among/end?game=' + id, () => { }); };
                     buttonC.innerHTML = "";
-                }
+                }*/
             }
             table.innerHTML = jsondata.players;
         }

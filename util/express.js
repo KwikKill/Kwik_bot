@@ -595,7 +595,7 @@ function register(client) {
                     }
                     if (result.rows.length > 0) {
                         if (client.amonglegends.get(req.query.game) !== undefined) {
-                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true && client.amonglegends.get(req.query.game).started === false) {
+                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true && client.amonglegends.get(req.query.game).started === false && client.amonglegends.get(req.query.game).finish === false) {
                                 clearInterval(client.amonglegends.get(req.query.game).interval1);
                                 clearInterval(client.amonglegends.get(req.query.game).interval2);
 
@@ -666,6 +666,51 @@ function register(client) {
                                     });
                                     i++;
                                 }
+                                return res.sendStatus(200);
+                            }
+                            return res.sendStatus(403);
+                        }
+                        return res.sendStatus(404);
+                    }
+                    return res.redirect("/lol/register");
+                });
+            });
+        });
+    });
+
+    app.get('/lol/among/end', function (req, res) {
+        if (!req.query.game) {
+            return res.sendStatus(404);
+        }
+        if (!req.cookies['token']) {
+            return res.redirect("/login");
+        }
+        request('https://discord.com/api/users/@me', {
+            method: 'GET',
+            headers: {
+                Authorization: "Bearer " + req.cookies['token']
+            }
+        }).then(tokenResponseData => {
+            tokenResponseData.body.json().then(data => {
+                console.log("[GET] /lol/among/roles", data.username, req.query);
+                client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [data.id], (err, result) => {
+                    if (err) {
+                        return res.sendStatus(404);
+                    }
+                    if (result.rows.length > 0) {
+                        if (client.amonglegends.get(req.query.game) !== undefined) {
+                            if (client.amonglegends.get(req.query.game).players[data.id].admin === true &&
+                                client.amonglegends.get(req.query.game).started === true &&
+                                client.amonglegends.get(req.query.game).finish === false &&
+                                req.query.status &&
+                                req.query.kills &&
+                                req.query.assists &&
+                                req.query.deaths) {
+                                client.amonglegends.get(req.query.game).finish = true;
+                                client.amonglegends.get(req.query.game).status = req.query.status;
+                                client.amonglegends.get(req.query.game).kills = req.query.kills;
+                                client.amonglegends.get(req.query.game).assists = req.query.assists;
+                                client.amonglegends.get(req.query.game).deaths = req.query.deaths;
                                 return res.sendStatus(200);
                             }
                             return res.sendStatus(403);
