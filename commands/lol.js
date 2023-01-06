@@ -800,8 +800,19 @@ module.exports = {
             if (interaction.options.getSubcommand() === "add") {
                 const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
                 if (!client.requests["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id }) && response.rows.length === 0) {
-                    await interaction.editReply("The request was added to the queue, this can take several minutes.");
-                    return await addSumoner(client, summoner_name, interaction);
+                    const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id, summoner_name]);
+                    let number = response2.rows.length;
+                    for (let i = 0; i < client.requests["summoners"].length; i++) {
+                        if (client.requests["summoners"][i].discordid === interaction.user.id) {
+                            number++;
+                        }
+                    }
+                    console.log(number);
+                    if (number < 3) {
+                        await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
+                        return await addSumoner(client, summoner_name, interaction);
+                    }
+                    return await interaction.editReply("You have reached your maximum number of linked accounts.");
                 }
                 return await interaction.editReply("This account is already in the database or requested.");
             } else if (interaction.options.getSubcommand() === "remove") {
