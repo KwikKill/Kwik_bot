@@ -37,7 +37,11 @@ module.exports = {
                     try {
                         await interaction.editReply("All lol accounts updated.");
                     } catch {
-                        await interaction.followUp("All lol accounts updated.");
+                        try {
+                            await interaction.followUp("All lol accounts updated.");
+                        } catch {
+                            await interaction.channel.send("All lol accounts updated.");
+                        }
                     }
                 }
             }
