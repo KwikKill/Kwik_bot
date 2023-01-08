@@ -807,7 +807,6 @@ module.exports = {
                             number++;
                         }
                     }
-                    console.log(number);
                     if (number < 3) {
                         await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
                         return await addSumoner(client, summoner_name, interaction);

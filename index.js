@@ -484,7 +484,14 @@ client.lol = async function () {
                             "player4, " +
                             "player5, " +
                             "summoner1Id, " +
-                            "summoner2Id " +
+                            "summoner2Id, " +
+                            "item0, " +
+                            "item1, " +
+                            "item2, " +
+                            "item3, " +
+                            "item4, " +
+                            "item5, " +
+                            "item6 " +
                             ") VALUES (" +
                             "$1," +
                             "$2," +
@@ -522,7 +529,14 @@ client.lol = async function () {
                             "$34," +
                             "$35," +
                             "$36," +
-                            "$37" +
+                            "$37," +
+                            "$38," +
+                            "$39," +
+                            "$40," +
+                            "$41," +
+                            "$42," +
+                            "$43," +
+                            "$44" +
                             ")",
                             [
                                 matchId,
@@ -561,7 +575,14 @@ client.lol = async function () {
                                 exit["player4"],
                                 exit["player5"],
                                 exit["summoner1Id"],
-                                exit["summoner2Id"]
+                                exit["summoner2Id"],
+                                exit["item0"],
+                                exit["item1"],
+                                exit["item2"],
+                                exit["item3"],
+                                exit["item4"],
+                                exit["item5"],
+                                exit["item6"]
                             ]
                         );
                     } catch (e) {
@@ -943,6 +964,14 @@ async function matchHistoryOutput(match, puuid) {
     }
     //}
 
+    const item0 = match['info']['participants'][participantId]['item0'];
+    const item1 = match['info']['participants'][participantId]['item1'];
+    const item2 = match['info']['participants'][participantId]['item2'];
+    const item3 = match['info']['participants'][participantId]['item3'];
+    const item4 = match['info']['participants'][participantId]['item4'];
+    const item5 = match['info']['participants'][participantId]['item5'];
+    const item6 = match['info']['participants'][participantId]['item6'];
+
 
     let queueName = match['info']['gameMode'];
     if (match["info"]["queueId"] === RANKED_FLEX) {
@@ -1004,7 +1033,14 @@ async function matchHistoryOutput(match, puuid) {
         "player4": participants[2],
         "player5": participants[3],
         "summoner1Id": ssAId,
-        "summoner2Id": ssBId
+        "summoner2Id": ssBId,
+        "item0": item0,
+        "item1": item1,
+        "item2": item2,
+        "item3": item3,
+        "item4": item4,
+        "item5": item5,
+        "item6": item6
     };
     return output;
 }
