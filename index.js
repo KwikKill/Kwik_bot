@@ -491,7 +491,8 @@ client.lol = async function () {
                             "item3, " +
                             "item4, " +
                             "item5, " +
-                            "item6 " +
+                            "item6, " +
+                            "patch " +
                             ") VALUES (" +
                             "$1," +
                             "$2," +
@@ -536,7 +537,8 @@ client.lol = async function () {
                             "$41," +
                             "$42," +
                             "$43," +
-                            "$44" +
+                            "$44," +
+                            "$45" +
                             ")",
                             [
                                 matchId,
@@ -582,7 +584,8 @@ client.lol = async function () {
                                 exit["item3"],
                                 exit["item4"],
                                 exit["item5"],
-                                exit["item6"]
+                                exit["item6"],
+                                exit["patch"]
                             ]
                         );
                     } catch (e) {
@@ -946,6 +949,7 @@ async function matchHistoryOutput(match, puuid) {
 
     //{ Match Details
     const duration = match['info']['gameDuration'];
+    const patch = match['info']['gameVersion'];
     //const creation = match['info']['gameCreation'];
     const matchId = match['metadata']['matchId'];
     let result = (match['info']['participants'][participantId]['win']) ? "Win" : "Lose";
@@ -1040,7 +1044,8 @@ async function matchHistoryOutput(match, puuid) {
         "item3": item3,
         "item4": item4,
         "item5": item5,
-        "item6": item6
+        "item6": item6,
+        "patch": patch
     };
     return output;
 }
