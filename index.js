@@ -622,9 +622,12 @@ client.lol = async function () {
                         channel.send("Placement Flex completed for " + client.requests["updates"][0]["username"] + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
                     }
                     else if (
-                        current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                        current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                        current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
+                        (
+                            current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
+                            current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
+                            current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
+                        )
+                        && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
                     ) {
                         channel.send("Rank Solo/Duo update for " +
                             client.requests["updates"][0]["username"] +
@@ -633,9 +636,12 @@ client.lol = async function () {
                             " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
                             " LP (" + LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)");
                     } else if (
-                        current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
-                        current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
-                        current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
+                        (
+                            current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
+                            current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
+                            current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
+                        )
+                        && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
                     ) {
                         channel.send("Rank Flex update for " +
                             client.requests["updates"][0]["username"] +
