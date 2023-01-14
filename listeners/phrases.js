@@ -12,131 +12,169 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-        const guilds = ["513776796211085342", "890915473363980308", "480142959501901845", "768786745931333634" ];
+        const guilds = ["513776796211085342", "890915473363980308", "480142959501901845", "768786745931333634"];
 
-        if (!msg.author.bot && msg.channel?.id !== "940543958394732555" && msg.guild?.id === "890915473363980308") {
-            for (const x in japonais) {
-                if (msg.content.includes(japonais[x])) {
-                    client.channels.fetch("1004443609355002027").then(general => {
-                        msg.author.send("Pas de japoniaiserie dans les salons autre que <#940543958394732555>. Vous serez réinvité dans 10m.");
-                        general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.");
-                        msg.member.kick();
-                        setTimeout(
-                            function (msg) {
-                                msg.guild.invites.create(general).then(invite => {
-                                    msg.author.send(invite.url);
-                                });
-                            },
-                            600000,
-                            msg
-                        );
-                        return;
-                    });
+        if (msg.guild.id === "890915473363980308") {
+            const random = Math.floor(Math.random() * (100 + 1));
+            if (random <= 20) {
+                const options = {
+                    maxTries: 2000,
+                    prng: Math.random,
+
+                    filter: (result) => {
+                        if (result.string.split(' ').length < 5) {
+                            return false;
+                        }
+                        if (result.refs.length === 1) {
+                            return false;
+                        }
+                        if (result.score <= 10) {
+                            return false;
+                        }
+                        if (result.string[result.string.length - 1] !== "." && result.string[result.string.length - 1] !== "!" && result.string[result.string.length - 1] !== "?") {
+                            return false;
+                        }
+                        for (const ref of result.refs) {
+                            if (result.string === ref.string) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                };
+                try {
+                    const content = client.markov.generate(options);
+                    msg.channel.send(content);
+                } catch (e) {
+                    console.log(e);
                 }
+
             }
-        }
-
-        if (msg.channel.type === "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
-            const channel = await client.channels.fetch("948352104769151047");
-            const message = await channel.messages.fetch();
-            if (message.first().embeds[0].description === msg.channel.guild.id) {
-                const date = new Date(message.first().embeds[0].timestamp);
-                const now = new Date();
-                if (((now - date) / 1000 / 60 / 60) < 1) {
-                    return;
-                }
-            }
-
-            let content2 = msg.content;
-            content2 = content2.toLowerCase();
-
-            if (client.owners.includes(msg.author.id)) {
-                if (msg.reference !== null && msg.reference.messageId !== undefined) {
-                    const mmsg = await msg.channel.messages.fetch(msg.reference.messageId);
-                    if (mmsg.author.id === client.user.id) {
-                        await msg.reply("♥");
+        } else {
+            if (!msg.author.bot && msg.channel?.id !== "940543958394732555" && msg.guild?.id === "890915473363980308") {
+                for (const x in japonais) {
+                    if (msg.content.includes(japonais[x])) {
+                        client.channels.fetch("1004443609355002027").then(general => {
+                            msg.author.send("Pas de japoniaiserie dans les salons autre que <#940543958394732555>. Vous serez réinvité dans 10m.");
+                            general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.");
+                            msg.member.kick();
+                            setTimeout(
+                                function (msg) {
+                                    msg.guild.invites.create(general).then(invite => {
+                                        msg.author.send(invite.url);
+                                    });
+                                },
+                                600000,
+                                msg
+                            );
+                            return;
+                        });
                     }
                 }
             }
 
-            if (content2.includes("application d'enzo")) {
-                msg.reply("Ah ? cette CELEBRE application trouvée le 08/02/2022 aux alentours de 15h20 par le GRAND Enzo Sicard ?");
-                return;
-            } else if (content2.includes("pgcd")) {
-                msg.reply("Le PGCD c'est 4");
-                return;
-            }
-
-            let content = msg.content;
-            // eslint-disable-next-line no-useless-escape
-            content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g, "");
-            content = content.trim();
-            content = content.toLowerCase();
-
-            if (content.length >= 200) {
-                const random = Math.floor(Math.random() * (100 + 1));
-                if (random === 100) {
-                    const mmsg = await msg.reply("https://media.discordapp.net/attachments/514374423910809601/943079513212989470/20220214_224737.jpg?width=668&height=663");
-                    await mmsg.react("♥");
-                    await msg.react("♥");
-                    return;
-                } else if (random === 99) {
-                    const mmsg = await msg.reply("https://cdn.discordapp.com/attachments/294267591734722561/969366860472655972/My_Movie.mov");
-                    await mmsg.react("♥");
-                    await msg.react("♥");
-                    return;
-                } else if (random === 98) {
-                    const mmsg = await msg.reply("https://images-ext-1.discordapp.net/external/XFH2Kik-2VUJhgU7NHddd7Z9-CiP9VtUqWjWKZCk3_M/https/media.discordapp.net/attachments/661317980671574020/964874613370789898/20220415_192915.jpg");
-                    await mmsg.react("♥");
-                    await msg.react("♥");
-                    return;
-                }
-                const mmsg = await msg.reply("menfou palu + ratio");
-                await mmsg.react("♥");
-                await msg.react("♥");
-                return;
-
-            }
-
-            const arr = content.split(" ");
-
-            const last = arr[arr.length - 1];
-            if (last.substr(last.length - 4) === "quoi" || last.substr(last.length - 3) === "koi" || last.substr(last.length - 7) === "quoient" || last.substr(last.length - 3) === "coi" || last.substr(last.length - 4) === "koua" || last.substr(last.length - 3) === "kwa") {
-                msg.reply("feur");
-                return;
-            }
-
-
-            for (const x in arr) {
-                if (arr[x].startsWith("di") || arr[x].startsWith("dy")) {
-                    if (arr[x].substring(2).length > 1 && arr[x] !== "dire") {
-                        msg.reply(arr[x].substring(2));
+            if (msg.channel.type === "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
+                const channel = await client.channels.fetch("948352104769151047");
+                const message = await channel.messages.fetch();
+                if (message.first().embeds[0].description === msg.channel.guild.id) {
+                    const date = new Date(message.first().embeds[0].timestamp);
+                    const now = new Date();
+                    if (((now - date) / 1000 / 60 / 60) < 1) {
                         return;
                     }
                 }
-            }
 
-            for (const x in arr) {
-                if (arr[x].startsWith("ukraine") || arr[x].startsWith("lukraine")) {
-                    msg.reply("L'Ukraine ? tu veut dire cette province de la Russie ?");
+                let content2 = msg.content;
+                content2 = content2.toLowerCase();
+
+                if (client.owners.includes(msg.author.id)) {
+                    if (msg.reference !== null && msg.reference.messageId !== undefined) {
+                        const mmsg = await msg.channel.messages.fetch(msg.reference.messageId);
+                        if (mmsg.author.id === client.user.id) {
+                            await msg.reply("♥");
+                        }
+                    }
+                }
+
+                if (content2.includes("application d'enzo")) {
+                    msg.reply("Ah ? cette CELEBRE application trouvée le 08/02/2022 aux alentours de 15h20 par le GRAND Enzo Sicard ?");
+                    return;
+                } else if (content2.includes("pgcd")) {
+                    msg.reply("Le PGCD c'est 4");
                     return;
                 }
-            }
 
-            for (const x in arr) {
-                if (arr[x].startsWith("cri") || arr[x].startsWith("cry")) {
-                    if (arr[x].substring(3).length > 1) {
-                        msg.reply(arr[x].substring(3).toUpperCase());
+                let content = msg.content;
+                // eslint-disable-next-line no-useless-escape
+                content = content.replaceAll(/[.,\/#!%\^&\*;:{}=?\-_`~()\"]/g, "");
+                content = content.trim();
+                content = content.toLowerCase();
+
+                if (content.length >= 200) {
+                    const random = Math.floor(Math.random() * (100 + 1));
+                    if (random === 100) {
+                        const mmsg = await msg.reply("https://media.discordapp.net/attachments/514374423910809601/943079513212989470/20220214_224737.jpg?width=668&height=663");
+                        await mmsg.react("♥");
+                        await msg.react("♥");
+                        return;
+                    } else if (random === 99) {
+                        const mmsg = await msg.reply("https://cdn.discordapp.com/attachments/294267591734722561/969366860472655972/My_Movie.mov");
+                        await mmsg.react("♥");
+                        await msg.react("♥");
+                        return;
+                    } else if (random === 98) {
+                        const mmsg = await msg.reply("https://images-ext-1.discordapp.net/external/XFH2Kik-2VUJhgU7NHddd7Z9-CiP9VtUqWjWKZCk3_M/https/media.discordapp.net/attachments/661317980671574020/964874613370789898/20220415_192915.jpg");
+                        await mmsg.react("♥");
+                        await msg.react("♥");
+                        return;
+                    }
+                    const mmsg = await msg.reply("menfou palu + ratio");
+                    await mmsg.react("♥");
+                    await msg.react("♥");
+                    return;
+
+                }
+
+                const arr = content.split(" ");
+
+                const last = arr[arr.length - 1];
+                if (last.substr(last.length - 4) === "quoi" || last.substr(last.length - 3) === "koi" || last.substr(last.length - 7) === "quoient" || last.substr(last.length - 3) === "coi" || last.substr(last.length - 4) === "koua" || last.substr(last.length - 3) === "kwa") {
+                    msg.reply("feur");
+                    return;
+                }
+
+
+                for (const x in arr) {
+                    if (arr[x].startsWith("di") || arr[x].startsWith("dy")) {
+                        if (arr[x].substring(2).length > 1 && arr[x] !== "dire") {
+                            msg.reply(arr[x].substring(2));
+                            return;
+                        }
+                    }
+                }
+
+                for (const x in arr) {
+                    if (arr[x].startsWith("ukraine") || arr[x].startsWith("lukraine")) {
+                        msg.reply("L'Ukraine ? tu veut dire cette province de la Russie ?");
                         return;
                     }
                 }
-            }
 
-            if (last === "ah" || last === "ha") {
-                msg.reply("B");
-                return;
-            }
+                for (const x in arr) {
+                    if (arr[x].startsWith("cri") || arr[x].startsWith("cry")) {
+                        if (arr[x].substring(3).length > 1) {
+                            msg.reply(arr[x].substring(3).toUpperCase());
+                            return;
+                        }
+                    }
+                }
 
+                if (last === "ah" || last === "ha") {
+                    msg.reply("B");
+                    return;
+                }
+
+            }
         }
     }
 };

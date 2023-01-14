@@ -3,6 +3,7 @@ const config = require('./config.json');
 const fs = require("fs");
 const lol_api = require("./util/lol_api.js");
 const express_server = require("./util/express.js");
+const Markov = require('markov-strings').default;
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 
@@ -17,6 +18,9 @@ const max_games = 100;
 lol_api.championList(apiKey, region, language, client).then(list => {
     champions = list;
 });
+
+client.markov = new Markov({ stateSize: 3 });
+client.markov.import(JSON.parse(fs.readFileSync('markov.json', 'utf8')));
 
 const RANKED_FLEX = 440;
 const RANKED_SOLO = 420;
