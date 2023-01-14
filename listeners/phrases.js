@@ -16,7 +16,7 @@ module.exports = {
 
         if (msg.guild?.id === "890915473363980308" && msg.author.bot !== true) {
             const random = Math.floor(Math.random() * (100 + 1));
-            if (random <= 200) {
+            if (random <= 5) {
                 const options = {
                     maxTries: 2000,
                     prng: Math.random,
