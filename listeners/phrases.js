@@ -14,7 +14,7 @@ module.exports = {
     async run(client, msg) {
         const guilds = ["513776796211085342", "890915473363980308", "480142959501901845", "768786745931333634"];
 
-        if (msg.guild?.id === "890915473363980308") {
+        if (msg.guild?.id === "890915473363980308" && msg.author.bot !== true) {
             const random = Math.floor(Math.random() * (100 + 1));
             if (random <= 20) {
                 const options = {
