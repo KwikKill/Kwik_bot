@@ -14,7 +14,7 @@ module.exports = {
     async run(client, msg) {
         const guilds = ["513776796211085342", "890915473363980308", "480142959501901845", "768786745931333634"];
 
-        if (msg.guild.id === "890915473363980308") {
+        if (msg.guild?.id === "890915473363980308") {
             const random = Math.floor(Math.random() * (100 + 1));
             if (random <= 20) {
                 const options = {
@@ -44,7 +44,7 @@ module.exports = {
                 };
                 try {
                     const content = client.markov.generate(options);
-                    msg.channel.send(content);
+                    msg.channel.send(content.string);
                 } catch (e) {
                     console.log(e);
                 }
