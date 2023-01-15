@@ -39,31 +39,37 @@ const codes = {
             "ANALYSE 2_ABCDE",
             "ELECTRICITE 1_B",
             "ELECTRICITE 1_ABCDE",
+            "ELECTRICITE 2_B",
             "ELECTRICITE 2_ABCDE",
             "MECANIQUE 1_ABCDE",
             "MECANIQUE 1_B",
+            "MECANIQUE 2_ABCDE",
+            "MECANIQUE 2_B",
             "OMSP ABCDE",
             "CHIMIE 1_ABCDE",
+            "CHIMIE 2_ABCDE",
+            "TP CHIMIE 2_B",
             "OPTIQUE_ABCDE",
             "PHYSIQUE_B",
             "CHIMIE 1_B",
-            "THERMOPHYSIQUE_ABCDE"
+            "THERMOPHYSIQUE_ABCDE",
+            "DS physique_B"
 
         ],
         // 1F
-        "2433,469": [
-            "ALGEBRE 1_F"
-        ],
+        //  "2433,469": [
+        //    "ALGEBRE 1_F"
+        //],
         // 1K
-        "496,2455": [
-            "ANALYSE 1 (Base d'analyse réelle)_K"
-        ],
+        //"496,2455": [
+        //    "ANALYSE 1 (Base d'analyse réelle)_K"
+        //],
         // 2B
         "354,2241": [
-            "SCIENCE INDUSTRIEL",
+            //"SCIENCE INDUSTRIEL",
             "EPS-AB",
-            "EPS AB - CHOIX des ACTIVITES & ORGANISATION ANNEE",
-            "PARCOURS RIE",
+            //"EPS AB - CHOIX des ACTIVITES & ORGANISATION ANNEE",
+            //"PARCOURS RIE",
         ],
         // 2A
         "348,2237": [
