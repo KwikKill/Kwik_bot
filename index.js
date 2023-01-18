@@ -12,7 +12,6 @@ const apiKey = process.env.RIOT_API_KEY;
 const region = "EUW1"; // Players Region
 const route = "EUROPE"; // Regions Route
 const language = "en_US"; // Players Language - Only Used for Champion Names
-const startDate = "1641528000";
 let champions = [];
 const max_games = 100;
 lol_api.championList(apiKey, region, language, client).then(list => {
@@ -180,8 +179,8 @@ async function set_update(number) {
     let listOfMatches = {};
     //console.log(x)
 
-    let start = startDate;
-    const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = '" + puuid + "' ORDER BY timestamp DESC LIMIT 1");
+    let start = (Date.now() - 31536000000).toString();
+    const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
     if (response.rowCount !== 0) {
         start = Math.floor(response.rows[0].timestamp / 1000);
     }
