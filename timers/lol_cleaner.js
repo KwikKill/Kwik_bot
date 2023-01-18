@@ -7,9 +7,12 @@ module.exports = {
     timer: 86400000,
     description: "Clean up matchs older than 1 year",
     async run(client) {
-        let timestamp = Date.now();
-        timestamp = timestamp - 31536000000;
-        await client.pg.query("DELETE FROM matchs WHERE timestamp < $1", [timestamp]);
+        const timestamp = Date.now();
+        const timestamp1 = timestamp - 31536000000;
+        const timestamp2 = timestamp - 7884000000;
+        await client.pg.query("DELETE FROM matchs WHERE timestamp < $1", [timestamp1]);
+        await client.pg.query("DELETE FROM matchs WHERE player in (SELECT puuid FROM summoners WHERE discordid IN (SELECT DISTINCT discordid FROM summoners EXCEPT SELECT discordid FROM matchs, summoners WHERE matchs.player = summoners.puuid AND timestamp > $1 GROUP BY summoners.discordid));", [timestamp2]);
+        await client.pg.query("DELETE FROM summoners WHERE discordid in (SELECT DISTINCT discordid FROM summoners EXCEPT SELECT discordid FROM matchs, summoners WHERE matchs.player = summoners.puuid AND timestamp > $1 GROUP BY summoners.discordid)", [timestamp2]);
         if (config.verbose) {
             console.log("lol cleaner done");
         }
