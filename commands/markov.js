@@ -15,6 +15,7 @@ module.exports = {
     options: undefined,
     async run(message, client, interaction = undefined) {
         if (interaction !== undefined) {
+            await interaction.deferReply();
             const options = {
                 maxTries: 2000,
                 prng: Math.random,
@@ -42,9 +43,9 @@ module.exports = {
             };
             try {
                 const content = client.markov.generate(options);
-                interaction.reply("Markov : " + content.string);
+                interaction.editReply("Markov : " + content.string);
             } catch (e) {
-                interaction.reply("Markov : Et si je veux pas générer de message ?");
+                interaction.editReply("Markov : Et si je veux pas générer de message ?");
                 console.log(e);
             }
         }
