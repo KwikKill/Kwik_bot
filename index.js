@@ -184,7 +184,6 @@ async function set_update(number) {
     if (response.rowCount !== 0) {
         start = Math.floor(response.rows[0].timestamp / 1000);
     }
-    console.log(start);
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
@@ -223,7 +222,6 @@ async function set_update(number) {
             matchs.push(y);
         }
     }
-    console.log(matchs.length);
     client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
     client.queue_length += matchs.length;
     client.requests["updates"][number]["total"] = client.requests["updates"][number]["matchs"].length;
@@ -551,7 +549,7 @@ client.lol = async function () {
                             "$46," +
                             "$47," +
                             "$48," +
-                            "$49," +
+                            "$49" +
                             ")",
                             [
                                 matchId,
