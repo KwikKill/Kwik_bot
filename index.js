@@ -495,7 +495,11 @@ client.lol = async function () {
                             "item4, " +
                             "item5, " +
                             "item6, " +
-                            "patch " +
+                            "patch, " +
+                            "rune_0_perk, " +
+                            "rune_0_var1, " +
+                            "rune_0_var2, " +
+                            "rune_0_var3 " +
                             ") VALUES (" +
                             "$1," +
                             "$2," +
@@ -541,7 +545,11 @@ client.lol = async function () {
                             "$42," +
                             "$43," +
                             "$44," +
-                            "$45" +
+                            "$45," +
+                            "$46," +
+                            "$47," +
+                            "$48," +
+                            "$49," +
                             ")",
                             [
                                 matchId,
@@ -588,7 +596,11 @@ client.lol = async function () {
                                 exit["item4"],
                                 exit["item5"],
                                 exit["item6"],
-                                exit["patch"]
+                                exit["patch"],
+                                exit["rune_0_perk"],
+                                exit["rune_0_var1"],
+                                exit["rune_0_var2"],
+                                exit["rune_0_var3"]
                             ]
                         );
                     } catch (e) {
@@ -1008,6 +1020,12 @@ async function matchHistoryOutput(match, puuid) {
         supportname = champions[support];
     }
 
+    const rune_0_perk = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['perk'];
+    const rune_0_var1 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var1'];
+    const rune_0_var2 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var2'];
+    const rune_0_var3 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var3'];
+
+
     // Create Output Array
     const output = {
         "matchId": matchId,
@@ -1054,7 +1072,11 @@ async function matchHistoryOutput(match, puuid) {
         "item4": item4,
         "item5": item5,
         "item6": item6,
-        "patch": patch
+        "patch": patch,
+        "rune_0_perk": rune_0_perk,
+        "rune_0_var1": rune_0_var1,
+        "rune_0_var2": rune_0_var2,
+        "rune_0_var3": rune_0_var3
     };
     return output;
 }
