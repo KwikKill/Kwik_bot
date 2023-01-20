@@ -185,7 +185,6 @@ async function set_update(number) {
     if (response.rowCount !== 0) {
         start = Math.floor(response.rows[0].timestamp / 1000);
     }
-    console.log(client.requests["updates"][number]["username"], start);
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
@@ -224,11 +223,16 @@ async function set_update(number) {
             matchs.push(y);
         }
     }
-    console.log(matchs.length);
-    client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
-    client.queue_length += matchs.length;
-    client.requests["updates"][number]["total"] = client.requests["updates"][number]["matchs"].length;
-    return;
+    if (matchs.length === 0) {
+        client.requests["updates"][number]["total"] = "none";
+        return;
+    } else {
+        client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
+        client.queue_length += matchs.length;
+        client.requests["updates"][number]["total"] = client.requests["updates"][number]["matchs"].length;
+        return;
+    }
+
 }
 
 /**
@@ -437,7 +441,7 @@ client.lol = async function () {
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
             for (let i = 0; i < client.requests["updates"].length; i++) {
-                if (client.requests["updates"][i]["matchs"].length === 0) {
+                if (client.requests["updates"][i]["matchs"].length === 0 && client.requests["updates"][i]["total"] !== "none") {
                     await set_update(i);
                 }
             }
