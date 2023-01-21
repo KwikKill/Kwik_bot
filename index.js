@@ -397,7 +397,7 @@ client.lol = async function () {
                 rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
-                rank["RANKED_FLEX_SR"]["leaguePoints"] +
+                rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
                 region +
                 '\')'
             );
