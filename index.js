@@ -763,6 +763,9 @@ async function matchHistoryOutput(match, puuid) {
     //let teamGold = 0;
 
     // Lane
+    if (match['info']['participants'][participantId] === undefined) {
+        return null;
+    }
     const lane = match['info']['participants'][participantId]['teamPosition'];
     let lanePlayed = "";
     switch (lane) {
