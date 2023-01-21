@@ -449,8 +449,9 @@ client.lol = async function () {
             client.running = false;
             return client.lol();
         }
-
-        await set_update(0);
+        if (client.requests["updates"][0]["matchs"].length === 0 && client.requests["updates"][0]["total"] !== "none") {
+            await set_update(0);
+        }
 
         const puuid = client.requests["updates"][0]["puuid"];
         const discordid = client.requests["updates"][0]["discordid"];
