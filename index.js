@@ -10,11 +10,23 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 // -------------- LOL -----------------
 const apiKey = process.env.RIOT_API_KEY;
 const region = "EUW1"; // Players Region
-const route = "EUROPE"; // Regions Route
+const route = {
+    "EUW1": "EUROPE",
+    "NA1": "AMERICAS",
+    "KR": "ASIA",
+    "EUN1": "EUROPE",
+    "BR1": "AMERICAS",
+    "JP1": "ASIA",
+    "LA1": "AMERICAS",
+    "LA2": "AMERICAS",
+    "OC1": "SEA",
+    "TR1": "EUROPE",
+    "RU": "EUROPE"
+};
 const language = "en_US"; // Players Language - Only Used for Champion Names
 let champions = [];
 const max_games = 100;
-lol_api.championList(apiKey, region, language, client).then(list => {
+lol_api.championList(apiKey, "EUW1", language, client).then(list => {
     champions = list;
 });
 
@@ -167,6 +179,7 @@ function checkpermission(message, perm) {
  */
 async function set_update(number) {
     const puuid = client.requests["updates"][number]["puuid"];
+    const region = client.requests["updates"][number]["region"];
 
     if (config.verbose) {
         console.log("- lol (update 1) : " + puuid);
@@ -188,7 +201,7 @@ async function set_update(number) {
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
-        listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route, puuid, options, client) };
+        listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route[region], puuid, options, client) };
         // If there are less than 100 matches in the object, then this is the last match list
         if (listOfMatches['matches'].length < max_games) {
             gamesToIndex = false;
@@ -240,7 +253,7 @@ async function set_update(number) {
  * @function update_rank
  * @param {*} summoner_id  summoner id
  */
-client.update_rank = async function (summoner_id) {
+client.update_rank = async function (summoner_id, region) {
     const response = await lol_api.leaguesBySummoner(apiKey, region, summoner_id, client);
 
     const data = {
@@ -271,7 +284,7 @@ client.update_rank = async function (summoner_id) {
  * @function update_mastery
  * @param {*} discordid  discord id
  */
-client.update_mastery = async function (discordid) {
+client.update_mastery = async function (discordid, region) {
 
     const masteries = {};
     const query = await client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
@@ -344,6 +357,7 @@ client.lol = async function () {
         const username = x["username"];
         const interaction = x["interaction"];
         const discordid = x["discordid"];
+        const region = x["region"];
         const summonerObject = await lol_api.summonersByName(apiKey, region, username, client);
         if (summonerObject === null) {
             try {
@@ -356,7 +370,7 @@ client.lol = async function () {
             const accountId = summonerObject['accountId'];
             const puuid = summonerObject['puuid'];
 
-            const rank = await client.update_rank(id);
+            const rank = await client.update_rank(id, region);
 
             await client.pg.query('INSERT INTO summoners(' +
                 'puuid, ' +
@@ -369,7 +383,8 @@ client.lol = async function () {
                 'LP_solo, ' +
                 'rank_flex, ' +
                 'tier_flex, ' +
-                'LP_flex' +
+                'LP_flex, ' +
+                'region' +
                 ') ' +
                 'VALUES(\'' +
                 puuid + '\', \'' +
@@ -383,12 +398,13 @@ client.lol = async function () {
                 rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["leaguePoints"] +
+                region +
                 '\')'
             );
 
             const response = await client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordid + "'");
             if (response.rowCount === 0) {
-                const mastery = await client.update_mastery(discordid);
+                const mastery = await client.update_mastery(discordid, region);
                 await client.pg.query("INSERT INTO mastery(" +
                     "discordid, " +
                     "first_mastery_champ, " +
@@ -425,7 +441,7 @@ client.lol = async function () {
             } catch {
 
             }
-            client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0 });
+            client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region });
         }
     }
     while (client.requests["updates"].length > 0) {
@@ -438,6 +454,7 @@ client.lol = async function () {
 
         const puuid = client.requests["updates"][0]["puuid"];
         const discordid = client.requests["updates"][0]["discordid"];
+        const region = client.requests["updates"][0]["region"];
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
             for (let i = 0; i < client.requests["updates"].length; i++) {
@@ -450,7 +467,7 @@ client.lol = async function () {
                 console.log("- lol (update 2) : " + puuid, matchId);
             }
             client.queue_length -= 1;
-            const match = await lol_api.matchesById(apiKey, route, matchId, client);
+            const match = await lol_api.matchesById(apiKey, route[region], matchId, client);
 
             if (match?.status?.status_code !== 404) {
                 const exit = await matchHistoryOutput(match, puuid);
@@ -616,7 +633,7 @@ client.lol = async function () {
                 }
             }
         }
-        const rank = await client.update_rank(client.requests["updates"][0]["id"]);
+        const rank = await client.update_rank(client.requests["updates"][0]["id"], client.requests["updates"][0]["region"]);
         // read current rank and send message if rank changed
         const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
         for (const x of client.trackers) {
@@ -679,7 +696,7 @@ client.lol = async function () {
 
         }
 
-        const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"]);
+        const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"], client.requests["updates"][0]["region"]);
 
         await client.pg.query("UPDATE mastery " +
             "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +

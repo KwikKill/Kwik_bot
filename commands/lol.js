@@ -45,6 +45,58 @@ module.exports = {
                             description: 'Name of the account',
                             type: 'STRING',
                             required: true,
+                        },
+                        {
+                            name: 'region',
+                            description: 'Region of the account',
+                            type: 'STRING',
+                            required: true,
+                            choices: [
+                                {
+                                    name: 'EUW',
+                                    value: 'EUW1',
+                                },
+                                {
+                                    name: 'EUNE',
+                                    value: 'EUN1',
+                                },
+                                {
+                                    name: 'NA',
+                                    value: 'NA1',
+                                },
+                                {
+                                    name: 'OCE',
+                                    value: 'OC1',
+                                },
+                                {
+                                    name: 'LAN',
+                                    value: 'LA1',
+                                },
+                                {
+                                    name: 'LAS',
+                                    value: 'LA2',
+                                },
+                                {
+                                    name: 'RU',
+                                    value: 'RU',
+                                },
+                                {
+                                    name: 'TR',
+                                    value: 'TR1',
+                                },
+                                {
+                                    name: 'JP',
+                                    value: 'JP1',
+                                },
+                                {
+                                    name: 'KR',
+                                    value: 'KR',
+                                },
+                                {
+                                    name: 'BR',
+                                    value: 'BR1',
+                                }
+                            ]
                         }
                     ]
                 },
@@ -788,6 +840,7 @@ module.exports = {
             return;
         }
         const summoner_name = interaction.options.getString("name");
+        const region = interaction.options.getString("region");
         const champion = interaction.options.getString("champion");
         const role = interaction.options.getString("lane");
         const gamemode = interaction.options.getString("gamemode");
@@ -798,8 +851,8 @@ module.exports = {
         await interaction.deferReply();
         if (interaction.options.getSubcommandGroup() === "account") {
             if (interaction.options.getSubcommand() === "add") {
-                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
-                if (!client.requests["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id }) && response.rows.length === 0) {
+                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2) AND region=$3;", [interaction.user.id, summoner_name, region]);
+                if (!client.requests["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
                     const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
                     let number = response2.rows.length;
                     for (let i = 0; i < client.requests["summoners"].length; i++) {
@@ -809,7 +862,7 @@ module.exports = {
                     }
                     if (number < 3) {
                         await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
-                        return await addSumoner(client, summoner_name, interaction);
+                        return await addSumoner(client, summoner_name, interaction, region);
                     }
                     return await interaction.editReply("You have reached your maximum number of linked accounts.");
                 }
@@ -2484,12 +2537,12 @@ module.exports = {
 
 };
 
-async function addSumoner(client, name, interaction) {
-    client.requests["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction });
+async function addSumoner(client, name, interaction, region) {
+    client.requests["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region });
     await client.lol();
 }
 
-async function add_summoner_manual(client, name, discordid) {
-    client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined });
+async function add_summoner_manual(client, name, discordid, region) {
+    client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region });
     await client.lol();
 }
