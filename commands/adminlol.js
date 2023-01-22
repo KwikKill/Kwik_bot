@@ -38,14 +38,17 @@ module.exports = {
             if (interaction.options.getSubcommandGroup() === "update") {
                 if (interaction.options.getSubcommand() === "all") {
                     await interaction.editReply("Processing.");
+                    const start = Date.now();
                     await update(client, interaction);
+                    const end = Date.now();
+                    const time = (end - start) / 1000;
                     try {
-                        await interaction.editReply("All lol accounts updated.");
+                        await interaction.editReply("All lol accounts updated in " + time + "s.");
                     } catch {
                         try {
-                            await interaction.followUp("All lol accounts updated.");
+                            await interaction.followUp("All lol accounts updated in " + time + "s.");
                         } catch {
-                            await interaction.channel.send("All lol accounts updated.");
+                            await interaction.channel.send("All lol accounts updated in " + time + "s.");
                         }
                     }
                 } else if (interaction.options.getSubcommand() === "swain") {

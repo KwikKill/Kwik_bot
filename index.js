@@ -9,7 +9,6 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 // -------------- LOL -----------------
 const apiKey = process.env.RIOT_API_KEY;
-const region = "EUW1"; // Players Region
 const route = {
     "EUW1": "EUROPE",
     "NA1": "AMERICAS",
@@ -449,8 +448,10 @@ client.lol = async function () {
             client.running = false;
             return client.lol();
         }
-        if (client.requests["updates"][0]["matchs"].length === 0 && client.requests["updates"][0]["total"] !== "none") {
-            await set_update(0);
+        for (let i = 0; i < client.requests["updates"].length; i++) {
+            if (client.requests["updates"][i]["matchs"].length === 0 && client.requests["updates"][i]["total"] !== "none") {
+                await set_update(i);
+            }
         }
 
         const puuid = client.requests["updates"][0]["puuid"];
@@ -458,11 +459,6 @@ client.lol = async function () {
         const region = client.requests["updates"][0]["region"];
 
         while (client.requests["updates"][0]["matchs"].length > 0) {
-            for (let i = 0; i < client.requests["updates"].length; i++) {
-                if (client.requests["updates"][i]["matchs"].length === 0 && client.requests["updates"][i]["total"] !== "none") {
-                    await set_update(i);
-                }
-            }
             const matchId = client.requests["updates"][0]["matchs"].shift();
             if (config.verbose) {
                 console.log("- lol (update 2) : " + puuid, matchId);
@@ -719,7 +715,7 @@ client.lol = async function () {
     if (client.requests["summoners"].length > 0 || client.requests["updates"].length > 0) {
         return await client.lol();
     }
-    await client.channels.cache.get("991052056657793124").send("Finished updating");
+    //await client.channels.cache.get("991052056657793124").send("Finished updating");
 };
 
 /**
@@ -744,6 +740,9 @@ async function matchHistoryOutput(match, puuid) {
             participantId++;
         }
     }
+    if (match['info']['participants'][participantId] === undefined) {
+        return null;
+    }
 
     const participants = [];
     for (const x of match["info"]["participants"]) {
@@ -764,9 +763,6 @@ async function matchHistoryOutput(match, puuid) {
     //let teamGold = 0;
 
     // Lane
-    if (match['info']['participants'][participantId] === undefined) {
-        return null;
-    }
     const lane = match['info']['participants'][participantId]['teamPosition'];
     let lanePlayed = "";
     switch (lane) {
