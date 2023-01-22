@@ -458,12 +458,7 @@ client.lol = async function () {
         const discordid = client.requests["updates"][0]["discordid"];
         const region = client.requests["updates"][0]["region"];
 
-        let update = false;
         if (client.requests["updates"][0]["matchs"].length > 0) {
-            update = true;
-        }
-
-        if (update) {
             //console.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
             while (client.requests["updates"][0]["matchs"].length > 0) {
                 const matchId = client.requests["updates"][0]["matchs"].shift();
