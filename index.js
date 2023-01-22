@@ -701,22 +701,24 @@ client.lol = async function () {
 
             }
 
-            console.log("- lol (update 3): mastery");
-            const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"], client.requests["updates"][0]["region"]);
+            if (discordid !== "503109625772507136") {
+                console.log("- lol (update 3): mastery");
+                const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"], client.requests["updates"][0]["region"]);
 
-            await client.pg.query("UPDATE mastery " +
-                "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
-                "first_mastery = " + mastery["first_mastery"] + ", " +
-                "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
-                "second_mastery = " + mastery["second_mastery"] + ", " +
-                "third_mastery_champ = '" + mastery["third_mastery_champ"] + "', " +
-                "third_mastery = " + mastery["third_mastery"] + ", " +
-                "mastery7 = " + mastery["mastery7"] + ", " +
-                "mastery6 = " + mastery["mastery6"] + ", " +
-                "mastery5 = " + mastery["mastery5"] + ", " +
-                "total_point = " + mastery["total_point"] + " " +
-                "WHERE discordid = '" + client.requests["updates"][0]["discordid"] + "'"
-            );
+                await client.pg.query("UPDATE mastery " +
+                    "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
+                    "first_mastery = " + mastery["first_mastery"] + ", " +
+                    "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
+                    "second_mastery = " + mastery["second_mastery"] + ", " +
+                    "third_mastery_champ = '" + mastery["third_mastery_champ"] + "', " +
+                    "third_mastery = " + mastery["third_mastery"] + ", " +
+                    "mastery7 = " + mastery["mastery7"] + ", " +
+                    "mastery6 = " + mastery["mastery6"] + ", " +
+                    "mastery5 = " + mastery["mastery5"] + ", " +
+                    "total_point = " + mastery["total_point"] + " " +
+                    "WHERE discordid = '" + client.requests["updates"][0]["discordid"] + "'"
+                );
+            }
             console.log("- lol (done): " + puuid);
         }
 
