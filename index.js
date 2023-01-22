@@ -464,6 +464,7 @@ client.lol = async function () {
         }
 
         if (update) {
+            console.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
             while (client.requests["updates"][0]["matchs"].length > 0) {
                 const matchId = client.requests["updates"][0]["matchs"].shift();
                 if (config.verbose) {
@@ -636,6 +637,7 @@ client.lol = async function () {
                     }
                 }
             }
+            console.log("- lol (update 2) : rank");
             const rank = await client.update_rank(client.requests["updates"][0]["id"], client.requests["updates"][0]["region"]);
             // read current rank and send message if rank changed
             const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
@@ -699,6 +701,7 @@ client.lol = async function () {
 
             }
 
+            console.log("- lol (update 3): mastery");
             const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"], client.requests["updates"][0]["region"]);
 
             await client.pg.query("UPDATE mastery " +
@@ -714,6 +717,7 @@ client.lol = async function () {
                 "total_point = " + mastery["total_point"] + " " +
                 "WHERE discordid = '" + client.requests["updates"][0]["discordid"] + "'"
             );
+            console.log("- lol (done): " + puuid);
         }
 
         client.requests["updates"].shift();
