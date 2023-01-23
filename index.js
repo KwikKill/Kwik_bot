@@ -383,7 +383,8 @@ client.lol = async function () {
                 'rank_flex, ' +
                 'tier_flex, ' +
                 'LP_flex, ' +
-                'region' +
+                'region, ' +
+                'priority' +
                 ') ' +
                 'VALUES(\'' +
                 puuid + '\', \'' +
@@ -397,7 +398,8 @@ client.lol = async function () {
                 rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
-                region +
+                region + '\', \'' +
+                "0" +
                 '\')'
             );
 
