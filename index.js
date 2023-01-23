@@ -398,9 +398,9 @@ client.lol = async function () {
                 rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
-                region + '\', \'' +
+                region + '\', ' +
                 "0" +
-                '\')'
+                ')'
             );
 
             const response = await client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordid + "'");
