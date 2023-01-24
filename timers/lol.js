@@ -10,7 +10,7 @@ module.exports = {
         if (client.running) {
             return;
         }
-        await client.commands.get("adminlol").update(client);
+        //await client.commands.get("adminlol").update(client);
         if (config.verbose) {
             console.log("lol timer done");
         }
