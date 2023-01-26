@@ -3,7 +3,7 @@ const config = require('../config.json');
 module.exports = {
     name: 'lol_cleaner',
     group: 'lol',
-    onsetup: false,
+    onsetup: true,
     timer: 86400000,
     description: "Clean up matchs older than 1 year",
     async run(client) {

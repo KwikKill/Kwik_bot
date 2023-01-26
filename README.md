@@ -169,6 +169,9 @@ CREATE TABLE summoners (
  tier_flex TEXT NOT NULL,
  LP_flex INT NOT NULL,
 
+ region TEXT NOT NULL,
+ priority INT NOT NULL,
+
  PRIMARY KEY (puuid)
 );
 ```
@@ -178,9 +181,11 @@ CREATE TABLE matchs (
  puuid TEXT NOT NULL,
  player TEXT NOT NULL,
  gamemode TEXT NOT NULL,
+
  champion TEXT NOT NULL,
  matchup TEXT NOT NULL,
  support TEXT NOT NULL,
+
  gold INT NOT NULL,
  lane TEXT NOT NULL,
  kill INT NOT NULL,
@@ -197,19 +202,39 @@ CREATE TABLE matchs (
  cs INT NOT NULL,
  length DECIMAL NOT NULL,
  total_kills INT NOT NULL,
+
  first_gold BOOLEAN NOT NULL,
  first_damages BOOLEAN NOT NULL,
  first_tanked BOOLEAN NOT NULL,
+
  double INT NOT NULL,
  tripple INT NOT NULL,
  quadra INT NOT NULL,
  penta INT NOT NULL,
+
  time_spent_dead INT NOT NULL,
  timestamp BIGINT NOT NULL,
-        player2 TEXT NOT NULL,
-        player3 TEXT NOT NULL,
-        player4 TEXT NOT NULL,
-        player5 TEXT NOT NULL,
+
+ player2 TEXT NOT NULL,
+ player3 TEXT NOT NULL,
+ player4 TEXT NOT NULL,
+ player5 TEXT NOT NULL,
+
+ summoner1id INT NOT NULL,
+ summoner2id INT NOT NULL,
+
+ item0 INT NOT NULL,
+ item1 INT NOT NULL,
+ item2 INT NOT NULL,
+ item3 INT NOT NULL,
+ item4 INT NOT NULL,
+ item5 INT NOT NULL,
+ item6 INT NOT NULL,
+
+ rune_0_perk INT NOT NULL,
+ rune_0_var1 INT NOT NULL,
+ rune_0_var2 INT NOT NULL,
+ rune_0_var3 INT NOT NULL,
 
  PRIMARY KEY (puuid, player),
  FOREIGN KEY (player) REFERENCES summoners (puuid)
@@ -235,3 +260,5 @@ CREATE TABLE mastery (
 ```
 
 This implementation is not perfect and can/will be improved. If you have any idea to improve this database, feel free to contact me.
+
+The LoL fetching game code's frequency was tested with a 200 summoners DB over a long period. 

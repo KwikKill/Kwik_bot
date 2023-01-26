@@ -27,6 +27,12 @@ module.exports = {
             if (err) { throw err; }
             client.pg = pgclient;
             console.log("Connected!");
+            client.timers.forEach(timer => {
+                if (timer.onsetup) {
+                    timer.run(client);
+                }
+                setInterval(timer.run, timer.timer, client);
+            });
         });
 
         /*
@@ -41,16 +47,6 @@ module.exports = {
         }
         */
 
-
-        client.timers.forEach(timer => {
-            if (timer.onsetup) {
-                timer.run(client);
-            }
-            setInterval(timer.run, timer.timer, client);
-        });
-
         await client.commands.get("deploy").auto_deploy(client);
-
-        client.lol();
     }
 };
