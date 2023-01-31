@@ -234,39 +234,44 @@ module.exports = {
      * @returns {Object}  data from the API
      */
     async apiCall(url, client) {
-        if (config.verbose) {
-            console.log("API CALL: " + url);
+        try {
+            if (config.verbose) {
+                console.log("API CALL: " + url);
+            }
+            // Fetch Data from provided URL & Options
+            const responsefetch = await fetch(url);
+            const data = await responsefetch.json();
+            let statut = await responsefetch;
+            statut = statut.status;
+            switch (statut) {
+                case 200:
+                    client.api_limit = false;
+                    return data;
+                case 429:
+                    // Special Handling here - 429 is Rate Limit Reached.
+                    // Alert the User
+                    if (config.verbose) {
+                        console.warn("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
+                    }
+                    client.api_limit = true;
+                    // Wait the time specified by the reponse header
+                    //await client.
+                    await delay(delay_time);
+                    // Retry
+                    return await this.apiCall(url, client);
+                case 404:
+                    console.warn("404: La ressource demandée n'existe pas.", url);
+                    return null;
+                case 400:
+                    console.warn("400: La requête est invalide.", url);
+                    return null;
+            }
+            return data;
+        } catch (error) {
+            console.warn(error);
+            await delay(delay_time);
+            return await this.apiCall(url, client);
         }
-        // Fetch Data from provided URL & Options
-        const responsefetch = await fetch(url);
-        const data = await responsefetch.json();
-        let statut = await responsefetch;
-        statut = statut.status;
-        switch (statut) {
-            case 200:
-                client.api_limit = false;
-                return data;
-            case 429:
-                // Special Handling here - 429 is Rate Limit Reached.
-                // Alert the User
-                if (config.verbose) {
-                    console.warn("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
-                }
-                client.api_limit = true;
-                // Wait the time specified by the reponse header
-                //await client.
-                await delay(delay_time);
-                // Retry
-                return await this.apiCall(url, client);
-            case 404:
-                console.warn("404: La ressource demandée n'existe pas.", url);
-                return null;
-            case 400:
-                console.warn("400: La requête est invalide.", url);
-                return null;
-        }
-        return data;
-
     },
 
     /**
