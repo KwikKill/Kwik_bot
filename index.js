@@ -472,7 +472,7 @@ client.lol = async function () {
                 const match = await lol_api.matchesById(apiKey, route[region], matchId, client);
 
                 if (match?.status?.status_code !== 404) {
-                    const exit = await matchHistoryOutput(match, puuid);
+                    const exit = matchHistoryOutput(match, puuid);
                     if (exit !== null) {
                         client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
                         try {
@@ -736,7 +736,7 @@ client.lol = async function () {
  * @param {*} puuid   Puuid of the summoner
  * @returns {Object}  Stats of the match
  */
-async function matchHistoryOutput(match, puuid) {
+function matchHistoryOutput(match, puuid) {
     if (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10) {
         return null;
     }
