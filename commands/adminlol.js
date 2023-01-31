@@ -221,6 +221,9 @@ module.exports = {
 async function update(client) {
     const query = "SELECT DISTINCT puuid, id, username, discordid, region, priority FROM summoners ORDER BY priority DESC;";
     const result = await client.pg.query(query);
+
+    const prio = [];
+
     for (let i = 0; i < result.rows.length; i++) {
         let found = false;
         for (let j = 0; j < client.requests["updates"].length; j++) {
@@ -230,8 +233,16 @@ async function update(client) {
             }
         }
         if (!found) {
-            client.requests["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region });
+            if (result.rows[i].priority > 0) {
+                // insert in position 1
+                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region });
+            } else {
+                client.requests["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region });
+            }
         }
+    }
+    for (let i = prio.length - 1; i >= 0; i--) {
+        client.requests["updates"].splice(1, 0, prio[i]);
     }
     await client.lol();
 }
