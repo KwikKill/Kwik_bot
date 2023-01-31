@@ -450,11 +450,12 @@ client.lol = async function () {
             client.running = false;
             return client.lol();
         }
-        for (let i = 0; i < client.requests["updates"].length; i++) {
+        /*for (let i = 0; i < client.requests["updates"].length; i++) {
             if (client.requests["updates"][i]["matchs"].length === 0 && client.requests["updates"][i]["total"] !== "none") {
                 await set_update(i);
             }
-        }
+        }*/
+        await set_update(0);
 
         const puuid = client.requests["updates"][0]["puuid"];
         const discordid = client.requests["updates"][0]["discordid"];
