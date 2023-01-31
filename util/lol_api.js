@@ -268,7 +268,7 @@ module.exports = {
             }
             return data;
         } catch (error) {
-            console.warn(error);
+            console.warn(error.name);
             await delay(delay_time);
             return await this.apiCall(url, client);
         }
