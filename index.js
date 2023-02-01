@@ -469,171 +469,172 @@ client.lol = async function () {
                     console.log("- lol (update 2) : " + puuid, matchId);
                 }
                 client.queue_length -= 1;
-                const match = await lol_api.matchesById(apiKey, route[region], matchId, client);
+                lol_api.matchesById(apiKey, route[region], matchId, client).then(match => {
 
-                if (match?.status?.status_code !== 404) {
-                    const exit = matchHistoryOutput(match, puuid);
-                    if (exit !== null) {
-                        current["count"] = current["count"] + 1;
-                        try {
-                            await client.pg.query("INSERT INTO matchs(" +
-                                "puuid, " +
-                                "player, " +
-                                "gamemode, " +
-                                "champion, " +
-                                "matchup, " +
-                                "support, " +
-                                "lane, " +
-                                "gold, " +
-                                "kill, " +
-                                "deaths, " +
-                                "assists, " +
-                                "result, " +
-                                "total_damage, " +
-                                "tanked_damage, " +
-                                "heal, " +
-                                "neutral_objectives, " +
-                                " wards, " +
-                                "pinks, " +
-                                "vision_score, " +
-                                "cs, " +
-                                "length, " +
-                                "total_kills, " +
-                                "first_gold, " +
-                                "first_damages, " +
-                                "first_tanked, " +
-                                "double, " +
-                                "tripple, " +
-                                "quadra, " +
-                                "penta, " +
-                                "time_spent_dead, " +
-                                "timestamp, " +
-                                "player2, " +
-                                "player3, " +
-                                "player4, " +
-                                "player5, " +
-                                "summoner1Id, " +
-                                "summoner2Id, " +
-                                "item0, " +
-                                "item1, " +
-                                "item2, " +
-                                "item3, " +
-                                "item4, " +
-                                "item5, " +
-                                "item6, " +
-                                "patch, " +
-                                "rune_0_perk, " +
-                                "rune_0_var1, " +
-                                "rune_0_var2, " +
-                                "rune_0_var3 " +
-                                ") VALUES (" +
-                                "$1," +
-                                "$2," +
-                                "$3," +
-                                "$4," +
-                                "$5," +
-                                "$6," +
-                                "$7," +
-                                "$8," +
-                                "$9," +
-                                "$10," +
-                                "$11," +
-                                "$12," +
-                                "$13," +
-                                "$14," +
-                                "$15," +
-                                "$16," +
-                                "$17," +
-                                "$18," +
-                                "$19," +
-                                "$20," +
-                                "$21," +
-                                "$22," +
-                                "$23," +
-                                "$24," +
-                                "$25," +
-                                "$26," +
-                                "$27," +
-                                "$28," +
-                                "$29," +
-                                "$30," +
-                                "$31," +
-                                "$32," +
-                                "$33," +
-                                "$34," +
-                                "$35," +
-                                "$36," +
-                                "$37," +
-                                "$38," +
-                                "$39," +
-                                "$40," +
-                                "$41," +
-                                "$42," +
-                                "$43," +
-                                "$44," +
-                                "$45," +
-                                "$46," +
-                                "$47," +
-                                "$48," +
-                                "$49" +
-                                ")",
-                                [
-                                    matchId,
-                                    exit["summonerpuuid"],
-                                    exit["queueName"],
-                                    exit["champion"],
-                                    exit["matchup"],
-                                    exit["support"],
-                                    exit["lane"],
-                                    exit["gold"],
-                                    exit["kills"],
-                                    exit["deaths"],
-                                    exit["assists"],
-                                    exit["result"],
-                                    exit["dealt"],
-                                    exit["taken"],
-                                    exit["healed"],
-                                    exit["objectifs"],
-                                    exit["wardsPlaced"],
-                                    exit["pinkPlaced"],
-                                    exit["visionScore"],
-                                    exit["CS"],
-                                    exit["duration"],
-                                    exit["teamKills"],
-                                    exit["firstGold"],
-                                    exit["firstDamage"],
-                                    exit["firstTanked"],
-                                    exit["doubles"],
-                                    exit["triples"],
-                                    exit["quadras"],
-                                    exit["penta"],
-                                    exit["totalTimeSpentDead"],
-                                    exit["date"],
-                                    exit["player2"],
-                                    exit["player3"],
-                                    exit["player4"],
-                                    exit["player5"],
-                                    exit["summoner1Id"],
-                                    exit["summoner2Id"],
-                                    exit["item0"],
-                                    exit["item1"],
-                                    exit["item2"],
-                                    exit["item3"],
-                                    exit["item4"],
-                                    exit["item5"],
-                                    exit["item6"],
-                                    exit["patch"],
-                                    exit["rune_0_perk"],
-                                    exit["rune_0_var1"],
-                                    exit["rune_0_var2"],
-                                    exit["rune_0_var3"]
-                                ]
-                            );
-                        } catch (e) {
-                            console.log(e);
+                    if (match?.status?.status_code !== 404) {
+                        const exit = matchHistoryOutput(match, puuid);
+                        if (exit !== null) {
+                            current["count"] = current["count"] + 1;
+                            try {
+                                client.pg.query("INSERT INTO matchs(" +
+                                    "puuid, " +
+                                    "player, " +
+                                    "gamemode, " +
+                                    "champion, " +
+                                    "matchup, " +
+                                    "support, " +
+                                    "lane, " +
+                                    "gold, " +
+                                    "kill, " +
+                                    "deaths, " +
+                                    "assists, " +
+                                    "result, " +
+                                    "total_damage, " +
+                                    "tanked_damage, " +
+                                    "heal, " +
+                                    "neutral_objectives, " +
+                                    " wards, " +
+                                    "pinks, " +
+                                    "vision_score, " +
+                                    "cs, " +
+                                    "length, " +
+                                    "total_kills, " +
+                                    "first_gold, " +
+                                    "first_damages, " +
+                                    "first_tanked, " +
+                                    "double, " +
+                                    "tripple, " +
+                                    "quadra, " +
+                                    "penta, " +
+                                    "time_spent_dead, " +
+                                    "timestamp, " +
+                                    "player2, " +
+                                    "player3, " +
+                                    "player4, " +
+                                    "player5, " +
+                                    "summoner1Id, " +
+                                    "summoner2Id, " +
+                                    "item0, " +
+                                    "item1, " +
+                                    "item2, " +
+                                    "item3, " +
+                                    "item4, " +
+                                    "item5, " +
+                                    "item6, " +
+                                    "patch, " +
+                                    "rune_0_perk, " +
+                                    "rune_0_var1, " +
+                                    "rune_0_var2, " +
+                                    "rune_0_var3 " +
+                                    ") VALUES (" +
+                                    "$1," +
+                                    "$2," +
+                                    "$3," +
+                                    "$4," +
+                                    "$5," +
+                                    "$6," +
+                                    "$7," +
+                                    "$8," +
+                                    "$9," +
+                                    "$10," +
+                                    "$11," +
+                                    "$12," +
+                                    "$13," +
+                                    "$14," +
+                                    "$15," +
+                                    "$16," +
+                                    "$17," +
+                                    "$18," +
+                                    "$19," +
+                                    "$20," +
+                                    "$21," +
+                                    "$22," +
+                                    "$23," +
+                                    "$24," +
+                                    "$25," +
+                                    "$26," +
+                                    "$27," +
+                                    "$28," +
+                                    "$29," +
+                                    "$30," +
+                                    "$31," +
+                                    "$32," +
+                                    "$33," +
+                                    "$34," +
+                                    "$35," +
+                                    "$36," +
+                                    "$37," +
+                                    "$38," +
+                                    "$39," +
+                                    "$40," +
+                                    "$41," +
+                                    "$42," +
+                                    "$43," +
+                                    "$44," +
+                                    "$45," +
+                                    "$46," +
+                                    "$47," +
+                                    "$48," +
+                                    "$49" +
+                                    ")",
+                                    [
+                                        matchId,
+                                        exit["summonerpuuid"],
+                                        exit["queueName"],
+                                        exit["champion"],
+                                        exit["matchup"],
+                                        exit["support"],
+                                        exit["lane"],
+                                        exit["gold"],
+                                        exit["kills"],
+                                        exit["deaths"],
+                                        exit["assists"],
+                                        exit["result"],
+                                        exit["dealt"],
+                                        exit["taken"],
+                                        exit["healed"],
+                                        exit["objectifs"],
+                                        exit["wardsPlaced"],
+                                        exit["pinkPlaced"],
+                                        exit["visionScore"],
+                                        exit["CS"],
+                                        exit["duration"],
+                                        exit["teamKills"],
+                                        exit["firstGold"],
+                                        exit["firstDamage"],
+                                        exit["firstTanked"],
+                                        exit["doubles"],
+                                        exit["triples"],
+                                        exit["quadras"],
+                                        exit["penta"],
+                                        exit["totalTimeSpentDead"],
+                                        exit["date"],
+                                        exit["player2"],
+                                        exit["player3"],
+                                        exit["player4"],
+                                        exit["player5"],
+                                        exit["summoner1Id"],
+                                        exit["summoner2Id"],
+                                        exit["item0"],
+                                        exit["item1"],
+                                        exit["item2"],
+                                        exit["item3"],
+                                        exit["item4"],
+                                        exit["item5"],
+                                        exit["item6"],
+                                        exit["patch"],
+                                        exit["rune_0_perk"],
+                                        exit["rune_0_var1"],
+                                        exit["rune_0_var2"],
+                                        exit["rune_0_var3"]
+                                    ]
+                                );
+                            } catch (e) {
+                                console.log(e);
+                            }
                         }
                     }
-                }
+                });
             }
             //console.log("- lol (update 2) : rank");
             const rank = await client.update_rank(current["id"], current["region"]);
