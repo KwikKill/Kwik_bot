@@ -177,8 +177,8 @@ function checkpermission(message, perm) {
  * @param {*} number  id of the summoner in client.requests["updates"]
  */
 async function set_update(number) {
-    const puuid = client.requests["updates"][number]["puuid"];
-    const region = client.requests["updates"][number]["region"];
+    const puuid = number["puuid"];
+    const region = number["region"];
 
     if (config.verbose) {
         console.log("- lol (update 1) : " + puuid);
@@ -236,14 +236,13 @@ async function set_update(number) {
         }
     }
     if (matchs.length === 0) {
-        client.requests["updates"][number]["total"] = "none";
-        return;
-    } else {
-        client.requests["updates"][number]["matchs"] = client.requests["updates"][number]["matchs"].concat(matchs);
-        client.queue_length += matchs.length;
-        client.requests["updates"][number]["total"] = client.requests["updates"][number]["matchs"].length;
-        return;
+        number["total"] = "none";
+        return number;
     }
+    number["matchs"] = number["matchs"].concat(matchs);
+    client.queue_length += matchs.length;
+    number["total"] = number["matchs"].length;
+    return number;
 
 }
 
@@ -450,21 +449,22 @@ client.lol = async function () {
             client.running = false;
             return client.lol();
         }
+        let current = client.requests["updates"].shift();
         /*for (let i = 0; i < client.requests["updates"].length; i++) {
             if (client.requests["updates"][i]["matchs"].length === 0 && client.requests["updates"][i]["total"] !== "none") {
                 await set_update(i);
             }
         }*/
-        await set_update(0);
+        current = await set_update(current);
 
-        const puuid = client.requests["updates"][0]["puuid"];
-        const discordid = client.requests["updates"][0]["discordid"];
-        const region = client.requests["updates"][0]["region"];
+        const puuid = current["puuid"];
+        const discordid = current["discordid"];
+        const region = current["region"];
 
-        if (client.requests["updates"][0]["matchs"].length > 0) {
+        if (current["matchs"].length > 0) {
             //console.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
-            while (client.requests["updates"][0]["matchs"].length > 0) {
-                const matchId = client.requests["updates"][0]["matchs"].shift();
+            while (current["matchs"].length > 0) {
+                const matchId = current["matchs"].shift();
                 if (config.verbose) {
                     console.log("- lol (update 2) : " + puuid, matchId);
                 }
@@ -474,7 +474,7 @@ client.lol = async function () {
                 if (match?.status?.status_code !== 404) {
                     const exit = matchHistoryOutput(match, puuid);
                     if (exit !== null) {
-                        client.requests["updates"][0]["count"] = client.requests["updates"][0]["count"] + 1;
+                        current["count"] = current["count"] + 1;
                         try {
                             await client.pg.query("INSERT INTO matchs(" +
                                 "puuid, " +
@@ -636,9 +636,9 @@ client.lol = async function () {
                 }
             }
             //console.log("- lol (update 2) : rank");
-            const rank = await client.update_rank(client.requests["updates"][0]["id"], client.requests["updates"][0]["region"]);
+            const rank = await client.update_rank(current["id"], current["region"]);
             // read current rank and send message if rank changed
-            const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + client.requests["updates"][0]["id"] + "'");
+            const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + current["id"] + "'");
             for (const x of client.trackers) {
                 const channel = await client.channels.fetch(x);
                 let user = false;
@@ -656,12 +656,12 @@ client.lol = async function () {
                         current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
                         current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
                     ) {
-                        await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + client.requests["updates"][0]["id"] + "'");
+                        await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + current["id"] + "'");
                         if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["rank"] !== 'unranked') {
-                            channel.send("Placement Solo/Duo completed for " + client.requests["updates"][0]["username"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                            channel.send("Placement Solo/Duo completed for " + current["username"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
                         }
                         else if (current_rank.rows[0].tier_flex === 'unranked' && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked') {
-                            channel.send("Placement Flex completed for " + client.requests["updates"][0]["username"] + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                            channel.send("Placement Flex completed for " + current["username"] + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
                         }
                         else if (
                             (
@@ -672,7 +672,7 @@ client.lol = async function () {
                             && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
                         ) {
                             channel.send("Rank Solo/Duo update for " +
-                                client.requests["updates"][0]["username"] +
+                                current["username"] +
                                 " : " + rank["RANKED_SOLO_5x5"]["tier"] +
                                 " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                 " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
@@ -686,7 +686,7 @@ client.lol = async function () {
                             && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
                         ) {
                             channel.send("Rank Flex update for " +
-                                client.requests["updates"][0]["username"] +
+                                current["username"] +
                                 " : " + rank["RANKED_FLEX_SR"]["tier"] +
                                 " " + rank["RANKED_FLEX_SR"]["rank"] +
                                 " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
@@ -701,26 +701,25 @@ client.lol = async function () {
 
             if (discordid !== "503109625772507136") {
                 //console.log("- lol (update 3): mastery");
-                const mastery = await client.update_mastery(client.requests["updates"][0]["discordid"], client.requests["updates"][0]["region"]);
-
-                await client.pg.query("UPDATE mastery " +
-                    "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
-                    "first_mastery = " + mastery["first_mastery"] + ", " +
-                    "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
-                    "second_mastery = " + mastery["second_mastery"] + ", " +
-                    "third_mastery_champ = '" + mastery["third_mastery_champ"] + "', " +
-                    "third_mastery = " + mastery["third_mastery"] + ", " +
-                    "mastery7 = " + mastery["mastery7"] + ", " +
-                    "mastery6 = " + mastery["mastery6"] + ", " +
-                    "mastery5 = " + mastery["mastery5"] + ", " +
-                    "total_point = " + mastery["total_point"] + " " +
-                    "WHERE discordid = '" + client.requests["updates"][0]["discordid"] + "'"
-                );
+                client.update_mastery(current["discordid"], current["region"]).then(mastery => {
+                    client.pg.query("UPDATE mastery " +
+                        "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
+                        "first_mastery = " + mastery["first_mastery"] + ", " +
+                        "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
+                        "second_mastery = " + mastery["second_mastery"] + ", " +
+                        "third_mastery_champ = '" + mastery["third_mastery_champ"] + "', " +
+                        "third_mastery = " + mastery["third_mastery"] + ", " +
+                        "mastery7 = " + mastery["mastery7"] + ", " +
+                        "mastery6 = " + mastery["mastery6"] + ", " +
+                        "mastery5 = " + mastery["mastery5"] + ", " +
+                        "total_point = " + mastery["total_point"] + " " +
+                        "WHERE discordid = '" + current["discordid"] + "'"
+                    );
+                });
             }
             //console.log("- lol (done): " + puuid);
         }
 
-        client.requests["updates"].shift();
     }
     client.running = false;
     if (client.requests["summoners"].length > 0 || client.requests["updates"].length > 0) {
