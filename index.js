@@ -227,7 +227,7 @@ async function set_update(number) {
     for (const y of al.rows) {
         already.push(y["puuid"]);
     }
-    for (const y of client.requests["updates"][number]["matchs"]) {
+    for (const y of number["matchs"]) {
         already.push(y);
     }
     for (const y of matchIds) {
