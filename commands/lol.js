@@ -2128,7 +2128,7 @@ module.exports = {
                 }
 
                 let text = "```" +
-                    "─────────────────────┬────────────────────────────────\n";
+                    "─────────────────────┬──────────────────────────────\n";
                 text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_kills).toFixed(2).length);
                 text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_kills).toFixed(2).length);
