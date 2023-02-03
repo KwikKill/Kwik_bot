@@ -123,7 +123,7 @@ module.exports = {
     async autocomplete(client, interaction) {
         const focusedValue = interaction.options.getFocused();
         let cmds = [];
-        client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue)).forEach(cmd => {
+        client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue) && cmd.serverid?.includes(interaction.guild.id)).forEach(cmd => {
             cmds.push({ name: cmd.name, value: cmd.name });
         });
         if (cmds.length > 15) {
