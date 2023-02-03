@@ -2551,11 +2551,11 @@ module.exports = {
         const focusedValue = interaction.options.getFocused().replaceAll("'", "");
         const query = "SELECT DISTINCT champion " +
             "FROM matchs " +
-            "WHERE lower(champion) LIKE '$1%'" +
+            "WHERE lower(champion) LIKE '" + focusedValue.toLowerCase() + "%'" +
             "AND champion <> 'Invalid' " +
             "ORDER BY champion " +
             "LIMIT 15;";
-        const response = await client.pg.query(query, [focusedValue.toLowerCase()]);
+        const response = await client.pg.query(query);
         const champs = [];
         for (const x of response.rows) {
             champs.push({

@@ -26,6 +26,7 @@ module.exports = {
             description: 'Nom de la commande',
             type: 'STRING',
             required: false,
+            autocomplete: true
         },
     ],
     async run(message, client, interaction = undefined) {
@@ -119,5 +120,10 @@ module.exports = {
                 }
             }
         }
-    }
+    },
+    async autocomplete(client, interaction) {
+        const focusedValue = interaction.options.getFocused();
+        const cmds = client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue)).map(cmd => cmd.name);
+        return await interaction.respond(cmds);
+    },
 };

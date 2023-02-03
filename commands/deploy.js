@@ -71,20 +71,9 @@ async function deploy(client, guild) {
     client.commands.forEach((item) => {
         if (item.deploy !== false && (item.serverid === undefined || item.serverid !== undefined && item.serverid.includes(guild.id))) {
             if (item.name === "help") {
-                const choices = [];
-                client.commands.forEach((item2) => {
-                    choices.push({
-                        name: item2.name,
-                        value: item2.name,
-                        defaultPermission: item2.permission === "none",
-                    });
-                });
-                const options = item.options;
-                options[0]["choices"] = choices;
                 commands.push({
                     name: item.name,
                     description: item.description,
-                    options: options,
                     defaultPermission: item.permission === "none",
                 });
             } else {
