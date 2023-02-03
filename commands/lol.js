@@ -2129,7 +2129,8 @@ module.exports = {
 
                 let text = "```" +
                     "─────────────────────┬─────────────────────\n";
-
+                console.log((7 - Number.parseFloat(average_kills).toFixed(2).length));
+                console.log((7 - Number.parseFloat(average_kills).toFixed(2).length) * " ");
                 text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2) + (7 - Number.parseFloat(average_kills).toFixed(2).length) * " ";
                 text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_kills).toFixed(2);
