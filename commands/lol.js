@@ -1017,11 +1017,11 @@ module.exports = {
                     "AVG(total_kills) as avg_total_kills, " +
                     "AVG(time_spent_dead) as avg_time_spent_dead, " +
                     "count(*) as games_played, " +
-                    "CAST((SUM(CASE WHEN (first_gold OR first_damages OR first_tanked)*100) THEN 1 ELSE 0 END) AS FLOAT) / count(*) as carry " +
-                    "CAST((SUM(CASE WHEN first_gold THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_gold " +
-                    "CAST((SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_damage " +
-                    "CAST((SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_tanked " +
-                    "CAST((SUM(CASE WHEN (first_gold AND first_damages AND first_tanked)*100) THEN 1 ELSE 0 END) AS FLOAT) / count(*) as hard_carry " +
+                    "CAST((SUM(CASE WHEN (first_gold OR first_damages OR first_tanked)*100) THEN 1 ELSE 0 END) AS FLOAT) / count(*) as carry, " +
+                    "CAST((SUM(CASE WHEN first_gold THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_gold, " +
+                    "CAST((SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_damage, " +
+                    "CAST((SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_tanked, " +
+                    "CAST((SUM(CASE WHEN (first_gold AND first_damages AND first_tanked)*100) THEN 1 ELSE 0 END) AS FLOAT) / count(*) as hard_carry, " +
                     "CAST((SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as win_rate " +
                     "FROM matchs, summoners " +
                     "WHERE summoners.discordid=$" + i + " " +
