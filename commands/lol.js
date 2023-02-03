@@ -2544,7 +2544,6 @@ module.exports = {
                 return await interaction.editReply({ embeds: [embed] });
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
-            await interaction.deferReply();
             if (interaction.options.getSubcommand() === "add") {
                 const channel = interaction.options.getChannel("channel");
                 const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
