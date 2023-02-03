@@ -1000,26 +1000,32 @@ module.exports = {
                 }
                 const query_values = [discordaccount];
 
-                let query = "SELECT * " +
+                let query = "SELECT " +
+                    "AVG(gold) as avg_gold, " +
+                    "AVG(kill) as avg_kills, " +
+                    "AVG(deaths) as avg_deaths, " +
+                    "AVG(assists) as avg_assists, " +
+                    "AVG(total_damage) as avg_damage, " +
+                    "AVG(tanked_damage) as avg_tanked_damage, " +
+                    "AVG(heal) as avg_heal, " +
+                    "AVG(neutral_objectives) as avg_neutral_objectives, " +
+                    "AVG(wards) as avg_wards, " +
+                    "AVG(pinks) as avg_pinks, " +
+                    "AVG(vision_score) as avg_vision_score, " +
+                    "AVG(cs) as avg_cs, " +
+                    "AVG(length) as avg_length, " +
+                    "AVG(total_kills) as avg_total_kills, " +
+                    "AVG(time_spent_dead) as avg_time_spent_dead, " +
+                    "count(*) as games_played, " +
+                    "CAST((SUM(CASE WHEN (first_gold OR first_damages OR first_tanked)*100) THEN 1 ELSE 0 END) AS FLOAT) / count(*) as carry " +
+                    "CAST((SUM(CASE WHEN first_gold THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_gold " +
+                    "CAST((SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_damage " +
+                    "CAST((SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as carry_tanked " +
+                    "CAST((SUM(CASE WHEN (first_gold AND first_damages AND first_tanked)*100) THEN 1 ELSE 0 END) AS FLOAT) / count(*) as hard_carry " +
+                    "CAST((SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100) / count(*) as win_rate " +
                     "FROM matchs, summoners " +
                     "WHERE summoners.discordid=$" + i + " " +
                     "AND matchs.player = summoners.puuid";
-
-                let query2 = "SELECT " +
-                    "avg(length) as duration, " +
-                    "avg(kill) as kill, " +
-                    "avg(deaths) as deaths, " +
-                    "avg(assists) as assists, " +
-                    "avg(total_damage) as damage, " +
-                    "avg(tanked_damage) as damage_taken, " +
-                    "avg(heal) as heal, " +
-                    "avg(cs) as cs, " +
-                    "avg(gold) as gold, " +
-                    "avg(vision_score) as vision_score, " +
-                    "avg(pinks) as pinks, " +
-                    "avg(total_kills) as total_kills " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
 
                 let query3 = "SELECT " +
                     "gamemode, " +
@@ -1030,41 +1036,34 @@ module.exports = {
                 i++;
                 if (champion !== null) {
                     query += " AND matchs.champion=$" + i;
-                    query2 += " AND matchs.champion=$" + i;
                     query3 += " AND matchs.champion=$" + i;
                     query_values.push(champion);
                     i++;
                 }
                 if (role !== null) {
                     query += " AND matchs.lane=$" + i;
-                    query2 += " AND matchs.lane=$" + i;
                     query3 += " AND matchs.lane=$" + i;
                     query_values.push(role);
                     i++;
                 }
                 if (gamemode !== null) {
                     query += " AND matchs.gamemode=$" + i;
-                    query2 += " AND matchs.gamemode=$" + i;
                     query_values.push(gamemode);
                     i++;
                 }
                 if (account !== null) {
                     query += " AND summoners.username=$" + i;
-                    query2 += " AND summoners.username=$" + i;
                     query3 += " AND summoners.username=$" + (i - 1);
                     query_values.push(account);
                     i++;
                 }
                 query += ";";
-                query2 += ";";
                 query3 += " GROUP BY gamemode;";
 
                 const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                 }
-
-                const response2 = await client.pg.query(query2, query_values);
 
                 const response3 = await client.pg.query(query3, query_values);
                 if (response3.rows.length === 0) {
@@ -1090,49 +1089,27 @@ module.exports = {
 
                 // 1) Carry stats
 
-                let carry_damage = 0;
-                let carry_tanked = 0;
-                let carry_gold = 0;
-                let overall = 0;
-                let hard_carry = 0;
-                let win = 0;
-
-
-                for (let i = 0; i < response.rows.length; i++) {
-                    if (response.rows[i].result === "Win") {
-                        win += 1;
-                    }
-                    if (response.rows[i].first_gold) {
-                        carry_gold += 1;
-                    }
-                    if (response.rows[i].first_damages) {
-                        carry_damage += 1;
-                    }
-                    if (response.rows[i].first_tanked) {
-                        carry_tanked += 1;
-                    }
-                    if (response.rows[i].first_damages && response.rows[i].first_tanked && response.rows[i].first_gold) {
-                        hard_carry += 1;
-                    }
-                    if (response.rows[i].first_damages || response.rows[i].first_tanked || response.rows[i].first_gold) {
-                        overall += 1;
-                    }
-                }
+                const carry_damage = response.rows[0].carry_damage;
+                const carry_tanked = response.rows[0].carry_tanked;
+                const carry_gold = response.rows[0].carry_gold;
+                const overall = response.rows[0].carry;
+                const hard_carry = response.rows[0].hard_carry;
+                const win = response.rows[0].win_rate;
 
                 // 2) Average stats
 
-                const length = response2.rows[0].duration;
+                const length = response.rows[0].avg_length;
 
-                const average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
-                const average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
-                const average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
-                let average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
-                let average_gold = response2.rows[0].gold;
-                let average_damages = response2.rows[0].damage;
-                let average_tanked = response2.rows[0].damage_taken;
-                const average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(decimal);
-                const average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(decimal);
-                const average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(decimal);
+                const average_kills = Number.parseFloat(response.rows[0].avg_kills).toFixed(decimal);
+                const average_deaths = Number.parseFloat(response.rows[0].avg_deaths).toFixed(decimal);
+                const average_assists = Number.parseFloat(response.rows[0].avg_assists).toFixed(decimal);
+                let average_cs = Number.parseFloat(response.rows[0].avg_cs).toFixed(decimal);
+                let average_gold = response.rows[0].avg_gold;
+                let average_damages = response.rows[0].avg_damage;
+                let average_tanked = response.rows[0].avg_tanked_damage;
+                const average_pinks = Number.parseFloat(response.rows[0].avg_pinks).toFixed(decimal);
+                const average_vision_score = Number.parseFloat(response.rows[0].avg_vision_score).toFixed(decimal);
+                const average_total_kills = Number.parseFloat(response.rows[0].avg_total_kills).toFixed(decimal);
 
                 average_cs = (average_cs / (length / 60)).toFixed(decimal);
                 average_gold = (average_gold / (length / 60)).toFixed(decimal);
@@ -1142,13 +1119,13 @@ module.exports = {
                 // KwikScore
 
                 let score = 0;
-                score += overall / response.rows.length * 100;
-                score += win / response.rows.length * 100;
+                score += overall;
+                score += win;
                 score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
                 score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
                 score += 10 * average_cs;
-                if (100 - response.rows.length > 0) {
-                    score = score * 0.99 ** (100 - response.rows.length);
+                if (100 - response.rows[0].games_played > 0) {
+                    score = score * 0.99 ** (100 - response.rows[0].games_played);
                 }
 
                 let title = "" + discordusername + "'s stats";
@@ -1174,12 +1151,12 @@ module.exports = {
                 embed.addFields(
                     {
                         name: "Number of matchs :",
-                        value: "" + response.rows.length,
+                        value: "" + response.rows[0].games_played,
                         inline: true
                     },
                     {
                         name: "WR :",
-                        value: "" + (win / response.rows.length * 100).toFixed(decimal) + " %",
+                        value: "" + (win).toFixed(decimal) + " %",
                         inline: true,
                     },
                     {
@@ -1189,7 +1166,7 @@ module.exports = {
                     },
                     {
                         name: "Carry stats :",
-                        value: "Overall : " + (overall / response.rows.length * 100).toFixed(decimal) + " %\nHard Carry : " + (hard_carry / response.rows.length * 100).toFixed(decimal) + " %\nDamage : " + (carry_damage / response.rows.length * 100).toFixed(decimal) + " %\nTanked : " + (carry_tanked / response.rows.length * 100).toFixed(decimal) + " %\nGold : " + (carry_gold / response.rows.length * 100).toFixed(decimal) + " %",
+                        value: "Overall : " + (overall).toFixed(decimal) + " %\nHard Carry : " + (hard_carry).toFixed(decimal) + " %\nDamage : " + (carry_damage).toFixed(decimal) + " %\nTanked : " + (carry_tanked).toFixed(decimal) + " %\nGold : " + (carry_gold).toFixed(decimal) + " %",
                         inline: true
                     },
                     {
@@ -2130,112 +2107,112 @@ module.exports = {
                 let text = "```" +
                     "─────────────────────┬──────────────────────────────\n";
                 text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_kills).toFixed(2).length);
-                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_kills).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? "+" : "-";
                 text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
 
                 text += "Average Deaths       │ " + Number.parseFloat(average_deaths).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_deaths).toFixed(2).length);
-                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_deaths).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_deaths).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? "+" : "-";
                 text += Number.parseFloat(average_deaths - oponent_average_deaths).toFixed(2) + ")\n";
 
                 text += "Average Assists      │ " + Number.parseFloat(average_assists).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_assists).toFixed(2).length);
-                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_assists).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_assists).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? "+" : "";
                 text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
 
                 text += "Average CS           │ " + Number.parseFloat(average_cs).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_cs).toFixed(2).length);
-                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_cs).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_cs).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? "+" : "";
                 text += Number.parseFloat(average_cs - oponent_average_cs).toFixed(2) + ")\n";
 
                 text += "Average Gold         │ " + Number.parseFloat(average_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_gold).toFixed(2).length);
-                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_gold).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? "+" : "";
                 text += Number.parseFloat(average_gold - oponent_average_gold).toFixed(2) + ")\n";
 
                 text += "Average Damages      │ " + Number.parseFloat(average_damages).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_damages).toFixed(2).length);
-                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_damages).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_damages).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? "+" : "";
                 text += Number.parseFloat(average_damages - oponent_average_damages).toFixed(2) + ")\n";
 
                 text += "Average Tanked       │ " + Number.parseFloat(average_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_tanked).toFixed(2).length);
-                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_tanked).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? "+" : "";
                 text += Number.parseFloat(average_tanked - oponent_average_tanked).toFixed(2) + ")\n";
 
                 text += "Average Pinks        │ " + Number.parseFloat(average_pinks).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_pinks).toFixed(2).length);
-                text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_pinks).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_pinks).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? "+" : "";
                 text += Number.parseFloat(average_pinks - oponent_average_pinks).toFixed(2) + ")\n";
 
                 text += "Average Vision Score │ " + Number.parseFloat(average_vision_score).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_vision_score).toFixed(2).length);
-                text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_average_vision_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_vision_score).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? "+" : "";
                 text += Number.parseFloat(average_vision_score - oponent_average_vision_score).toFixed(2) + ")\n";
 
                 text += "Average KP           │ " + Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2).length);
-                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
                 text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
 
                 text += "Score                │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
-                text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_score).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? "+" : "";
                 text += Number.parseFloat(score - oponent_score).toFixed(2) + ")\n";
 
                 text += "Carry Gold           │ " + Number.parseFloat(carry_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_gold).toFixed(2).length);
-                text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_carry_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_gold).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? "+" : "";
                 text += Number.parseFloat(carry_gold - oponent_carry_gold).toFixed(2) + ")\n";
 
                 text += "Carry Damage         │ " + Number.parseFloat(carry_damage).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_damage).toFixed(2).length);
-                text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_carry_damage).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_damage).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? "+" : "";
                 text += Number.parseFloat(carry_damage - oponent_carry_damage).toFixed(2) + ")\n";
 
                 text += "Carry Tanked         │ " + Number.parseFloat(carry_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_tanked).toFixed(2).length);
-                text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_carry_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_tanked).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? "+" : "";
                 text += Number.parseFloat(carry_tanked - oponent_carry_tanked).toFixed(2) + ")\n";
 
                 text += "Hard Carry           │ " + Number.parseFloat(hard_carry).toFixed(2) + " ".repeat(8 - Number.parseFloat(hard_carry).toFixed(2).length);
-                text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_hard_carry).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_hard_carry).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? "+" : "";
                 text += Number.parseFloat(hard_carry - oponent_hard_carry).toFixed(2) + ")\n";
 
                 text += "Overall              │ " + Number.parseFloat(overall).toFixed(2) + " ".repeat(8 - Number.parseFloat(overall).toFixed(2).length);
-                text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ⬆️ " : " ⬇️ ";
+                text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_overall).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_overall).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? "+" : "";
