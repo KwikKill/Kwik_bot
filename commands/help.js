@@ -8,7 +8,6 @@ module.exports = {
     description: "Fournit la liste des commandes et l'aide correspondante",
     permission: "none",
     hidden: false,
-    serverid: ["513776796211085342", "480142959501901845"],
     place: "both",
     help: [
         {
@@ -127,11 +126,9 @@ module.exports = {
         client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue)).forEach(cmd => {
             cmds.push({ name: cmd.name, value: cmd.name });
         });
-        // only take the first 15
         if (cmds.length > 15) {
             cmds = cmds.slice(0, 15);
         }
-        console.log(cmds);
         return await interaction.respond(cmds);
     },
 };
