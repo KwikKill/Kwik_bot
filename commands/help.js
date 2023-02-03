@@ -123,8 +123,9 @@ module.exports = {
     },
     async autocomplete(client, interaction) {
         const focusedValue = interaction.options.getFocused();
-        let cmds = client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue)).map(cmd => {
-            { "name": cmd.name, "value": cmd.name }
+        let cmds = [];
+        client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue)).array.forEach(cmd => {
+            cmds.push({ name: cmd.name, value: cmd.description });
         });
         // only take the first 15
         if (cmds.length > 15) {
