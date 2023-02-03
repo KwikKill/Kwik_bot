@@ -832,6 +832,37 @@ module.exports = {
                     ]
                 }
             ]
+        },
+        {
+            name: 'tracker',
+            description: 'tracker command',
+            type: 'SUB_COMMAND_GROUP',
+            options: [
+                {
+                    name: 'add',
+                    description: 'add a tracker channel',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'channel',
+                            description: 'Channel',
+                            type: 'CHANNEL'
+                        }
+                    ]
+                },
+                {
+                    name: 'remove',
+                    description: 'add a tracker channel',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'channel',
+                            description: 'Channel',
+                            type: 'CHANNEL'
+                        }
+                    ]
+                }
+            ]
         }
     ],
     commande_channel: true,
@@ -2511,6 +2542,29 @@ module.exports = {
                 });
 
                 return await interaction.editReply({ embeds: [embed] });
+            }
+        } else if (interaction.options.getSubcommandGroup() === "tracker") {
+            await interaction.deferReply();
+            if (interaction.options.getSubcommand() === "add") {
+                const channel = interaction.options.getChannel("channel");
+                const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
+                if (response.rowCount !== 0) {
+                    return await interaction.editReply("A tracker channel already exists in this guild !");
+                }
+                const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
+                client.trackers.push(channel.id);
+                await client.pg.query(query, [channel.id, channel.guild.id]);
+                return await interaction.editReply("tracker channel added !");
+            } else if (interaction.options.getSubcommand() === "remove") {
+                const channel = interaction.options.getChannel("channel");
+                const response = await client.pg.query("SELECT * FROM trackers WHERE channelid=$1;", [channel.id]);
+                if (response.rowCount === 0) {
+                    return await interaction.editReply("This channel is currently not a tracker channel !");
+                }
+                const query = "DELETE FROM trackers WHERE channelid=$1;";
+                client.trackers.splice(client.trackers.indexOf(channel.id), 1);
+                await client.pg.query(query, [channel.id]);
+                return await interaction.editReply("tracker channel removed !");
             }
         }
     },

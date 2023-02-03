@@ -99,8 +99,8 @@ client.isOwner = function (user) {
     return client.owners.includes(user.id);
 };
 
-// get trackers from config
-client.trackers = config.trackers;
+// init trackers as undefined
+client.trackers = [];
 
 // -------------- Express -----------------
 

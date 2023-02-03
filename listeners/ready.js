@@ -33,6 +33,12 @@ module.exports = {
                 }
                 setInterval(timer.run, timer.timer, client);
             });
+            client.pg.query("SELECT * FROM trackers").then(trackers => {
+                trackers.rows.forEach(tracker => {
+                    client.trackers.push(tracker.channelid);
+                });
+                console.log(client.trackers);
+            });
         });
 
         /*
