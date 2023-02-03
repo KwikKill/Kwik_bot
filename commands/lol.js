@@ -2130,112 +2130,112 @@ module.exports = {
                 let text = "```" +
                     "─────────────────────┬──────────────────────────────\n";
                 text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_kills).toFixed(2).length);
-                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_kills).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? "+" : "-";
                 text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
 
                 text += "Average Deaths       │ " + Number.parseFloat(average_deaths).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_deaths).toFixed(2).length);
-                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_deaths).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_deaths).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? "+" : "-";
                 text += Number.parseFloat(average_deaths - oponent_average_deaths).toFixed(2) + ")\n";
 
                 text += "Average Assists      │ " + Number.parseFloat(average_assists).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_assists).toFixed(2).length);
-                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_assists).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_assists).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? "+" : "";
                 text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
 
                 text += "Average CS           │ " + Number.parseFloat(average_cs).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_cs).toFixed(2).length);
-                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_cs).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_cs).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? "+" : "";
                 text += Number.parseFloat(average_cs - oponent_average_cs).toFixed(2) + ")\n";
 
                 text += "Average Gold         │ " + Number.parseFloat(average_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_gold).toFixed(2).length);
-                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_gold).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? "+" : "";
                 text += Number.parseFloat(average_gold - oponent_average_gold).toFixed(2) + ")\n";
 
                 text += "Average Damages      │ " + Number.parseFloat(average_damages).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_damages).toFixed(2).length);
-                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_damages).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_damages).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? "+" : "";
                 text += Number.parseFloat(average_damages - oponent_average_damages).toFixed(2) + ")\n";
 
                 text += "Average Tanked       │ " + Number.parseFloat(average_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_tanked).toFixed(2).length);
-                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_tanked).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? "+" : "";
                 text += Number.parseFloat(average_tanked - oponent_average_tanked).toFixed(2) + ")\n";
 
                 text += "Average Pinks        │ " + Number.parseFloat(average_pinks).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_pinks).toFixed(2).length);
-                text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_pinks).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_pinks).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? "+" : "";
                 text += Number.parseFloat(average_pinks - oponent_average_pinks).toFixed(2) + ")\n";
 
                 text += "Average Vision Score │ " + Number.parseFloat(average_vision_score).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_vision_score).toFixed(2).length);
-                text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_average_vision_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_vision_score).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? "+" : "";
                 text += Number.parseFloat(average_vision_score - oponent_average_vision_score).toFixed(2) + ")\n";
 
                 text += "Average KP           │ " + Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2).length);
-                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
                 text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
 
                 text += "Score                │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
-                text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_score).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? "+" : "";
                 text += Number.parseFloat(score - oponent_score).toFixed(2) + ")\n";
 
                 text += "Carry Gold           │ " + Number.parseFloat(carry_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_gold).toFixed(2).length);
-                text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_carry_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_gold).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? "+" : "";
                 text += Number.parseFloat(carry_gold - oponent_carry_gold).toFixed(2) + ")\n";
 
                 text += "Carry Damage         │ " + Number.parseFloat(carry_damage).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_damage).toFixed(2).length);
-                text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_carry_damage).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_damage).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? "+" : "";
                 text += Number.parseFloat(carry_damage - oponent_carry_damage).toFixed(2) + ")\n";
 
                 text += "Carry Tanked         │ " + Number.parseFloat(carry_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_tanked).toFixed(2).length);
-                text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_carry_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_tanked).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? "+" : "";
                 text += Number.parseFloat(carry_tanked - oponent_carry_tanked).toFixed(2) + ")\n";
 
                 text += "Hard Carry           │ " + Number.parseFloat(hard_carry).toFixed(2) + " ".repeat(8 - Number.parseFloat(hard_carry).toFixed(2).length);
-                text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_hard_carry).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_hard_carry).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? "+" : "";
                 text += Number.parseFloat(hard_carry - oponent_hard_carry).toFixed(2) + ")\n";
 
                 text += "Overall              │ " + Number.parseFloat(overall).toFixed(2) + " ".repeat(8 - Number.parseFloat(overall).toFixed(2).length);
-                text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ▲ " : " ▼ ";
+                text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ⬆️ " : " ⬇️ ";
                 text += Number.parseFloat(oponent_overall).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_overall).toFixed(2).length);
                 text += " (";
                 text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? "+" : "";
