@@ -74,6 +74,7 @@ async function deploy(client, guild) {
                 commands.push({
                     name: item.name,
                     description: item.description,
+                    options: item.options,
                     defaultPermission: item.permission === "none",
                 });
             } else {
