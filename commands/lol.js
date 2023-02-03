@@ -234,7 +234,7 @@ module.exports = {
                         },
                     ]
                 },
-                {
+                /*{
                     name: 'friends',
                     description: 'See friends stats',
                     type: 'SUB_COMMAND',
@@ -318,7 +318,7 @@ module.exports = {
                             type: 'STRING'
                         },
                     ]
-                },
+                },*/
                 {
                     name: 'matchups',
                     description: 'See matchups stats',
@@ -564,7 +564,7 @@ module.exports = {
                         }
                     ]
                 },
-                {
+                /*{
                     name: 'ks',
                     description: 'See ks stats',
                     type: 'SUB_COMMAND',
@@ -648,7 +648,7 @@ module.exports = {
                             type: 'STRING'
                         }
                     ]
-                }/*,
+                },
                 {
                     name: 'match',
                     description: 'See matchs stats',
@@ -876,7 +876,7 @@ module.exports = {
         const role = interaction.options.getString("lane");
         const gamemode = interaction.options.getString("gamemode");
         const account = interaction.options.getString("account");
-        const puuid = interaction.options.getString("id");
+        //const puuid = interaction.options.getString("id");
         let discordaccount = interaction.options.getUser("discordaccount");
 
         await interaction.deferReply();
@@ -1451,7 +1451,7 @@ module.exports = {
 
                 return await interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "match") {
-                if (puuid !== null) {
+                /*if (puuid !== null) {
                     const query = "SELECT * FROM matchs WHERE puuid=$1;";
                     const response = await client.pg.query(query, [puuid]);
                     if (response.rows.length === 0) {
@@ -1465,9 +1465,9 @@ module.exports = {
                         //queryaccount = " AND summoners.account = '" + account + "' ";
                     }
 
-                }
+                }*/
             } else if (interaction.options.getSubcommand() === "ks") {
-                let i = 1;
+                /*let i = 1;
 
                 let discordusername = "";
                 if (discordaccount === null) {
@@ -1605,9 +1605,9 @@ module.exports = {
                     .setImage(url);
 
                 interaction.editReply({ embeds: [embed] });
-
+                */
             } else if (interaction.options.getSubcommand() === "friends") {
-                let i = 1;
+                /*let i = 1;
 
                 //let discordusername = "";
                 if (discordaccount === null) {
@@ -1709,7 +1709,7 @@ module.exports = {
                     return;
                 }
                 console.log(response.rows);
-
+                */
             } else if (interaction.options.getSubcommand() === "profile") {
                 let discordusername = "";
                 if (discordaccount === null) {
