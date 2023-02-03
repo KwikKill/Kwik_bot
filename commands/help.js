@@ -124,6 +124,7 @@ module.exports = {
     async autocomplete(client, interaction) {
         const focusedValue = interaction.options.getFocused();
         const cmds = client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue)).map(cmd => cmd.name);
+        console.log(cmds);
         return await interaction.respond(cmds);
     },
 };
