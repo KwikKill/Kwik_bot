@@ -37,7 +37,6 @@ module.exports = {
                 trackers.rows.forEach(tracker => {
                     client.trackers.push(tracker.channelid);
                 });
-                console.log(client.trackers);
             });
         });
 

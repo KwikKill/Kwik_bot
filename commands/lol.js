@@ -2544,6 +2544,10 @@ module.exports = {
                 return await interaction.editReply({ embeds: [embed] });
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
+            // permission verification
+            if (!interaction.member.permissions.has("ADMINISTRATOR")) {
+                return await interaction.editReply("You don't have the permission to use this command !");
+            }
             if (interaction.options.getSubcommand() === "add") {
                 const channel = interaction.options.getChannel("channel");
                 const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
