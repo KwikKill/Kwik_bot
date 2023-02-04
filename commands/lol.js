@@ -1470,7 +1470,7 @@ module.exports = {
                     }
 
                 }*/
-            } else if (interaction.options.getSubcommand() === "ks") {
+            } else if (interaction.options.getSubcommand() === "evolution") {
                 let i = 1;
 
                 let discordusername = "";
