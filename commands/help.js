@@ -36,7 +36,7 @@ module.exports = {
             const embed1 = new MessageEmbed()
                 .setColor("0xffe402")
                 .setTitle("1️⃣Commandes :")
-                .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Gab_bot')
+                .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Kwik_bot')
                 .setDescription(
                     "Pour avoir plus d'information sur une commande, utiliser la commande `help` suivie de la commande voulue.\n" +
                     '__Exemple__ : `' + config["prefix"] + 'help setup`\n' +
@@ -48,7 +48,7 @@ module.exports = {
             const embed2 = new MessageEmbed()
                 .setColor("0xffe402")
                 .setTitle("2️⃣Commands Owner :")
-                .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Gab_bot')
+                .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Kwik_bot')
                 .setTimestamp();
 
 
@@ -57,10 +57,12 @@ module.exports = {
                 //if(group.guarded === false) {
                 group.commands.each(cmd => {
                     if (cmd.permission !== "owner") {
-                        if (commands !== "") {
-                            commands = commands + ", ";
+                        if (client.canRunCommande(undefined, cmd, interaction)) {
+                            if (commands !== "") {
+                                commands = commands + ", ";
+                            }
+                            commands = commands + "`" + cmd.name + "`";
                         }
-                        commands = commands + "`" + cmd.name + "`";
                     } else {
                         embed2.addFields({ name: "- __" + cmd.name + "__:", value: cmd.description });
                     }
@@ -102,7 +104,7 @@ module.exports = {
                         .setColor("0xffe402")
                         .setTitle(cmd.name + " :")
                         .setDescription("`[]` : paramètre optionel\n`<>` : paramètre requis\n`<thing1 | thing2>` : sélectionnez une de ces options")
-                        .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Gab_bot')
+                        .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Kwik_bot')
                         .addFields(cmd.help)
                         .setTimestamp();
                     if (interaction === undefined) {
