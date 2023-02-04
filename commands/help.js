@@ -57,7 +57,7 @@ module.exports = {
                 //if(group.guarded === false) {
                 group.commands.each(cmd => {
                     if (cmd.permission !== "owner") {
-                        if (client.canRunCommande(undefined, cmd, interaction)) {
+                        if (client.canRunCommande(undefined, cmd, interaction) && (cmd.serverid === undefined || cmd.serverid?.includes(interaction.guild.id))) {
                             if (commands !== "") {
                                 commands = commands + ", ";
                             }
