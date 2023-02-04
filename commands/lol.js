@@ -559,8 +559,8 @@ module.exports = {
                     ]
                 },
                 {
-                    name: 'ks',
-                    description: 'See ks stats',
+                    name: 'evolution',
+                    description: 'See evolution graphs',
                     type: 'SUB_COMMAND',
                     options: [
                         {
@@ -1526,12 +1526,12 @@ module.exports = {
                     "FROM matchs, summoners " +
                     "WHERE discordid = $1" +
                     " AND matchs.player = summoners.puuid" +
-                    " AND (result = 'Win' OR result = 'Lose') " +
+                    " AND (result = 'Win' OR result = 'Lose')" +
                     queryaccount +
                     querygamemode +
                     queryrole +
                     querychamp +
-                    "GROUP BY week " +
+                    " GROUP BY week " +
                     ")" +
                     "SELECT " +
                     "week, " +
