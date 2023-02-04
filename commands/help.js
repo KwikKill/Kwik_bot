@@ -80,6 +80,7 @@ module.exports = {
                 cmd = client.commands.get(interaction.options.getString('commande'));
             }
             if (cmd) {
+                console.log("a");
                 if (cmd.help !== undefined) {
                     /*if(await checkpermission(this.client, message, message.author, this.cmd.name) === true || (message.member !== undefined && message.member.hasPermission("ADMINISTRATOR"))) {
                         message.author.send("__" + this.cmd.name + "__ :\n" + premessages[this.cmd.name]["help"])
@@ -139,6 +140,7 @@ module.exports = {
                     } else {
                         embed.addFields({ name: "- __" + cmd.name + "__ :", value: cmd.description });
                     }
+                    console.log("b");
 
                     if (interaction === undefined) {
                         message.channel.send({ embeds: [embed], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
