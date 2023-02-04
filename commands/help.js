@@ -149,6 +149,9 @@ module.exports = {
 
                             }
                         });
+                        if (optt !== "") {
+                            embed.addFields({ name: "- __" + cmd.name + " " + optt + "__ :", value: cmd.description });
+                        }
                     } else {
                         embed.addFields({ name: "- __" + cmd.name + "__ :", value: cmd.description });
                     }
