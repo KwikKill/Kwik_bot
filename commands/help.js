@@ -80,73 +80,69 @@ module.exports = {
                 cmd = client.commands.get(interaction.options.getString('commande'));
             }
             if (cmd) {
-                console.log("a");
-                if (cmd.help !== undefined) {
-                    /*if(await checkpermission(this.client, message, message.author, this.cmd.name) === true || (message.member !== undefined && message.member.hasPermission("ADMINISTRATOR"))) {
-                        message.author.send("__" + this.cmd.name + "__ :\n" + premessages[this.cmd.name]["help"])
-                    }*/
-                    const embed = new MessageEmbed()
-                        .setColor("0xffe402")
-                        .setTitle(cmd.name + " :")
-                        .setDescription("`[]` : optional parameter\n`<>` : required parameter\n`<thing1 | thing2>` : select one of these options")
-                        .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
-                        //.addFields(cmd.help)
-                        .setTimestamp();
-                    if (cmd.options !== undefined) {
-                        let optt = "";
-                        cmd.options.forEach(option => {
-                            if (option.type === "SUB_COMMAND_GROUP") {
-                                for (const value2 of option.options) {
-                                    if (value2.options === undefined) {
-                                        embed.addFields({ name: "- " + cmd.name + " " + option.name + " " + value2.name + " :", value: value2.description });
-                                    } else {
-                                        let opt = "";
-                                        for (const key2 of value2.options) {
-                                            if (key2.required) {
-                                                opt = opt + " <" + key2.name + ">";
-                                            } else {
-                                                opt = opt + " [" + key2.name + "]";
-                                            }
-                                        }
-                                        embed.addFields({ name: "- " + cmd.name + " " + option.name + " " + value2.name + opt + " :", value: value2.description });
-                                    }
-                                }
-                            } else if (option.type === "SUB_COMMAND") {
-                                if (option.options === undefined) {
-                                    embed.addFields({ name: "- " + cmd.name + " " + option.name + " :", value: option.description });
+                /*if(await checkpermission(this.client, message, message.author, this.cmd.name) === true || (message.member !== undefined && message.member.hasPermission("ADMINISTRATOR"))) {
+                    message.author.send("__" + this.cmd.name + "__ :\n" + premessages[this.cmd.name]["help"])
+                }*/
+                const embed = new MessageEmbed()
+                    .setColor("0xffe402")
+                    .setTitle(cmd.name + " :")
+                    .setDescription("`[]` : optional parameter\n`<>` : required parameter\n`<thing1 | thing2>` : select one of these options")
+                    .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
+                    //.addFields(cmd.help)
+                    .setTimestamp();
+                if (cmd.options !== undefined) {
+                    let optt = "";
+                    cmd.options.forEach(option => {
+                        if (option.type === "SUB_COMMAND_GROUP") {
+                            for (const value2 of option.options) {
+                                if (value2.options === undefined) {
+                                    embed.addFields({ name: "- " + cmd.name + " " + option.name + " " + value2.name + " :", value: value2.description });
                                 } else {
                                     let opt = "";
-                                    for (const key2 of option.options) {
+                                    for (const key2 of value2.options) {
                                         if (key2.required) {
                                             opt = opt + " <" + key2.name + ">";
                                         } else {
                                             opt = opt + " [" + key2.name + "]";
                                         }
                                     }
-                                    embed.addFields({ name: "- " + cmd.name + " " + option.name + opt + " :", value: option.description });
+                                    embed.addFields({ name: "- " + cmd.name + " " + option.name + " " + value2.name + opt + " :", value: value2.description });
                                 }
-                            } else {
-                                if (option.required) {
-                                    optt = optt + " <" + option.name + ">";
-                                } else {
-                                    optt = optt + " [" + option.name + "]";
-                                }
-
                             }
-                        });
-                        if (optt !== "") {
-                            embed.addFields({ name: "- __" + cmd.name + " " + optt + "__ :", value: cmd.description });
-                        }
-                    } else {
-                        embed.addFields({ name: "- __" + cmd.name + "__ :", value: cmd.description });
-                    }
-                    console.log("b");
+                        } else if (option.type === "SUB_COMMAND") {
+                            if (option.options === undefined) {
+                                embed.addFields({ name: "- " + cmd.name + " " + option.name + " :", value: option.description });
+                            } else {
+                                let opt = "";
+                                for (const key2 of option.options) {
+                                    if (key2.required) {
+                                        opt = opt + " <" + key2.name + ">";
+                                    } else {
+                                        opt = opt + " [" + key2.name + "]";
+                                    }
+                                }
+                                embed.addFields({ name: "- " + cmd.name + " " + option.name + opt + " :", value: option.description });
+                            }
+                        } else {
+                            if (option.required) {
+                                optt = optt + " <" + option.name + ">";
+                            } else {
+                                optt = optt + " [" + option.name + "]";
+                            }
 
-                    if (interaction === undefined) {
-                        message.channel.send({ embeds: [embed], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
-                    } else {
-                        interaction.reply({ embeds: [embed] });
+                        }
+                    });
+                    if (optt !== "") {
+                        embed.addFields({ name: "- __" + cmd.name + " " + optt + "__ :", value: cmd.description });
                     }
+                } else {
+                    embed.addFields({ name: "- __" + cmd.name + "__ :", value: cmd.description });
+                }
+
+                if (interaction === undefined) {
+                    message.channel.send({ embeds: [embed], reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
+                } else {
+                    interaction.reply({ embeds: [embed] });
                 }
             } else {
                 if (interaction === undefined) {
