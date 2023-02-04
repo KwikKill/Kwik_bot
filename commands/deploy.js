@@ -3,15 +3,9 @@ const config = require('../config.json');
 module.exports = {
     name: 'deploy',
     group: 'moderation',
-    description: "Commande de déploiement des commandes slash",
+    description: "Allow to redeploy commands and context menus.",
     permission: "owner",
     hidden: false,
-    help: [
-        {
-            "name": "- __deploy__ :",
-            "value": "Déploie les commandes slash."
-        }
-    ],
     place: "guild",
     options: undefined,
     commande_channel: true,

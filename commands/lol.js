@@ -19,25 +19,19 @@ const emojis = {
 module.exports = {
     name: 'lol',
     group: 'lol',
-    description: "Commande lol",
+    description: "league of legends related commands",
     permission: "none",
     hidden: false,
-    help: [
-        {
-            "name": "- __lol__ :",
-            "value": "Test lol."
-        },
-    ],
     place: "guild",
     options: [
         {
             name: 'account',
-            description: 'Manage lol accounts',
+            description: 'Manage your lol accounts',
             type: 'SUB_COMMAND_GROUP',
             options: [
                 {
                     name: 'add',
-                    description: 'Add a lol account',
+                    description: 'link a lol pseudo to your discord account',
                     type: 'SUB_COMMAND',
                     options: [
                         {
@@ -122,7 +116,7 @@ module.exports = {
         },
         {
             name: 'queue',
-            description: 'manage queue',
+            description: 'Get information about summoner\'s queue',
             type: 'SUB_COMMAND_GROUP',
             options: [
                 {
@@ -134,7 +128,7 @@ module.exports = {
         },
         {
             name: 'stats',
-            description: 'stat command',
+            description: 'lol stat commands',
             type: 'SUB_COMMAND_GROUP',
             options: [
                 {
@@ -485,7 +479,7 @@ module.exports = {
                 },
                 {
                     name: 'compare',
-                    description: 'compare stats',
+                    description: 'compare your stats to another player',
                     type: 'SUB_COMMAND',
                     options: [
                         {
@@ -738,12 +732,12 @@ module.exports = {
         },
         {
             name: 'top',
-            description: 'top command',
+            description: 'ranking commands',
             type: 'SUB_COMMAND_GROUP',
             options: [
                 {
                     name: 'carry',
-                    description: 'See top carry',
+                    description: 'ranking carry commands',
                     type: 'SUB_COMMAND',
                     options: [
                         {
@@ -788,7 +782,7 @@ module.exports = {
                 },
                 {
                     name: 'kwikscore',
-                    description: 'See top kwikscore',
+                    description: 'ranking kwikscore commands',
                     type: 'SUB_COMMAND',
                     options: [
                         {

@@ -6,12 +6,6 @@ module.exports = {
     serverid: ["513776796211085342", "480142959501901845", "890915473363980308", "962329252550807592"],
     hidden: false,
     place: "guild",
-    help: [
-        {
-            "name": "- __markov__ :",
-            "value": "Génère un message."
-        },
-    ],
     options: undefined,
     async run(message, client, interaction = undefined) {
         if (interaction !== undefined) {

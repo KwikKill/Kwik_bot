@@ -10,12 +10,6 @@ module.exports = {
     serverid: ["513776796211085342", "480142959501901845", "890915473363980308"],
     deploy: true,
     place: "guild",
-    help: [
-        {
-            "name": "- __moodle__ :",
-            "value": "Vérifie si moodle marche."
-        },
-    ],
     async run(message, client, interaction = undefined) {
         if (interaction.user.bot) { return; }
         if (interaction === undefined) { return await message.reply("Utilise les commandes slash"); }

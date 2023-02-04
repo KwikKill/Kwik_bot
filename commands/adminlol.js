@@ -3,16 +3,10 @@
 module.exports = {
     name: 'adminlol',
     group: 'lol',
-    description: "Commande lol",
+    description: "admin league of legends related commands",
     permission: "none",
     serverid: ["513776796211085342"],
     hidden: false,
-    help: [
-        {
-            "name": "- __lol__ :",
-            "value": "Test lol."
-        },
-    ],
     options: [
         {
             name: 'update',
@@ -26,7 +20,7 @@ module.exports = {
                 },
                 {
                     name: 'swain',
-                    description: 'swain',
+                    description: 'add swain main summoners to the database',
                     type: 'SUB_COMMAND'
                 }
             ]

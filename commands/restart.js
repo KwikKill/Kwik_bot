@@ -7,12 +7,6 @@ module.exports = {
     description: "Commande de restart du bot",
     permission: "owner",
     hidden: false,
-    help: [
-        {
-            "name": "- __restart__ :",
-            "value": "Redémarre le bot."
-        }
-    ],
     place: "dm",
     options: undefined,
     async run() {

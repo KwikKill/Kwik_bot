@@ -94,12 +94,6 @@ module.exports = {
     hidden: false,
     place: "both",
     deploy: true,
-    help: [
-        {
-            "name": "- __edt <classe>__ :",
-            "value": "envoie une image de l'emploi du temps de la classe demandé"
-        },
-    ],
     options: [
         {
             name: 'classe',

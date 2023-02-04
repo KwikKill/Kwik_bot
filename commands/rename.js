@@ -6,12 +6,6 @@ module.exports = {
     serverid: ["513776796211085342", "480142959501901845", "890915473363980308"],
     hidden: false,
     place: "guild",
-    help: [
-        {
-            "name": "- __rename <@user> <pseudo>__ :",
-            "value": "Rennome <@user> en <pseudo>."
-        },
-    ],
     options: [
         {
             name: 'user',

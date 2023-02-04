@@ -1,54 +1,38 @@
-const fs = require("fs");
-const path = require('path');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     name: 'help',
     group: 'help',
-    description: "Fournit la liste des commandes et l'aide correspondante",
+    description: "Provides list of commands and corresponding help",
     permission: "none",
     hidden: false,
     place: "both",
-    help: [
-        {
-            "name": "- __help__ :",
-            "value": "Affiche les commandes disponibles."
-        },
-        {
-            "name": "- __help [commande]__ :",
-            "value": "Affiche l'aide de la commande spécifiée'."
-        }
-    ],
     options: [
         {
             name: 'commande',
-            description: 'Nom de la commande',
+            description: 'Provides list of commands and corresponding help',
             type: 'STRING',
             required: false,
             autocomplete: true
         },
     ],
     async run(message, client, interaction = undefined) {
-        const config = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "config.json"), "utf8"));
-
         if ((interaction === undefined && message.args[1] === undefined) || (interaction === undefined && message.args[1] === "help") || (interaction.options.getString('commande') === null) || (interaction.options.getString('commande') === "help")) {
 
             const embed1 = new MessageEmbed()
                 .setColor("0xffe402")
-                .setTitle("1️⃣Commandes :")
-                .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Kwik_bot')
+                .setTitle("1️⃣Commands :")
+                .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                 .setDescription(
-                    "Pour avoir plus d'information sur une commande, utiliser la commande `help` suivie de la commande voulue.\n" +
-                    '__Exemple__ : `' + config["prefix"] + 'help setup`\n' +
-                    "Le préfix est `" + config["prefix"] + '` ou `@mention`\n' +
-                    '__Exemple__ : `' + config["prefix"] + 'help` ou `@Gab_bot help`\n'
+                    "To get more information about a command, use the `help` command followed by the desired command.\n" +
+                    '__Example__ : `/help [command]`\n'
                 )
                 .setTimestamp();
 
             const embed2 = new MessageEmbed()
                 .setColor("0xffe402")
-                .setTitle("2️⃣Commands Owner :")
-                .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Kwik_bot')
+                .setTitle("2️⃣ Owner Commands :")
+                .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                 .setTimestamp();
 
 
@@ -103,8 +87,8 @@ module.exports = {
                     const embed = new MessageEmbed()
                         .setColor("0xffe402")
                         .setTitle(cmd.name + " :")
-                        .setDescription("`[]` : paramètre optionel\n`<>` : paramètre requis\n`<thing1 | thing2>` : sélectionnez une de ces options")
-                        .setAuthor("KwikBot", client.user.avatarURL(), 'https://github.com/KwikKill/Kwik_bot')
+                        .setDescription("`[]` : optional parameter\n`<>` : required parameter\n`<thing1 | thing2>` : select one of these options")
+                        .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                         //.addFields(cmd.help)
                         .setTimestamp();
                     if (cmd.options !== undefined) {
@@ -164,9 +148,9 @@ module.exports = {
                 }
             } else {
                 if (interaction === undefined) {
-                    message.channel.send({ content: "Cette commande n'existe pas. Pour voir la liste complete des commandes, utilisez la commande **help**", reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
+                    message.channel.send({ content: "This command does not exist. To see the complete list of commands, use the command **help**", reply: { messageReference: message.id }, allowedMentions: { repliedUser: false } });
                 } else {
-                    interaction.reply({ content: "La commande `" + interaction.options.getString('commande') + "` n'existe pas." });
+                    interaction.reply({ content: "The `" + interaction.options.getString('commande') + "` command does not exist." });
                 }
             }
         }

@@ -201,40 +201,6 @@ module.exports = {
             ]
         },
     ],
-    help: [
-        {
-            "name": "- __among create__ :",
-            "value": "Créé une partie d'among legends."
-        },
-        {
-            "name": "- __among join__ :",
-            "value": "Permet de rejoindre une partie d'among legends."
-        },
-        {
-            "name": "- __among leave__ :",
-            "value": "Permet de quitter une partie d'among legends."
-        },
-        {
-            "name": "- __among role__ :",
-            "value": "Permet d'assigner les rôles par la partie d'among legends."
-        },
-        {
-            "name": "- __among start__ :",
-            "value": "Permet de démarrer la partie d'among legends."
-        },
-        {
-            "name": "- __among stats__ :",
-            "value": "Permet d'enregistrer les stats de la partie d'among legends."
-        },
-        {
-            "name": "- __among stop__ :",
-            "value": "Permet d'arreter la partie d'among legends."
-        },
-        {
-            "name": "- __among vote__ :",
-            "value": "Permet de voter à la fin de la partie d'among legends."
-        },
-    ],
     async run(message, client, interaction = undefined) {
         if (interaction !== undefined) {
             switch (interaction.options.getSubcommand()) {
