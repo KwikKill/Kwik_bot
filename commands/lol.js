@@ -558,7 +558,7 @@ module.exports = {
                         }
                     ]
                 },
-                /*{
+                {
                     name: 'ks',
                     description: 'See ks stats',
                     type: 'SUB_COMMAND',
@@ -643,7 +643,7 @@ module.exports = {
                         }
                     ]
                 },
-                {
+                /*{
                     name: 'match',
                     description: 'See matchs stats',
                     type: 'SUB_COMMAND',
@@ -885,11 +885,21 @@ module.exports = {
                             number++;
                         }
                     }
+                    const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
+                    if (priority.rows[0].priority === 0) {
+                        if (number === 0) {
+                            await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
+                            return await addSumoner(client, summoner_name, interaction, region);
+                        }
+                        return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **KwikKill#6123**");
+                    }
                     if (number < 3) {
                         await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
                         return await addSumoner(client, summoner_name, interaction, region);
                     }
-                    return await interaction.editReply("You have reached your maximum number of linked accounts.");
+                    return await interaction.editReply("You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **KwikKill#6123**");
+
+
                 }
                 return await interaction.editReply("This account is already in the database or requested.");
             } else if (interaction.options.getSubcommand() === "remove") {
@@ -1461,7 +1471,7 @@ module.exports = {
 
                 }*/
             } else if (interaction.options.getSubcommand() === "ks") {
-                /*let i = 1;
+                let i = 1;
 
                 let discordusername = "";
                 if (discordaccount === null) {
@@ -1475,80 +1485,60 @@ module.exports = {
                 i++;
 
                 let queryaccount = "";
-                let queryaccount2 = "";
                 if (account !== null) {
                     queryaccount = " AND summoners.account = $" + i;
-                    queryaccount2 = " AND s2.account = $" + i;
                     query_values.push(account);
                     i++;
                 }
 
                 let querygamemode = "";
-                let querygamemode2 = "";
                 if (gamemode !== null) {
                     querygamemode = " AND matchs.gamemode = $" + i;
-                    querygamemode2 = " AND m2.gamemode = $" + i;
                     query_values.push(gamemode);
                     i++;
                 }
 
                 let queryrole = "";
-                let queryrole2 = "";
                 if (role !== null) {
                     queryrole = " AND matchs.lane = $" + i;
-                    queryrole2 = " AND m2.lane = $" + i;
                     query_values.push(role);
                     i++;
                 }
 
                 let querychamp = "";
-                let querychamp2 = "";
                 if (champion !== null) {
                     querychamp = " AND matchs.champion=$" + i;
-                    querychamp2 = " AND m2.champion=$" + i;
                     query_values.push(champion);
                     i++;
                 }
 
                 const query =
-                    "SELECT timestamp*86400000 as time, " +
-                    "count(*) as daily, " +
-                    "(" +
-                    "SELECT ARRAY[" +
-                    "count(*), " +
-                    "cast(count(*) FILTER (WHERE first_tanked OR first_gold OR first_damages)*100 as float)/count(*), " +
-                    "cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*), " +
-                    "cast((avg(m2.kill)+avg(m2.assists))*100 as float)/avg(m2.total_kills), " +
-                    "(avg(m2.vision_score))/(avg(m2.length)/60), " +
-                    "(avg(m2.cs))/(avg(m2.length)/60), " +
-                    "cast(count(*) FILTER (WHERE first_tanked AND first_gold AND first_damages)*100 as float)/count(*) " +
-                    "] as stats " +
-                    "FROM matchs m2, summoners s2 " +
-                    "WHERE m2.player = s2.puuid " +
-                    "AND s2.discordid = $1" +
-                    queryaccount2 +
-                    querygamemode2 +
-                    queryrole2 +
-                    querychamp2 +
-                    " AND m2.timestamp <= (matchs.timestamp+1)*86400000 " +
-                    ")" +
-                    "FROM " +
-                    "(" +
-                    "SELECT puuid, " +
-                    "champion, " +
-                    "lane, " +
-                    "gamemode, " +
-                    "player, " +
-                    "cast((matchs.timestamp)/86400000 as bigint) as timestamp " +
-                    "FROM matchs " +
-                    ") as matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid " +
-                    "AND summoners.discordid = $1" +
+                    "WITH weekly_matches AS (" +
+                    "SELECT " +
+                    "date_trunc('week', to_timestamp(timestamp / 1000)) AS week, " +
+                    "Count(*) AS total_games, " +
+                    "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) AS win_rate, " +
+                    "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_or_damages_or_tanked, " +
+                    "CAST(SUM(CASE WHEN first_gold AND first_damages AND first_tanked THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_and_damages_and_tanked, " +
+                    "(CAST(SUM(kill + assists) AS FLOAT) / AVG(total_kills))/ Count(*) AS kill_participation, " +
+                    "SUM(vision_score) / (SUM(length / 60) * 20) AS vision_score_per_minute, " +
+                    "SUM(cs) / (SUM(length / 60)) AS cs_per_minute " +
+                    "FROM matchs, summoners " +
+                    "WHERE discordid = $1" +
+                    " AND matchs.player = summoners.puuid" +
+                    " AND (result = 'Win' OR result = 'Lose') " +
                     queryaccount +
                     querygamemode +
                     queryrole +
                     querychamp +
-                    " GROUP BY timestamp;";
+                    "GROUP BY week " +
+                    ")" +
+                    "SELECT " +
+                    "week, " +
+                    "total_games, " +
+                    "win_rate, " +
+                    "100 * first_gold_or_damages_or_tanked + 100 * win_rate + 100 * kill_participation + 5 * vision_score_per_minute + 10 * cs_per_minute + 50 * first_gold_and_damages_and_tanked  AS score " +
+                    "FROM weekly_matches ORDER BY week ASC;";
 
                 const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
@@ -1558,16 +1548,7 @@ module.exports = {
 
                 const ks = [];
                 for (let i = 0; i < response.rows.length; i++) {
-                    let score = 0;
-                    score += response.rows[i].stats[1];
-                    score += response.rows[i].stats[2];
-                    score += response.rows[i].stats[3];
-                    score += 5 * response.rows[i].stats[4];
-                    score += 10 * response.rows[i].stats[5];
-                    if (100 - response.rows[i].stats[0] > 0) {
-                        score = score * 0.99 ** (100 - response.rows[i].stats[0]);
-                    }
-                    ks.push({ x: response.rows[i].time, y: score });
+                    ks.push({ x: response.rows[i].week, y: response.rows[i].score });
                 }
                 //console.log(ks)
 
@@ -1599,7 +1580,6 @@ module.exports = {
                     .setImage(url);
 
                 interaction.editReply({ embeds: [embed] });
-                */
             } else if (interaction.options.getSubcommand() === "friends") {
                 /*let i = 1;
 
@@ -1843,6 +1823,11 @@ module.exports = {
                 return await interaction.editReply({ embeds: [embed] });
 
             } else if (interaction.options.getSubcommand() === "compare") {
+                const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
+                if (priority.rows[0].priority === 0) {
+                    return await interaction.editReply("This feature is not available for the moment. If you want to support me, you can contact me on discord : **KwikKill#6123**");
+                }
+
                 let i = 1;
 
                 const discordusername = discordaccount.username;
@@ -2170,7 +2155,7 @@ module.exports = {
                 text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
                 text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
 
-                text += "Score                │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
+                text += "KwikScore            │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
                 text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_score).toFixed(2).length);
                 text += " (";
@@ -2205,7 +2190,7 @@ module.exports = {
                 text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? "+" : "";
                 text += Number.parseFloat(hard_carry - oponent_hard_carry).toFixed(2) + ")\n";
 
-                text += "Overall              │ " + Number.parseFloat(overall).toFixed(2) + " ".repeat(8 - Number.parseFloat(overall).toFixed(2).length);
+                text += "Overall Carry        │ " + Number.parseFloat(overall).toFixed(2) + " ".repeat(8 - Number.parseFloat(overall).toFixed(2).length);
                 text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ▲ " : " ▼ ";
                 text += Number.parseFloat(oponent_overall).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_overall).toFixed(2).length);
                 text += " (";
