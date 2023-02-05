@@ -1077,20 +1077,45 @@ module.exports = {
 
                 // plot
 
-                const url = "https://chart.googleapis.com/chart?cht=p&chs=500x300&chd=t:";
-
-                let values = "";
-                let labels = "";
+                const values = [];
+                const labels = [];
 
                 for (let i = 0; i < response3.rows.length; i++) {
-                    values += response3.rows[i].count + ",";
-                    labels += response3.rows[i].gamemode.replaceAll(" ", "").replaceAll("&", "") + "|";
+                    values.push(response3.rows[i].count);
+                    labels.push(response3.rows[i].gamemode);
                 }
-                values = values.substring(0, values.length - 1);
-                labels = labels.substring(0, labels.length - 1);
 
-                const url2 = url + values + "&chl=" + labels + "&chco=FFC6A5|FFFF42|DEF3BD|00A5C6|DEBDDE|FF0000|0000CC|660033|66FF66&chf=bg,s,00000a00";
+                const width = 1000; //px
+                const height = 400; //px
+                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
+                const configuration = {
+                    type: 'pie',
+                    data: {
+                        datasets: [{
+                            label: 'Gamemodes played',
+                            //borderColor: '#36A2EB',
+                            //backgroundColor: '#9BD0F5',
+                            data: values
+                        }],
+                        labels: labels
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Champions'
+                            }
+                        }
+                    }, // See https://www.chartjs.org/docs/latest/configuration
+                };
+                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                const attachment = new MessageAttachment(image, 'stats.png');
 
                 // 1) Carry stats
 
@@ -1192,8 +1217,8 @@ module.exports = {
                             "\nGold/min : " + average_gold,
                         inline: true
                     }
-                ).setImage(url2);
-                return await interaction.editReply({ embeds: [embed] });
+                ).setImage("attachment://stats.png");
+                return await interaction.editReply({ embeds: [embed], files: [attachment] });
             } else if (interaction.options.getSubcommand() === "matchups") {
                 let i = 1;
 
