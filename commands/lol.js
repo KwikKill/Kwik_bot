@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 
 const decimal = 2;
 const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
@@ -1546,21 +1547,54 @@ module.exports = {
                     return;
                 }
 
-                const ks = [];
+                const labels = [];
+                const data = [];
                 for (let i = 0; i < response.rows.length; i++) {
-                    ks.push({ x: response.rows[i].week, y: response.rows[i].score });
+                    labels.push(response.rows[i].week);
+                    data.push(response.rows[i].score);
+                    //ks.push({ x: response.rows[i].week, y: response.rows[i].score });
                 }
                 //console.log(ks)
 
-                let url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chf=bg,s,00000a00&chdl=ks&chd=t:";
-                let values = "";
-                for (let i = 0; i < ks.length; i++) {
-                    values += (ks[i].y / 5).toFixed(0) + ",";
-                }
-                values = values.slice(0, -1);
-                url += values;
+                //let url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chf=bg,s,00000a00&chdl=ks&chd=t:";
+                //let values = "";
+                //for (let i = 0; i < ks.length; i++) {
+                //    values += (ks[i].y / 5).toFixed(0) + ",";
+                //}
+                //values = values.slice(0, -1);
+                //url += values;
                 //console.log(url)
 
+                const width = 400; //px
+                const height = 400; //px
+                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+
+                const configuration = {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Test',
+                            data: data,
+                            borderColor: '#36A2EB',
+                            backgroundColor: '#9BD0F5'
+                        }],
+                        labels: labels
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Chart.js Line Chart'
+                            }
+                        }
+                    }, // See https://www.chartjs.org/docs/latest/configuration
+                };
+                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
 
                 // create embed
                 const embed = new MessageEmbed()
@@ -1577,7 +1611,7 @@ module.exports = {
                             value: "" + response.rows.length
                         },
                     )
-                    .setImage(url);
+                    .setImage(image);
 
                 interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "friends") {
