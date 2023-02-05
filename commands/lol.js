@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 
 const decimal = 2;
@@ -1594,7 +1594,8 @@ module.exports = {
                         }
                     }, // See https://www.chartjs.org/docs/latest/configuration
                 };
-                const image = await chartJSNodeCanvas.renderToDataURL(configuration);
+                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                const attachment = new MessageAttachment(image, 'ks.png');
 
                 // create embed
                 const embed = new MessageEmbed()
@@ -1611,9 +1612,9 @@ module.exports = {
                             value: "" + response.rows.length
                         },
                     )
-                    .setImage(image);
+                    .setImage("attachment://ks.png");
 
-                interaction.editReply({ embeds: [embed] });
+                interaction.editReply({ embeds: [embed], files: [attachment] });
             } else if (interaction.options.getSubcommand() === "friends") {
                 /*let i = 1;
 
