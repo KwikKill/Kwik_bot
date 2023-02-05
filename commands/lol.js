@@ -1380,7 +1380,18 @@ module.exports = {
                     return await interaction.editReply("You don't have any matchs in the database.");
                 }
 
-                const url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:";
+                const data1 = [];
+                const data2 = [];
+                const labels = [];
+                for (let i = 0; i < response.rows.length; i++) {
+                    if (response.rows[i].count > 4 && response.rows[i].champion !== "" && response.rows[i].champion !== "Invalid") {
+                        data1.push(response.rows[i].winrate);
+                        data2.push(response.rows[i].carry);
+                        labels.push(response.rows[i].champion);
+                    }
+                }
+
+                /*const url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:";
 
                 let values1 = "";
                 let values2 = "";
@@ -1401,6 +1412,48 @@ module.exports = {
                 values2 = values2.substring(0, values2.length - 1);
                 champ = champ.substring(0, champ.length - 1);
                 const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
+                */
+
+                const width = 1500; //px
+                const height = 1000; //px
+                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+
+                const configuration = {
+                    type: 'bar',
+                    data: {
+                        datasets: [{
+                            barPercentage: 0.5,
+                            barThickness: 6,
+                            maxBarThickness: 8,
+                            minBarLength: 2,
+                            data: data1
+                        },
+                        {
+                            barPercentage: 0.5,
+                            barThickness: 6,
+                            maxBarThickness: 8,
+                            minBarLength: 2,
+                            data: data2
+                        }],
+                        labels: labels
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Champions'
+                            }
+                        }
+                    }, // See https://www.chartjs.org/docs/latest/configuration
+                };
+                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                const attachment = new MessageAttachment(image, 'champion.png');
+
 
                 let title = "" + discordusername + "'s champions";
                 if (role !== null) {
@@ -1425,7 +1478,9 @@ module.exports = {
                             value: "" + response.rows.length
                         },
                     )
-                    .setImage(url2);
+                    .setImage("attachment://champion.png");
+
+
 
                 for (let i = 0; i < 5; i++) {
                     let text = "";
@@ -1453,8 +1508,7 @@ module.exports = {
                         );
                     }
                 }
-
-                return await interaction.editReply({ embeds: [embed] });
+                return await interaction.editReply({ embeds: [embed], files: [attachment] });
             } else if (interaction.options.getSubcommand() === "match") {
                 /*if (puuid !== null) {
                     const query = "SELECT * FROM matchs WHERE puuid=$1;";
