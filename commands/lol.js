@@ -1565,8 +1565,8 @@ module.exports = {
                 //url += values;
                 //console.log(url)
 
-                const width = 400; //px
-                const height = 400; //px
+                const width = 1500; //px
+                const height = 1000; //px
                 const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
                 const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
@@ -1574,7 +1574,7 @@ module.exports = {
                     type: 'line',
                     data: {
                         datasets: [{
-                            label: 'Test',
+                            label: 'Ks evolution',
                             data: data,
                             borderColor: '#36A2EB',
                             backgroundColor: '#9BD0F5'
