@@ -1423,19 +1423,13 @@ module.exports = {
                     type: 'bar',
                     data: {
                         datasets: [{
-                            //barPercentage: 0.5,
-                            //barThickness: 6,
-                            //maxBarThickness: 8,
-                            //minBarLength: 2,
+                            label: 'WinRate per champion',
                             borderColor: '#36A2EB',
                             backgroundColor: '#9BD0F5',
                             data: data1
                         },
                         {
-                            //barPercentage: 0.5,
-                            //barThickness: 6,
-                            //maxBarThickness: 8,
-                            //minBarLength: 2,
+                            label: 'Carry per champion',
                             borderColor: '#FF6384',
                             backgroundColor: '#FFB1C1',
                             data: data2
