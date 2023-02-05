@@ -1578,8 +1578,8 @@ module.exports = {
                             data: data,
                             borderColor: '#36A2EB',
                             backgroundColor: '#9BD0F5'
-                        }],
-                        labels: labels
+                        }]//,
+                        //labels: labels
                     },
                     options: {
                         responsive: true,
