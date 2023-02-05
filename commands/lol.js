@@ -1550,7 +1550,7 @@ module.exports = {
                 const labels = [];
                 const data = [];
                 for (let i = 0; i < response.rows.length; i++) {
-                    labels.push(response.rows[i].week);
+                    labels.push(i);
                     data.push(response.rows[i].score);
                     //ks.push({ x: response.rows[i].week, y: response.rows[i].score });
                 }
@@ -1580,8 +1580,8 @@ module.exports = {
                             data: data,
                             borderColor: '#36A2EB',
                             backgroundColor: '#9BD0F5'
-                        }]//,
-                        //labels: labels
+                        }],
+                        labels: labels
                     },
                     options: {
                         responsive: true,
@@ -1591,7 +1591,7 @@ module.exports = {
                             },
                             title: {
                                 display: true,
-                                text: 'Chart.js Line Chart'
+                                text: 'Evolution'
                             }
                         }
                     }, // See https://www.chartjs.org/docs/latest/configuration
@@ -1610,7 +1610,7 @@ module.exports = {
                     .setTimestamp()
                     .addFields(
                         {
-                            name: "Number of days played :",
+                            name: "Number of weeks played :",
                             value: "" + response.rows.length
                         },
                     )
