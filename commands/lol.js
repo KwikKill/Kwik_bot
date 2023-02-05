@@ -1565,6 +1565,8 @@ module.exports = {
                 //url += values;
                 //console.log(url)
 
+                console.log(data);
+
                 const width = 1500; //px
                 const height = 1000; //px
                 const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
