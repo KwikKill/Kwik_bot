@@ -1331,7 +1331,7 @@ module.exports = {
                         value: "" + response.rows.length
                     },
                 )
-                    .setImage("attachment://champion.png");
+                    .setImage("attachment://matchup.png");
 
                 for (let i = 0; i < 5; i++) {
                     let text = "";
