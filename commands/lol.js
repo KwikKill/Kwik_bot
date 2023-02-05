@@ -1245,11 +1245,9 @@ module.exports = {
                     return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                 }
 
-                const url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:";
-
-                let values1 = "";
-                let values2 = "";
-                let champ = "";
+                const values1 = [];
+                const values2 = [];
+                const champ = [];
 
                 const max = 17;
 
@@ -1258,21 +1256,54 @@ module.exports = {
                     if (response.rows[i].count1 > 4 && response.rows[i].matchup !== "" && response.rows[i].matchup !== "Invalid") {
                         data.push("- " + response.rows[i].matchup + " : " + response.rows[i].count1 + " matchs (" + response.rows[i].winrate.toFixed(1) + "% winrate, " + response.rows[i].carry.toFixed(1) + "% carry)\n");
                         if (i < max) {
-                            values1 += response.rows[i].winrate + ",";
-                            values2 += response.rows[i].carry + ",";
-                            champ += response.rows[i].matchup.replaceAll(" ", "").replaceAll("&", "") + "|";
+                            values1.push(response.rows[i].winrate);
+                            values2.push(response.rows[i].carry);
+                            champ.push(response.rows[i].matchup);
                         }
                     }
                 }
-                values1 = values1.substring(0, values1.length - 1);
-                values2 = values2.substring(0, values2.length - 1);
-                champ = champ.substring(0, champ.length - 1);
 
                 if (data.length === 0) {
                     return await interaction.editReply("You must have played more than 4 games against a matchup.");
                 }
 
-                const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
+                const width = 1000; //px
+                const height = 400; //px
+                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+
+                const configuration = {
+                    type: 'bar',
+                    data: {
+                        datasets: [{
+                            label: 'WinRate per champion',
+                            borderColor: '#36A2EB',
+                            backgroundColor: '#9BD0F5',
+                            data: values1
+                        },
+                        {
+                            label: 'Carry per champion',
+                            borderColor: '#FF6384',
+                            backgroundColor: '#FFB1C1',
+                            data: values2
+                        }],
+                        labels: champ
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Champions'
+                            }
+                        }
+                    }, // See https://www.chartjs.org/docs/latest/configuration
+                };
+                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                const attachment = new MessageAttachment(image, 'matchup.png');
 
                 let title = "" + discordusername + "'s matchups";
                 if (champion !== null) {
@@ -1300,7 +1331,7 @@ module.exports = {
                         value: "" + response.rows.length
                     },
                 )
-                    .setImage(url2);
+                    .setImage("attachment://champion.png");
 
                 for (let i = 0; i < 5; i++) {
                     let text = "";
@@ -1329,7 +1360,7 @@ module.exports = {
                     }
                 }
 
-                return await interaction.editReply({ embeds: [embed] });
+                return await interaction.editReply({ embeds: [embed], files: [attachment] });
             } else if (interaction.options.getSubcommand() === "champions") {
                 let i = 1;
 
@@ -1391,28 +1422,7 @@ module.exports = {
                     }
                 }
 
-                /*const url = "https://chart.googleapis.com/chart?cht=bvg&chs=1000x300&chxt=x,y&chd=t:";
 
-                let values1 = "";
-                let values2 = "";
-                let champ = "";
-
-                const max = 17;
-
-                for (let i = 0; i < response.rows.length; i++) {
-                    if (response.rows[i].count > 4 && response.rows[i].champion !== "" && response.rows[i].champion !== "Invalid") {
-                        if (i < max) {
-                            values1 += response.rows[i].winrate + ",";
-                            values2 += response.rows[i].carry + ",";
-                            champ += response.rows[i].champion.replaceAll(" ", "").replaceAll("&", "") + "|";
-                        }
-                    }
-                }
-                values1 = values1.substring(0, values1.length - 1);
-                values2 = values2.substring(0, values2.length - 1);
-                champ = champ.substring(0, champ.length - 1);
-                const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
-                */
 
                 const width = 1000; //px
                 const height = 400; //px
