@@ -1552,20 +1552,7 @@ module.exports = {
                 for (let i = 0; i < response.rows.length; i++) {
                     labels.push(i);
                     data.push(response.rows[i].score);
-                    //ks.push({ x: response.rows[i].week, y: response.rows[i].score });
                 }
-                //console.log(ks)
-
-                //let url = "https://chart.googleapis.com/chart?cht=lc&chs=600x300&chco=FFC6A5&chxt=y&chxr=0,0,500&chf=bg,s,00000a00&chdl=ks&chd=t:";
-                //let values = "";
-                //for (let i = 0; i < ks.length; i++) {
-                //    values += (ks[i].y / 5).toFixed(0) + ",";
-                //}
-                //values = values.slice(0, -1);
-                //url += values;
-                //console.log(url)
-
-                console.log(data);
 
                 const width = 1500; //px
                 const height = 1000; //px
