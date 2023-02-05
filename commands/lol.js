@@ -1414,8 +1414,8 @@ module.exports = {
                 const url2 = (url + values1 + "|" + values2 + "&chl=" + champ + "&chco=FF0000,00FF00&chf=bg,s,00000a00");
                 */
 
-                const width = 1500; //px
-                const height = 1000; //px
+                const width = 1000; //px
+                const height = 400; //px
                 const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
                 const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
@@ -1423,17 +1423,21 @@ module.exports = {
                     type: 'bar',
                     data: {
                         datasets: [{
-                            barPercentage: 0.5,
-                            barThickness: 6,
-                            maxBarThickness: 8,
-                            minBarLength: 2,
+                            //barPercentage: 0.5,
+                            //barThickness: 6,
+                            //maxBarThickness: 8,
+                            //minBarLength: 2,
+                            borderColor: '#36A2EB',
+                            backgroundColor: '#9BD0F5',
                             data: data1
                         },
                         {
-                            barPercentage: 0.5,
-                            barThickness: 6,
-                            maxBarThickness: 8,
-                            minBarLength: 2,
+                            //barPercentage: 0.5,
+                            //barThickness: 6,
+                            //maxBarThickness: 8,
+                            //minBarLength: 2,
+                            borderColor: '#FF6384',
+                            backgroundColor: '#FFB1C1',
                             data: data2
                         }],
                         labels: labels
