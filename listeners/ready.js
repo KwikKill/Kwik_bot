@@ -14,7 +14,7 @@ module.exports = {
 
         console.log(discordJSVersion);
         console.log('Le bot est démarré !');
-        client.user.setActivity("[insert savun twomp]", { type: 'LISTENING' });
+        client.user.setActivity("with your lol stats", { type: 'PLAYING' });
 
         const pgclient = new pg.Client({
             user: 'postgres',
