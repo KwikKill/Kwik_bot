@@ -1085,8 +1085,8 @@ module.exports = {
                     labels.push(response3.rows[i].gamemode);
                 }
 
-                const width = 1000; //px
-                const height = 400; //px
+                const width = 600; //px
+                const height = 600; //px
                 const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
                 const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
