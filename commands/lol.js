@@ -1086,7 +1086,7 @@ module.exports = {
                 }
 
                 const width = 600; //px
-                const height = 600; //px
+                const height = 800; //px
                 const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
                 const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
