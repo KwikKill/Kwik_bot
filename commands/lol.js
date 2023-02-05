@@ -1594,7 +1594,7 @@ module.exports = {
                         }
                     }, // See https://www.chartjs.org/docs/latest/configuration
                 };
-                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                const image = await chartJSNodeCanvas.renderToDataURL(configuration);
 
                 // create embed
                 const embed = new MessageEmbed()
