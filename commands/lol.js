@@ -962,19 +962,38 @@ module.exports = {
                 let step = "";
                 if (client.requests["updates"].length > 0) {
                     if (client.requests["updates"][0]["count"] === 0) {
-                        step = "- Step : 1/2 (Fetching game list)" +
-                            "";
+                        step = //"- Step : 1/2 (Fetching game list)" +
+                            "- Current : <@" + client.requests["updates"][0]["discordid"] + "> (" + client.requests["updates"][0]["username"] + ") : Fetching match list";
                     } else {
-                        step = "- Step : 2/2 (Fetching matchs details)\n" +
-                            "- Current : <@" + client.requests["updates"][0]["discordid"] + "> : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " Games";
+                        step = //"- Step : 2/2 (Fetching matchs details)\n" +
+                            "- Current : <@" + client.requests["updates"][0]["discordid"] + "> (" + client.requests["updates"][0]["username"] + ") : " + client.requests["updates"][0]["count"] + "/" + client.requests["updates"][0]["total"] + " matchs";
                     }
                     embed.addFields(
                         {
-                            name: "Updates in queue :",
-                            value: "- Length : " + client.requests["updates"].length + " Summoners | " + client.queue_length + " Matchs\n" +
+                            name: "Queued updates :",
+                            value: "- size : " + client.requests["updates"].length + " Summoners\n" +
                                 step + "\n"
                         }
                     );
+                    const pos = [];
+                    for (let i = 1; i < client.requests["updates"].length; i++) {
+                        if (client.requests["updates"][i]["discordid"] === interaction.user.id) {
+                            pos.push([i, client.requests["updates"][i]["username"]]);
+                            break;
+                        }
+                    }
+                    let text = "";
+                    for (let i = 0; i < pos.length; i++) {
+                        text += "- " + pos[i][1] + " : " + pos[i][0] + "/" + client.requests["updates"].length + "\n";
+                    }
+                    if (text !== "") {
+                        embed.addFields(
+                            {
+                                name: "Your position in the queue :",
+                                value: "" + text
+                            }
+                        );
+                    }
                 } else {
                     embed.addFields(
                         {
@@ -983,12 +1002,14 @@ module.exports = {
                         }
                     );
                 }
-                embed.addFields(
-                    {
-                        name: "Api limit reached :",
-                        value: "" + client.api_limit
-                    }
-                );
+                if (interaction.user.id === "297409548703105035") {
+                    embed.addFields(
+                        {
+                            name: "Api limit reached :",
+                            value: "" + client.api_limit
+                        }
+                    );
+                }
                 return await interaction.editReply({ embeds: [embed] });
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {

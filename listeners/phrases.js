@@ -55,13 +55,21 @@ module.exports = {
                 for (const x in japonais) {
                     if (msg.content.includes(japonais[x])) {
                         client.channels.fetch("1004443609355002027").then(general => {
-                            msg.author.send("Pas de japoniaiserie dans les salons autre que <#940543958394732555>. Vous serez réinvité dans 10m.");
+                            try {
+                                msg.author.send("Pas de japoniaiserie dans les salons autre que <#940543958394732555>. Vous serez réinvité dans 10m.");
+                            } catch (e) {
+                                console.log(e);
+                            }
                             general.send("<@" + msg.author.id + "> a été kick pour utilisation de japoniaiserie non autorisé.");
                             msg.member.kick();
                             setTimeout(
                                 function (msg) {
                                     msg.guild.invites.create(general).then(invite => {
-                                        msg.author.send(invite.url);
+                                        try {
+                                            msg.author.send(invite.url);
+                                        } catch (e) {
+                                            console.log(e);
+                                        }
                                     });
                                 },
                                 600000,
