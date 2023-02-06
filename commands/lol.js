@@ -1131,7 +1131,7 @@ module.exports = {
                             },
                             title: {
                                 display: true,
-                                text: 'Champions'
+                                text: 'Gamemodes played'
                             }
                         }
                     }, // See https://www.chartjs.org/docs/latest/configuration
@@ -1917,7 +1917,7 @@ module.exports = {
                 //const response2 = await client.pg.query("SELECT * FROM matchs,summoners WHERE matchs.player = summoners.puuid AND discordid = '" + discordaccount + "' ORDER BY timestamp DESC LIMIT 3;");
 
                 const embed = new MessageEmbed()
-                    .setTitle("📖" + discordusername + "'s Profile :")
+                    .setTitle("" + discordusername + "'s Profile :")
                     .setColor("#00FF00")
                     .setFooter({
                         text: "Requested by " + interaction.user.username,
