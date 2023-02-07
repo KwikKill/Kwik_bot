@@ -877,6 +877,28 @@ function register(client) {
         });
     });
 
+    app.get("/lol/teams", function (req, res) {
+        if (req.query.team) {
+            client.pg.query('SELECT discordid FROM teams WHERE team_name = $1', [req.query.team], (err, result) => {
+                if (err) {
+                    throw err;
+                }
+                if (result.rows.length > 0) {
+                    const data = {
+                        "players": []
+                    };
+                    for (let i = 0; i < result.rows.length; i++) {
+                        data.players.push(result.rows[i].discordid);
+                    }
+                    return res.send(data);
+                }
+                return res.sendStatus(400);
+            });
+        } else {
+            return res.sendStatus(400);
+        }
+    });
+
     app.get("/login", function (req, res) {
         const code = req.query.code;
         if (code) {
