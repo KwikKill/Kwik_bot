@@ -887,7 +887,7 @@ module.exports = {
                         }
                     }
                     const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
-                    if (priority.rows[0].priority === 0) {
+                    if (number === 0 || priority.rows[0].priority === 0) {
                         if (number === 0) {
                             await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
                             return await addSumoner(client, summoner_name, interaction, region);
