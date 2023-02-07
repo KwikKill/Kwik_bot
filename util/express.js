@@ -911,25 +911,29 @@ function register(client) {
                                     if (err3) {
                                         throw err3;
                                     }
-                                    data.matchs[result2.rows[i].puuid][data.players[j]] = {
-                                        "champion": result3.rows[0].champion,
-                                        "matchup": result3.rows[0].matchup,
-                                        "lane": result3.rows[0].lane,
-                                        "kill": result3.rows[0].kill,
-                                        "death": result3.rows[0].deaths,
-                                        "assist": result3.rows[0].assists,
-                                        "cs": result3.rows[0].cs,
-                                        "gold": result3.rows[0].gold,
-                                        "wards": result3.rows[0].wards,
-                                        "pinks": result3.rows[0].pinks,
-                                        "vision_score": result3.rows[0].vision_score,
-                                        "total_damage": result3.rows[0].total_damage,
-                                        "tanked_damage": result3.rows[0].tanked_damage,
-                                        "neutral_objectives": result3.rows[0].neutral_objectives,
-                                        "first_gold": result3.rows[0].first_gold,
-                                        "first_damages": result3.rows[0].first_damages,
-                                        "first_tanked": result3.rows[0].first_tanked
-                                    };
+                                    if (result3.rows.length === 0) {
+                                        console.log(result2.rows[i].puuid);
+                                    } else {
+                                        data.matchs[result2.rows[i].puuid][data.players[j]] = {
+                                            "champion": result3.rows[0].champion,
+                                            "matchup": result3.rows[0].matchup,
+                                            "lane": result3.rows[0].lane,
+                                            "kill": result3.rows[0].kill,
+                                            "death": result3.rows[0].deaths,
+                                            "assist": result3.rows[0].assists,
+                                            "cs": result3.rows[0].cs,
+                                            "gold": result3.rows[0].gold,
+                                            "wards": result3.rows[0].wards,
+                                            "pinks": result3.rows[0].pinks,
+                                            "vision_score": result3.rows[0].vision_score,
+                                            "total_damage": result3.rows[0].total_damage,
+                                            "tanked_damage": result3.rows[0].tanked_damage,
+                                            "neutral_objectives": result3.rows[0].neutral_objectives,
+                                            "first_gold": result3.rows[0].first_gold,
+                                            "first_damages": result3.rows[0].first_damages,
+                                            "first_tanked": result3.rows[0].first_tanked
+                                        };
+                                    }
                                 });
                             }
                         }
