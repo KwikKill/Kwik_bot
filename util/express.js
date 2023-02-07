@@ -902,10 +902,14 @@ function register(client) {
                                 "gamemode": result2.rows[i].gamemode
                             };
                         }
-                        return res.send(data);
+                        client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate,  FROM matchs WHERE puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = 4);', [req.query.team], (err3, result3) => {
+                            if (err3) {
+                                throw err3;
+                            }
+                            data.winrate = result3.rows[0].winrate;
+                            return res.send(data);
+                        });
                     });
-
-                    //return res.send(data);
                 } else {
                     return res.sendStatus(404);
                 }
