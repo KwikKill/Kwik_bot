@@ -948,31 +948,31 @@ function register(client) {
                                 let total_damage = 0;
                                 let tanked_damage = 0;
                                 let neutral_objectives = 0;
-                                for (let i = 0; i < data.matchs.length; i++) {
-                                    kill += data.matchs[i][data.players[j]].kill;
-                                    death += data.matchs[i][data.players[j]].death;
-                                    assist += data.matchs[i][data.players[j]].assist;
-                                    cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
-                                    gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
-                                    wards += data.matchs[i][data.players[j]].wards;
-                                    pinks += data.matchs[i][data.players[j]].pinks;
-                                    vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
-                                    total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
-                                    tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
-                                    neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
+                                for (const i in data.matchs) {
+                                    kill += i[data.players[j]].kill;
+                                    death += i[data.players[j]].death;
+                                    assist += i[data.players[j]].assist;
+                                    cs += i[data.players[j]].cs / (i.length / 60);
+                                    gold += i[data.players[j]].gold / (i.length / 60);
+                                    wards += i[data.players[j]].wards;
+                                    pinks += i[data.players[j]].pinks;
+                                    vision_score += i[data.players[j]].vision_score / (i.length / 60);
+                                    total_damage += i[data.players[j]].total_damage / (i.length / 60);
+                                    tanked_damage += i[data.players[j]].tanked_damage / (i.length / 60);
+                                    neutral_objectives += i[data.players[j]].neutral_objectives;
                                 }
                                 data.stats[data.players[j]] = {
-                                    "kill": kill / data.matchs.length,
-                                    "death": death / data.matchs.length,
-                                    "assist": assist / data.matchs.length,
-                                    "cs": cs / data.matchs.length,
-                                    "gold": gold / data.matchs.length,
-                                    "wards": wards / data.matchs.length,
-                                    "pinks": pinks / data.matchs.length,
-                                    "vision_score": vision_score / data.matchs.length,
-                                    "total_damage": total_damage / data.matchs.length,
-                                    "tanked_damage": tanked_damage / data.matchs.length,
-                                    "neutral_objectives": neutral_objectives / data.matchs.length
+                                    "kill": kill / result3.rows[0].count,
+                                    "death": death / result3.rows[0].count,
+                                    "assist": assist / result3.rows[0].count,
+                                    "cs": cs / result3.rows[0].count,
+                                    "gold": gold / result3.rows[0].count,
+                                    "wards": wards / result3.rows[0].count,
+                                    "pinks": pinks / result3.rows[0].count,
+                                    "vision_score": vision_score / result3.rows[0].count,
+                                    "total_damage": total_damage / result3.rows[0].count,
+                                    "tanked_damage": tanked_damage / result3.rows[0].count,
+                                    "neutral_objectives": neutral_objectives / result3.rows[0].count
                                 };
                             }
                             return res.send(data);
