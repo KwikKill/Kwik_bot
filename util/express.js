@@ -936,7 +936,7 @@ function register(client) {
                             }
                             data.stats.winrate = result3.rows[0].winrate;
                             data.stats.nbmatchs = result3.rows[0].count;
-                            for (let i = 0; i < data.players.length; i++) {
+                            for (let j = 0; j < data.players.length; j++) {
                                 let kill = 0;
                                 let death = 0;
                                 let assist = 0;
