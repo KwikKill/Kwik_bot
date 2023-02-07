@@ -991,7 +991,6 @@ function register(client) {
                                     "first_tanked": first_tanked / result3.rows[0].count
                                 };
                             }
-                            console.log(Object.keys(data.matchs).length);
                             return res.send(data);
                         });
                     });
