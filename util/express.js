@@ -885,14 +885,24 @@ function register(client) {
                 }
                 if (result.rows.length > 0) {
                     const data = {
-                        "players": []
+                        "players": [],
+                        "matchs": [],
                     };
                     for (let i = 0; i < result.rows.length; i++) {
                         data.players.push(result.rows[i].discordid);
                     }
+                    // list matchs of the team
+                    client.pg.query('SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
+                        if (err2) {
+                            throw err2;
+                        }
+                        data.matchs = result2.rows;
+                        return res.send(data);
+                    });
+
                     return res.send(data);
                 }
-                return res.sendStatus(400);
+                return res.sendStatus(404);
             });
         } else {
             return res.sendStatus(400);
