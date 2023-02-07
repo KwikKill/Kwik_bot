@@ -949,17 +949,17 @@ function register(client) {
                                 let tanked_damage = 0;
                                 let neutral_objectives = 0;
                                 for (const i in data.matchs) {
-                                    kill += i[data.players[j]].kill;
-                                    death += i[data.players[j]].death;
-                                    assist += i[data.players[j]].assist;
-                                    cs += i[data.players[j]].cs / (i.length / 60);
-                                    gold += i[data.players[j]].gold / (i.length / 60);
-                                    wards += i[data.players[j]].wards;
-                                    pinks += i[data.players[j]].pinks;
-                                    vision_score += i[data.players[j]].vision_score / (i.length / 60);
-                                    total_damage += i[data.players[j]].total_damage / (i.length / 60);
-                                    tanked_damage += i[data.players[j]].tanked_damage / (i.length / 60);
-                                    neutral_objectives += i[data.players[j]].neutral_objectives;
+                                    kill += data.matchs[i][data.players[j]].kill;
+                                    death += data.matchs[i][data.players[j]].death;
+                                    assist += data.matchs[i][data.players[j]].assist;
+                                    cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
+                                    gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
+                                    wards += data.matchs[i][data.players[j]].wards;
+                                    pinks += data.matchs[i][data.players[j]].pinks;
+                                    vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
+                                    total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
+                                    tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
+                                    neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
                                 }
                                 data.stats[data.players[j]] = {
                                     "kill": kill / result3.rows[0].count,
