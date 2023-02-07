@@ -907,7 +907,7 @@ function register(client) {
                                 "timestamp": result2.rows[i].timestamp
                             };
                             for (let j = 0; j < data.players.length; j++) {
-                                client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
+                                client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives, first_gold, first_damages, first_tanked FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
                                     if (err3) {
                                         throw err3;
                                     }
@@ -925,7 +925,10 @@ function register(client) {
                                         "vision_score": result3.rows[0].vision_score,
                                         "total_damage": result3.rows[0].total_damage,
                                         "tanked_damage": result3.rows[0].tanked_damage,
-                                        "neutral_objectives": result3.rows[0].neutral_objectives
+                                        "neutral_objectives": result3.rows[0].neutral_objectives,
+                                        "first_gold": result3.rows[0].first_gold,
+                                        "first_damages": result3.rows[0].first_damages,
+                                        "first_tanked": result3.rows[0].first_tanked
                                     };
                                 });
                             }
@@ -935,7 +938,7 @@ function register(client) {
                                 throw err3;
                             }
                             data.stats.winrate = result3.rows[0].winrate;
-                            data.stats.nbmatchs = result3.rows[0].count;
+                            data.stats.nbmatchs = parseInt(result3.rows[0].count);
                             for (let j = 0; j < data.players.length; j++) {
                                 let kill = 0;
                                 let death = 0;
@@ -948,6 +951,9 @@ function register(client) {
                                 let total_damage = 0;
                                 let tanked_damage = 0;
                                 let neutral_objectives = 0;
+                                let first_gold = 0;
+                                let first_damages = 0;
+                                let first_tanked = 0;
                                 for (const i in data.matchs) {
                                     kill += data.matchs[i][data.players[j]].kill;
                                     death += data.matchs[i][data.players[j]].death;
@@ -960,6 +966,9 @@ function register(client) {
                                     total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
                                     tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
                                     neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
+                                    first_gold += data.matchs[i][data.players[j]].first_gold;
+                                    first_damages += data.matchs[i][data.players[j]].first_damages;
+                                    first_tanked += data.matchs[i][data.players[j]].first_tanked;
                                 }
                                 data.stats[data.players[j]] = {
                                     "kill": kill / result3.rows[0].count,
@@ -972,7 +981,10 @@ function register(client) {
                                     "vision_score": vision_score / result3.rows[0].count,
                                     "total_damage": total_damage / result3.rows[0].count,
                                     "tanked_damage": tanked_damage / result3.rows[0].count,
-                                    "neutral_objectives": neutral_objectives / result3.rows[0].count
+                                    "neutral_objectives": neutral_objectives / result3.rows[0].count,
+                                    "first_gold": first_gold / result3.rows[0].count,
+                                    "first_damages": first_damages / result3.rows[0].count,
+                                    "first_tanked": first_tanked / result3.rows[0].count
                                 };
                             }
                             return res.send(data);
