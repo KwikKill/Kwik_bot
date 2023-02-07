@@ -894,7 +894,7 @@ function register(client) {
                         data.players.push(result.rows[i].discordid);
                     }
                     // list matchs of the team
-                    client.pg.query('SELECT matchs.puuid, result, gamemode, total_kills FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid, result, gamemode, total_kills HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
+                    client.pg.query('SELECT matchs.puuid, result, gamemode, total_kills, length FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid, result, gamemode, total_kills, length HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
                         if (err2) {
                             throw err2;
                         }
