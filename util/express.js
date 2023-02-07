@@ -155,6 +155,7 @@ function register(client) {
     });
 
     app.get("/lol/register", function (req, res) {
+        return res.sendStatus(404);
         if (!req.cookies['token']) {
             return res.redirect("/lol/profile");
         }
@@ -893,15 +894,31 @@ function register(client) {
                         data.players.push(result.rows[i].discordid);
                     }
                     // list matchs of the team
-                    client.pg.query('SELECT matchs.puuid, result, gamemode FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid, result, gamemode HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
+                    client.pg.query('SELECT matchs.puuid, result, gamemode, total_kills FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid, result, gamemode, total_kills HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
                         if (err2) {
                             throw err2;
                         }
                         for (let i = 0; i < result2.rows.length; i++) {
                             data.matchs[result2.rows[i].puuid] = {
                                 "result": result2.rows[i].result,
-                                "gamemode": result2.rows[i].gamemode
+                                "gamemode": result2.rows[i].gamemode,
+                                "total_kills": result2.rows[i].total_kills,
                             };
+                            for (let j = 0; j < data.players.length; j++) {
+                                client.pg.query('SELECT champion, matchup, kill, deaths, assists, cs FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
+                                    if (err3) {
+                                        throw err3;
+                                    }
+                                    data.matchs[result2.rows[i].puuid][data.players[j]] = {
+                                        "champion": result3.rows[0].champion,
+                                        "matchup": result3.rows[0].matchup,
+                                        "kill": result3.rows[0].kill,
+                                        "death": result3.rows[0].deaths,
+                                        "assist": result3.rows[0].assists,
+                                        "cs": result3.rows[0].cs,
+                                    };
+                                });
+                            }
                         }
                         client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate, count(*) FROM matchs, summoners WHERE matchs.player = summoners.puuid AND matchs.puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2) AND discordid = $3;', [req.query.team, data.players.length, data.players[0]], (err3, result3) => {
                             if (err3) {
