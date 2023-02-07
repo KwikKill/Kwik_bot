@@ -755,13 +755,6 @@ function matchHistoryOutput(match, puuid) {
         return null;
     }
 
-    const participants = [];
-    for (const x of match["info"]["participants"]) {
-        if (x.summonerName !== match["info"]["participants"][participantId].summonerName) {
-            participants.push(x.summonerName);
-        }
-    }
-
     //{ Team Stats - For Participation & Percent Share Stats
     // Variables
     //let teamVisionScore = 0;
@@ -811,6 +804,15 @@ function matchHistoryOutput(match, puuid) {
     let firsttanked = 1;
     // "team" is used to loop through the players team
     const team = (teamId === 100) ? 5 : 10;
+
+    const participants = [];
+    // add mates to participants
+    for (let member = team - 5; member < team; member++) {
+        if (match["info"]["participants"][member] !== undefined && match["info"]["participants"][member]["puuid"] !== puuid) {
+            participants.push(match['info']['participants'][member]['summonerName']);
+        }
+    }
+
     for (let member = team - 5; member < team; member++) {
         //teamVisionScore += match['info']['participants'][member]['visionScore'];
         teamKills += match['info']['participants'][member]['kills'];
