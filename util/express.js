@@ -879,7 +879,7 @@ function register(client) {
 
     app.get("/lol/teams", function (req, res) {
         if (req.query.team) {
-            client.pg.query('SELECT discordid FROM teams WHERE team_name = $1', [req.query.team], (err, result) => {
+            client.pg.query('SELECT discordid FROM team WHERE team_name = $1', [req.query.team], (err, result) => {
                 if (err) {
                     throw err;
                 }
