@@ -917,7 +917,16 @@ function register(client) {
                 }
             });
         } else {
-            return res.sendStatus(400);
+            client.pg.query('SELECT team_name FROM team', (err, result) => {
+                if (err) {
+                    throw err;
+                }
+                const data = [];
+                for (let i = 0; i < result.rows.length; i++) {
+                    data.push(result.rows[i].team_name);
+                }
+                return res.send(data);
+            });
         }
     });
 
