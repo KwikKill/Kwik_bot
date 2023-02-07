@@ -936,6 +936,45 @@ function register(client) {
                             }
                             data.stats.winrate = result3.rows[0].winrate;
                             data.stats.nbmatchs = result3.rows[0].count;
+                            for (let i = 0; i < data.players.length; i++) {
+                                let kill = 0;
+                                let death = 0;
+                                let assist = 0;
+                                let cs = 0;
+                                let gold = 0;
+                                let wards = 0;
+                                let pinks = 0;
+                                let vision_score = 0;
+                                let total_damage = 0;
+                                let tanked_damage = 0;
+                                let neutral_objectives = 0;
+                                for (let i = 0; i < data.matchs.length; i++) {
+                                    kill += data.matchs[i][data.players[j]].kill;
+                                    death += data.matchs[i][data.players[j]].death;
+                                    assist += data.matchs[i][data.players[j]].assist;
+                                    cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
+                                    gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
+                                    wards += data.matchs[i][data.players[j]].wards;
+                                    pinks += data.matchs[i][data.players[j]].pinks;
+                                    vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
+                                    total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
+                                    tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
+                                    neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
+                                }
+                                data.stats[data.players[j]] = {
+                                    "kill": kill / data.matchs.length,
+                                    "death": death / data.matchs.length,
+                                    "assist": assist / data.matchs.length,
+                                    "cs": cs / data.matchs.length,
+                                    "gold": gold / data.matchs.length,
+                                    "wards": wards / data.matchs.length,
+                                    "pinks": pinks / data.matchs.length,
+                                    "vision_score": vision_score / data.matchs.length,
+                                    "total_damage": total_damage / data.matchs.length,
+                                    "tanked_damage": tanked_damage / data.matchs.length,
+                                    "neutral_objectives": neutral_objectives / data.matchs.length
+                                };
+                            }
                             return res.send(data);
                         });
                     });
