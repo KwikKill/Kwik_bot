@@ -886,84 +886,90 @@ function register(client) {
                 if (result.rows.length > 0) {
                     const data = {
                         "players": [],
-                        "matchs": [],
+                        "matchs": {},
                     };
                     for (let i = 0; i < result.rows.length; i++) {
                         data.players.push(result.rows[i].discordid);
                     }
                     // list matchs of the team
-                    client.pg.query('SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
+                    client.pg.query('SELECT matchs.puuid, result, gamemode FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid, result, gamemode HAVING count(*) = $2;', [req.query.team, data.players.length], (err2, result2) => {
                         if (err2) {
                             throw err2;
                         }
-                        data.matchs = result2.rows;
+                        for (let i = 0; i < result2.rows.length; i++) {
+                            data.matchs[result2.rows[i].puuid] = {
+                                "result": result2.rows[i].result,
+                                "gamemode": result2.rows[i].gamemode
+                            }
+                        };
+                    }
                         return res.send(data);
-                    });
-
-                    //return res.send(data);
-                } else {
-                    return res.sendStatus(404);
-                }
-            });
-        } else {
-            return res.sendStatus(400);
-        }
-    });
-
-    app.get("/login", function (req, res) {
-        const code = req.query.code;
-        if (code) {
-            try {
-                request('https://discord.com/api/oauth2/token', {
-                    method: 'POST',
-                    body: new URLSearchParams({
-                        client_id: process.env.DISCORD_CLIENT_ID,
-                        client_secret: process.env.DISCORD_CLIENT_SECRET,
-                        code,
-                        grant_type: 'authorization_code',
-                        redirect_uri: `http://albert.blaisot.org:8080/login`,
-                        scope: 'identify',
-                    }).toString(),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                }).then(tokenResponseData => {
-                    tokenResponseData.body.json().then(oauthData => {
-                        res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
-                        return res.redirect("/lol/profile");
-                    });
                 });
-            } catch (error) {
-                console.error(error);
-                return res.redirect("/404");
-            }
+
+            //return res.send(data);
         } else {
-            if (!req.cookies['token']) {
-                return res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
-            }
-            console.log(req.cookies['token']);
-            return res.redirect("/lol/profile");
+            return res.sendStatus(404);
         }
     });
-
-    app.get('*', function (req, res) {
-        return res.render('../Site/404.ejs');
+} else {
+    return res.sendStatus(400);
+}
     });
 
-    app.post('/contact', function (req, res) {
-        if (req.body.mail && req.body.text) {
-            if (req.body.topic === "Topic :") {
-                client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} : \`\`\`\n${req.body.text}\n\`\`\``);
-            } else {
-                client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} ${req.body.topic} : \`\`\`\n${req.body.text}\n\`\`\``);
-            }
+app.get("/login", function (req, res) {
+    const code = req.query.code;
+    if (code) {
+        try {
+            request('https://discord.com/api/oauth2/token', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    client_id: process.env.DISCORD_CLIENT_ID,
+                    client_secret: process.env.DISCORD_CLIENT_SECRET,
+                    code,
+                    grant_type: 'authorization_code',
+                    redirect_uri: `http://albert.blaisot.org:8080/login`,
+                    scope: 'identify',
+                }).toString(),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            }).then(tokenResponseData => {
+                tokenResponseData.body.json().then(oauthData => {
+                    res.cookie("token", oauthData.access_token, { maxAge: oauthData.expires_in * 1000, httpOnly: true });
+                    return res.redirect("/lol/profile");
+                });
+            });
+        } catch (error) {
+            console.error(error);
+            return res.redirect("/404");
         }
-        return res.redirect("/");
-    });
+    } else {
+        if (!req.cookies['token']) {
+            return res.redirect("https://discord.com/api/oauth2/authorize?client_id=559371363035381777&redirect_uri=http%3A%2F%2Falbert.blaisot.org%3A8080%2Flogin&response_type=code&scope=identify");
+        }
+        console.log(req.cookies['token']);
+        return res.redirect("/lol/profile");
+    }
+});
 
-    app.listen(8080, () => {
-        console.log("Express server started");
-    });
+app.get('*', function (req, res) {
+    return res.render('../Site/404.ejs');
+});
+
+app.post('/contact', function (req, res) {
+    if (req.body.mail && req.body.text) {
+        if (req.body.topic === "Topic :") {
+            client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} : \`\`\`\n${req.body.text}\n\`\`\``);
+        } else {
+            client.channels.cache.get("1043317491113414728").send(`**${req.body.name}** (${req.body.mail}) ${req.body.tel} ${req.body.topic} : \`\`\`\n${req.body.text}\n\`\`\``);
+        }
+    }
+    return res.redirect("/");
+});
+
+app.listen(8080, () => {
+    console.log("Express server started");
+});
 }
 
 function shuffle(array) {
