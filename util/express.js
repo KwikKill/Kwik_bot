@@ -900,7 +900,7 @@ function register(client) {
                         return res.send(data);
                     });
 
-                    return res.send(data);
+                    //return res.send(data);
                 }
                 return res.sendStatus(404);
             });
