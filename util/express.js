@@ -901,8 +901,9 @@ function register(client) {
                     });
 
                     //return res.send(data);
+                } else {
+                    return res.sendStatus(404);
                 }
-                return res.sendStatus(404);
             });
         } else {
             return res.sendStatus(400);
