@@ -903,6 +903,7 @@ function register(client) {
                                 "result": result2.rows[i].result,
                                 "gamemode": result2.rows[i].gamemode,
                                 "total_kills": result2.rows[i].total_kills,
+                                "length": result2.rows[i].length
                             };
                             for (let j = 0; j < data.players.length; j++) {
                                 client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
