@@ -917,7 +917,7 @@ function register(client) {
                 }
             });
         } else {
-            client.pg.query('SELECT team_name FROM team', (err, result) => {
+            client.pg.query('SELECT DISTINCT team_name FROM team', (err, result) => {
                 if (err) {
                     throw err;
                 }
