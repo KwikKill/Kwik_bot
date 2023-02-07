@@ -905,17 +905,25 @@ function register(client) {
                                 "total_kills": result2.rows[i].total_kills,
                             };
                             for (let j = 0; j < data.players.length; j++) {
-                                client.pg.query('SELECT champion, matchup, kill, deaths, assists, cs FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
+                                client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
                                     if (err3) {
                                         throw err3;
                                     }
                                     data.matchs[result2.rows[i].puuid][data.players[j]] = {
                                         "champion": result3.rows[0].champion,
                                         "matchup": result3.rows[0].matchup,
+                                        "lane": result3.rows[0].lane,
                                         "kill": result3.rows[0].kill,
                                         "death": result3.rows[0].deaths,
                                         "assist": result3.rows[0].assists,
                                         "cs": result3.rows[0].cs,
+                                        "gold": result3.rows[0].gold,
+                                        "wards": result3.rows[0].wards,
+                                        "pinks": result3.rows[0].pinks,
+                                        "vision_score": result3.rows[0].vision_score,
+                                        "total_damage": result3.rows[0].total_damage,
+                                        "tanked_damage": result3.rows[0].tanked_damage,
+                                        "neutral_objectives": result3.rows[0].neutral_objectives
                                     };
                                 });
                             }
