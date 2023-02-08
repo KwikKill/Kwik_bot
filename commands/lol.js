@@ -1014,556 +1014,606 @@ module.exports = {
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {
             if (interaction.options.getSubcommand() === "summarized") {
-                let i = 1;
+                try {
+                    let i = 1;
 
-                let discordusername = "";
-                if (discordaccount === null) {
-                    discordaccount = interaction.user.id;
-                    discordusername = interaction.user.username;
-                } else {
-                    discordusername = discordaccount.username;
-                    discordaccount = discordaccount.id;
-                }
-                const query_values = [discordaccount];
-
-                let query = "SELECT " +
-                    "AVG(gold) as avg_gold, " +
-                    "AVG(kill) as avg_kills, " +
-                    "AVG(deaths) as avg_deaths, " +
-                    "AVG(assists) as avg_assists, " +
-                    "AVG(total_damage) as avg_damage, " +
-                    "AVG(tanked_damage) as avg_tanked_damage, " +
-                    "AVG(heal) as avg_heal, " +
-                    "AVG(neutral_objectives) as avg_neutral_objectives, " +
-                    "AVG(wards) as avg_wards, " +
-                    "AVG(pinks) as avg_pinks, " +
-                    "AVG(vision_score) as avg_vision_score, " +
-                    "AVG(cs) as avg_cs, " +
-                    "AVG(length) as avg_length, " +
-                    "AVG(total_kills) as avg_total_kills, " +
-                    "AVG(time_spent_dead) as avg_time_spent_dead, " +
-                    "count(*) as games_played, " +
-                    "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry, " +
-                    "CAST(SUM(CASE WHEN first_gold THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_gold, " +
-                    "CAST(SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_damage, " +
-                    "CAST(SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_tanked, " +
-                    "CAST(SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100 AS FLOAT) / count(*) as hard_carry, " +
-                    "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as win_rate " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$" + i + " " +
-                    "AND matchs.player = summoners.puuid";
-
-                let query3 = "SELECT " +
-                    "gamemode, " +
-                    "count(gamemode) " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
-
-                i++;
-                if (champion !== null) {
-                    query += " AND matchs.champion=$" + i;
-                    query3 += " AND matchs.champion=$" + i;
-                    query_values.push(champion);
-                    i++;
-                }
-                if (role !== null) {
-                    query += " AND matchs.lane=$" + i;
-                    query3 += " AND matchs.lane=$" + i;
-                    query_values.push(role);
-                    i++;
-                }
-                if (gamemode !== null) {
-                    query += " AND matchs.gamemode=$" + i;
-                    query_values.push(gamemode);
-                    i++;
-                }
-                if (account !== null) {
-                    query += " AND summoners.username=$" + i;
-                    query3 += " AND summoners.username=$" + (i - 1);
-                    query_values.push(account);
-                    i++;
-                }
-                query += ";";
-                query3 += " GROUP BY gamemode;";
-
-                const response = await client.pg.query(query, query_values);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
-                }
-
-                const response3 = await client.pg.query(query3, query_values);
-                if (response3.rows.length === 0) {
-                    return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
-                }
-
-                // plot
-
-                const values = [];
-                const labels = [];
-
-                for (let i = 0; i < response3.rows.length; i++) {
-                    values.push(response3.rows[i].count);
-                    labels.push(response3.rows[i].gamemode);
-                }
-
-                const width = 800; //px
-                const height = 600; //px
-                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
-                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
-
-                const configuration = {
-                    type: 'pie',
-                    data: {
-                        datasets: [{
-                            label: 'Gamemodes played',
-                            //borderColor: '#36A2EB',
-                            //backgroundColor: '#9BD0F5',
-                            backgroundColor: ["#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF", "#B10DC9", "#FFDC00", "#001f3f", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
-                            data: values
-                        }],
-                        labels: labels
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Gamemodes played'
-                            }
-                        }
-                    }, // See https://www.chartjs.org/docs/latest/configuration
-                };
-                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-                const attachment = new MessageAttachment(image, 'stats.png');
-
-                // 1) Carry stats
-
-                const carry_damage = response.rows[0].carry_damage;
-                const carry_tanked = response.rows[0].carry_tanked;
-                const carry_gold = response.rows[0].carry_gold;
-                const overall = response.rows[0].carry;
-                const hard_carry = response.rows[0].hard_carry;
-                const win = response.rows[0].win_rate;
-
-                // 2) Average stats
-
-                const length = response.rows[0].avg_length;
-
-                const average_kills = Number.parseFloat(response.rows[0].avg_kills).toFixed(decimal);
-                const average_deaths = Number.parseFloat(response.rows[0].avg_deaths).toFixed(decimal);
-                const average_assists = Number.parseFloat(response.rows[0].avg_assists).toFixed(decimal);
-                let average_cs = Number.parseFloat(response.rows[0].avg_cs).toFixed(decimal);
-                let average_gold = response.rows[0].avg_gold;
-                let average_damages = response.rows[0].avg_damage;
-                let average_tanked = response.rows[0].avg_tanked_damage;
-                const average_pinks = Number.parseFloat(response.rows[0].avg_pinks).toFixed(decimal);
-                const average_vision_score = Number.parseFloat(response.rows[0].avg_vision_score).toFixed(decimal);
-                const average_total_kills = Number.parseFloat(response.rows[0].avg_total_kills).toFixed(decimal);
-
-                average_cs = (average_cs / (length / 60)).toFixed(decimal);
-                average_gold = (average_gold / (length / 60)).toFixed(decimal);
-                average_damages = (average_damages / (length / 60)).toFixed(decimal);
-                average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
-
-                // KwikScore
-
-                let score = 0;
-                score += overall;
-                score += win;
-                score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
-                score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
-                score += 10 * average_cs;
-                if (100 - response.rows[0].games_played > 0) {
-                    score = score * 0.99 ** (100 - response.rows[0].games_played);
-                }
-
-                let title = "" + discordusername + "'s stats";
-                if (champion !== null) {
-                    title += " with " + champion;
-                }
-                if (role !== null) {
-                    title += " in " + role;
-                }
-                if (account !== null) {
-                    title += " on \"" + account + "\"";
-                }
-
-                // send embed
-                const embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
-                embed.addFields(
-                    {
-                        name: "Number of matchs :",
-                        value: "" + response.rows[0].games_played,
-                        inline: true
-                    },
-                    {
-                        name: "WR :",
-                        value: "" + (win).toFixed(decimal) + " %",
-                        inline: true,
-                    },
-                    {
-                        name: "KillParticipation :",
-                        value: "" + ((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100).toFixed(decimal) + " %",
-                        inline: true,
-                    },
-                    {
-                        name: "Carry stats :",
-                        value: "Overall : " + (overall).toFixed(decimal) + " %\nHard Carry : " + (hard_carry).toFixed(decimal) + " %\nDamage : " + (carry_damage).toFixed(decimal) + " %\nTanked : " + (carry_tanked).toFixed(decimal) + " %\nGold : " + (carry_gold).toFixed(decimal) + " %",
-                        inline: true
-                    },
-                    {
-                        name: "KS (KwikScore) :",
-                        value: "" + score.toFixed(0) + " / 500",
-                        inline: true
-                    },
-                    {
-                        name: "Average stats :",
-                        value: "Kills : " + average_kills +
-                            "\nDeaths : " + average_deaths +
-                            "\nAssists : " + average_assists +
-                            "\nCS/min : " + average_cs +
-                            "\nDamages/min : " + average_damages +
-                            "\nTanked/min : " + average_tanked +
-                            "\nPinks : " + average_pinks +
-                            "\nVision Score : " + average_vision_score +
-                            "\nGold/min : " + average_gold,
-                        inline: true
+                    let discordusername = "";
+                    if (discordaccount === null) {
+                        discordaccount = interaction.user.id;
+                        discordusername = interaction.user.username;
+                    } else {
+                        discordusername = discordaccount.username;
+                        discordaccount = discordaccount.id;
                     }
-                ).setImage("attachment://stats.png");
-                return await interaction.editReply({ embeds: [embed], files: [attachment] });
+                    const query_values = [discordaccount];
+
+                    let query = "SELECT " +
+                        "AVG(gold) as avg_gold, " +
+                        "AVG(kill) as avg_kills, " +
+                        "AVG(deaths) as avg_deaths, " +
+                        "AVG(assists) as avg_assists, " +
+                        "AVG(total_damage) as avg_damage, " +
+                        "AVG(tanked_damage) as avg_tanked_damage, " +
+                        "AVG(heal) as avg_heal, " +
+                        "AVG(neutral_objectives) as avg_neutral_objectives, " +
+                        "AVG(wards) as avg_wards, " +
+                        "AVG(pinks) as avg_pinks, " +
+                        "AVG(vision_score) as avg_vision_score, " +
+                        "AVG(cs) as avg_cs, " +
+                        "AVG(length) as avg_length, " +
+                        "AVG(total_kills) as avg_total_kills, " +
+                        "AVG(time_spent_dead) as avg_time_spent_dead, " +
+                        "count(*) as games_played, " +
+                        "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry, " +
+                        "CAST(SUM(CASE WHEN first_gold THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_gold, " +
+                        "CAST(SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_damage, " +
+                        "CAST(SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_tanked, " +
+                        "CAST(SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100 AS FLOAT) / count(*) as hard_carry, " +
+                        "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as win_rate " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$" + i + " " +
+                        "AND matchs.player = summoners.puuid";
+
+                    let query3 = "SELECT " +
+                        "gamemode, " +
+                        "count(gamemode) " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+
+                    i++;
+                    if (champion !== null) {
+                        query += " AND matchs.champion=$" + i;
+                        query3 += " AND matchs.champion=$" + i;
+                        query_values.push(champion);
+                        i++;
+                    }
+                    if (role !== null) {
+                        query += " AND matchs.lane=$" + i;
+                        query3 += " AND matchs.lane=$" + i;
+                        query_values.push(role);
+                        i++;
+                    }
+                    if (gamemode !== null) {
+                        query += " AND matchs.gamemode=$" + i;
+                        query_values.push(gamemode);
+                        i++;
+                    }
+                    if (account !== null) {
+                        query += " AND summoners.username=$" + i;
+                        query3 += " AND summoners.username=$" + (i - 1);
+                        query_values.push(account);
+                        i++;
+                    }
+                    query += ";";
+                    query3 += " GROUP BY gamemode;";
+
+                    const response = await client.pg.query(query, query_values);
+                    if (response.rows.length === 0) {
+                        return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
+                    }
+
+                    const response3 = await client.pg.query(query3, query_values);
+                    if (response3.rows.length === 0) {
+                        return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
+                    }
+
+                    // plot
+
+                    const values = [];
+                    const labels = [];
+
+                    for (let i = 0; i < response3.rows.length; i++) {
+                        values.push(response3.rows[i].count);
+                        labels.push(response3.rows[i].gamemode);
+                    }
+
+                    const width = 800; //px
+                    const height = 600; //px
+                    const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+
+                    const configuration = {
+                        type: 'pie',
+                        data: {
+                            datasets: [{
+                                label: 'Gamemodes played',
+                                //borderColor: '#36A2EB',
+                                //backgroundColor: '#9BD0F5',
+                                backgroundColor: ["#0074D9", "#FF4136", "#2ECC40", "#FF851B", "#7FDBFF", "#B10DC9", "#FFDC00", "#001f3f", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
+                                data: values
+                            }],
+                            labels: labels
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Gamemodes played'
+                                }
+                            }
+                        }, // See https://www.chartjs.org/docs/latest/configuration
+                    };
+                    const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                    const attachment = new MessageAttachment(image, 'stats.png');
+
+                    // 1) Carry stats
+
+                    const carry_damage = response.rows[0].carry_damage;
+                    const carry_tanked = response.rows[0].carry_tanked;
+                    const carry_gold = response.rows[0].carry_gold;
+                    const overall = response.rows[0].carry;
+                    const hard_carry = response.rows[0].hard_carry;
+                    const win = response.rows[0].win_rate;
+
+                    // 2) Average stats
+
+                    const length = response.rows[0].avg_length;
+
+                    const average_kills = Number.parseFloat(response.rows[0].avg_kills).toFixed(decimal);
+                    const average_deaths = Number.parseFloat(response.rows[0].avg_deaths).toFixed(decimal);
+                    const average_assists = Number.parseFloat(response.rows[0].avg_assists).toFixed(decimal);
+                    let average_cs = Number.parseFloat(response.rows[0].avg_cs).toFixed(decimal);
+                    let average_gold = response.rows[0].avg_gold;
+                    let average_damages = response.rows[0].avg_damage;
+                    let average_tanked = response.rows[0].avg_tanked_damage;
+                    const average_pinks = Number.parseFloat(response.rows[0].avg_pinks).toFixed(decimal);
+                    const average_vision_score = Number.parseFloat(response.rows[0].avg_vision_score).toFixed(decimal);
+                    const average_total_kills = Number.parseFloat(response.rows[0].avg_total_kills).toFixed(decimal);
+
+                    average_cs = (average_cs / (length / 60)).toFixed(decimal);
+                    average_gold = (average_gold / (length / 60)).toFixed(decimal);
+                    average_damages = (average_damages / (length / 60)).toFixed(decimal);
+                    average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
+
+                    // KwikScore
+
+                    let score = 0;
+                    score += overall;
+                    score += win;
+                    score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
+                    score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
+                    score += 10 * average_cs;
+                    if (100 - response.rows[0].games_played > 0) {
+                        score = score * 0.99 ** (100 - response.rows[0].games_played);
+                    }
+
+                    let title = "" + discordusername + "'s stats";
+                    if (champion !== null) {
+                        title += " with " + champion;
+                    }
+                    if (role !== null) {
+                        title += " in " + role;
+                    }
+                    if (account !== null) {
+                        title += " on \"" + account + "\"";
+                    }
+
+                    // send embed
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
+                    embed.addFields(
+                        {
+                            name: "Number of matchs :",
+                            value: "" + response.rows[0].games_played,
+                            inline: true
+                        },
+                        {
+                            name: "WR :",
+                            value: "" + (win).toFixed(decimal) + " %",
+                            inline: true,
+                        },
+                        {
+                            name: "KillParticipation :",
+                            value: "" + ((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100).toFixed(decimal) + " %",
+                            inline: true,
+                        },
+                        {
+                            name: "Carry stats :",
+                            value: "Overall : " + (overall).toFixed(decimal) + " %\nHard Carry : " + (hard_carry).toFixed(decimal) + " %\nDamage : " + (carry_damage).toFixed(decimal) + " %\nTanked : " + (carry_tanked).toFixed(decimal) + " %\nGold : " + (carry_gold).toFixed(decimal) + " %",
+                            inline: true
+                        },
+                        {
+                            name: "KS (KwikScore) :",
+                            value: "" + score.toFixed(0) + " / 500",
+                            inline: true
+                        },
+                        {
+                            name: "Average stats :",
+                            value: "Kills : " + average_kills +
+                                "\nDeaths : " + average_deaths +
+                                "\nAssists : " + average_assists +
+                                "\nCS/min : " + average_cs +
+                                "\nDamages/min : " + average_damages +
+                                "\nTanked/min : " + average_tanked +
+                                "\nPinks : " + average_pinks +
+                                "\nVision Score : " + average_vision_score +
+                                "\nGold/min : " + average_gold,
+                            inline: true
+                        }
+                    ).setImage("attachment://stats.png");
+                    return await interaction.editReply({ embeds: [embed], files: [attachment] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            discordaccount: discordaccount,
+                            champion: champion,
+                            role: role,
+                            account: account,
+                            gamemode: gamemode
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol stats summarized " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
+                }
             } else if (interaction.options.getSubcommand() === "matchups") {
-                let i = 1;
+                try {
+                    let i = 1;
 
-                let discordusername = "";
-                if (discordaccount === null) {
-                    discordaccount = interaction.user.id;
-                    discordusername = interaction.user.username;
-                } else {
-                    discordusername = discordaccount.username;
-                    discordaccount = discordaccount.id;
-                }
-                const query_values = [discordaccount];
-
-                let query = "SELECT matchs.matchup, count(*) AS count1, (cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE result = 'Win'" +
-                    ")*100 as float)/count(*)) AS winrate, (cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE (first_tanked OR first_gold OR first_damages)" +
-                    ")*100 as float)/count(*)) AS carry " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
-                i++;
-
-                if (champion !== null) {
-                    query += " AND matchs.champion=$" + i;
-                    query_values.push(champion);
-                    i++;
-                }
-                if (role !== null) {
-                    query += " AND matchs.lane=$" + i;
-                    query_values.push(role);
-                    i++;
-                }
-                if (gamemode !== null) {
-                    query += " AND matchs.gamemode=$" + i;
-                    query_values.push(gamemode);
-                    i++;
-                }
-                if (account !== null) {
-                    query += " AND summoners.username=$" + i;
-                    query_values.push(account);
-                    i++;
-                }
-                query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
-
-                const response = await client.pg.query(query, query_values);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
-                }
-
-                const values1 = [];
-                const values2 = [];
-                const champ = [];
-
-                const max = 17;
-
-                const data = [];
-                for (let i = 0; i < response.rows.length; i++) {
-                    if (response.rows[i].count1 > 4 && response.rows[i].matchup !== "" && response.rows[i].matchup !== "Invalid") {
-                        data.push("- " + response.rows[i].matchup + " : " + response.rows[i].count1 + " matchs (" + response.rows[i].winrate.toFixed(1) + "% winrate, " + response.rows[i].carry.toFixed(1) + "% carry)\n");
-                        if (i < max) {
-                            values1.push(response.rows[i].winrate);
-                            values2.push(response.rows[i].carry);
-                            champ.push(response.rows[i].matchup);
-                        }
+                    let discordusername = "";
+                    if (discordaccount === null) {
+                        discordaccount = interaction.user.id;
+                        discordusername = interaction.user.username;
+                    } else {
+                        discordusername = discordaccount.username;
+                        discordaccount = discordaccount.id;
                     }
-                }
+                    const query_values = [discordaccount];
 
-                if (data.length === 0) {
-                    return await interaction.editReply("You must have played more than 4 games against a matchup.");
-                }
+                    let query = "SELECT matchs.matchup, count(*) AS count1, (cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE result = 'Win'" +
+                        ")*100 as float)/count(*)) AS winrate, (cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE (first_tanked OR first_gold OR first_damages)" +
+                        ")*100 as float)/count(*)) AS carry " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                    i++;
 
-                const width = 1000; //px
-                const height = 400; //px
-                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
-                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+                    if (champion !== null) {
+                        query += " AND matchs.champion=$" + i;
+                        query_values.push(champion);
+                        i++;
+                    }
+                    if (role !== null) {
+                        query += " AND matchs.lane=$" + i;
+                        query_values.push(role);
+                        i++;
+                    }
+                    if (gamemode !== null) {
+                        query += " AND matchs.gamemode=$" + i;
+                        query_values.push(gamemode);
+                        i++;
+                    }
+                    if (account !== null) {
+                        query += " AND summoners.username=$" + i;
+                        query_values.push(account);
+                        i++;
+                    }
+                    query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
 
-                const configuration = {
-                    type: 'bar',
-                    data: {
-                        datasets: [{
-                            label: 'WinRate per champion',
-                            borderColor: '#36A2EB',
-                            backgroundColor: '#9BD0F5',
-                            data: values1
-                        },
-                        {
-                            label: 'Carry per champion',
-                            borderColor: '#FF6384',
-                            backgroundColor: '#FFB1C1',
-                            data: values2
-                        }],
-                        labels: champ
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Champions'
+                    const response = await client.pg.query(query, query_values);
+                    if (response.rows.length === 0) {
+                        return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
+                    }
+
+                    const values1 = [];
+                    const values2 = [];
+                    const champ = [];
+
+                    const max = 17;
+
+                    const data = [];
+                    for (let i = 0; i < response.rows.length; i++) {
+                        if (response.rows[i].count1 > 4 && response.rows[i].matchup !== "" && response.rows[i].matchup !== "Invalid") {
+                            data.push("- " + response.rows[i].matchup + " : " + response.rows[i].count1 + " matchs (" + response.rows[i].winrate.toFixed(1) + "% winrate, " + response.rows[i].carry.toFixed(1) + "% carry)\n");
+                            if (i < max) {
+                                values1.push(response.rows[i].winrate);
+                                values2.push(response.rows[i].carry);
+                                champ.push(response.rows[i].matchup);
                             }
                         }
-                    }, // See https://www.chartjs.org/docs/latest/configuration
-                };
-                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-                const attachment = new MessageAttachment(image, 'matchup.png');
+                    }
 
-                let title = "" + discordusername + "'s matchups";
-                if (champion !== null) {
-                    title += " with " + champion;
-                }
-                if (role !== null) {
-                    title += " in " + role;
-                }
-                if (account !== null) {
-                    title += " on \"" + account + "\"";
-                }
+                    if (data.length === 0) {
+                        return await interaction.editReply("You must have played more than 4 games against a matchup.");
+                    }
 
-                // send embed
-                const embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
-                embed.addFields(
-                    {
-                        name: "Number of matchups :",
-                        value: "" + response.rows.length
-                    },
-                )
-                    .setImage("attachment://matchup.png");
+                    const width = 1000; //px
+                    const height = 400; //px
+                    const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
-                for (let i = 0; i < 5; i++) {
-                    let text = "";
-                    if (data[i * 5] !== undefined) {
-                        text += data[i * 5];
-                    }
-                    if (data[i * 5 + 1] !== undefined) {
-                        text += data[i * 5 + 1];
-                    }
-                    if (data[i * 5 + 2] !== undefined) {
-                        text += data[i * 5 + 2];
-                    }
-                    if (data[i * 5 + 3] !== undefined) {
-                        text += data[i * 5 + 3];
-                    }
-                    if (data[i * 5 + 4] !== undefined) {
-                        text += data[i * 5 + 4];
-                    }
-                    if (text !== "") {
-                        embed.addFields(
+                    const configuration = {
+                        type: 'bar',
+                        data: {
+                            datasets: [{
+                                label: 'WinRate per champion',
+                                borderColor: '#36A2EB',
+                                backgroundColor: '#9BD0F5',
+                                data: values1
+                            },
                             {
-                                name: "Matchup " + (i + 1) + " :",
-                                value: text
-                            }
-                        );
-                    }
-                }
-
-                return await interaction.editReply({ embeds: [embed], files: [attachment] });
-            } else if (interaction.options.getSubcommand() === "champions") {
-                let i = 1;
-
-                let discordusername = "";
-                if (discordaccount === null) {
-                    discordaccount = interaction.user.id;
-                    discordusername = interaction.user.username;
-                } else {
-                    discordusername = discordaccount.username;
-                    discordaccount = discordaccount.id;
-                }
-                const query_values = [discordaccount];
-
-                let query = "SELECT champion, " +
-                    "count(*) AS count, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE result = 'Win'" +
-                    ")*100 as float)/count(*)) as winrate, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE (first_tanked OR first_gold OR first_damages)" +
-                    ")*100 as float)/count(*)) AS carry " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 " +
-                    "AND matchs.player = summoners.puuid";
-                i++;
-
-                if (role !== null) {
-                    query += " AND matchs.lane=$" + i;
-                    query_values.push(role);
-                    i++;
-                }
-                if (gamemode !== null) {
-                    query += " AND matchs.gamemode=$" + i;
-                    query_values.push(gamemode);
-                    i++;
-                }
-                if (account !== null) {
-                    query += " AND summoners.username=$" + i;
-                    query_values.push(account);
-                    i++;
-                }
-                query += " GROUP BY champion ORDER BY count(*) DESC;";
-
-                const response = await client.pg.query(query, query_values);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("You don't have any matchs in the database.");
-                }
-
-                const data1 = [];
-                const data2 = [];
-                const labels = [];
-                for (let i = 0; i < response.rows.length; i++) {
-                    if (response.rows[i].count > 4 && response.rows[i].champion !== "" && response.rows[i].champion !== "Invalid") {
-                        data1.push(response.rows[i].winrate);
-                        data2.push(response.rows[i].carry);
-                        labels.push(response.rows[i].champion);
-                    }
-                }
-
-
-
-                const width = 1000; //px
-                const height = 400; //px
-                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
-                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
-
-                const configuration = {
-                    type: 'bar',
-                    data: {
-                        datasets: [{
-                            label: 'WinRate per champion',
-                            borderColor: '#36A2EB',
-                            backgroundColor: '#9BD0F5',
-                            data: data1
+                                label: 'Carry per champion',
+                                borderColor: '#FF6384',
+                                backgroundColor: '#FFB1C1',
+                                data: values2
+                            }],
+                            labels: champ
                         },
-                        {
-                            label: 'Carry per champion',
-                            borderColor: '#FF6384',
-                            backgroundColor: '#FFB1C1',
-                            data: data2
-                        }],
-                        labels: labels
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Champions'
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Champions'
+                                }
                             }
-                        }
-                    }, // See https://www.chartjs.org/docs/latest/configuration
-                };
-                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-                const attachment = new MessageAttachment(image, 'champion.png');
+                        }, // See https://www.chartjs.org/docs/latest/configuration
+                    };
+                    const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                    const attachment = new MessageAttachment(image, 'matchup.png');
 
+                    let title = "" + discordusername + "'s matchups";
+                    if (champion !== null) {
+                        title += " with " + champion;
+                    }
+                    if (role !== null) {
+                        title += " in " + role;
+                    }
+                    if (account !== null) {
+                        title += " on \"" + account + "\"";
+                    }
 
-                let title = "" + discordusername + "'s champions";
-                if (role !== null) {
-                    title += " in " + role;
-                }
-                if (account !== null) {
-                    title += " on \"" + account + "\"";
-                }
-
-                // send embed
-                const embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp()
-                    .addFields(
+                    // send embed
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
+                    embed.addFields(
                         {
-                            name: "Number of champions :",
+                            name: "Number of matchups :",
                             value: "" + response.rows.length
                         },
                     )
-                    .setImage("attachment://champion.png");
+                        .setImage("attachment://matchup.png");
 
+                    for (let i = 0; i < 5; i++) {
+                        let text = "";
+                        if (data[i * 5] !== undefined) {
+                            text += data[i * 5];
+                        }
+                        if (data[i * 5 + 1] !== undefined) {
+                            text += data[i * 5 + 1];
+                        }
+                        if (data[i * 5 + 2] !== undefined) {
+                            text += data[i * 5 + 2];
+                        }
+                        if (data[i * 5 + 3] !== undefined) {
+                            text += data[i * 5 + 3];
+                        }
+                        if (data[i * 5 + 4] !== undefined) {
+                            text += data[i * 5 + 4];
+                        }
+                        if (text !== "") {
+                            embed.addFields(
+                                {
+                                    name: "Matchup " + (i + 1) + " :",
+                                    value: text
+                                }
+                            );
+                        }
+                    }
 
-
-                for (let i = 0; i < 5; i++) {
-                    let text = "";
-                    if (response.rows[i * 5] !== undefined && response.rows[i * 5].champion !== "" && response.rows[i * 5].count > 4) {
-                        text += "- " + response.rows[i * 5].champion + " : " + response.rows[i * 5].count + " matchs (" + response.rows[i * 5].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5].carry.toFixed(1) + "% carry)\n";
-                    }
-                    if (response.rows[i * 5 + 1] !== undefined && response.rows[i * 5 + 1].champion !== "" && response.rows[i * 5 + 1].count > 4) {
-                        text += "- " + response.rows[i * 5 + 1].champion + " : " + response.rows[i * 5 + 1].count + " matchs (" + response.rows[i * 5 + 1].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 1].carry.toFixed(1) + "% carry)\n";
-                    }
-                    if (response.rows[i * 5 + 2] !== undefined && response.rows[i * 5 + 2].champion !== "" && response.rows[i * 5 + 2].count > 4) {
-                        text += "- " + response.rows[i * 5 + 2].champion + " : " + response.rows[i * 5 + 2].count + " matchs (" + response.rows[i * 5 + 2].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 2].carry.toFixed(1) + "% carry)\n";
-                    }
-                    if (response.rows[i * 5 + 3] !== undefined && response.rows[i * 5 + 3].champion !== "" && response.rows[i * 5 + 3].count > 4) {
-                        text += "- " + response.rows[i * 5 + 3].champion + " : " + response.rows[i * 5 + 3].count + " matchs (" + response.rows[i * 5 + 3].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 3].carry.toFixed(1) + "% carry)\n";
-                    }
-                    if (response.rows[i * 5 + 4] !== undefined && response.rows[i * 5 + 4].champion !== "" && response.rows[i * 5 + 4].count > 4) {
-                        text += "- " + response.rows[i * 5 + 4].champion + " : " + response.rows[i * 5 + 4].count + " matchs (" + response.rows[i * 5 + 4].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 4].carry.toFixed(1) + "% carry)\n";
-                    }
-                    if (text !== "") {
-                        embed.addFields(
-                            {
-                                name: "Champion " + (i + 1) + " :",
-                                value: text
-                            }
-                        );
-                    }
+                    return await interaction.editReply({ embeds: [embed], files: [attachment] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            discordaccount: discordaccount,
+                            champion: champion,
+                            role: role,
+                            account: account,
+                            gamemode: gamemode
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol stats matchups " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
-                return await interaction.editReply({ embeds: [embed], files: [attachment] });
+            } else if (interaction.options.getSubcommand() === "champions") {
+                try {
+                    let i = 1;
+
+                    let discordusername = "";
+                    if (discordaccount === null) {
+                        discordaccount = interaction.user.id;
+                        discordusername = interaction.user.username;
+                    } else {
+                        discordusername = discordaccount.username;
+                        discordaccount = discordaccount.id;
+                    }
+                    const query_values = [discordaccount];
+
+                    let query = "SELECT champion, " +
+                        "count(*) AS count, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE result = 'Win'" +
+                        ")*100 as float)/count(*)) as winrate, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE (first_tanked OR first_gold OR first_damages)" +
+                        ")*100 as float)/count(*)) AS carry " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 " +
+                        "AND matchs.player = summoners.puuid";
+                    i++;
+
+                    if (role !== null) {
+                        query += " AND matchs.lane=$" + i;
+                        query_values.push(role);
+                        i++;
+                    }
+                    if (gamemode !== null) {
+                        query += " AND matchs.gamemode=$" + i;
+                        query_values.push(gamemode);
+                        i++;
+                    }
+                    if (account !== null) {
+                        query += " AND summoners.username=$" + i;
+                        query_values.push(account);
+                        i++;
+                    }
+                    query += " GROUP BY champion ORDER BY count(*) DESC;";
+
+                    const response = await client.pg.query(query, query_values);
+                    if (response.rows.length === 0) {
+                        return await interaction.editReply("You don't have any matchs in the database.");
+                    }
+
+                    const data1 = [];
+                    const data2 = [];
+                    const labels = [];
+                    for (let i = 0; i < response.rows.length; i++) {
+                        if (response.rows[i].count > 4 && response.rows[i].champion !== "" && response.rows[i].champion !== "Invalid") {
+                            data1.push(response.rows[i].winrate);
+                            data2.push(response.rows[i].carry);
+                            labels.push(response.rows[i].champion);
+                        }
+                    }
+
+
+
+                    const width = 1000; //px
+                    const height = 400; //px
+                    const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+
+                    const configuration = {
+                        type: 'bar',
+                        data: {
+                            datasets: [{
+                                label: 'WinRate per champion',
+                                borderColor: '#36A2EB',
+                                backgroundColor: '#9BD0F5',
+                                data: data1
+                            },
+                            {
+                                label: 'Carry per champion',
+                                borderColor: '#FF6384',
+                                backgroundColor: '#FFB1C1',
+                                data: data2
+                            }],
+                            labels: labels
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Champions'
+                                }
+                            }
+                        }, // See https://www.chartjs.org/docs/latest/configuration
+                    };
+                    const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                    const attachment = new MessageAttachment(image, 'champion.png');
+
+
+                    let title = "" + discordusername + "'s champions";
+                    if (role !== null) {
+                        title += " in " + role;
+                    }
+                    if (account !== null) {
+                        title += " on \"" + account + "\"";
+                    }
+
+                    // send embed
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "Number of champions :",
+                                value: "" + response.rows.length
+                            },
+                        )
+                        .setImage("attachment://champion.png");
+
+
+
+                    for (let i = 0; i < 5; i++) {
+                        let text = "";
+                        if (response.rows[i * 5] !== undefined && response.rows[i * 5].champion !== "" && response.rows[i * 5].count > 4) {
+                            text += "- " + response.rows[i * 5].champion + " : " + response.rows[i * 5].count + " matchs (" + response.rows[i * 5].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5].carry.toFixed(1) + "% carry)\n";
+                        }
+                        if (response.rows[i * 5 + 1] !== undefined && response.rows[i * 5 + 1].champion !== "" && response.rows[i * 5 + 1].count > 4) {
+                            text += "- " + response.rows[i * 5 + 1].champion + " : " + response.rows[i * 5 + 1].count + " matchs (" + response.rows[i * 5 + 1].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 1].carry.toFixed(1) + "% carry)\n";
+                        }
+                        if (response.rows[i * 5 + 2] !== undefined && response.rows[i * 5 + 2].champion !== "" && response.rows[i * 5 + 2].count > 4) {
+                            text += "- " + response.rows[i * 5 + 2].champion + " : " + response.rows[i * 5 + 2].count + " matchs (" + response.rows[i * 5 + 2].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 2].carry.toFixed(1) + "% carry)\n";
+                        }
+                        if (response.rows[i * 5 + 3] !== undefined && response.rows[i * 5 + 3].champion !== "" && response.rows[i * 5 + 3].count > 4) {
+                            text += "- " + response.rows[i * 5 + 3].champion + " : " + response.rows[i * 5 + 3].count + " matchs (" + response.rows[i * 5 + 3].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 3].carry.toFixed(1) + "% carry)\n";
+                        }
+                        if (response.rows[i * 5 + 4] !== undefined && response.rows[i * 5 + 4].champion !== "" && response.rows[i * 5 + 4].count > 4) {
+                            text += "- " + response.rows[i * 5 + 4].champion + " : " + response.rows[i * 5 + 4].count + " matchs (" + response.rows[i * 5 + 4].winrate.toFixed(1) + "% winrate, " + response.rows[i * 5 + 4].carry.toFixed(1) + "% carry)\n";
+                        }
+                        if (text !== "") {
+                            embed.addFields(
+                                {
+                                    name: "Champion " + (i + 1) + " :",
+                                    value: text
+                                }
+                            );
+                        }
+                    }
+                    return await interaction.editReply({ embeds: [embed], files: [attachment] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            discordaccount: discordaccount,
+                            role: role,
+                            account: account,
+                            gamemode: gamemode
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol stats champions " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
+                }
             } else if (interaction.options.getSubcommand() === "match") {
                 /*if (puuid !== null) {
                     const query = "SELECT * FROM matchs WHERE puuid=$1;";
@@ -1581,138 +1631,155 @@ module.exports = {
 
                 }*/
             } else if (interaction.options.getSubcommand() === "evolution") {
-                let i = 1;
+                try {
+                    let i = 1;
 
-                let discordusername = "";
-                if (discordaccount === null) {
-                    discordaccount = interaction.user.id;
-                    discordusername = interaction.user.username;
-                } else {
-                    discordusername = discordaccount.username;
-                    discordaccount = discordaccount.id;
-                }
-                const query_values = [discordaccount];
-                i++;
-
-                let queryaccount = "";
-                if (account !== null) {
-                    queryaccount = " AND summoners.account = $" + i;
-                    query_values.push(account);
+                    let discordusername = "";
+                    if (discordaccount === null) {
+                        discordaccount = interaction.user.id;
+                        discordusername = interaction.user.username;
+                    } else {
+                        discordusername = discordaccount.username;
+                        discordaccount = discordaccount.id;
+                    }
+                    const query_values = [discordaccount];
                     i++;
-                }
 
-                let querygamemode = "";
-                if (gamemode !== null) {
-                    querygamemode = " AND matchs.gamemode = $" + i;
-                    query_values.push(gamemode);
-                    i++;
-                }
+                    let queryaccount = "";
+                    if (account !== null) {
+                        queryaccount = " AND summoners.account = $" + i;
+                        query_values.push(account);
+                        i++;
+                    }
 
-                let queryrole = "";
-                if (role !== null) {
-                    queryrole = " AND matchs.lane = $" + i;
-                    query_values.push(role);
-                    i++;
-                }
+                    let querygamemode = "";
+                    if (gamemode !== null) {
+                        querygamemode = " AND matchs.gamemode = $" + i;
+                        query_values.push(gamemode);
+                        i++;
+                    }
 
-                let querychamp = "";
-                if (champion !== null) {
-                    querychamp = " AND matchs.champion=$" + i;
-                    query_values.push(champion);
-                    i++;
-                }
+                    let queryrole = "";
+                    if (role !== null) {
+                        queryrole = " AND matchs.lane = $" + i;
+                        query_values.push(role);
+                        i++;
+                    }
 
-                const query =
-                    "WITH weekly_matches AS (" +
-                    "SELECT " +
-                    "date_trunc('week', to_timestamp(timestamp / 1000)) AS week, " +
-                    "Count(*) AS total_games, " +
-                    "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) AS win_rate, " +
-                    "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_or_damages_or_tanked, " +
-                    "CAST(SUM(CASE WHEN first_gold AND first_damages AND first_tanked THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_and_damages_and_tanked, " +
-                    "(CAST(SUM(kill + assists) AS FLOAT) / AVG(total_kills))/ Count(*) AS kill_participation, " +
-                    "SUM(vision_score) / (SUM(length / 60) * 20) AS vision_score_per_minute, " +
-                    "SUM(cs) / (SUM(length / 60)) AS cs_per_minute " +
-                    "FROM matchs, summoners " +
-                    "WHERE discordid = $1" +
-                    " AND matchs.player = summoners.puuid" +
-                    " AND (result = 'Win' OR result = 'Lose')" +
-                    queryaccount +
-                    querygamemode +
-                    queryrole +
-                    querychamp +
-                    " GROUP BY week " +
-                    ")" +
-                    "SELECT " +
-                    "week, " +
-                    "total_games, " +
-                    "win_rate, " +
-                    "100 * first_gold_or_damages_or_tanked + 100 * win_rate + 100 * kill_participation + 5 * vision_score_per_minute + 10 * cs_per_minute + 50 * first_gold_and_damages_and_tanked  AS score " +
-                    "FROM weekly_matches ORDER BY week ASC;";
+                    let querychamp = "";
+                    if (champion !== null) {
+                        querychamp = " AND matchs.champion=$" + i;
+                        query_values.push(champion);
+                        i++;
+                    }
 
-                const response = await client.pg.query(query, query_values);
-                if (response.rows.length === 0) {
-                    interaction.editReply("No data found for this account");
-                    return;
-                }
+                    const query =
+                        "WITH weekly_matches AS (" +
+                        "SELECT " +
+                        "date_trunc('week', to_timestamp(timestamp / 1000)) AS week, " +
+                        "Count(*) AS total_games, " +
+                        "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) AS win_rate, " +
+                        "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_or_damages_or_tanked, " +
+                        "CAST(SUM(CASE WHEN first_gold AND first_damages AND first_tanked THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_and_damages_and_tanked, " +
+                        "(CAST(SUM(kill + assists) AS FLOAT) / AVG(total_kills))/ Count(*) AS kill_participation, " +
+                        "SUM(vision_score) / (SUM(length / 60) * 20) AS vision_score_per_minute, " +
+                        "SUM(cs) / (SUM(length / 60)) AS cs_per_minute " +
+                        "FROM matchs, summoners " +
+                        "WHERE discordid = $1" +
+                        " AND matchs.player = summoners.puuid" +
+                        " AND (result = 'Win' OR result = 'Lose')" +
+                        queryaccount +
+                        querygamemode +
+                        queryrole +
+                        querychamp +
+                        " GROUP BY week " +
+                        ")" +
+                        "SELECT " +
+                        "week, " +
+                        "total_games, " +
+                        "win_rate, " +
+                        "100 * first_gold_or_damages_or_tanked + 100 * win_rate + 100 * kill_participation + 5 * vision_score_per_minute + 10 * cs_per_minute + 50 * first_gold_and_damages_and_tanked  AS score " +
+                        "FROM weekly_matches ORDER BY week ASC;";
 
-                const labels = [];
-                const data = [];
-                for (let i = 0; i < response.rows.length; i++) {
-                    labels.push(i);
-                    data.push(response.rows[i].score);
-                }
+                    const response = await client.pg.query(query, query_values);
+                    if (response.rows.length === 0) {
+                        interaction.editReply("No data found for this account");
+                        return;
+                    }
 
-                const width = 1500; //px
-                const height = 1000; //px
-                const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
-                const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
+                    const labels = [];
+                    const data = [];
+                    for (let i = 0; i < response.rows.length; i++) {
+                        labels.push(i);
+                        data.push(response.rows[i].score);
+                    }
 
-                const configuration = {
-                    type: 'line',
-                    data: {
-                        datasets: [{
-                            label: 'Ks evolution',
-                            data: data,
-                            borderColor: '#36A2EB',
-                            backgroundColor: '#9BD0F5'
-                        }],
-                        labels: labels
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: {
-                                position: 'top',
-                            },
-                            title: {
-                                display: true,
-                                text: 'Evolution'
-                            }
-                        }
-                    }, // See https://www.chartjs.org/docs/latest/configuration
-                };
-                const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-                const attachment = new MessageAttachment(image, 'ks.png');
+                    const width = 1500; //px
+                    const height = 1000; //px
+                    const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
+                    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
-                // create embed
-                const embed = new MessageEmbed()
-                    .setTitle("" + discordusername + "'s ks")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp()
-                    .addFields(
-                        {
-                            name: "Number of weeks played :",
-                            value: "" + response.rows.length
+                    const configuration = {
+                        type: 'line',
+                        data: {
+                            datasets: [{
+                                label: 'Ks evolution',
+                                data: data,
+                                borderColor: '#36A2EB',
+                                backgroundColor: '#9BD0F5'
+                            }],
+                            labels: labels
                         },
-                    )
-                    .setImage("attachment://ks.png");
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Evolution'
+                                }
+                            }
+                        }, // See https://www.chartjs.org/docs/latest/configuration
+                    };
+                    const image = await chartJSNodeCanvas.renderToBuffer(configuration);
+                    const attachment = new MessageAttachment(image, 'ks.png');
 
-                interaction.editReply({ embeds: [embed], files: [attachment] });
+                    // create embed
+                    const embed = new MessageEmbed()
+                        .setTitle("" + discordusername + "'s ks")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "Number of weeks played :",
+                                value: "" + response.rows.length
+                            },
+                        )
+                        .setImage("attachment://ks.png");
+
+                    interaction.editReply({ embeds: [embed], files: [attachment] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            discordaccount: discordaccount,
+                            role: role,
+                            champion: champion,
+                            account: account,
+                            gamemode: gamemode
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol stats evolution " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
+                }
             } else if (interaction.options.getSubcommand() === "friends") {
                 /*let i = 1;
 
@@ -1818,818 +1885,870 @@ module.exports = {
                 console.log(response.rows);
                 */
             } else if (interaction.options.getSubcommand() === "profile") {
-                let discordusername = "";
-                if (discordaccount === null) {
-                    discordaccount = interaction.user.id;
-                    discordusername = interaction.user.username;
-                } else {
-                    discordusername = discordaccount.username;
-                    discordaccount = discordaccount.id;
-                }
-                const query_values = [discordaccount];
+                try {
+                    let discordusername = "";
+                    if (discordaccount === null) {
+                        discordaccount = interaction.user.id;
+                        discordusername = interaction.user.username;
+                    } else {
+                        discordusername = discordaccount.username;
+                        discordaccount = discordaccount.id;
+                    }
+                    const query_values = [discordaccount];
 
-                const response = await client.pg.query("SELECT * FROM summoners WHERE discordid = $1;", query_values);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("No data found. Try adding your account with /account add");
-                }
+                    const response = await client.pg.query("SELECT * FROM summoners WHERE discordid = $1;", query_values);
+                    if (response.rows.length === 0) {
+                        return await interaction.editReply("No data found. Try adding your account with /account add");
+                    }
 
-                let accounts = "";
-                let best_solo = ["unranked", "", 0];
-                let best_flex = ["unranked", "", 0];
-                for (const row of response.rows) {
-                    accounts += "EUW - " + row.username + "\n";
+                    let accounts = "";
+                    let best_solo = ["unranked", "", 0];
+                    let best_flex = ["unranked", "", 0];
+                    for (const row of response.rows) {
+                        accounts += "EUW - " + row.username + "\n";
 
-                    if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
-                        best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
-                    } else if (tiers.indexOf(row.tier_solo) === tiers.indexOf(best_solo[0])) {
-                        if (rank.indexOf(row.rank_solo) > rank.indexOf(best_solo[1])) {
+                        if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
                             best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
-                        } else if (rank.indexOf(row.rank_solo) === rank.indexOf(best_solo[1])) {
-                            if (row.lp_solo > best_solo[2]) {
+                        } else if (tiers.indexOf(row.tier_solo) === tiers.indexOf(best_solo[0])) {
+                            if (rank.indexOf(row.rank_solo) > rank.indexOf(best_solo[1])) {
                                 best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
+                            } else if (rank.indexOf(row.rank_solo) === rank.indexOf(best_solo[1])) {
+                                if (row.lp_solo > best_solo[2]) {
+                                    best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
+                                }
                             }
                         }
-                    }
 
-                    if (tiers.indexOf(row.tier_flex) > tiers.indexOf(best_flex[0])) {
-                        best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
-                    } else if (tiers.indexOf(row.tier_flex) === tiers.indexOf(best_flex[0])) {
-                        if (rank.indexOf(row.rank_flex) > rank.indexOf(best_flex[1])) {
+                        if (tiers.indexOf(row.tier_flex) > tiers.indexOf(best_flex[0])) {
                             best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
-                        } else if (rank.indexOf(row.rank_flex) === rank.indexOf(best_flex[1])) {
-                            if (row.lp_flex > best_flex[2]) {
+                        } else if (tiers.indexOf(row.tier_flex) === tiers.indexOf(best_flex[0])) {
+                            if (rank.indexOf(row.rank_flex) > rank.indexOf(best_flex[1])) {
                                 best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
+                            } else if (rank.indexOf(row.rank_flex) === rank.indexOf(best_flex[1])) {
+                                if (row.lp_flex > best_flex[2]) {
+                                    best_flex = [row.tier_flex, row.rank_flex, row.lp_flex];
+                                }
                             }
                         }
+
                     }
 
-                }
+                    let best_solo_str;
+                    let best_flex_str;
 
-                let best_solo_str;
-                let best_flex_str;
+                    if (best_solo[0] === "unranked") {
+                        best_solo_str = "Unranked";
+                    } else {
+                        best_solo_str = emojis[best_solo[0]] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+                    }
+                    if (best_flex[0] === "unranked") {
+                        best_flex_str = "Unranked";
+                    } else {
+                        best_flex_str = emojis[best_solo[0]] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+                    }
 
-                if (best_solo[0] === "unranked") {
-                    best_solo_str = "Unranked";
-                } else {
-                    best_solo_str = emojis[best_solo[0]] + " " + best_solo[1] + " " + best_solo[2] + "LP";
-                }
-                if (best_flex[0] === "unranked") {
-                    best_flex_str = "Unranked";
-                } else {
-                    best_flex_str = emojis[best_solo[0]] + " " + best_solo[1] + " " + best_solo[2] + "LP";
-                }
+                    // mastery
+                    const mastery = await client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordaccount + "';");
 
-                // mastery
-                const mastery = await client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordaccount + "';");
+                    let first_mastery;
+                    if (mastery.rows[0].first_mastery < 10000) {
+                        first_mastery = mastery.rows[0].first_mastery;
+                    } else {
+                        first_mastery = Math.floor(mastery.rows[0].first_mastery / 1000) + "k";
+                    }
 
-                let first_mastery;
-                if (mastery.rows[0].first_mastery < 10000) {
-                    first_mastery = mastery.rows[0].first_mastery;
-                } else {
-                    first_mastery = Math.floor(mastery.rows[0].first_mastery / 1000) + "k";
-                }
+                    let second_mastery;
+                    if (mastery.rows[0].second_mastery < 10000) {
+                        second_mastery = mastery.rows[0].second_mastery;
+                    } else {
+                        second_mastery = Math.floor(mastery.rows[0].second_mastery / 1000) + "k";
+                    }
 
-                let second_mastery;
-                if (mastery.rows[0].second_mastery < 10000) {
-                    second_mastery = mastery.rows[0].second_mastery;
-                } else {
-                    second_mastery = Math.floor(mastery.rows[0].second_mastery / 1000) + "k";
-                }
+                    let third_mastery;
+                    if (mastery.rows[0].third_mastery < 10000) {
+                        third_mastery = mastery.rows[0].third_mastery;
+                    } else {
+                        third_mastery = Math.floor(mastery.rows[0].third_mastery / 1000) + "k";
+                    }
 
-                let third_mastery;
-                if (mastery.rows[0].third_mastery < 10000) {
-                    third_mastery = mastery.rows[0].third_mastery;
-                } else {
-                    third_mastery = Math.floor(mastery.rows[0].third_mastery / 1000) + "k";
-                }
+                    const Top_Champion = " - **" + mastery.rows[0].first_mastery_champ + "** - " + first_mastery +
+                        "\n - **" + mastery.rows[0].second_mastery_champ + "** - " + second_mastery +
+                        "\n - **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
 
-                const Top_Champion = " - **" + mastery.rows[0].first_mastery_champ + "** - " + first_mastery +
-                    "\n - **" + mastery.rows[0].second_mastery_champ + "** - " + second_mastery +
-                    "\n - **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
+                    // Mastery statistics
+                    const Mastery_statistics = mastery.rows[0].mastery7 + "x<:Level_7:411977489707958282> " +
+                        mastery.rows[0].mastery6 + "x<:Level_6:411977489351704587> " +
+                        mastery.rows[0].mastery5 + "x<:Level_5:411977803144364032> \n" +
+                        mastery.rows[0].total_point + " **Total Points**";
 
-                // Mastery statistics
-                const Mastery_statistics = mastery.rows[0].mastery7 + "x<:Level_7:411977489707958282> " +
-                    mastery.rows[0].mastery6 + "x<:Level_6:411977489351704587> " +
-                    mastery.rows[0].mastery5 + "x<:Level_5:411977803144364032> \n" +
-                    mastery.rows[0].total_point + " **Total Points**";
+                    // Champion statistics
+                    //const response2 = await client.pg.query("SELECT * FROM matchs,summoners WHERE matchs.player = summoners.puuid AND discordid = '" + discordaccount + "' ORDER BY timestamp DESC LIMIT 3;");
 
-                // Champion statistics
-                //const response2 = await client.pg.query("SELECT * FROM matchs,summoners WHERE matchs.player = summoners.puuid AND discordid = '" + discordaccount + "' ORDER BY timestamp DESC LIMIT 3;");
-
-                const embed = new MessageEmbed()
-                    .setTitle("" + discordusername + "'s Profile :")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
-                embed.addFields(
-                    {
-                        name: "**Top Champions :**",
-                        value: "" + Top_Champion,
-                        inline: true
-                    },
-                    {
-                        name: "**Mastery Statistics :**",
-                        value: "" + Mastery_statistics,
-                        inline: true
-                    },/*
+                    const embed = new MessageEmbed()
+                        .setTitle("" + discordusername + "'s Profile :")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
+                    embed.addFields(
+                        {
+                            name: "**Top Champions :**",
+                            value: "" + Top_Champion,
+                            inline: true
+                        },
+                        {
+                            name: "**Mastery Statistics :**",
+                            value: "" + Mastery_statistics,
+                            inline: true
+                        },/*
                     {
                         name: "**Recently Played :**",
                         value: "" + tanked,
                         inline: true
                     },*/
-                    {
-                        name: "**Ranked Tiers :**",
-                        value: "Ranked Solo : **" + best_solo_str + "**\nRanked Flex : **" + best_flex_str + "**",
-                        inline: true
-                    },
-                    {
-                        name: "**Accounts :**",
-                        value: "" + accounts,
-                        inline: true
-                    },
-
-                );
-                //.setURL(url);
-                return await interaction.editReply({ embeds: [embed] });
-
-            } else if (interaction.options.getSubcommand() === "compare") {
-                const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
-                if (priority.rows[0].priority === 0) {
-                    return await interaction.editReply("This feature is not available for the moment. If you want to support me, you can contact me on discord : **KwikKill#6123**");
-                }
-
-                let i = 1;
-
-                const discordusername = discordaccount.username;
-                discordaccount = discordaccount.id;
-                const query_values = [discordaccount];
-
-                let query = "SELECT * " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 " +
-                    "AND matchs.player = summoners.puuid";
-                let query2 = "SELECT " +
-                    "avg(length) as duration, " +
-                    "avg(kill) as kill, " +
-                    "avg(deaths) as deaths, " +
-                    "avg(assists) as assists, " +
-                    "avg(total_damage) as damage, " +
-                    "avg(tanked_damage) as damage_taken, " +
-                    "avg(heal) as heal, " +
-                    "avg(cs) as cs, " +
-                    "avg(gold) as gold, " +
-                    "avg(vision_score) as vision_score, " +
-                    "avg(pinks) as pinks, " +
-                    "avg(total_kills) as total_kills " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
-                i++;
-
-                if (champion !== null) {
-                    query += " AND matchs.champion=$" + i;
-                    query2 += " AND matchs.champion=$" + i;
-                    query_values.push(champion);
-                    i++;
-                }
-                if (role !== null) {
-                    query += " AND matchs.lane=$" + i;
-                    query2 += " AND matchs.lane=$" + i;
-                    query_values.push(role);
-                    i++;
-                }
-                if (gamemode !== null) {
-                    query += " AND matchs.gamemode=$" + i;
-                    query2 += " AND matchs.gamemode=$" + i;
-                    query_values.push(gamemode);
-                    i++;
-                }
-                query += ";";
-                query2 += ";";
-
-                const response = await client.pg.query(query, query_values);
-                if (response.rows.length === 0) {
-                    return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
-                }
-
-                const response2 = await client.pg.query(query2, query_values);
-
-                // 1) Carry stats
-
-                let oponent_carry_damage = 0;
-                let oponent_carry_tanked = 0;
-                let oponent_carry_gold = 0;
-                let oponent_overall = 0;
-                let oponent_hard_carry = 0;
-                let oponent_win = 0;
-
-
-                for (let i = 0; i < response.rows.length; i++) {
-                    if (response.rows[i].result === "Win") {
-                        oponent_win += 1;
-                    }
-                    if (response.rows[i].first_gold) {
-                        oponent_carry_gold += 1;
-                    }
-                    if (response.rows[i].first_damages) {
-                        oponent_carry_damage += 1;
-                    }
-                    if (response.rows[i].first_tanked) {
-                        oponent_carry_tanked += 1;
-                    }
-                    if (response.rows[i].first_damages && response.rows[i].first_tanked && response.rows[i].first_gold) {
-                        oponent_hard_carry += 1;
-                    }
-                    if (response.rows[i].first_damages || response.rows[i].first_tanked || response.rows[i].first_gold) {
-                        oponent_overall += 1;
-                    }
-                }
-
-                // 2) Average stats
-
-                const oponent_length = response2.rows[0].duration;
-
-                const oponent_average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
-                const oponent_average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
-                const oponent_average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
-                let oponent_average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
-                let oponent_average_gold = response2.rows[0].gold;
-                let oponent_average_damages = response2.rows[0].damage;
-                let oponent_average_tanked = response2.rows[0].damage_taken;
-                const oponent_average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(decimal);
-                const oponent_average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(decimal);
-                const oponent_average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(decimal);
-
-                oponent_average_cs = (oponent_average_cs / (oponent_length / 60)).toFixed(decimal);
-                oponent_average_gold = (oponent_average_gold / (oponent_length / 60)).toFixed(decimal);
-                oponent_average_damages = (oponent_average_damages / (oponent_length / 60)).toFixed(decimal);
-                oponent_average_tanked = (oponent_average_tanked / (oponent_length / 60)).toFixed(decimal);
-
-                // KwikScore
-
-                let oponent_score = 0;
-                oponent_score += oponent_overall / response.rows.length * 100;
-                oponent_score += oponent_win / response.rows.length * 100;
-                oponent_score += (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills * 100;
-                oponent_score += 5 * (((Number.parseFloat(oponent_average_vision_score)) / (oponent_length / 60)) / 0.2);
-                oponent_score += 10 * oponent_average_cs;
-                if (100 - response.rows.length > 0) {
-                    oponent_score = oponent_score * 0.99 ** (100 - response.rows.length);
-                }
-
-                oponent_carry_damage = oponent_carry_damage / response.rows.length * 100;
-                oponent_carry_tanked = oponent_carry_tanked / response.rows.length * 100;
-                oponent_carry_gold = oponent_carry_gold / response.rows.length * 100;
-                oponent_overall = oponent_overall / response.rows.length * 100;
-                oponent_hard_carry = oponent_hard_carry / response.rows.length * 100;
-                oponent_win = oponent_win / response.rows.length * 100;
-
-                // Your stats
-
-                let j = 1;
-
-                query_values[0] = interaction.user.id;
-
-                let query3 = "SELECT * " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 " +
-                    "AND matchs.player = summoners.puuid";
-                let query4 = "SELECT " +
-                    "avg(length) as duration, " +
-                    "avg(kill) as kill, " +
-                    "avg(deaths) as deaths, " +
-                    "avg(assists) as assists, " +
-                    "avg(total_damage) as damage, " +
-                    "avg(tanked_damage) as damage_taken, " +
-                    "avg(heal) as heal, " +
-                    "avg(cs) as cs, " +
-                    "avg(gold) as gold, " +
-                    "avg(vision_score) as vision_score, " +
-                    "avg(pinks) as pinks, " +
-                    "avg(total_kills) as total_kills " +
-                    "FROM matchs, summoners " +
-                    "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
-                i++;
-
-                if (champion !== null) {
-                    query3 += " AND matchs.champion=$" + j;
-                    query4 += " AND matchs.champion=$" + j;
-                    j++;
-                }
-                if (role !== null) {
-                    query3 += " AND matchs.lane=$" + j;
-                    query4 += " AND matchs.lane=$" + j;
-                    j++;
-                }
-                if (gamemode !== null) {
-                    query3 += " AND matchs.gamemode=$" + j;
-                    query4 += " AND matchs.gamemode=$" + j;
-                    j++;
-                }
-                query3 += ";";
-                query4 += ";";
-
-                const response4 = await client.pg.query(query3, query_values);
-                if (response4.rows.length === 0) {
-                    return await interaction.editReply("You dont have any matchs in the database or the filters are too restrictings.");
-                }
-
-                const response5 = await client.pg.query(query4, query_values);
-
-                // 1) Carry stats
-
-                let carry_damage = 0;
-                let carry_tanked = 0;
-                let carry_gold = 0;
-                let overall = 0;
-                let hard_carry = 0;
-                let win = 0;
-
-
-                for (let i = 0; i < response4.rows.length; i++) {
-                    if (response4.rows[i].result === "Win") {
-                        win += 1;
-                    }
-                    if (response4.rows[i].first_gold) {
-                        carry_gold += 1;
-                    }
-                    if (response4.rows[i].first_damages) {
-                        carry_damage += 1;
-                    }
-                    if (response4.rows[i].first_tanked) {
-                        carry_tanked += 1;
-                    }
-                    if (response4.rows[i].first_damages && response4.rows[i].first_tanked && response4.rows[i].first_gold) {
-                        hard_carry += 1;
-                    }
-                    if (response4.rows[i].first_damages || response4.rows[i].first_tanked || response4.rows[i].first_gold) {
-                        overall += 1;
-                    }
-                }
-
-                // 2) Average stats
-
-                const length = response5.rows[0].duration;
-
-                const average_kills = Number.parseFloat(response5.rows[0].kill).toFixed(decimal);
-                const average_deaths = Number.parseFloat(response5.rows[0].deaths).toFixed(decimal);
-                const average_assists = Number.parseFloat(response5.rows[0].assists).toFixed(decimal);
-                let average_cs = Number.parseFloat(response5.rows[0].cs).toFixed(decimal);
-                let average_gold = response5.rows[0].gold;
-                let average_damages = response5.rows[0].damage;
-                let average_tanked = response5.rows[0].damage_taken;
-                const average_pinks = Number.parseFloat(response5.rows[0].pinks).toFixed(decimal);
-                const average_vision_score = Number.parseFloat(response5.rows[0].vision_score).toFixed(decimal);
-                const average_total_kills = Number.parseFloat(response5.rows[0].total_kills).toFixed(decimal);
-
-                average_cs = (average_cs / (length / 60)).toFixed(decimal);
-                average_gold = (average_gold / (length / 60)).toFixed(decimal);
-                average_damages = (average_damages / (length / 60)).toFixed(decimal);
-                average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
-
-                // KwikScore
-
-                let score = 0;
-                score += overall / response4.rows.length * 100;
-                score += win / response4.rows.length * 100;
-                score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
-                score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
-                score += 10 * average_cs;
-                if (100 - response4.rows.length > 0) {
-                    score = score * 0.99 ** (100 - response4.rows.length);
-                }
-
-                carry_damage = carry_damage / response4.rows.length * 100;
-                carry_tanked = carry_tanked / response4.rows.length * 100;
-                carry_gold = carry_gold / response4.rows.length * 100;
-                overall = overall / response4.rows.length * 100;
-                hard_carry = hard_carry / response4.rows.length * 100;
-                win = win / response4.rows.length * 100;
-
-                let title = "Stats comparaison with " + discordusername + "";
-                if (champion !== null) {
-                    title += " on " + champion;
-                }
-                if (role !== null) {
-                    title += " in " + role;
-                }
-
-                let text = "```" +
-                    "─────────────────────┬──────────────────────────────\n";
-                text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_kills).toFixed(2).length);
-                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_kills).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? "+" : "-";
-                text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
-
-                text += "Average Deaths       │ " + Number.parseFloat(average_deaths).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_deaths).toFixed(2).length);
-                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_deaths).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_deaths).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? "+" : "-";
-                text += Number.parseFloat(average_deaths - oponent_average_deaths).toFixed(2) + ")\n";
-
-                text += "Average Assists      │ " + Number.parseFloat(average_assists).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_assists).toFixed(2).length);
-                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_assists).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_assists).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? "+" : "";
-                text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
-
-                text += "Average CS           │ " + Number.parseFloat(average_cs).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_cs).toFixed(2).length);
-                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_cs).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_cs).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? "+" : "";
-                text += Number.parseFloat(average_cs - oponent_average_cs).toFixed(2) + ")\n";
-
-                text += "Average Gold         │ " + Number.parseFloat(average_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_gold).toFixed(2).length);
-                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_gold).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? "+" : "";
-                text += Number.parseFloat(average_gold - oponent_average_gold).toFixed(2) + ")\n";
-
-                text += "Average Damages      │ " + Number.parseFloat(average_damages).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_damages).toFixed(2).length);
-                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_damages).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_damages).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? "+" : "";
-                text += Number.parseFloat(average_damages - oponent_average_damages).toFixed(2) + ")\n";
-
-                text += "Average Tanked       │ " + Number.parseFloat(average_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_tanked).toFixed(2).length);
-                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_tanked).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? "+" : "";
-                text += Number.parseFloat(average_tanked - oponent_average_tanked).toFixed(2) + ")\n";
-
-                text += "Average Pinks        │ " + Number.parseFloat(average_pinks).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_pinks).toFixed(2).length);
-                text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_pinks).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_pinks).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? "+" : "";
-                text += Number.parseFloat(average_pinks - oponent_average_pinks).toFixed(2) + ")\n";
-
-                text += "Average Vision Score │ " + Number.parseFloat(average_vision_score).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_vision_score).toFixed(2).length);
-                text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_average_vision_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_vision_score).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? "+" : "";
-                text += Number.parseFloat(average_vision_score - oponent_average_vision_score).toFixed(2) + ")\n";
-
-                text += "Average KP           │ " + Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2).length);
-                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
-                text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
-
-                text += "KwikScore            │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
-                text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_score).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? "+" : "";
-                text += Number.parseFloat(score - oponent_score).toFixed(2) + ")\n";
-
-                text += "Carry Gold           │ " + Number.parseFloat(carry_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_gold).toFixed(2).length);
-                text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_carry_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_gold).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? "+" : "";
-                text += Number.parseFloat(carry_gold - oponent_carry_gold).toFixed(2) + ")\n";
-
-                text += "Carry Damage         │ " + Number.parseFloat(carry_damage).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_damage).toFixed(2).length);
-                text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_carry_damage).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_damage).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? "+" : "";
-                text += Number.parseFloat(carry_damage - oponent_carry_damage).toFixed(2) + ")\n";
-
-                text += "Carry Tanked         │ " + Number.parseFloat(carry_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_tanked).toFixed(2).length);
-                text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_carry_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_tanked).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? "+" : "";
-                text += Number.parseFloat(carry_tanked - oponent_carry_tanked).toFixed(2) + ")\n";
-
-                text += "Hard Carry           │ " + Number.parseFloat(hard_carry).toFixed(2) + " ".repeat(8 - Number.parseFloat(hard_carry).toFixed(2).length);
-                text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_hard_carry).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_hard_carry).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? "+" : "";
-                text += Number.parseFloat(hard_carry - oponent_hard_carry).toFixed(2) + ")\n";
-
-                text += "Overall Carry        │ " + Number.parseFloat(overall).toFixed(2) + " ".repeat(8 - Number.parseFloat(overall).toFixed(2).length);
-                text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ▲ " : " ▼ ";
-                text += Number.parseFloat(oponent_overall).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_overall).toFixed(2).length);
-                text += " (";
-                text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? "+" : "";
-                text += Number.parseFloat(overall - oponent_overall).toFixed(2) + ")\n";
-
-                text += "```";
-
-                const embed = new MessageEmbed()
-                    .setTitle(title)
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp()
-                    .addFields(
                         {
-                            name: "Comparaison :",
-                            value: text
-                        }
+                            name: "**Ranked Tiers :**",
+                            value: "Ranked Solo : **" + best_solo_str + "**\nRanked Flex : **" + best_flex_str + "**",
+                            inline: true
+                        },
+                        {
+                            name: "**Accounts :**",
+                            value: "" + accounts,
+                            inline: true
+                        },
+
                     );
+                    //.setURL(url);
+                    return await interaction.editReply({ embeds: [embed] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            discordaccount: discordaccount
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol stats profile " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
+                }
+            } else if (interaction.options.getSubcommand() === "compare") {
+                try {
+                    const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
+                    if (priority.rows[0].priority === 0) {
+                        return await interaction.editReply("This feature is not available for the moment. If you want to support me, you can contact me on discord : **KwikKill#6123**");
+                    }
 
-                await interaction.editReply({ embeds: [embed] });
+                    let i = 1;
 
+                    const discordusername = discordaccount.username;
+                    discordaccount = discordaccount.id;
+                    const query_values = [discordaccount];
+
+                    let query = "SELECT * " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 " +
+                        "AND matchs.player = summoners.puuid";
+                    let query2 = "SELECT " +
+                        "avg(length) as duration, " +
+                        "avg(kill) as kill, " +
+                        "avg(deaths) as deaths, " +
+                        "avg(assists) as assists, " +
+                        "avg(total_damage) as damage, " +
+                        "avg(tanked_damage) as damage_taken, " +
+                        "avg(heal) as heal, " +
+                        "avg(cs) as cs, " +
+                        "avg(gold) as gold, " +
+                        "avg(vision_score) as vision_score, " +
+                        "avg(pinks) as pinks, " +
+                        "avg(total_kills) as total_kills " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                    i++;
+
+                    if (champion !== null) {
+                        query += " AND matchs.champion=$" + i;
+                        query2 += " AND matchs.champion=$" + i;
+                        query_values.push(champion);
+                        i++;
+                    }
+                    if (role !== null) {
+                        query += " AND matchs.lane=$" + i;
+                        query2 += " AND matchs.lane=$" + i;
+                        query_values.push(role);
+                        i++;
+                    }
+                    if (gamemode !== null) {
+                        query += " AND matchs.gamemode=$" + i;
+                        query2 += " AND matchs.gamemode=$" + i;
+                        query_values.push(gamemode);
+                        i++;
+                    }
+                    query += ";";
+                    query2 += ";";
+
+                    const response = await client.pg.query(query, query_values);
+                    if (response.rows.length === 0) {
+                        return await interaction.editReply("This person does not have any matchs in the database or the filters are too restrictings.");
+                    }
+
+                    const response2 = await client.pg.query(query2, query_values);
+
+                    // 1) Carry stats
+
+                    let oponent_carry_damage = 0;
+                    let oponent_carry_tanked = 0;
+                    let oponent_carry_gold = 0;
+                    let oponent_overall = 0;
+                    let oponent_hard_carry = 0;
+                    let oponent_win = 0;
+
+
+                    for (let i = 0; i < response.rows.length; i++) {
+                        if (response.rows[i].result === "Win") {
+                            oponent_win += 1;
+                        }
+                        if (response.rows[i].first_gold) {
+                            oponent_carry_gold += 1;
+                        }
+                        if (response.rows[i].first_damages) {
+                            oponent_carry_damage += 1;
+                        }
+                        if (response.rows[i].first_tanked) {
+                            oponent_carry_tanked += 1;
+                        }
+                        if (response.rows[i].first_damages && response.rows[i].first_tanked && response.rows[i].first_gold) {
+                            oponent_hard_carry += 1;
+                        }
+                        if (response.rows[i].first_damages || response.rows[i].first_tanked || response.rows[i].first_gold) {
+                            oponent_overall += 1;
+                        }
+                    }
+
+                    // 2) Average stats
+
+                    const oponent_length = response2.rows[0].duration;
+
+                    const oponent_average_kills = Number.parseFloat(response2.rows[0].kill).toFixed(decimal);
+                    const oponent_average_deaths = Number.parseFloat(response2.rows[0].deaths).toFixed(decimal);
+                    const oponent_average_assists = Number.parseFloat(response2.rows[0].assists).toFixed(decimal);
+                    let oponent_average_cs = Number.parseFloat(response2.rows[0].cs).toFixed(decimal);
+                    let oponent_average_gold = response2.rows[0].gold;
+                    let oponent_average_damages = response2.rows[0].damage;
+                    let oponent_average_tanked = response2.rows[0].damage_taken;
+                    const oponent_average_pinks = Number.parseFloat(response2.rows[0].pinks).toFixed(decimal);
+                    const oponent_average_vision_score = Number.parseFloat(response2.rows[0].vision_score).toFixed(decimal);
+                    const oponent_average_total_kills = Number.parseFloat(response2.rows[0].total_kills).toFixed(decimal);
+
+                    oponent_average_cs = (oponent_average_cs / (oponent_length / 60)).toFixed(decimal);
+                    oponent_average_gold = (oponent_average_gold / (oponent_length / 60)).toFixed(decimal);
+                    oponent_average_damages = (oponent_average_damages / (oponent_length / 60)).toFixed(decimal);
+                    oponent_average_tanked = (oponent_average_tanked / (oponent_length / 60)).toFixed(decimal);
+
+                    // KwikScore
+
+                    let oponent_score = 0;
+                    oponent_score += oponent_overall / response.rows.length * 100;
+                    oponent_score += oponent_win / response.rows.length * 100;
+                    oponent_score += (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) / oponent_average_total_kills * 100;
+                    oponent_score += 5 * (((Number.parseFloat(oponent_average_vision_score)) / (oponent_length / 60)) / 0.2);
+                    oponent_score += 10 * oponent_average_cs;
+                    if (100 - response.rows.length > 0) {
+                        oponent_score = oponent_score * 0.99 ** (100 - response.rows.length);
+                    }
+
+                    oponent_carry_damage = oponent_carry_damage / response.rows.length * 100;
+                    oponent_carry_tanked = oponent_carry_tanked / response.rows.length * 100;
+                    oponent_carry_gold = oponent_carry_gold / response.rows.length * 100;
+                    oponent_overall = oponent_overall / response.rows.length * 100;
+                    oponent_hard_carry = oponent_hard_carry / response.rows.length * 100;
+                    oponent_win = oponent_win / response.rows.length * 100;
+
+                    // Your stats
+
+                    let j = 1;
+
+                    query_values[0] = interaction.user.id;
+
+                    let query3 = "SELECT * " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 " +
+                        "AND matchs.player = summoners.puuid";
+                    let query4 = "SELECT " +
+                        "avg(length) as duration, " +
+                        "avg(kill) as kill, " +
+                        "avg(deaths) as deaths, " +
+                        "avg(assists) as assists, " +
+                        "avg(total_damage) as damage, " +
+                        "avg(tanked_damage) as damage_taken, " +
+                        "avg(heal) as heal, " +
+                        "avg(cs) as cs, " +
+                        "avg(gold) as gold, " +
+                        "avg(vision_score) as vision_score, " +
+                        "avg(pinks) as pinks, " +
+                        "avg(total_kills) as total_kills " +
+                        "FROM matchs, summoners " +
+                        "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                    i++;
+
+                    if (champion !== null) {
+                        query3 += " AND matchs.champion=$" + j;
+                        query4 += " AND matchs.champion=$" + j;
+                        j++;
+                    }
+                    if (role !== null) {
+                        query3 += " AND matchs.lane=$" + j;
+                        query4 += " AND matchs.lane=$" + j;
+                        j++;
+                    }
+                    if (gamemode !== null) {
+                        query3 += " AND matchs.gamemode=$" + j;
+                        query4 += " AND matchs.gamemode=$" + j;
+                        j++;
+                    }
+                    query3 += ";";
+                    query4 += ";";
+
+                    const response4 = await client.pg.query(query3, query_values);
+                    if (response4.rows.length === 0) {
+                        return await interaction.editReply("You dont have any matchs in the database or the filters are too restrictings.");
+                    }
+
+                    const response5 = await client.pg.query(query4, query_values);
+
+                    // 1) Carry stats
+
+                    let carry_damage = 0;
+                    let carry_tanked = 0;
+                    let carry_gold = 0;
+                    let overall = 0;
+                    let hard_carry = 0;
+                    let win = 0;
+
+
+                    for (let i = 0; i < response4.rows.length; i++) {
+                        if (response4.rows[i].result === "Win") {
+                            win += 1;
+                        }
+                        if (response4.rows[i].first_gold) {
+                            carry_gold += 1;
+                        }
+                        if (response4.rows[i].first_damages) {
+                            carry_damage += 1;
+                        }
+                        if (response4.rows[i].first_tanked) {
+                            carry_tanked += 1;
+                        }
+                        if (response4.rows[i].first_damages && response4.rows[i].first_tanked && response4.rows[i].first_gold) {
+                            hard_carry += 1;
+                        }
+                        if (response4.rows[i].first_damages || response4.rows[i].first_tanked || response4.rows[i].first_gold) {
+                            overall += 1;
+                        }
+                    }
+
+                    // 2) Average stats
+
+                    const length = response5.rows[0].duration;
+
+                    const average_kills = Number.parseFloat(response5.rows[0].kill).toFixed(decimal);
+                    const average_deaths = Number.parseFloat(response5.rows[0].deaths).toFixed(decimal);
+                    const average_assists = Number.parseFloat(response5.rows[0].assists).toFixed(decimal);
+                    let average_cs = Number.parseFloat(response5.rows[0].cs).toFixed(decimal);
+                    let average_gold = response5.rows[0].gold;
+                    let average_damages = response5.rows[0].damage;
+                    let average_tanked = response5.rows[0].damage_taken;
+                    const average_pinks = Number.parseFloat(response5.rows[0].pinks).toFixed(decimal);
+                    const average_vision_score = Number.parseFloat(response5.rows[0].vision_score).toFixed(decimal);
+                    const average_total_kills = Number.parseFloat(response5.rows[0].total_kills).toFixed(decimal);
+
+                    average_cs = (average_cs / (length / 60)).toFixed(decimal);
+                    average_gold = (average_gold / (length / 60)).toFixed(decimal);
+                    average_damages = (average_damages / (length / 60)).toFixed(decimal);
+                    average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
+
+                    // KwikScore
+
+                    let score = 0;
+                    score += overall / response4.rows.length * 100;
+                    score += win / response4.rows.length * 100;
+                    score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
+                    score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
+                    score += 10 * average_cs;
+                    if (100 - response4.rows.length > 0) {
+                        score = score * 0.99 ** (100 - response4.rows.length);
+                    }
+
+                    carry_damage = carry_damage / response4.rows.length * 100;
+                    carry_tanked = carry_tanked / response4.rows.length * 100;
+                    carry_gold = carry_gold / response4.rows.length * 100;
+                    overall = overall / response4.rows.length * 100;
+                    hard_carry = hard_carry / response4.rows.length * 100;
+                    win = win / response4.rows.length * 100;
+
+                    let title = "Stats comparaison with " + discordusername + "";
+                    if (champion !== null) {
+                        title += " on " + champion;
+                    }
+                    if (role !== null) {
+                        title += " in " + role;
+                    }
+
+                    let text = "```" +
+                        "─────────────────────┬──────────────────────────────\n";
+                    text += "Average Kills        │ " + Number.parseFloat(average_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_kills).toFixed(2).length);
+                    text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_kills).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_kills) >= Number.parseFloat(oponent_average_kills)) ? "+" : "-";
+                    text += Number.parseFloat(average_kills - oponent_average_kills).toFixed(2) + ")\n";
+
+                    text += "Average Deaths       │ " + Number.parseFloat(average_deaths).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_deaths).toFixed(2).length);
+                    text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_deaths).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_deaths).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_deaths) >= Number.parseFloat(oponent_average_deaths)) ? "+" : "-";
+                    text += Number.parseFloat(average_deaths - oponent_average_deaths).toFixed(2) + ")\n";
+
+                    text += "Average Assists      │ " + Number.parseFloat(average_assists).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_assists).toFixed(2).length);
+                    text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_assists).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_assists).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_assists) >= Number.parseFloat(oponent_average_assists)) ? "+" : "";
+                    text += Number.parseFloat(average_assists - oponent_average_assists).toFixed(2) + ")\n";
+
+                    text += "Average CS           │ " + Number.parseFloat(average_cs).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_cs).toFixed(2).length);
+                    text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_cs).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_cs).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_cs) >= Number.parseFloat(oponent_average_cs)) ? "+" : "";
+                    text += Number.parseFloat(average_cs - oponent_average_cs).toFixed(2) + ")\n";
+
+                    text += "Average Gold         │ " + Number.parseFloat(average_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_gold).toFixed(2).length);
+                    text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_gold).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_gold) >= Number.parseFloat(oponent_average_gold)) ? "+" : "";
+                    text += Number.parseFloat(average_gold - oponent_average_gold).toFixed(2) + ")\n";
+
+                    text += "Average Damages      │ " + Number.parseFloat(average_damages).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_damages).toFixed(2).length);
+                    text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_damages).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_damages).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_damages) >= Number.parseFloat(oponent_average_damages)) ? "+" : "";
+                    text += Number.parseFloat(average_damages - oponent_average_damages).toFixed(2) + ")\n";
+
+                    text += "Average Tanked       │ " + Number.parseFloat(average_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_tanked).toFixed(2).length);
+                    text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_tanked).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_tanked) >= Number.parseFloat(oponent_average_tanked)) ? "+" : "";
+                    text += Number.parseFloat(average_tanked - oponent_average_tanked).toFixed(2) + ")\n";
+
+                    text += "Average Pinks        │ " + Number.parseFloat(average_pinks).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_pinks).toFixed(2).length);
+                    text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_pinks).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_pinks).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_pinks) >= Number.parseFloat(oponent_average_pinks)) ? "+" : "";
+                    text += Number.parseFloat(average_pinks - oponent_average_pinks).toFixed(2) + ")\n";
+
+                    text += "Average Vision Score │ " + Number.parseFloat(average_vision_score).toFixed(2) + " ".repeat(8 - Number.parseFloat(average_vision_score).toFixed(2).length);
+                    text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_average_vision_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_average_vision_score).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(average_vision_score) >= Number.parseFloat(oponent_average_vision_score)) ? "+" : "";
+                    text += Number.parseFloat(average_vision_score - oponent_average_vision_score).toFixed(2) + ")\n";
+
+                    text += "Average KP           │ " + Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2) + " ".repeat(8 - Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills).toFixed(2).length);
+                    text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + " ".repeat(7 - Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
+                    text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
+
+                    text += "KwikScore            │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
+                    text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_score).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? "+" : "";
+                    text += Number.parseFloat(score - oponent_score).toFixed(2) + ")\n";
+
+                    text += "Carry Gold           │ " + Number.parseFloat(carry_gold).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_gold).toFixed(2).length);
+                    text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_carry_gold).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_gold).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(carry_gold) >= Number.parseFloat(oponent_carry_gold)) ? "+" : "";
+                    text += Number.parseFloat(carry_gold - oponent_carry_gold).toFixed(2) + ")\n";
+
+                    text += "Carry Damage         │ " + Number.parseFloat(carry_damage).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_damage).toFixed(2).length);
+                    text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_carry_damage).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_damage).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(carry_damage) >= Number.parseFloat(oponent_carry_damage)) ? "+" : "";
+                    text += Number.parseFloat(carry_damage - oponent_carry_damage).toFixed(2) + ")\n";
+
+                    text += "Carry Tanked         │ " + Number.parseFloat(carry_tanked).toFixed(2) + " ".repeat(8 - Number.parseFloat(carry_tanked).toFixed(2).length);
+                    text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_carry_tanked).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_carry_tanked).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(carry_tanked) >= Number.parseFloat(oponent_carry_tanked)) ? "+" : "";
+                    text += Number.parseFloat(carry_tanked - oponent_carry_tanked).toFixed(2) + ")\n";
+
+                    text += "Hard Carry           │ " + Number.parseFloat(hard_carry).toFixed(2) + " ".repeat(8 - Number.parseFloat(hard_carry).toFixed(2).length);
+                    text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_hard_carry).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_hard_carry).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(hard_carry) >= Number.parseFloat(oponent_hard_carry)) ? "+" : "";
+                    text += Number.parseFloat(hard_carry - oponent_hard_carry).toFixed(2) + ")\n";
+
+                    text += "Overall Carry        │ " + Number.parseFloat(overall).toFixed(2) + " ".repeat(8 - Number.parseFloat(overall).toFixed(2).length);
+                    text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? " ▲ " : " ▼ ";
+                    text += Number.parseFloat(oponent_overall).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_overall).toFixed(2).length);
+                    text += " (";
+                    text += (Number.parseFloat(overall) >= Number.parseFloat(oponent_overall)) ? "+" : "";
+                    text += Number.parseFloat(overall - oponent_overall).toFixed(2) + ")\n";
+
+                    text += "```";
+
+                    const embed = new MessageEmbed()
+                        .setTitle(title)
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp()
+                        .addFields(
+                            {
+                                name: "Comparaison :",
+                                value: text
+                            }
+                        );
+
+                    await interaction.editReply({ embeds: [embed] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            discordaccount: discordaccount
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol stats profile " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
+                }
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
             if (interaction.options.getSubcommand() === "carry") {
-                let i = 1;
+                try {
+                    let i = 1;
 
-                const query_values = [];
+                    const query_values = [];
 
-                let query2 = "";
-                if (champion !== null) {
-                    query2 += " AND matchs.champion=$" + i;
-                    query_values.push(champion);
-                    i++;
-                }
+                    let query2 = "";
+                    if (champion !== null) {
+                        query2 += " AND matchs.champion=$" + i;
+                        query_values.push(champion);
+                        i++;
+                    }
 
-                let queryrole = "";
-                if (role !== null) {
-                    queryrole = " AND matchs.lane=$" + i;
-                    query_values.push(role);
-                    i++;
-                }
+                    let queryrole = "";
+                    if (role !== null) {
+                        queryrole = " AND matchs.lane=$" + i;
+                        query_values.push(role);
+                        i++;
+                    }
 
-                const all = interaction.options.getBoolean("all") === true;
-                let queryall = "";
-                if (!all) {
-                    let members = await interaction.guild.members.fetch();
-                    members = members.filter(member => !member.user.bot);
-                    let list = "(";
-                    members.forEach(member => {
-                        list += "'" + member.user.id + "',";
+                    const all = interaction.options.getBoolean("all") === true;
+                    let queryall = "";
+                    if (!all) {
+                        let members = await interaction.guild.members.fetch();
+                        members = members.filter(member => !member.user.bot);
+                        let list = "(";
+                        members.forEach(member => {
+                            list += "'" + member.user.id + "',";
+                        });
+                        list = list.slice(0, -1);
+                        list += ")";
+                        queryall = " AND summoners.discordid IN " + list;
+                    }
+
+                    let query =
+                        "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE (matchs.first_tanked OR first_gold OR first_damages)" +
+                        ")*100 as float)/count(*)) as carry " +
+                        "FROM matchs, summoners " +
+                        "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                        " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;";
+                    let response = await client.pg.query(query, query_values);
+
+                    let general = "";
+                    if (response.rows.length === 0) {
+                        general = "There are not enought summoners in the database or the filters are too restrictings.";
+                    } else {
+                        for (const x of response.rows) {
+                            general += "- <@" + x.discordid + "> : " + x.carry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        }
+                    }
+
+                    // damage Carry
+                    query =
+                        "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE matchs.first_damages" +
+                        ")*100 as float)/count(*)) as damage " +
+                        "FROM matchs, summoners " +
+                        "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                        " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;";
+                    response = await client.pg.query(query, query_values);
+
+                    let damages = "";
+                    if (response.rows.length === 0) {
+                        damages = "There are not enought summoners in the database or the filters are too restrictings.";
+                    } else {
+                        for (const x of response.rows) {
+                            damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        }
+                    }
+
+                    // tanked Carry
+                    query =
+                        "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE matchs.first_tanked" +
+                        ")*100 as float)/count(*)) as tanked " +
+                        "FROM matchs, summoners " +
+                        "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                        " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;";
+                    response = await client.pg.query(query, query_values);
+
+                    let tanked = "";
+                    if (response.rows.length === 0) {
+                        tanked = "There are not enought summoners in the database or the filters are too restrictings.";
+                    } else {
+                        for (const x of response.rows) {
+                            tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        }
+                    }
+
+                    // Gold carry
+                    query =
+                        "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE matchs.first_gold" +
+                        ")*100 as float)/count(*)) as gold " +
+                        "FROM matchs, summoners " +
+                        "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                        " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;";
+                    response = await client.pg.query(query, query_values);
+
+                    let gold = "";
+                    if (response.rows.length === 0) {
+                        gold = "There are not enought summoners in the database or the filters are too restrictings.";
+                    } else {
+                        for (const x of response.rows) {
+                            gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        }
+                    }
+
+                    // Hard carry
+                    query =
+                        "SELECT summoners.discordid, " +
+                        "count(*) as count, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE matchs.first_damages AND first_gold AND first_tanked" +
+                        ")*100 as float)/count(*)) as hardcarry " +
+                        "FROM matchs, summoners " +
+                        "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                        " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;";
+                    response = await client.pg.query(query, query_values);
+                    let hard = "";
+                    if (response.rows.length === 0) {
+                        hard = "There are not enought summoners in the database or the filters are too restrictings.";
+                    } else {
+                        for (const x of response.rows) {
+                            hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        }
+                    }
+
+                    // send embed
+                    const embed = new MessageEmbed()
+                        .setTitle("Top carry :")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
+                    embed.addFields(
+                        {
+                            name: "General carry :",
+                            value: "" + general
+                        },
+                        {
+                            name: "Damage carry :",
+                            value: "" + damages
+                        },
+                        {
+                            name: "Tanked carry :",
+                            value: "" + tanked
+                        },
+                        {
+                            name: "Gold carry :",
+                            value: "" + gold
+                        },
+                        {
+                            name: "Hard carry :",
+                            value: "" + hard
+                        },
+
+                    );
+                    return await interaction.editReply({ embeds: [embed] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            role: role,
+                            champion: champion
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol top carry " + Js + " from user " + interaction.user.id);
+                        user.send(e);
                     });
-                    list = list.slice(0, -1);
-                    list += ")";
-                    queryall = " AND summoners.discordid IN " + list;
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
-
-                let query =
-                    "SELECT summoners.discordid, " +
-                    "count(*) as count, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE (matchs.first_tanked OR first_gold OR first_damages)" +
-                    ")*100 as float)/count(*)) as carry " +
-                    "FROM matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid" +
-                    query2 +
-                    queryrole +
-                    queryall +
-                    " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;";
-                let response = await client.pg.query(query, query_values);
-
-                let general = "";
-                if (response.rows.length === 0) {
-                    general = "There are not enought summoners in the database or the filters are too restrictings.";
-                } else {
-                    for (const x of response.rows) {
-                        general += "- <@" + x.discordid + "> : " + x.carry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
-                    }
-                }
-
-                // damage Carry
-                query =
-                    "SELECT summoners.discordid, " +
-                    "count(*) as count, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE matchs.first_damages" +
-                    ")*100 as float)/count(*)) as damage " +
-                    "FROM matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid" +
-                    query2 +
-                    queryrole +
-                    queryall +
-                    " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;";
-                response = await client.pg.query(query, query_values);
-
-                let damages = "";
-                if (response.rows.length === 0) {
-                    damages = "There are not enought summoners in the database or the filters are too restrictings.";
-                } else {
-                    for (const x of response.rows) {
-                        damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(decimal) + " % (" + x.count + " matchs)\n";
-                    }
-                }
-
-                // tanked Carry
-                query =
-                    "SELECT summoners.discordid, " +
-                    "count(*) as count, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE matchs.first_tanked" +
-                    ")*100 as float)/count(*)) as tanked " +
-                    "FROM matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid" +
-                    query2 +
-                    queryrole +
-                    queryall +
-                    " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;";
-                response = await client.pg.query(query, query_values);
-
-                let tanked = "";
-                if (response.rows.length === 0) {
-                    tanked = "There are not enought summoners in the database or the filters are too restrictings.";
-                } else {
-                    for (const x of response.rows) {
-                        tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(decimal) + " % (" + x.count + " matchs)\n";
-                    }
-                }
-
-                // Gold carry
-                query =
-                    "SELECT summoners.discordid, " +
-                    "count(*) as count, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE matchs.first_gold" +
-                    ")*100 as float)/count(*)) as gold " +
-                    "FROM matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid" +
-                    query2 +
-                    queryrole +
-                    queryall +
-                    " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;";
-                response = await client.pg.query(query, query_values);
-
-                let gold = "";
-                if (response.rows.length === 0) {
-                    gold = "There are not enought summoners in the database or the filters are too restrictings.";
-                } else {
-                    for (const x of response.rows) {
-                        gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(decimal) + " % (" + x.count + " matchs)\n";
-                    }
-                }
-
-                // Hard carry
-                query =
-                    "SELECT summoners.discordid, " +
-                    "count(*) as count, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE matchs.first_damages AND first_gold AND first_tanked" +
-                    ")*100 as float)/count(*)) as hardcarry " +
-                    "FROM matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid" +
-                    query2 +
-                    queryrole +
-                    queryall +
-                    " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;";
-                response = await client.pg.query(query, query_values);
-                let hard = "";
-                if (response.rows.length === 0) {
-                    hard = "There are not enought summoners in the database or the filters are too restrictings.";
-                } else {
-                    for (const x of response.rows) {
-                        hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
-                    }
-                }
-
-                // send embed
-                const embed = new MessageEmbed()
-                    .setTitle("Top carry :")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
-                embed.addFields(
-                    {
-                        name: "General carry :",
-                        value: "" + general
-                    },
-                    {
-                        name: "Damage carry :",
-                        value: "" + damages
-                    },
-                    {
-                        name: "Tanked carry :",
-                        value: "" + tanked
-                    },
-                    {
-                        name: "Gold carry :",
-                        value: "" + gold
-                    },
-                    {
-                        name: "Hard carry :",
-                        value: "" + hard
-                    },
-
-                );
-                return await interaction.editReply({ embeds: [embed] });
             } else if (interaction.options.getSubcommand() === "kwikscore") {
-                let i = 1;
-                const query_values = [];
+                try {
+                    let i = 1;
+                    const query_values = [];
 
-                const all = interaction.options.getBoolean("all") === true;
-                let queryall = "";
-                if (!all) {
-                    let members = await interaction.guild.members.fetch();
-                    members = members.filter(member => !member.user.bot);
-                    let list = "(";
-                    members.forEach(member => {
-                        list += "'" + member.user.id + "',";
+                    const all = interaction.options.getBoolean("all") === true;
+                    let queryall = "";
+                    if (!all) {
+                        let members = await interaction.guild.members.fetch();
+                        members = members.filter(member => !member.user.bot);
+                        let list = "(";
+                        members.forEach(member => {
+                            list += "'" + member.user.id + "',";
+                        });
+                        list = list.slice(0, -1);
+                        list += ")";
+                        queryall = " AND summoners.discordid IN " + list;
+                    }
+                    let query2 = "";
+                    if (champion !== null) {
+                        query2 += " AND matchs.champion=$" + i;
+                        query_values.push(champion);
+                        i++;
+                    }
+
+                    let queryrole = "";
+                    if (role !== null) {
+                        queryrole = " AND matchs.lane=$" + i;
+                        query_values.push(role);
+                        i++;
+                    }
+
+                    const query =
+                        "SELECT summoners.discordid, " +
+                        "count(*), " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE result = 'Win'" +
+                        ")*100 as float)/count(*)) as WR, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE (first_gold OR first_damages OR first_tanked)" +
+                        ")*100 as float)/count(*)) as CARRY, " +
+                        "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+                        "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
+                        "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
+                        "(cast(" +
+                        "count(*) FILTER (" +
+                        "WHERE first_gold AND first_damages AND first_tanked" +
+                        ")*100 as float)/count(*)) as hardcarry " +
+                        "FROM matchs, summoners " +
+                        "WHERE matchs.player = summoners.puuid" +
+                        query2 +
+                        queryrole +
+                        queryall +
+                        " GROUP BY summoners.discordid";
+
+                    const query4 = "SELECT discordid, " +
+                        "count, " +
+                        "CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) " +
+                        "ELSE (carry+wr+kp+vs*25+10*cs) " +
+                        "END AS KS " +
+                        "FROM (" + query + ") AS t1 " +
+                        "ORDER BY KS DESC " +
+                        "LIMIT 10;";
+                    const response = await client.pg.query(query4, query_values);
+
+                    if (response.rowCount === 0) {
+                        return message.channel.send("No data found");
+                    }
+
+                    const embed = new MessageEmbed()
+                        .setTitle("Top KS :")
+                        .setColor("#00FF00")
+                        .setFooter({
+                            text: "Requested by " + interaction.user.username,
+                            //iconURL: interaction.user.displayAvatarURL()
+                        })
+                        .setTimestamp();
+
+                    let text = "";
+                    for (let i = 0; i < response.rowCount; i++) {
+                        text += "- <@" + response.rows[i].discordid + "> : " + response.rows[i].ks.toFixed(0) + " (" + response.rows[i].count + " Games)\n";
+                    }
+
+                    embed.addFields({
+                        name: "Top 10 KwikScore : ",
+                        value: "" + text,
                     });
-                    list = list.slice(0, -1);
-                    list += ")";
-                    queryall = " AND summoners.discordid IN " + list;
+
+                    return await interaction.editReply({ embeds: [embed] });
+                } catch (e) {
+                    console.log(e);
+                    client.users.fetch(client.config.owner).then((user) => {
+                        const params = {
+                            role: role,
+                            champion: champion
+                        };
+                        const Js = JSON.stringify(params);
+                        user.send("Error with command /lol top KwikScore " + Js + " from user " + interaction.user.id);
+                        user.send(e);
+                    });
+                    return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
-                let query2 = "";
-                if (champion !== null) {
-                    query2 += " AND matchs.champion=$" + i;
-                    query_values.push(champion);
-                    i++;
-                }
-
-                let queryrole = "";
-                if (role !== null) {
-                    queryrole = " AND matchs.lane=$" + i;
-                    query_values.push(role);
-                    i++;
-                }
-
-                const query =
-                    "SELECT summoners.discordid, " +
-                    "count(*), " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE result = 'Win'" +
-                    ")*100 as float)/count(*)) as WR, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE (first_gold OR first_damages OR first_tanked)" +
-                    ")*100 as float)/count(*)) as CARRY, " +
-                    "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
-                    "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
-                    "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
-                    "(cast(" +
-                    "count(*) FILTER (" +
-                    "WHERE first_gold AND first_damages AND first_tanked" +
-                    ")*100 as float)/count(*)) as hardcarry " +
-                    "FROM matchs, summoners " +
-                    "WHERE matchs.player = summoners.puuid" +
-                    query2 +
-                    queryrole +
-                    queryall +
-                    " GROUP BY summoners.discordid";
-
-                const query4 = "SELECT discordid, " +
-                    "count, " +
-                    "CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) " +
-                    "ELSE (carry+wr+kp+vs*25+10*cs) " +
-                    "END AS KS " +
-                    "FROM (" + query + ") AS t1 " +
-                    "ORDER BY KS DESC " +
-                    "LIMIT 10;";
-                const response = await client.pg.query(query4, query_values);
-
-                if (response.rowCount === 0) {
-                    return message.channel.send("No data found");
-                }
-
-                const embed = new MessageEmbed()
-                    .setTitle("Top KS :")
-                    .setColor("#00FF00")
-                    .setFooter({
-                        text: "Requested by " + interaction.user.username,
-                        //iconURL: interaction.user.displayAvatarURL()
-                    })
-                    .setTimestamp();
-
-                let text = "";
-                for (let i = 0; i < response.rowCount; i++) {
-                    text += "- <@" + response.rows[i].discordid + "> : " + response.rows[i].ks.toFixed(0) + " (" + response.rows[i].count + " Games)\n";
-                }
-
-                embed.addFields({
-                    name: "Top 10 KwikScore : ",
-                    value: "" + text,
-                });
-
-                return await interaction.editReply({ embeds: [embed] });
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
             // permission verification
