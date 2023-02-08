@@ -1087,6 +1087,10 @@ module.exports = {
                     query += ";";
                     query3 += " GROUP BY gamemode;";
 
+                    console.log(query);
+                    console.log(query_values);
+                    console.log(query3);
+
                     const response = await client.pg.query(query, query_values);
                     if (response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
@@ -1254,7 +1258,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol stats summarized " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -1438,7 +1442,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol stats matchups " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -1610,7 +1614,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol stats champions " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -1776,7 +1780,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol stats evolution " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -2030,7 +2034,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol stats profile " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -2436,7 +2440,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol stats profile " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -2641,7 +2645,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol top carry " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
@@ -2745,7 +2749,7 @@ module.exports = {
                         };
                         const Js = JSON.stringify(params);
                         user.send("Error with command /lol top KwikScore " + Js + " from user " + interaction.user.id);
-                        user.send(e);
+
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
                 }
