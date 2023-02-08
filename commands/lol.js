@@ -1026,6 +1026,7 @@ module.exports = {
                         discordaccount = discordaccount.id;
                     }
                     const query_values = [discordaccount];
+                    const query_values2 = [discordaccount];
 
                     let query = "SELECT " +
                         "AVG(gold) as avg_gold, " +
@@ -1065,12 +1066,14 @@ module.exports = {
                         query += " AND matchs.champion=$" + i;
                         query3 += " AND matchs.champion=$" + i;
                         query_values.push(champion);
+                        query_values2.push(champion);
                         i++;
                     }
                     if (role !== null) {
                         query += " AND matchs.lane=$" + i;
                         query3 += " AND matchs.lane=$" + i;
                         query_values.push(role);
+                        query_values2.push(role);
                         i++;
                     }
                     if (gamemode !== null) {
@@ -1082,21 +1085,18 @@ module.exports = {
                         query += " AND summoners.username=$" + i;
                         query3 += " AND summoners.username=$" + (i - 1);
                         query_values.push(account);
+                        query_values2.push(account);
                         i++;
                     }
                     query += ";";
                     query3 += " GROUP BY gamemode;";
-
-                    console.log(query);
-                    console.log(query_values);
-                    console.log(query3);
 
                     const response = await client.pg.query(query, query_values);
                     if (response.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
 
-                    const response3 = await client.pg.query(query3, query_values);
+                    const response3 = await client.pg.query(query3, query_values2);
                     if (response3.rows.length === 0) {
                         return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
                     }
