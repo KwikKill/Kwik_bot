@@ -948,6 +948,7 @@ function register(client) {
                             data.stats.winrate = result3.rows[0].winrate;
                             data.stats.nbmatchs = parseInt(result3.rows[0].count);
                             for (let j = 0; j < data.players.length; j++) {
+                                let nmgames = 0;
                                 let kill = 0;
                                 let death = 0;
                                 let assist = 0;
@@ -963,37 +964,43 @@ function register(client) {
                                 let first_damages = 0;
                                 let first_tanked = 0;
                                 for (const i in data.matchs) {
-                                    kill += data.matchs[i][data.players[j]].kill;
-                                    death += data.matchs[i][data.players[j]].death;
-                                    assist += data.matchs[i][data.players[j]].assist;
-                                    cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
-                                    gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
-                                    wards += data.matchs[i][data.players[j]].wards;
-                                    pinks += data.matchs[i][data.players[j]].pinks;
-                                    vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
-                                    total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
-                                    tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
-                                    neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
-                                    first_gold += data.matchs[i][data.players[j]].first_gold;
-                                    first_damages += data.matchs[i][data.players[j]].first_damages;
-                                    first_tanked += data.matchs[i][data.players[j]].first_tanked;
+                                    if (data.matchs[i][data.players[j]]) {
+                                        kill += data.matchs[i][data.players[j]].kill;
+                                        death += data.matchs[i][data.players[j]].death;
+                                        assist += data.matchs[i][data.players[j]].assist;
+                                        cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
+                                        gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
+                                        wards += data.matchs[i][data.players[j]].wards;
+                                        pinks += data.matchs[i][data.players[j]].pinks;
+                                        vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
+                                        total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
+                                        tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
+                                        neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
+                                        first_gold += data.matchs[i][data.players[j]].first_gold;
+                                        first_damages += data.matchs[i][data.players[j]].first_damages;
+                                        first_tanked += data.matchs[i][data.players[j]].first_tanked;
+                                        nmgames++;
+                                    }
                                 }
-                                data.stats[data.players[j]] = {
-                                    "kill": kill / result3.rows[0].count,
-                                    "death": death / result3.rows[0].count,
-                                    "assist": assist / result3.rows[0].count,
-                                    "cs": cs / result3.rows[0].count,
-                                    "gold": gold / result3.rows[0].count,
-                                    "wards": wards / result3.rows[0].count,
-                                    "pinks": pinks / result3.rows[0].count,
-                                    "vision_score": vision_score / result3.rows[0].count,
-                                    "total_damage": total_damage / result3.rows[0].count,
-                                    "tanked_damage": tanked_damage / result3.rows[0].count,
-                                    "neutral_objectives": neutral_objectives / result3.rows[0].count,
-                                    "first_gold": first_gold / result3.rows[0].count,
-                                    "first_damages": first_damages / result3.rows[0].count,
-                                    "first_tanked": first_tanked / result3.rows[0].count
-                                };
+                                if (nmgames !== 0) {
+                                    data.stats[data.players[j]] = {
+                                        "kill": kill / nmgames,
+                                        "death": death / nmgames,
+                                        "assist": assist / nmgames,
+                                        "cs": cs / nmgames,
+                                        "gold": gold / nmgames,
+                                        "wards": wards / nmgames,
+                                        "pinks": pinks / nmgames,
+                                        "vision_score": vision_score / nmgames,
+                                        "total_damage": total_damage / nmgames,
+                                        "tanked_damage": tanked_damage / nmgames,
+                                        "neutral_objectives": neutral_objectives / nmgames,
+                                        "first_gold": first_gold / nmgames,
+                                        "first_damages": first_damages / nmgames,
+                                        "first_tanked": first_tanked / nmgames,
+                                        "nbmatchs": nmgames
+                                    };
+                                }
                             }
                             return res.send(data);
                         });
