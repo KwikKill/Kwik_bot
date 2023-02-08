@@ -1244,7 +1244,7 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
                             champion: champion,
@@ -1428,7 +1428,7 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
                             champion: champion,
@@ -1601,7 +1601,7 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
                             role: role,
@@ -1766,7 +1766,7 @@ module.exports = {
                     interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
                             role: role,
@@ -2024,7 +2024,7 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount
                         };
@@ -2430,7 +2430,7 @@ module.exports = {
                     await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount
                         };
@@ -2634,7 +2634,7 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             role: role,
                             champion: champion
@@ -2738,7 +2738,7 @@ module.exports = {
                     return await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
                     console.log(e);
-                    client.users.fetch(client.config.owner).then((user) => {
+                    client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             role: role,
                             champion: champion
