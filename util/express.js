@@ -902,7 +902,13 @@ function register(client) {
                         if (err2) {
                             throw err2;
                         }
+                        let nbmatchs = 0;
+                        let winrate = 0;
                         for (let i = 0; i < result2.rows.length; i++) {
+                            nbmatchs += 1;
+                            if (result2.rows[i].result === "Win") {
+                                winrate += 1;
+                            }
                             data.matchs[result2.rows[i].puuid] = {
                                 "result": result2.rows[i].result,
                                 "gamemode": result2.rows[i].gamemode,
@@ -916,7 +922,7 @@ function register(client) {
                                         throw err3;
                                     }
                                     if (result3.rows.length === 0) {
-                                        console.log(result2.rows[i].puuid);
+                                        //console.log(result2.rows[i].puuid);
                                     } else {
                                         data.matchs[result2.rows[i].puuid][data.players[j]] = {
                                             "champion": result3.rows[0].champion,
@@ -936,17 +942,74 @@ function register(client) {
                                             "first_gold": result3.rows[0].first_gold,
                                             "first_damages": result3.rows[0].first_damages,
                                             "first_tanked": result3.rows[0].first_tanked
+
                                         };
+                                        // stats of the player in the match
+                                        if (!data.stats[data.players[j]]) {
+                                            data.stats[data.players[j]] = {
+                                                "winrate": 0,
+                                                "nbmatchs": 0,
+                                                "champion": {},
+                                                "matchup": {},
+                                                "lane": {},
+                                                "kill": 0,
+                                                "death": 0,
+                                                "assist": 0,
+                                                "cs": 0,
+                                                "gold": 0,
+                                                "wards": 0,
+                                                "pinks": 0,
+                                                "vision_score": 0,
+                                                "total_damage": 0,
+                                                "tanked_damage": 0,
+                                                "neutral_objectives": 0,
+                                                "first_gold": 0,
+                                                "first_damages": 0,
+                                                "first_tanked": 0
+                                            };
+                                        }
+                                        data.stats[data.players[j]].nbmatchs += 1;
+                                        if (data.matchs[result2.rows[i].puuid].result === "Win") {
+                                            data.stats[data.players[j]].winrate += 1;
+                                        }
+                                        if (!data.stats[data.players[j]].champion[result3.rows[0].champion]) {
+                                            data.stats[data.players[j]].champion[result3.rows[0].champion] = 0;
+                                        } else {
+                                            data.stats[data.players[j]].champion[result3.rows[0].champion] += 1;
+                                        }
+                                        if (!data.stats[data.players[j]].matchup[result3.rows[0].matchup]) {
+                                            data.stats[data.players[j]].matchup[result3.rows[0].matchup] = 0;
+                                        }
+                                        data.stats[data.players[j]].matchup[result3.rows[0].matchup] += 1;
+                                        if (!data.stats[data.players[j]].lane[result3.rows[0].lane]) {
+                                            data.stats[data.players[j]].lane[result3.rows[0].lane] = 0;
+                                        }
+                                        data.stats[data.players[j]].lane[result3.rows[0].lane] += 1;
+                                        data.stats[data.players[j]].kill += result3.rows[0].kill;
+                                        data.stats[data.players[j]].death += result3.rows[0].deaths;
+                                        data.stats[data.players[j]].assist += result3.rows[0].assists;
+                                        data.stats[data.players[j]].cs += result3.rows[0].cs;
+                                        data.stats[data.players[j]].gold += result3.rows[0].gold;
+                                        data.stats[data.players[j]].wards += result3.rows[0].wards;
+                                        data.stats[data.players[j]].pinks += result3.rows[0].pinks;
+                                        data.stats[data.players[j]].vision_score += result3.rows[0].vision_score;
+                                        data.stats[data.players[j]].total_damage += result3.rows[0].total_damage;
+                                        data.stats[data.players[j]].tanked_damage += result3.rows[0].tanked_damage;
+                                        data.stats[data.players[j]].neutral_objectives += result3.rows[0].neutral_objectives;
+                                        data.stats[data.players[j]].first_gold += result3.rows[0].first_gold;
+                                        data.stats[data.players[j]].first_damages += result3.rows[0].first_damages;
+                                        data.stats[data.players[j]].first_tanked += result3.rows[0].first_tanked;
+
                                     }
                                 });
                             }
                         }
-                        client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate, count(*) FROM matchs, summoners WHERE matchs.player = summoners.puuid AND matchs.puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2) AND discordid = $3;', [req.query.team, data.players.length, data.players[0]], (err3, result3) => {
+                        data.stats.winrate = winrate / nbmatchs;
+                        data.stats.nbmatchs = nbmatchs;
+                        /*client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate, count(*) FROM matchs, summoners WHERE matchs.player = summoners.puuid AND matchs.puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2) AND discordid = $3;', [req.query.team, data.players.length, data.players[0]], (err3, result3) => {
                             if (err3) {
                                 throw err3;
                             }
-                            data.stats.winrate = result3.rows[0].winrate;
-                            data.stats.nbmatchs = parseInt(result3.rows[0].count);
                             for (let j = 0; j < data.players.length; j++) {
                                 let nmgames = 0;
                                 let kill = 0;
@@ -1003,7 +1066,7 @@ function register(client) {
                                 }
                             }
                             return res.send(data);
-                        });
+                        });*/
                     });
                 } else {
                     return res.sendStatus(404);
