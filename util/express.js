@@ -1008,7 +1008,7 @@ function register(client) {
                         // wait 2s
                         setTimeout(() => {
                             return res.send(data);
-                        }, 3000);
+                        }, 1000);
                         /*client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate, count(*) FROM matchs, summoners WHERE matchs.player = summoners.puuid AND matchs.puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2) AND discordid = $3;', [req.query.team, data.players.length, data.players[0]], (err3, result3) => {
                             if (err3) {
                                 throw err3;
