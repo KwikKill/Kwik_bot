@@ -387,7 +387,7 @@ client.lol = async function () {
                 ') ' +
                 'VALUES(\'' +
                 puuid + '\', \'' +
-                username + '\', ' + '\'' +
+                username.toLowerCase() + '\', ' + '\'' +
                 accountId + '\', \'' +
                 id + '\', \'' +
                 discordid + '\', \'' +
