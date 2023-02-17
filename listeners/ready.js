@@ -20,7 +20,7 @@ module.exports = {
             user: 'postgres',
             host: 'localhost',
             database: 'lol_database',
-            password: '.',
+            password: process.env.DISCORD_TOKEN,
             port: 5432,
         });
         pgclient.connect(function (err) {
