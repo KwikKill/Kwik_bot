@@ -870,7 +870,10 @@ module.exports = {
         const champion = interaction.options.getString("champion");
         const role = interaction.options.getString("lane");
         const gamemode = interaction.options.getString("gamemode");
-        const account = interaction.options.getString("account").toLowerCase();
+        let account = interaction.options.getString("account");
+        if (account) {
+            account = account.toLowerCase();
+        }
         //const puuid = interaction.options.getString("id");
         let discordaccount = interaction.options.getUser("discordaccount");
 
