@@ -16,8 +16,6 @@ module.exports = {
         console.log('Le bot est démarré !');
         client.user.setActivity("with your lol stats", { type: 'PLAYING' });
 
-        console.log(process.env.PSQL);
-
         const pgclient = new pg.Client({
             user: 'postgres',
             host: 'localhost',
