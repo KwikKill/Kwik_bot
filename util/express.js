@@ -923,7 +923,7 @@ function register(client) {
                         if (result3.rows.length === 0) {
                             //console.log(result2.rows[i].puuid);
                         } else {
-                            data.matchs[match.puuid][data.players[j]] = {
+                            data.matchs[match.puuid]["player"][data.players[j]] = {
                                 "champion": result3.rows[0].champion,
                                 "matchup": result3.rows[0].matchup,
                                 "lane": result3.rows[0].lane,
