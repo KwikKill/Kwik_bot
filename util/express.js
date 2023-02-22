@@ -879,215 +879,201 @@ function register(client) {
         });
     });
 
-    app.get("/lol/teams", function (req, res) {
+    app.get("/lol/teams", async function (req, res) {
         if (req.query.team) {
-            client.pg.query('SELECT discordid FROM team WHERE LOWER(team_name) = LOWER($1)', [req.query.team], (err, result) => {
-                if (err) {
-                    throw err;
-                }
-                if (result.rows.length > 0) {
-                    const data = {
-                        "players": [],
-                        "matchs": {},
-                        "stats": {}
-                    };
-                    for (let i = 0; i < result.rows.length; i++) {
-                        data.players.push(result.rows[i].discordid);
-                    }
-                    let number = data.players.length;
-                    if (number > 5) {
-                        number = 5;
-                    }
-                    // list matchs of the team
-                    client.pg.query('SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND LOWER(team.team_name) = LOWER($1) GROUP BY matchs.puuid, result, gamemode, total_kills, length, timestamp HAVING count(*) = $2 ORDER BY timestamp ASC;', [req.query.team, number], (err2, result2) => {
-                        if (err2) {
-                            throw err2;
-                        }
-                        let nbmatchs = 0;
-                        let winrate = 0;
-                        for (let i = 0; i < result2.rows.length; i++) {
-                            nbmatchs += 1;
-                            if (result2.rows[i].result === "Win") {
-                                winrate += 1;
-                            }
-                            data.matchs[result2.rows[i].puuid] = {
-                                "result": result2.rows[i].result,
-                                "gamemode": result2.rows[i].gamemode,
-                                "total_kills": result2.rows[i].total_kills,
-                                "length": parseInt(result2.rows[i].length),
-                                "timestamp": result2.rows[i].timestamp
-                            };
-                            for (let j = 0; j < data.players.length; j++) {
-                                client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives, first_gold, first_damages, first_tanked FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], result2.rows[i].puuid], (err3, result3) => {
-                                    if (err3) {
-                                        throw err3;
-                                    }
-                                    if (result3.rows.length === 0) {
-                                        //console.log(result2.rows[i].puuid);
-                                    } else {
-                                        data.matchs[result2.rows[i].puuid][data.players[j]] = {
-                                            "champion": result3.rows[0].champion,
-                                            "matchup": result3.rows[0].matchup,
-                                            "lane": result3.rows[0].lane,
-                                            "kill": result3.rows[0].kill,
-                                            "death": result3.rows[0].deaths,
-                                            "assist": result3.rows[0].assists,
-                                            "cs": result3.rows[0].cs,
-                                            "gold": result3.rows[0].gold,
-                                            "wards": result3.rows[0].wards,
-                                            "pinks": result3.rows[0].pinks,
-                                            "vision_score": result3.rows[0].vision_score,
-                                            "total_damage": result3.rows[0].total_damage,
-                                            "tanked_damage": result3.rows[0].tanked_damage,
-                                            "neutral_objectives": result3.rows[0].neutral_objectives,
-                                            "first_gold": result3.rows[0].first_gold,
-                                            "first_damages": result3.rows[0].first_damages,
-                                            "first_tanked": result3.rows[0].first_tanked
-
-                                        };
-                                        // stats of the player in the match
-                                        if (!data.stats[data.players[j]]) {
-                                            data.stats[data.players[j]] = {
-                                                "winrate": 0,
-                                                "nbmatchs": 0,
-                                                "champion": {},
-                                                "matchup": {},
-                                                "lane": {},
-                                                "kill": 0,
-                                                "death": 0,
-                                                "assist": 0,
-                                                "cs": 0,
-                                                "gold": 0,
-                                                "wards": 0,
-                                                "pinks": 0,
-                                                "vision_score": 0,
-                                                "total_damage": 0,
-                                                "tanked_damage": 0,
-                                                "neutral_objectives": 0,
-                                                "first_gold": 0,
-                                                "first_damages": 0,
-                                                "first_tanked": 0
-                                            };
-                                        }
-                                        data.stats[data.players[j]].nbmatchs += 1;
-                                        if (data.matchs[result2.rows[i].puuid].result === "Win") {
-                                            data.stats[data.players[j]].winrate += 1;
-                                        }
-                                        if (!data.stats[data.players[j]].champion[result3.rows[0].champion]) {
-                                            data.stats[data.players[j]].champion[result3.rows[0].champion] = 0;
-                                        }
-                                        data.stats[data.players[j]].champion[result3.rows[0].champion] += 1;
-                                        if (!data.stats[data.players[j]].matchup[result3.rows[0].matchup]) {
-                                            data.stats[data.players[j]].matchup[result3.rows[0].matchup] = 0;
-                                        }
-                                        data.stats[data.players[j]].matchup[result3.rows[0].matchup] += 1;
-                                        if (!data.stats[data.players[j]].lane[result3.rows[0].lane]) {
-                                            data.stats[data.players[j]].lane[result3.rows[0].lane] = 0;
-                                        }
-                                        data.stats[data.players[j]].lane[result3.rows[0].lane] += 1;
-                                        data.stats[data.players[j]].kill += result3.rows[0].kill;
-                                        data.stats[data.players[j]].death += result3.rows[0].deaths;
-                                        data.stats[data.players[j]].assist += result3.rows[0].assists;
-                                        data.stats[data.players[j]].cs += result3.rows[0].cs;
-                                        data.stats[data.players[j]].gold += result3.rows[0].gold;
-                                        data.stats[data.players[j]].wards += result3.rows[0].wards;
-                                        data.stats[data.players[j]].pinks += result3.rows[0].pinks;
-                                        data.stats[data.players[j]].vision_score += result3.rows[0].vision_score;
-                                        data.stats[data.players[j]].total_damage += result3.rows[0].total_damage;
-                                        data.stats[data.players[j]].tanked_damage += result3.rows[0].tanked_damage;
-                                        data.stats[data.players[j]].neutral_objectives += result3.rows[0].neutral_objectives;
-                                        data.stats[data.players[j]].first_gold += result3.rows[0].first_gold;
-                                        data.stats[data.players[j]].first_damages += result3.rows[0].first_damages;
-                                        data.stats[data.players[j]].first_tanked += result3.rows[0].first_tanked;
-
-                                    }
-                                });
-                            }
-                        }
-                        data.stats.winrate = winrate / nbmatchs;
-                        data.stats.nbmatchs = nbmatchs;
-                        // wait 2s
-                        setTimeout(() => {
-                            return res.send(data);
-                        }, 2000);
-                        /*client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate, count(*) FROM matchs, summoners WHERE matchs.player = summoners.puuid AND matchs.puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2) AND discordid = $3;', [req.query.team, data.players.length, data.players[0]], (err3, result3) => {
-                            if (err3) {
-                                throw err3;
-                            }
-                            for (let j = 0; j < data.players.length; j++) {
-                                let nmgames = 0;
-                                let kill = 0;
-                                let death = 0;
-                                let assist = 0;
-                                let cs = 0;
-                                let gold = 0;
-                                let wards = 0;
-                                let pinks = 0;
-                                let vision_score = 0;
-                                let total_damage = 0;
-                                let tanked_damage = 0;
-                                let neutral_objectives = 0;
-                                let first_gold = 0;
-                                let first_damages = 0;
-                                let first_tanked = 0;
-                                for (const i in data.matchs) {
-                                    if (data.matchs[i][data.players[j]]) {
-                                        kill += data.matchs[i][data.players[j]].kill;
-                                        death += data.matchs[i][data.players[j]].death;
-                                        assist += data.matchs[i][data.players[j]].assist;
-                                        cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
-                                        gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
-                                        wards += data.matchs[i][data.players[j]].wards;
-                                        pinks += data.matchs[i][data.players[j]].pinks;
-                                        vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
-                                        total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
-                                        tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
-                                        neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
-                                        first_gold += data.matchs[i][data.players[j]].first_gold;
-                                        first_damages += data.matchs[i][data.players[j]].first_damages;
-                                        first_tanked += data.matchs[i][data.players[j]].first_tanked;
-                                        nmgames++;
-                                    }
-                                }
-                                if (nmgames !== 0) {
-                                    data.stats[data.players[j]] = {
-                                        "kill": kill / nmgames,
-                                        "death": death / nmgames,
-                                        "assist": assist / nmgames,
-                                        "cs": cs / nmgames,
-                                        "gold": gold / nmgames,
-                                        "wards": wards / nmgames,
-                                        "pinks": pinks / nmgames,
-                                        "vision_score": vision_score / nmgames,
-                                        "total_damage": total_damage / nmgames,
-                                        "tanked_damage": tanked_damage / nmgames,
-                                        "neutral_objectives": neutral_objectives / nmgames,
-                                        "first_gold": first_gold / nmgames,
-                                        "first_damages": first_damages / nmgames,
-                                        "first_tanked": first_tanked / nmgames,
-                                        "nbmatchs": nmgames
-                                    };
-                                }
-                            }
-                            return res.send(data);
-                        });*/
-                    });
-                } else {
-                    return res.sendStatus(404);
-                }
-            });
-        } else {
-            client.pg.query('SELECT DISTINCT team_name FROM team', (err, result) => {
-                if (err) {
-                    throw err;
-                }
-                const data = [];
+            const result = await client.pg.query('SELECT discordid FROM team WHERE LOWER(team_name) = LOWER($1)', [req.query.team]);
+            if (result.rows.length > 0) {
+                const data = {
+                    "players": [],
+                    "matchs": {},
+                    "stats": {}
+                };
                 for (let i = 0; i < result.rows.length; i++) {
-                    data.push(result.rows[i].team_name);
+                    data.players.push(result.rows[i].discordid);
                 }
+                let number = data.players.length;
+                if (number > 5) {
+                    number = 5;
+                }
+                // list matchs of the team
+                const result2 = await client.pg.query('SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND LOWER(team.team_name) = LOWER($1) GROUP BY matchs.puuid, result, gamemode, total_kills, length, timestamp HAVING count(*) = $2 ORDER BY timestamp ASC;', [req.query.team, number]);
+                let nbmatchs = 0;
+                let winrate = 0;
+                for (const match of result2.rows) {
+                    nbmatchs += 1;
+                    if (match.result === "Win") {
+                        winrate += 1;
+                    }
+                    data.matchs[match.puuid] = {
+                        "result": match.result,
+                        "gamemode": match.gamemode,
+                        "total_kills": match.total_kills,
+                        "length": parseInt(match.length),
+                        "timestamp": match.timestamp
+                    };
+                    for (let j = 0; j < data.players.length; j++) {
+                        const result3 = await client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives, first_gold, first_damages, first_tanked FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], match.puuid]);
+                        if (result3.rows.length === 0) {
+                            //console.log(result2.rows[i].puuid);
+                        } else {
+                            data.matchs[match.puuid][data.players[j]] = {
+                                "champion": result3.rows[0].champion,
+                                "matchup": result3.rows[0].matchup,
+                                "lane": result3.rows[0].lane,
+                                "kill": result3.rows[0].kill,
+                                "death": result3.rows[0].deaths,
+                                "assist": result3.rows[0].assists,
+                                "cs": result3.rows[0].cs,
+                                "gold": result3.rows[0].gold,
+                                "wards": result3.rows[0].wards,
+                                "pinks": result3.rows[0].pinks,
+                                "vision_score": result3.rows[0].vision_score,
+                                "total_damage": result3.rows[0].total_damage,
+                                "tanked_damage": result3.rows[0].tanked_damage,
+                                "neutral_objectives": result3.rows[0].neutral_objectives,
+                                "first_gold": result3.rows[0].first_gold,
+                                "first_damages": result3.rows[0].first_damages,
+                                "first_tanked": result3.rows[0].first_tanked
+
+                            };
+                            // stats of the player in the match
+                            if (!data.stats[data.players[j]]) {
+                                data.stats[data.players[j]] = {
+                                    "winrate": 0,
+                                    "nbmatchs": 0,
+                                    "champion": {},
+                                    "matchup": {},
+                                    "lane": {},
+                                    "kill": 0,
+                                    "death": 0,
+                                    "assist": 0,
+                                    "cs": 0,
+                                    "gold": 0,
+                                    "wards": 0,
+                                    "pinks": 0,
+                                    "vision_score": 0,
+                                    "total_damage": 0,
+                                    "tanked_damage": 0,
+                                    "neutral_objectives": 0,
+                                    "first_gold": 0,
+                                    "first_damages": 0,
+                                    "first_tanked": 0
+                                };
+                            }
+                            data.stats[data.players[j]].nbmatchs += 1;
+                            if (data.matchs[match.puuid].result === "Win") {
+                                data.stats[data.players[j]].winrate += 1;
+                            }
+                            if (!data.stats[data.players[j]].champion[result3.rows[0].champion]) {
+                                data.stats[data.players[j]].champion[result3.rows[0].champion] = 0;
+                            }
+                            data.stats[data.players[j]].champion[result3.rows[0].champion] += 1;
+                            if (!data.stats[data.players[j]].matchup[result3.rows[0].matchup]) {
+                                data.stats[data.players[j]].matchup[result3.rows[0].matchup] = 0;
+                            }
+                            data.stats[data.players[j]].matchup[result3.rows[0].matchup] += 1;
+                            if (!data.stats[data.players[j]].lane[result3.rows[0].lane]) {
+                                data.stats[data.players[j]].lane[result3.rows[0].lane] = 0;
+                            }
+                            data.stats[data.players[j]].lane[result3.rows[0].lane] += 1;
+                            data.stats[data.players[j]].kill += result3.rows[0].kill;
+                            data.stats[data.players[j]].death += result3.rows[0].deaths;
+                            data.stats[data.players[j]].assist += result3.rows[0].assists;
+                            data.stats[data.players[j]].cs += result3.rows[0].cs;
+                            data.stats[data.players[j]].gold += result3.rows[0].gold;
+                            data.stats[data.players[j]].wards += result3.rows[0].wards;
+                            data.stats[data.players[j]].pinks += result3.rows[0].pinks;
+                            data.stats[data.players[j]].vision_score += result3.rows[0].vision_score;
+                            data.stats[data.players[j]].total_damage += result3.rows[0].total_damage;
+                            data.stats[data.players[j]].tanked_damage += result3.rows[0].tanked_damage;
+                            data.stats[data.players[j]].neutral_objectives += result3.rows[0].neutral_objectives;
+                            data.stats[data.players[j]].first_gold += result3.rows[0].first_gold;
+                            data.stats[data.players[j]].first_damages += result3.rows[0].first_damages;
+                            data.stats[data.players[j]].first_tanked += result3.rows[0].first_tanked;
+
+                        }
+                    }
+                }
+                data.stats.winrate = winrate / nbmatchs;
+                data.stats.nbmatchs = nbmatchs;
+                // wait 2s
                 return res.send(data);
-            });
+                /*client.pg.query('SELECT CAST(SUM(CASE WHEN result = \'Win\' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) as winrate, count(*) FROM matchs, summoners WHERE matchs.player = summoners.puuid AND matchs.puuid IN (SELECT matchs.puuid FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND team.team_name = $1 GROUP BY matchs.puuid HAVING count(*) = $2) AND discordid = $3;', [req.query.team, data.players.length, data.players[0]], (err3, result3) => {
+                    if (err3) {
+                        throw err3;
+                    }
+                    for (let j = 0; j < data.players.length; j++) {
+                        let nmgames = 0;
+                        let kill = 0;
+                        let death = 0;
+                        let assist = 0;
+                        let cs = 0;
+                        let gold = 0;
+                        let wards = 0;
+                        let pinks = 0;
+                        let vision_score = 0;
+                        let total_damage = 0;
+                        let tanked_damage = 0;
+                        let neutral_objectives = 0;
+                        let first_gold = 0;
+                        let first_damages = 0;
+                        let first_tanked = 0;
+                        for (const i in data.matchs) {
+                            if (data.matchs[i][data.players[j]]) {
+                                kill += data.matchs[i][data.players[j]].kill;
+                                death += data.matchs[i][data.players[j]].death;
+                                assist += data.matchs[i][data.players[j]].assist;
+                                cs += data.matchs[i][data.players[j]].cs / (data.matchs[i].length / 60);
+                                gold += data.matchs[i][data.players[j]].gold / (data.matchs[i].length / 60);
+                                wards += data.matchs[i][data.players[j]].wards;
+                                pinks += data.matchs[i][data.players[j]].pinks;
+                                vision_score += data.matchs[i][data.players[j]].vision_score / (data.matchs[i].length / 60);
+                                total_damage += data.matchs[i][data.players[j]].total_damage / (data.matchs[i].length / 60);
+                                tanked_damage += data.matchs[i][data.players[j]].tanked_damage / (data.matchs[i].length / 60);
+                                neutral_objectives += data.matchs[i][data.players[j]].neutral_objectives;
+                                first_gold += data.matchs[i][data.players[j]].first_gold;
+                                first_damages += data.matchs[i][data.players[j]].first_damages;
+                                first_tanked += data.matchs[i][data.players[j]].first_tanked;
+                                nmgames++;
+                            }
+                        }
+                        if (nmgames !== 0) {
+                            data.stats[data.players[j]] = {
+                                "kill": kill / nmgames,
+                                "death": death / nmgames,
+                                "assist": assist / nmgames,
+                                "cs": cs / nmgames,
+                                "gold": gold / nmgames,
+                                "wards": wards / nmgames,
+                                "pinks": pinks / nmgames,
+                                "vision_score": vision_score / nmgames,
+                                "total_damage": total_damage / nmgames,
+                                "tanked_damage": tanked_damage / nmgames,
+                                "neutral_objectives": neutral_objectives / nmgames,
+                                "first_gold": first_gold / nmgames,
+                                "first_damages": first_damages / nmgames,
+                                "first_tanked": first_tanked / nmgames,
+                                "nbmatchs": nmgames
+                            };
+                        }
+                    }
+                    return res.send(data);
+                });*/
+            }
+            return res.sendStatus(404);
+
         }
+        client.pg.query('SELECT DISTINCT team_name FROM team', (err, result) => {
+            if (err) {
+                throw err;
+            }
+            const data = [];
+            for (let i = 0; i < result.rows.length; i++) {
+                data.push(result.rows[i].team_name);
+            }
+            return res.send(data);
+        });
+
     });
 
     app.get("/login", function (req, res) {
