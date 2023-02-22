@@ -916,7 +916,8 @@ function register(client) {
                         "gamemode": match.gamemode,
                         "total_kills": match.total_kills,
                         "length": parseInt(match.length),
-                        "timestamp": match.timestamp
+                        "timestamp": match.timestamp,
+                        "player": {}
                     };
                     for (let j = 0; j < data.players.length; j++) {
                         const result3 = await client.pg.query('SELECT champion, matchup, lane, kill, deaths, assists, cs, gold, wards, pinks, vision_score, total_damage, tanked_damage, neutral_objectives, first_gold, first_damages, first_tanked FROM matchs, summoners WHERE matchs.player = summoners.puuid AND summoners.discordid = $1 AND matchs.puuid = $2', [data.players[j], match.puuid]);
