@@ -896,7 +896,14 @@ function register(client) {
                     number = 5;
                 }
                 // list matchs of the team
-                const result2 = await client.pg.query('SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND LOWER(team.team_name) = LOWER($1) GROUP BY matchs.puuid, result, gamemode, total_kills, length, timestamp HAVING count(*) = $2 ORDER BY timestamp ASC;', [req.query.team, number]);
+                let query = 'SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND LOWER(team.team_name) = LOWER($1)';
+                const values = [req.query.team, number];
+                if (req.query.last) {
+                    query += ' AND matchs.puuid > $3';
+                    values.push(req.query.last);
+                }
+                query += "  GROUP BY matchs.puuid, result, gamemode, total_kills, length, timestamp HAVING count(*) = $2 ORDER BY timestamp ASC;";
+                const result2 = await client.pg.query(query, values);
                 let nbmatchs = 0;
                 let winrate = 0;
                 for (const match of result2.rows) {
