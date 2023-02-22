@@ -879,14 +879,6 @@ function register(client) {
         });
     });
 
-    app.get("/lol/perks.json", function (req, res) {
-        fetch("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json").then(response => {
-            response.json().then(data => {
-                return res.send(data);
-            });
-        });
-    });
-
     app.get("/lol/teams", function (req, res) {
         if (req.query.team) {
             client.pg.query('SELECT discordid FROM team WHERE LOWER(team_name) = LOWER($1)', [req.query.team], (err, result) => {
