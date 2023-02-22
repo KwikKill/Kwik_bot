@@ -5,6 +5,7 @@ const { request } = require('undici');
 const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
 const { sseMiddleware } = require('express-sse-middleware');
+const fetch = require('node-fetch');
 
 const Roles = [
     "Serpentin",
@@ -874,6 +875,14 @@ function register(client) {
             tokenResponseData.body.json().then(data => {
                 console.log("[GET] /lol/queue", data.username);
                 return res.render('../Site/lol/queue', { jsclient: client, data: data });
+            });
+        });
+    });
+
+    app.get("/lol/perks.json", function (req, res) {
+        fetch("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/perks.json").then(response => {
+            response.json().then(data => {
+                return res.send(data);
             });
         });
     });
