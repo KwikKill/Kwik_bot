@@ -907,6 +907,10 @@ function register(client) {
                 if (req.query.gamemode) {
                     query += ' AND matchs.gamemode = $' + i;
                     values.push(req.query.gamemode);
+                    i++;
+                }
+                if (req.query.remake === "false") {
+                    query += " AND (matchs.result = 'Win' OR matchs.result = 'Lose')";
                 }
                 query += "  GROUP BY matchs.puuid, result, gamemode, total_kills, length, timestamp HAVING count(*) = $2 ORDER BY timestamp ASC;";
                 const result2 = await client.pg.query(query, values);
