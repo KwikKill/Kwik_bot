@@ -898,9 +898,15 @@ function register(client) {
                 // list matchs of the team
                 let query = 'SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND LOWER(team.team_name) = LOWER($1)';
                 const values = [req.query.team, number];
+                let i = 3;
                 if (req.query.last) {
-                    query += ' AND matchs.puuid > $3';
+                    query += ' AND matchs.puuid > $' + i;
                     values.push(req.query.last);
+                    i++;
+                }
+                if (req.query.gamemode) {
+                    query += ' AND matchs.gamemode = $' + i;
+                    values.push(req.query.gamemode);
                 }
                 query += "  GROUP BY matchs.puuid, result, gamemode, total_kills, length, timestamp HAVING count(*) = $2 ORDER BY timestamp ASC;";
                 const result2 = await client.pg.query(query, values);
