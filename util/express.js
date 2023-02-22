@@ -1094,6 +1094,31 @@ function register(client) {
 
     });
 
+    app.post("/lol/add", function (req, res) {
+        if (req.body.pass !== process.env.TAUNT_PASS) {
+            res.statusCode(404);
+        }
+        if (req.body.username && req.body.discordid && req.body.region) {
+            client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.body.discordid], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    res.statusCode(500);
+                }
+                let al = false;
+                result.rows.forEach(element => {
+                    if (element.username === req.body.username) {
+                        al = true;
+                    }
+                });
+                if (al) {
+                    return res.status(400);
+                }
+                client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid, req.body.region);
+                return res.sendStatus(200);
+            });
+        }
+    });
+
     app.get("/login", function (req, res) {
         const code = req.query.code;
         if (code) {
