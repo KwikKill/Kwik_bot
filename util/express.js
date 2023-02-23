@@ -1094,26 +1094,25 @@ function register(client) {
     });
 
     app.get("/lol/add", function (req, res) {
-        console.log(req.body.pass, process.env.TAUNT_PASS);
-        if (req.body.pass !== process.env.TAUNT_PASS) {
+        if (req.query.pass !== process.env.TAUNT_PASS) {
             res.sendStatus(404);
         }
-        if (req.body.username && req.body.discordid && req.body.region) {
-            client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.body.discordid], (err, result) => {
+        if (req.query.username && req.query.discordid && req.query.region) {
+            client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.query.discordid], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
                 }
                 let al = false;
                 result.rows.forEach(element => {
-                    if (element.username === req.body.username) {
+                    if (element.username === req.query.username) {
                         al = true;
                     }
                 });
                 if (al) {
                     return res.status(400);
                 }
-                client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid, req.body.region);
+                client.commands.get("lol").add_summoner_manual(client, req.query.username, req.query.discordid, req.query.region);
                 res.sendStatus(200);
             });
         }
