@@ -1094,7 +1094,7 @@ function register(client) {
     });
 
     app.get("/lol/add", function (req, res) {
-        console.log(process.env.TAUNT_PASS)
+        console.log(req.body.pass, process.env.TAUNT_PASS);
         if (req.body.pass !== process.env.TAUNT_PASS) {
             res.sendStatus(404);
         }
