@@ -1915,7 +1915,7 @@ module.exports = {
                     let best_solo = ["unranked", "", 0];
                     let best_flex = ["unranked", "", 0];
                     for (const row of response.rows) {
-                        accounts += "EUW - " + row.username + "\n";
+                        accounts += row.region + " - " + row.username + "\n";
 
                         if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
                             best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
