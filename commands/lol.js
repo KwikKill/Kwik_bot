@@ -865,7 +865,10 @@ module.exports = {
         if (interaction === undefined) {
             return;
         }
-        const summoner_name = interaction.options.getString("name");
+        let summoner_name = interaction.options.getString("name");
+        if (summoner_name) {
+            summoner_name = summoner_name.toLowerCase();
+        }
         const region = interaction.options.getString("region");
         const champion = interaction.options.getString("champion");
         const role = interaction.options.getString("lane");
@@ -907,19 +910,19 @@ module.exports = {
                 }
                 return await interaction.editReply("This account is already in the database or requested.");
             } else if (interaction.options.getSubcommand() === "remove") {
-                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND username=$2;", [interaction.user.id, summoner_name]);
+                const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
                 if (response.rows.length > 0) {
                     await client.pg.query("DELETE FROM matchs " +
                         "WHERE player IN (" +
                         "SELECT puuid " +
                         "FROM summoners " +
-                        "WHERE username=$1" +
+                        "WHERE LOWER(username)=LOWER($1)" +
                         ");",
                         [summoner_name]
                     );
                     await client.pg.query("DELETE FROM summoners " +
                         "WHERE discordid=$1 " +
-                        "AND username=$2" +
+                        "AND LOWER(username)=LOWER($2)" +
                         ";",
                         [interaction.user.id, summoner_name]
                     );
