@@ -1079,16 +1079,16 @@ module.exports = {
                         query_values2.push(role);
                         i++;
                     }
+                    if (account !== null) {
+                        query += " AND summoners.username=$" + i;
+                        query3 += " AND summoners.username=$" + i;
+                        query_values.push(account);
+                        query_values2.push(account);
+                        i++;
+                    }
                     if (gamemode !== null) {
                         query += " AND matchs.gamemode=$" + i;
                         query_values.push(gamemode);
-                        i++;
-                    }
-                    if (account !== null) {
-                        query += " AND summoners.username=$" + i;
-                        query3 += " AND summoners.username=$" + (i - 1);
-                        query_values.push(account);
-                        query_values2.push(account);
                         i++;
                     }
                     query += ";";
