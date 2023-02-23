@@ -1114,7 +1114,6 @@ function register(client) {
                 }
                 client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid, req.body.region);
                 res.sendStatus(200);
-                client.lol();
             });
         }
     });

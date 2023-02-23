@@ -2814,6 +2814,7 @@ async function addSumoner(client, name, interaction, region) {
 }
 
 async function add_summoner_manual(client, name, discordid, region) {
+    console.log(name, discordid, region);
     client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region });
     await client.lol();
 }
