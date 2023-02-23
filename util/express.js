@@ -1095,13 +1095,13 @@ function register(client) {
 
     app.get("/lol/add", function (req, res) {
         if (req.body.pass !== process.env.TAUNT_PASS) {
-            res.statusCode(404);
+            res.sendStatus(404);
         }
         if (req.body.username && req.body.discordid && req.body.region) {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.body.discordid], (err, result) => {
                 if (err) {
                     console.error(err);
-                    res.statusCode(500);
+                    res.sendStatus(500);
                 }
                 let al = false;
                 result.rows.forEach(element => {
