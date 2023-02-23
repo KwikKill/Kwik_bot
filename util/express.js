@@ -1093,7 +1093,7 @@ function register(client) {
 
     });
 
-    app.post("/lol/add", function (req, res) {
+    app.get("/lol/add", function (req, res) {
         if (req.body.pass !== process.env.TAUNT_PASS) {
             res.statusCode(404);
         }
