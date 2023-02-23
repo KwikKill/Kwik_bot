@@ -143,7 +143,6 @@ function register(client) {
         });
     }
 
-
     const postsFiles = fs.readdirSync('Site/posts/');
     for (const file of postsFiles) {
         app.get(`/posts/${file.replace(".ejs", "")}`, function (req, res) {
@@ -1114,7 +1113,8 @@ function register(client) {
                     return res.status(400);
                 }
                 client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid, req.body.region);
-                return res.sendStatus(200);
+                res.sendStatus(200);
+                client.lol();
             });
         }
     });
