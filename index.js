@@ -461,7 +461,7 @@ client.lol = async function () {
         const discordid = current["discordid"];
         const region = current["region"];
 
-        if (current["matchs"].length > 0) {
+        if (current["matchs"].length > 0 || discordid === "297409548703105035") {
             //console.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
             while (current["matchs"].length > 0) {
                 const matchId = current["matchs"].shift();
