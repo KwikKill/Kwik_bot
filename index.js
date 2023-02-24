@@ -193,10 +193,12 @@ async function set_update(number) {
 
     let start = (Date.now() - 31536000000).toString();
     start = start.substring(0, start.length - 3);
-    /*const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
-    if (response.rowCount !== 0) {
-        start = Math.floor(response.rows[0].timestamp / 1000);
-    }*/
+    if (number["first"] !== true) {
+        const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
+        if (response.rowCount !== 0) {
+            start = Math.floor(response.rows[0].timestamp / 1000);
+        }
+    }
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
@@ -441,7 +443,7 @@ client.lol = async function () {
             } catch {
 
             }
-            client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region });
+            client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true });
         }
     }
     while (client.requests["updates"].length > 0) {
@@ -740,6 +742,9 @@ function matchHistoryOutput(match) {
 
         let teamKills = 0;
         const puuid = match['info']['participants'][participantId]['puuid'];
+        if (match['info']['participants'][participantId] === undefined) {
+            console.log("error : ", participantId);
+        }
 
         // Lane
         const lane = match['info']['participants'][participantId]['teamPosition'];
