@@ -732,7 +732,7 @@ client.lol = async function () {
  * @returns {Object}  Stats of the match
  */
 function matchHistoryOutput(match) {
-    if (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10) {
+    if (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10 || match["info"]["participants"].length !== 10) {
         return null;
     }
 
