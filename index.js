@@ -476,7 +476,6 @@ client.lol = async function () {
                         if (exit !== null) {
                             current["count"] = current["count"] + 1;
                             for (const summary of exit) {
-                                console.log(matchId, summary["summonerpuuid"]);
                                 try {
                                     client.pg.query("INSERT INTO matchs(" +
                                         "puuid, " +
@@ -623,7 +622,7 @@ client.lol = async function () {
                                         ]
                                     );
                                 } catch (e) {
-                                    console.log(e);
+                                    //console.log(e);
                                 }
                             }
                         }
