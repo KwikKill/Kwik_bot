@@ -472,165 +472,158 @@ client.lol = async function () {
                 lol_api.matchesById(apiKey, route[region], matchId, client).then(match => {
 
                     if (match?.status?.status_code !== 404) {
-                        const exit = matchHistoryOutput(match, puuid);
+                        const exit = matchHistoryOutput(match);
                         if (exit !== null) {
                             current["count"] = current["count"] + 1;
-                            try {
-                                client.pg.query("INSERT INTO matchs(" +
-                                    "puuid, " +
-                                    "player, " +
-                                    "gamemode, " +
-                                    "champion, " +
-                                    "matchup, " +
-                                    "support, " +
-                                    "lane, " +
-                                    "gold, " +
-                                    "kill, " +
-                                    "deaths, " +
-                                    "assists, " +
-                                    "result, " +
-                                    "total_damage, " +
-                                    "tanked_damage, " +
-                                    "heal, " +
-                                    "neutral_objectives, " +
-                                    " wards, " +
-                                    "pinks, " +
-                                    "vision_score, " +
-                                    "cs, " +
-                                    "length, " +
-                                    "total_kills, " +
-                                    "first_gold, " +
-                                    "first_damages, " +
-                                    "first_tanked, " +
-                                    "double, " +
-                                    "tripple, " +
-                                    "quadra, " +
-                                    "penta, " +
-                                    "time_spent_dead, " +
-                                    "timestamp, " +
-                                    "player2, " +
-                                    "player3, " +
-                                    "player4, " +
-                                    "player5, " +
-                                    "summoner1Id, " +
-                                    "summoner2Id, " +
-                                    "item0, " +
-                                    "item1, " +
-                                    "item2, " +
-                                    "item3, " +
-                                    "item4, " +
-                                    "item5, " +
-                                    "item6, " +
-                                    "patch, " +
-                                    "rune_0_perk, " +
-                                    "rune_0_var1, " +
-                                    "rune_0_var2, " +
-                                    "rune_0_var3 " +
-                                    ") VALUES (" +
-                                    "$1," +
-                                    "$2," +
-                                    "$3," +
-                                    "$4," +
-                                    "$5," +
-                                    "$6," +
-                                    "$7," +
-                                    "$8," +
-                                    "$9," +
-                                    "$10," +
-                                    "$11," +
-                                    "$12," +
-                                    "$13," +
-                                    "$14," +
-                                    "$15," +
-                                    "$16," +
-                                    "$17," +
-                                    "$18," +
-                                    "$19," +
-                                    "$20," +
-                                    "$21," +
-                                    "$22," +
-                                    "$23," +
-                                    "$24," +
-                                    "$25," +
-                                    "$26," +
-                                    "$27," +
-                                    "$28," +
-                                    "$29," +
-                                    "$30," +
-                                    "$31," +
-                                    "$32," +
-                                    "$33," +
-                                    "$34," +
-                                    "$35," +
-                                    "$36," +
-                                    "$37," +
-                                    "$38," +
-                                    "$39," +
-                                    "$40," +
-                                    "$41," +
-                                    "$42," +
-                                    "$43," +
-                                    "$44," +
-                                    "$45," +
-                                    "$46," +
-                                    "$47," +
-                                    "$48," +
-                                    "$49" +
-                                    ")",
-                                    [
-                                        matchId,
-                                        exit["summonerpuuid"],
-                                        exit["queueName"],
-                                        exit["champion"],
-                                        exit["matchup"],
-                                        exit["support"],
-                                        exit["lane"],
-                                        exit["gold"],
-                                        exit["kills"],
-                                        exit["deaths"],
-                                        exit["assists"],
-                                        exit["result"],
-                                        exit["dealt"],
-                                        exit["taken"],
-                                        exit["healed"],
-                                        exit["objectifs"],
-                                        exit["wardsPlaced"],
-                                        exit["pinkPlaced"],
-                                        exit["visionScore"],
-                                        exit["CS"],
-                                        exit["duration"],
-                                        exit["teamKills"],
-                                        exit["firstGold"],
-                                        exit["firstDamage"],
-                                        exit["firstTanked"],
-                                        exit["doubles"],
-                                        exit["triples"],
-                                        exit["quadras"],
-                                        exit["penta"],
-                                        exit["totalTimeSpentDead"],
-                                        exit["date"],
-                                        exit["player2"],
-                                        exit["player3"],
-                                        exit["player4"],
-                                        exit["player5"],
-                                        exit["summoner1Id"],
-                                        exit["summoner2Id"],
-                                        exit["item0"],
-                                        exit["item1"],
-                                        exit["item2"],
-                                        exit["item3"],
-                                        exit["item4"],
-                                        exit["item5"],
-                                        exit["item6"],
-                                        exit["patch"],
-                                        exit["rune_0_perk"],
-                                        exit["rune_0_var1"],
-                                        exit["rune_0_var2"],
-                                        exit["rune_0_var3"]
-                                    ]
-                                );
-                            } catch (e) {
-                                console.log(e);
+                            for (const summary of exit) {
+                                try {
+                                    client.pg.query("INSERT INTO matchs(" +
+                                        "puuid, " +
+                                        "player, " +
+                                        "gamemode, " +
+                                        "champion, " +
+                                        "matchup, " +
+                                        "support, " +
+                                        "lane, " +
+                                        "gold, " +
+                                        "kill, " +
+                                        "deaths, " +
+                                        "assists, " +
+                                        "result, " +
+                                        "total_damage, " +
+                                        "tanked_damage, " +
+                                        "heal, " +
+                                        "neutral_objectives, " +
+                                        " wards, " +
+                                        "pinks, " +
+                                        "vision_score, " +
+                                        "cs, " +
+                                        "length, " +
+                                        "total_kills, " +
+                                        "first_gold, " +
+                                        "first_damages, " +
+                                        "first_tanked, " +
+                                        "double, " +
+                                        "tripple, " +
+                                        "quadra, " +
+                                        "penta, " +
+                                        "time_spent_dead, " +
+                                        "timestamp, " +
+                                        "summoner1Id, " +
+                                        "summoner2Id, " +
+                                        "item0, " +
+                                        "item1, " +
+                                        "item2, " +
+                                        "item3, " +
+                                        "item4, " +
+                                        "item5, " +
+                                        "item6, " +
+                                        "patch, " +
+                                        "rune_0_perk, " +
+                                        "rune_0_var1, " +
+                                        "rune_0_var2, " +
+                                        "rune_0_var3, " +
+                                        "team_id " +
+                                        ") VALUES (" +
+                                        "$1," +
+                                        "$2," +
+                                        "$3," +
+                                        "$4," +
+                                        "$5," +
+                                        "$6," +
+                                        "$7," +
+                                        "$8," +
+                                        "$9," +
+                                        "$10," +
+                                        "$11," +
+                                        "$12," +
+                                        "$13," +
+                                        "$14," +
+                                        "$15," +
+                                        "$16," +
+                                        "$17," +
+                                        "$18," +
+                                        "$19," +
+                                        "$20," +
+                                        "$21," +
+                                        "$22," +
+                                        "$23," +
+                                        "$24," +
+                                        "$25," +
+                                        "$26," +
+                                        "$27," +
+                                        "$28," +
+                                        "$29," +
+                                        "$30," +
+                                        "$31," +
+                                        "$32," +
+                                        "$33," +
+                                        "$34," +
+                                        "$35," +
+                                        "$36," +
+                                        "$37," +
+                                        "$38," +
+                                        "$39," +
+                                        "$40," +
+                                        "$41," +
+                                        "$42," +
+                                        "$43," +
+                                        "$44," +
+                                        "$45," +
+                                        "$46" +
+                                        ")",
+                                        [
+                                            matchId,
+                                            summary["summonerpuuid"],
+                                            summary["queueName"],
+                                            summary["champion"],
+                                            summary["matchup"],
+                                            summary["support"],
+                                            summary["lane"],
+                                            summary["gold"],
+                                            summary["kills"],
+                                            summary["deaths"],
+                                            summary["assists"],
+                                            summary["result"],
+                                            summary["dealt"],
+                                            summary["taken"],
+                                            summary["healed"],
+                                            summary["objectifs"],
+                                            summary["wardsPlaced"],
+                                            summary["pinkPlaced"],
+                                            summary["visionScore"],
+                                            summary["CS"],
+                                            summary["duration"],
+                                            summary["teamKills"],
+                                            summary["firstGold"],
+                                            summary["firstDamage"],
+                                            summary["firstTanked"],
+                                            summary["doubles"],
+                                            summary["triples"],
+                                            summary["quadras"],
+                                            summary["penta"],
+                                            summary["totalTimeSpentDead"],
+                                            summary["date"],
+                                            summary["summoner1Id"],
+                                            summary["summoner2Id"],
+                                            summary["item0"],
+                                            summary["item1"],
+                                            summary["item2"],
+                                            summary["item3"],
+                                            summary["item4"],
+                                            summary["item5"],
+                                            summary["item6"],
+                                            summary["patch"],
+                                            summary["rune_0_perk"],
+                                            summary["rune_0_var1"],
+                                            summary["rune_0_var2"],
+                                            summary["rune_0_var3"],
+                                            summary["team_id"]
+                                        ]
+                                    );
+                                } catch (e) {
+                                    console.log(e);
+                                }
                             }
                         }
                     }
@@ -736,386 +729,357 @@ client.lol = async function () {
  * @param {*} puuid   Puuid of the summoner
  * @returns {Object}  Stats of the match
  */
-function matchHistoryOutput(match, puuid) {
+function matchHistoryOutput(match) {
     if (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10) {
         return null;
     }
 
-    // Get Participant Id
-    let participantId = 0;
-    let foundParticipant = false;
-    while (foundParticipant === false & participantId < 10) {
-        if (match['metadata']['participants'][participantId] === puuid) {
-            foundParticipant = true;
+    const exit = [];
+
+    for (let participantId = 0; participantId < 10; participantId++) {
+
+        let teamKills = 0;
+        const puuid = match['metadata']['participants'][participantId]['puuid'];
+
+        // Lane
+        const lane = match['info']['participants'][participantId]['teamPosition'];
+        let lanePlayed = "";
+        switch (lane) {
+            case "TOP":
+                lanePlayed = "TOP";
+                break;
+            case "JUNGLE":
+                lanePlayed = "JUNGLE";
+                break;
+            case "Middle":
+                lanePlayed = "MIDDLE";
+                break;
+            case "BOTTOM":
+                lanePlayed = "ADC";
+                break;
+            case "UTILITY":
+                lanePlayed = "SUPPORT";
+                break;
+            default:
+                if (match['info']['participants'][participantId]["individualPosition"] !== undefined) {
+                    lanePlayed = match['info']['participants'][participantId]["individualPosition"];
+                } else {
+                    lanePlayed = "Invalid";
+                }
+                break;
+
+        }
+
+        let support = "None";
+
+        // Players Team Id - 100 for Blue or 200 for Red
+        const teamId = match['info']['participants'][participantId]['teamId'];
+        let firstgold = 1;
+        let firstdegats = 1;
+        let firsttanked = 1;
+        // "team" is used to loop through the players team
+        const team = (teamId === 100) ? 5 : 10;
+
+        for (let member = team - 5; member < team; member++) {
+            //teamVisionScore += match['info']['participants'][member]['visionScore'];
+            teamKills += match['info']['participants'][member]['kills'];
+            //teamDeaths += match['info']['participants'][member]['deaths'];
+            //teamDamage += match['info']['participants'][member]['totalDamageDealtToChampions'];
+            //teamHealed += match['info']['participants'][member]['totalHeal'];
+            //teamTaken += match['info']['participants'][member]['totalDamageTaken'];
+            //teamMitigated += match['info']['participants'][member]['damageSelfMitigated'];
+            //teamGold += match['info']['participants'][member]['goldEarned'];
+            if (match['info']['participants'][member]['goldEarned'] > match['info']['participants'][participantId]['goldEarned']) {
+                firstgold = 0;
+            }
+            if (match['info']['participants'][member]['totalDamageDealtToChampions'] > match['info']['participants'][participantId]['totalDamageDealtToChampions']) {
+                firstdegats = 0;
+            }
+            if (match['info']['participants'][member]['totalDamageTaken'] > match['info']['participants'][participantId]['totalDamageTaken']) {
+                firsttanked = 0;
+            }
+            if (lanePlayed === "ADC") {
+                const lane2 = match['info']['participants'][member]['teamPosition'];
+                let lanePlayed2 = "";
+                switch (lane2) {
+                    case "TOP":
+                        lanePlayed2 = "TOP";
+                        break;
+                    case "JUNGLE":
+                        lanePlayed2 = "JUNGLE";
+                        break;
+                    case "Middle":
+                        lanePlayed2 = "MIDDLE";
+                        break;
+                    case "BOTTOM":
+                        lanePlayed2 = "ADC";
+                        break;
+                    case "UTILITY":
+                        lanePlayed2 = "SUPPORT";
+                        break;
+                    default:
+                        if (match['info']['participants'][member]["individualPosition"] !== undefined) {
+                            lanePlayed2 = match['info']['participants'][member]["individualPosition"];
+                        } else {
+                            lanePlayed2 = "Invalid";
+                        }
+                        break;
+
+                }
+                if (lanePlayed2 === "SUPPORT") {
+                    support = match['info']['participants'][member]['championId'];
+                }
+            }
+        }
+        //let cary = 0;
+        if (firstgold === 1 || firstdegats === 1 || firsttanked === 1) {
+            //cary = 1;
+        }
+        //}
+
+        //{ Played As
+        // Champion Id and Name
+        const championId = match['info']['participants'][participantId]['championId'];
+        //const championName = match['info']['participants'][participantId]['championName'];
+
+        //}
+
+        //{ Performance
+        // Score
+        const kills = match['info']['participants'][participantId]['kills'];
+        const deaths = match['info']['participants'][participantId]['deaths'];
+        const assists = match['info']['participants'][participantId]['assists'];
+
+        let matchupId = "None";
+        let x = 0;
+        while (x < 10) {
+            if (match['info']['participants'][x]["teamPosition"] === lane) {
+                if (participantId !== x) {
+                    matchupId = match['info']['participants'][x]['championId'];
+                }
+            }
+            x++;
+        }
+
+        //const kda = kills + " / " + deaths + " / " + assists;
+        /*let killParticipation = (kills + assists) / teamKills;
+        if (teamKills === 0){
+            killParticipation = 0;
+        }*/
+
+
+        // Calculate KDA Ratio
+        // Default is Kills + Assists
+        // If Deaths > 0 then (Kills + Assists) / Deaths
+        /*
+        let kdaRatio = kills + assists;
+        if (deaths > 0){
+            kdaRatio /= deaths;
+        }*/
+
+        // Gold & Farm
+        const gold = match['info']['participants'][participantId]['goldEarned'];
+        const laneCS = match['info']['participants'][participantId]['totalMinionsKilled'];
+        const jungleCS = match['info']['participants'][participantId]['neutralMinionsKilled'];
+
+        // Damage
+        const dealt = match['info']['participants'][participantId]['totalDamageDealtToChampions'];
+        const healed = match['info']['participants'][participantId]['totalHeal'];
+        const taken = match['info']['participants'][participantId]['totalDamageTaken'];
+        //const mitigated = match['info']['participants'][participantId]['damageSelfMitigated'];
+
+        //const turrets = match['info']['participants'][participantId]['damageDealtToTurrets'];
+        //const objectives = match['info']['participants'][participantId]['damageDealtToObjectives'];
+
+        // Support Stats
+        //const allyHealing = match['info']['participants'][participantId]['totalHealsOnTeammates'];
+        //const allyShielding = match['info']['participants'][participantId]['totalDamageShieldedOnTeammates'];
+        //const supportItemQuestA = supportItemQuestB = "";
+
+        // Vision
+        const wardsPlaced = match['info']['participants'][participantId]['wardsPlaced'];
+        //const denied = match['info']['participants'][participantId]['wardsKilled'];
+        //const pinksPurchased = match['info']['participants'][participantId]['visionWardsBoughtInGame'];
+        const pinksPlaced = match['info']['participants'][participantId]['detectorWardsPlaced'];
+        const visionScore = match['info']['participants'][participantId]['visionScore'];
+        //const visionShare = visionScore / teamVisionScore;
+        //}
+
+        /*
+        //{ Spell Casts
+        const qCasts = match['info']['participants'][participantId]['spell1Casts'];
+        const wCasts = match['info']['participants'][participantId]['spell2Casts'];
+        const eCasts = match['info']['participants'][participantId]['spell3Casts'];
+        const rCasts = match['info']['participants'][participantId]['spell4Casts'];
+        */
+        // Summoner Spells
+        //const ssACasts = match['info']['participants'][participantId]['summoner1Casts'];
+        const ssAId = match['info']['participants'][participantId]['summoner1Id'];
+        //const ssBCasts = match['info']['participants'][participantId]['summoner2Casts'];
+        const ssBId = match['info']['participants'][participantId]['summoner2Id'];
+        //}
+
+
+        //{ Multi-Kills
+        const doubles = match['info']['participants'][participantId]['doubleKills'];
+        const triples = match['info']['participants'][participantId]['tripleKills'];
+        const quadras = match['info']['participants'][participantId]['quadraKills'];
+        const pentas = match['info']['participants'][participantId]['pentaKills'];
+        //const highestmulti = match['info']['participants'][participantId]['largestMultiKill'];
+        //}
+
+        //{ Objective Play
+        let dragonKills;
+        let baronKills;
+        let heraldKills;
+        try {
+            dragonKills = match['info']['participants'][participantId]['challenges']['dragonTakedowns'];
+            baronKills = match['info']['participants'][participantId]['challenges']['teamBaronKills'];
+            heraldKills = match['info']['participants'][participantId]['challenges']['teamRiftHeraldKills'];
+        } catch (error) {
+            dragonKills = match['info']['participants'][participantId]['dragonKills'];
+            baronKills = match['info']['participants'][participantId]['baronKills'];
+            heraldKills = 0;
+        }
+
+
+        /*
+        const turretKills = match['info']['participants'][participantId]['turretKills'];
+        const turretAssists = match['info']['participants'][participantId]['turretTakedowns'];
+
+        const inhibitorKills = match['info']['participants'][participantId]['inhibitorKills'];
+        const inhibitorAssists = match['info']['participants'][participantId]['inhibitorTakedowns'];
+
+        const nexusKills = match['info']['participants'][participantId]['nexusKills'];
+        const nexusAssists = match['info']['participants'][participantId]['nexusTakedowns'];
+        //}
+        */
+
+        /*
+        //{ First Blood & First Brick
+        const firstBloodKill = match['info']['participants'][participantId]['firstBloodKill'];
+        const firstBloodAssist = match['info']['participants'][participantId]['firstBloodAssist'];
+
+        const firstBrickKill = match['info']['participants'][participantId]['firstTowerKill'];
+        const firstBrickAssist = match['info']['participants'][participantId]['firstTowerAssist'];
+        //}
+
+        //{ Champion Exp & Level
+        const level = match['info']['participants'][participantId]['champLevel'];
+        const experience = match['info']['participants'][participantId]['champExperience'];
+        //}
+        */
+
+        //{ Match Details
+        const duration = match['info']['gameDuration'];
+        const patch = match['info']['gameVersion'];
+        //const creation = match['info']['gameCreation'];
+        const matchId = match['metadata']['matchId'];
+        let result = (match['info']['participants'][participantId]['win']) ? "Win" : "Lose";
+
+        const totalTimeSpentDead = match['info']['participants'][participantId]['totalTimeSpentDead'];
+
+        // Remake Check
+        const inactivity = (kills + deaths + assists) + dealt + taken + laneCS + jungleCS;
+        // if the match was less than 6 minutes and the player was active, then set the result to remake
+        const ff_duration = 360;
+        if (duration < ff_duration && inactivity > 0) {
+            result = "Remake";
+            // If the match was less than 6 minutes and the player was AFK, then set the result to LEAVE
+        } else if (duration < ff_duration && inactivity === 0) {
+            result = "LEAVE";
+        }
+        //}
+
+        const item0 = match['info']['participants'][participantId]['item0'];
+        const item1 = match['info']['participants'][participantId]['item1'];
+        const item2 = match['info']['participants'][participantId]['item2'];
+        const item3 = match['info']['participants'][participantId]['item3'];
+        const item4 = match['info']['participants'][participantId]['item4'];
+        const item5 = match['info']['participants'][participantId]['item5'];
+        const item6 = match['info']['participants'][participantId]['item6'];
+
+
+        let queueName = match['info']['gameMode'];
+        if (match["info"]["queueId"] === RANKED_FLEX) {
+            queueName = "RANKED_FLEX";
+        } else if (match["info"]["queueId"] === RANKED_SOLO) {
+            queueName = "RANKED_SOLO";
+        }
+
+        const champname = champions[championId];
+        let matchupname;
+        if (matchupId === "None") {
+            matchupname = "None";
         } else {
-            participantId++;
+            matchupname = champions[matchupId];
         }
-    }
-    if (match['info']['participants'][participantId] === undefined) {
-        return null;
-    }
 
-    //{ Team Stats - For Participation & Percent Share Stats
-    // Variables
-    //let teamVisionScore = 0;
-    let teamKills = 0;
-    //let teamDeaths = 0;
-    //let teamDamage = 0;
-    //let teamHealed = 0;
-    //let teamTaken = 0;
-    //let teamMitigated = 0;
-    //let teamGold = 0;
-
-    // Lane
-    const lane = match['info']['participants'][participantId]['teamPosition'];
-    let lanePlayed = "";
-    switch (lane) {
-        case "TOP":
-            lanePlayed = "TOP";
-            break;
-        case "JUNGLE":
-            lanePlayed = "JUNGLE";
-            break;
-        case "Middle":
-            lanePlayed = "MIDDLE";
-            break;
-        case "BOTTOM":
-            lanePlayed = "ADC";
-            break;
-        case "UTILITY":
-            lanePlayed = "SUPPORT";
-            break;
-        default:
-            if (match['info']['participants'][participantId]["individualPosition"] !== undefined) {
-                lanePlayed = match['info']['participants'][participantId]["individualPosition"];
-            } else {
-                lanePlayed = "Invalid";
-            }
-            break;
-
-    }
-
-    let support = "None";
-
-    // Players Team Id - 100 for Blue or 200 for Red
-    const teamId = match['info']['participants'][participantId]['teamId'];
-    let firstgold = 1;
-    let firstdegats = 1;
-    let firsttanked = 1;
-    // "team" is used to loop through the players team
-    const team = (teamId === 100) ? 5 : 10;
-
-    const participants = [];
-    // add mates to participants
-    for (let member = team - 5; member < team; member++) {
-        if (match["info"]["participants"][member] !== undefined && match["info"]["participants"][member]["puuid"] !== puuid) {
-            participants.push(match['info']['participants'][member]['summonerName']);
+        let supportname;
+        if (support === "None") {
+            supportname = "None";
+        } else {
+            supportname = champions[support];
         }
+
+        const rune_0_perk = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['perk'];
+        const rune_0_var1 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var1'];
+        const rune_0_var2 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var2'];
+        const rune_0_var3 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var3'];
+
+
+        // Create Output Array
+        exit.push({
+            "matchId": matchId,
+            "summonerpuuid": puuid,
+            "queueName": queueName,
+            "champion": champname,
+            "matchup": matchupname,
+            "support": supportname,
+            "gold": gold,
+            "lane": lanePlayed,
+            "kills": kills,
+            "deaths": deaths,
+            "assists": assists,
+            "result": result,
+            "dealt": dealt,
+            "taken": taken,
+            "healed": healed,
+            "objectifs": (dragonKills + baronKills + heraldKills),
+            "wardsPlaced": wardsPlaced,
+            "pinkPlaced": pinksPlaced,
+            "visionScore": visionScore,
+            "CS": laneCS + jungleCS,
+            "duration": duration,
+            "teamKills": teamKills,
+            "firstGold": firstgold === 1,
+            "firstDamage": firstdegats === 1,
+            "firstTanked": firsttanked === 1,
+            "doubles": doubles,
+            "triples": triples,
+            "quadras": quadras,
+            "penta": pentas,
+            "totalTimeSpentDead": totalTimeSpentDead,
+            "date": match['info']['gameCreation'],
+            "summoner1Id": ssAId,
+            "summoner2Id": ssBId,
+            "item0": item0,
+            "item1": item1,
+            "item2": item2,
+            "item3": item3,
+            "item4": item4,
+            "item5": item5,
+            "item6": item6,
+            "patch": patch,
+            "rune_0_perk": rune_0_perk,
+            "rune_0_var1": rune_0_var1,
+            "rune_0_var2": rune_0_var2,
+            "rune_0_var3": rune_0_var3,
+            "team_id": teamId
+        });
+
     }
-
-    for (let member = team - 5; member < team; member++) {
-        //teamVisionScore += match['info']['participants'][member]['visionScore'];
-        teamKills += match['info']['participants'][member]['kills'];
-        //teamDeaths += match['info']['participants'][member]['deaths'];
-        //teamDamage += match['info']['participants'][member]['totalDamageDealtToChampions'];
-        //teamHealed += match['info']['participants'][member]['totalHeal'];
-        //teamTaken += match['info']['participants'][member]['totalDamageTaken'];
-        //teamMitigated += match['info']['participants'][member]['damageSelfMitigated'];
-        //teamGold += match['info']['participants'][member]['goldEarned'];
-        if (match['info']['participants'][member]['goldEarned'] > match['info']['participants'][participantId]['goldEarned']) {
-            firstgold = 0;
-        }
-        if (match['info']['participants'][member]['totalDamageDealtToChampions'] > match['info']['participants'][participantId]['totalDamageDealtToChampions']) {
-            firstdegats = 0;
-        }
-        if (match['info']['participants'][member]['totalDamageTaken'] > match['info']['participants'][participantId]['totalDamageTaken']) {
-            firsttanked = 0;
-        }
-        if (lanePlayed === "ADC") {
-            const lane2 = match['info']['participants'][member]['teamPosition'];
-            let lanePlayed2 = "";
-            switch (lane2) {
-                case "TOP":
-                    lanePlayed2 = "TOP";
-                    break;
-                case "JUNGLE":
-                    lanePlayed2 = "JUNGLE";
-                    break;
-                case "Middle":
-                    lanePlayed2 = "MIDDLE";
-                    break;
-                case "BOTTOM":
-                    lanePlayed2 = "ADC";
-                    break;
-                case "UTILITY":
-                    lanePlayed2 = "SUPPORT";
-                    break;
-                default:
-                    if (match['info']['participants'][member]["individualPosition"] !== undefined) {
-                        lanePlayed2 = match['info']['participants'][member]["individualPosition"];
-                    } else {
-                        lanePlayed2 = "Invalid";
-                    }
-                    break;
-
-            }
-            if (lanePlayed2 === "SUPPORT") {
-                support = match['info']['participants'][member]['championId'];
-            }
-        }
-    }
-    //let cary = 0;
-    if (firstgold === 1 || firstdegats === 1 || firsttanked === 1) {
-        //cary = 1;
-    }
-    //}
-
-    //{ Played As
-    // Champion Id and Name
-    const championId = match['info']['participants'][participantId]['championId'];
-    //const championName = match['info']['participants'][participantId]['championName'];
-
-    //}
-
-    //{ Performance
-    // Score
-    const kills = match['info']['participants'][participantId]['kills'];
-    const deaths = match['info']['participants'][participantId]['deaths'];
-    const assists = match['info']['participants'][participantId]['assists'];
-
-    let matchupId = "None";
-    let x = 0;
-    while (x < 10) {
-        if (match['info']['participants'][x]["teamPosition"] === lane) {
-            if (participantId !== x) {
-                matchupId = match['info']['participants'][x]['championId'];
-            }
-        }
-        x++;
-    }
-    //Logger.log(matchup)
-    //return;
-
-    //const kda = kills + " / " + deaths + " / " + assists;
-    /*let killParticipation = (kills + assists) / teamKills;
-    if (teamKills === 0){
-        killParticipation = 0;
-    }*/
-
-
-    // Calculate KDA Ratio
-    // Default is Kills + Assists
-    // If Deaths > 0 then (Kills + Assists) / Deaths
-    /*
-    let kdaRatio = kills + assists;
-    if (deaths > 0){
-        kdaRatio /= deaths;
-    }*/
-
-    // Gold & Farm
-    const gold = match['info']['participants'][participantId]['goldEarned'];
-    const laneCS = match['info']['participants'][participantId]['totalMinionsKilled'];
-    const jungleCS = match['info']['participants'][participantId]['neutralMinionsKilled'];
-
-    // Damage
-    const dealt = match['info']['participants'][participantId]['totalDamageDealtToChampions'];
-    const healed = match['info']['participants'][participantId]['totalHeal'];
-    const taken = match['info']['participants'][participantId]['totalDamageTaken'];
-    //const mitigated = match['info']['participants'][participantId]['damageSelfMitigated'];
-
-    //const turrets = match['info']['participants'][participantId]['damageDealtToTurrets'];
-    //const objectives = match['info']['participants'][participantId]['damageDealtToObjectives'];
-
-    // Support Stats
-    //const allyHealing = match['info']['participants'][participantId]['totalHealsOnTeammates'];
-    //const allyShielding = match['info']['participants'][participantId]['totalDamageShieldedOnTeammates'];
-    //const supportItemQuestA = supportItemQuestB = "";
-
-    // Vision
-    const wardsPlaced = match['info']['participants'][participantId]['wardsPlaced'];
-    //const denied = match['info']['participants'][participantId]['wardsKilled'];
-    //const pinksPurchased = match['info']['participants'][participantId]['visionWardsBoughtInGame'];
-    const pinksPlaced = match['info']['participants'][participantId]['detectorWardsPlaced'];
-    const visionScore = match['info']['participants'][participantId]['visionScore'];
-    //const visionShare = visionScore / teamVisionScore;
-    //}
-
-    /*
-    //{ Spell Casts
-    const qCasts = match['info']['participants'][participantId]['spell1Casts'];
-    const wCasts = match['info']['participants'][participantId]['spell2Casts'];
-    const eCasts = match['info']['participants'][participantId]['spell3Casts'];
-    const rCasts = match['info']['participants'][participantId]['spell4Casts'];
-    */
-    // Summoner Spells
-    //const ssACasts = match['info']['participants'][participantId]['summoner1Casts'];
-    const ssAId = match['info']['participants'][participantId]['summoner1Id'];
-    //const ssBCasts = match['info']['participants'][participantId]['summoner2Casts'];
-    const ssBId = match['info']['participants'][participantId]['summoner2Id'];
-    //}
-
-
-    //{ Multi-Kills
-    const doubles = match['info']['participants'][participantId]['doubleKills'];
-    const triples = match['info']['participants'][participantId]['tripleKills'];
-    const quadras = match['info']['participants'][participantId]['quadraKills'];
-    const pentas = match['info']['participants'][participantId]['pentaKills'];
-    //const highestmulti = match['info']['participants'][participantId]['largestMultiKill'];
-    //}
-
-    //{ Objective Play
-    let dragonKills;
-    let baronKills;
-    let heraldKills;
-    try {
-        dragonKills = match['info']['participants'][participantId]['challenges']['dragonTakedowns'];
-        baronKills = match['info']['participants'][participantId]['challenges']['teamBaronKills'];
-        heraldKills = match['info']['participants'][participantId]['challenges']['teamRiftHeraldKills'];
-    } catch (error) {
-        dragonKills = match['info']['participants'][participantId]['dragonKills'];
-        baronKills = match['info']['participants'][participantId]['baronKills'];
-        heraldKills = 0;
-    }
-
-
-    /*
-    const turretKills = match['info']['participants'][participantId]['turretKills'];
-    const turretAssists = match['info']['participants'][participantId]['turretTakedowns'];
-
-    const inhibitorKills = match['info']['participants'][participantId]['inhibitorKills'];
-    const inhibitorAssists = match['info']['participants'][participantId]['inhibitorTakedowns'];
-
-    const nexusKills = match['info']['participants'][participantId]['nexusKills'];
-    const nexusAssists = match['info']['participants'][participantId]['nexusTakedowns'];
-    //}
-    */
-
-    /*
-    //{ First Blood & First Brick
-    const firstBloodKill = match['info']['participants'][participantId]['firstBloodKill'];
-    const firstBloodAssist = match['info']['participants'][participantId]['firstBloodAssist'];
-
-    const firstBrickKill = match['info']['participants'][participantId]['firstTowerKill'];
-    const firstBrickAssist = match['info']['participants'][participantId]['firstTowerAssist'];
-    //}
-
-    //{ Champion Exp & Level
-    const level = match['info']['participants'][participantId]['champLevel'];
-    const experience = match['info']['participants'][participantId]['champExperience'];
-    //}
-    */
-
-    //{ Match Details
-    const duration = match['info']['gameDuration'];
-    const patch = match['info']['gameVersion'];
-    //const creation = match['info']['gameCreation'];
-    const matchId = match['metadata']['matchId'];
-    let result = (match['info']['participants'][participantId]['win']) ? "Win" : "Lose";
-
-    const totalTimeSpentDead = match['info']['participants'][participantId]['totalTimeSpentDead'];
-
-    // Remake Check
-    const inactivity = (kills + deaths + assists) + dealt + taken + laneCS + jungleCS;
-    // if the match was less than 6 minutes and the player was active, then set the result to remake
-    const ff_duration = 360;
-    if (duration < ff_duration && inactivity > 0) {
-        result = "Remake";
-        // If the match was less than 6 minutes and the player was AFK, then set the result to LEAVE
-    } else if (duration < ff_duration && inactivity === 0) {
-        result = "LEAVE";
-    }
-    //}
-
-    const item0 = match['info']['participants'][participantId]['item0'];
-    const item1 = match['info']['participants'][participantId]['item1'];
-    const item2 = match['info']['participants'][participantId]['item2'];
-    const item3 = match['info']['participants'][participantId]['item3'];
-    const item4 = match['info']['participants'][participantId]['item4'];
-    const item5 = match['info']['participants'][participantId]['item5'];
-    const item6 = match['info']['participants'][participantId]['item6'];
-
-
-    let queueName = match['info']['gameMode'];
-    if (match["info"]["queueId"] === RANKED_FLEX) {
-        queueName = "RANKED_FLEX";
-    } else if (match["info"]["queueId"] === RANKED_SOLO) {
-        queueName = "RANKED_SOLO";
-    }
-
-    const champname = champions[championId];
-    let matchupname;
-    if (matchupId === "None") {
-        matchupname = "None";
-    } else {
-        matchupname = champions[matchupId];
-    }
-
-    let supportname;
-    if (support === "None") {
-        supportname = "None";
-    } else {
-        supportname = champions[support];
-    }
-
-    const rune_0_perk = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['perk'];
-    const rune_0_var1 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var1'];
-    const rune_0_var2 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var2'];
-    const rune_0_var3 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var3'];
-
-
-    // Create Output Array
-    const output = {
-        "matchId": matchId,
-        "summonerpuuid": puuid,
-        "queueName": queueName,
-        "champion": champname,
-        "matchup": matchupname,
-        "support": supportname,
-        "gold": gold,
-        "lane": lanePlayed,
-        "kills": kills,
-        "deaths": deaths,
-        "assists": assists,
-        "result": result,
-        "dealt": dealt,
-        "taken": taken,
-        "healed": healed,
-        "objectifs": (dragonKills + baronKills + heraldKills),
-        "wardsPlaced": wardsPlaced,
-        "pinkPlaced": pinksPlaced,
-        "visionScore": visionScore,
-        "CS": laneCS + jungleCS,
-        "duration": duration,
-        "teamKills": teamKills,
-        "firstGold": firstgold === 1,
-        "firstDamage": firstdegats === 1,
-        "firstTanked": firsttanked === 1,
-        "doubles": doubles,
-        "triples": triples,
-        "quadras": quadras,
-        "penta": pentas,
-        "totalTimeSpentDead": totalTimeSpentDead,
-        "date": match['info']['gameCreation'],
-        "player2": participants[0],
-        "player3": participants[1],
-        "player4": participants[2],
-        "player5": participants[3],
-        "summoner1Id": ssAId,
-        "summoner2Id": ssBId,
-        "item0": item0,
-        "item1": item1,
-        "item2": item2,
-        "item3": item3,
-        "item4": item4,
-        "item5": item5,
-        "item6": item6,
-        "patch": patch,
-        "rune_0_perk": rune_0_perk,
-        "rune_0_var1": rune_0_var1,
-        "rune_0_var2": rune_0_var2,
-        "rune_0_var3": rune_0_var3
-    };
-    return output;
+    return exit;
 }
 
 function LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
