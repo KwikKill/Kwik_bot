@@ -739,7 +739,7 @@ function matchHistoryOutput(match) {
     for (let participantId = 0; participantId < 10; participantId++) {
 
         let teamKills = 0;
-        const puuid = match['metadata']['participants'][participantId]['puuid'];
+        const puuid = match['info']['participants'][participantId]['puuid'];
 
         // Lane
         const lane = match['info']['participants'][participantId]['teamPosition'];
