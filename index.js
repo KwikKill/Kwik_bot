@@ -571,7 +571,7 @@ client.lol = async function () {
                                         "$44," +
                                         "$45," +
                                         "$46" +
-                                        ")",
+                                        ") ON DUPLICATE KEY UPDATE puuid = puuid",
                                         [
                                             matchId,
                                             summary["summonerpuuid"],
