@@ -636,64 +636,64 @@ client.lol = async function () {
             const rank = await client.update_rank(current["id"], current["region"]);
             // read current rank and send message if rank changed
             const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + current["id"] + "'");
-            for (const x of client.trackers) {
-                const channel = await client.channels.fetch(x);
-                let user = false;
-                try {
-                    user = await channel.guild.members.fetch(discordid);
-                } catch (e) {
-                    user = false;
-                }
-                if (user || x === "1036963873422589972") {
-                    if (
-                        current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                        current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                        current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] ||
-                        current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
-                        current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
-                        current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-                    ) {
-                        await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + current["id"] + "'");
-                        if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
-                            channel.send("Placement Solo/Duo completed for " + current["username"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
-                        }
-                        else if (current_rank.rows[0].tier_flex === 'unranked' && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked') {
-                            channel.send("Placement Flex completed for " + current["username"] + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
-                        }
-                        else if (
-                            (
-                                current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                                current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                                current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
-                            )
-                            && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
-                        ) {
-                            channel.send("Rank Solo/Duo update for " +
-                                current["username"] +
-                                " : " + rank["RANKED_SOLO_5x5"]["tier"] +
-                                " " + rank["RANKED_SOLO_5x5"]["rank"] +
-                                " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
-                                " LP (" + LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)");
-                        } else if (
-                            (
-                                current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
-                                current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
-                                current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-                            )
-                            && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
-                        ) {
-                            channel.send("Rank Flex update for " +
-                                current["username"] +
-                                " : " + rank["RANKED_FLEX_SR"]["tier"] +
-                                " " + rank["RANKED_FLEX_SR"]["rank"] +
-                                " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
-                                " LP (" + LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)");
-                        }
+            if (current_rank.rows[0] !== undefined) {
+                for (const x of client.trackers) {
+                    const channel = await client.channels.fetch(x);
+                    let user = false;
+                    try {
+                        user = await channel.guild.members.fetch(discordid);
+                    } catch (e) {
+                        user = false;
                     }
+                    if (user || x === "1036963873422589972") {
+                        if (
+                            current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
+                            current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
+                            current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] ||
+                            current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
+                            current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
+                            current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
+                        ) {
+                            await client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + current["id"] + "'");
+                            if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
+                                channel.send("Placement Solo/Duo completed for " + current["username"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                            }
+                            else if (current_rank.rows[0].tier_flex === 'unranked' && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked') {
+                                channel.send("Placement Flex completed for " + current["username"] + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                            }
+                            else if (
+                                (
+                                    current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
+                                    current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
+                                    current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
+                                )
+                                && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
+                            ) {
+                                channel.send("Rank Solo/Duo update for " +
+                                    current["username"] +
+                                    " : " + rank["RANKED_SOLO_5x5"]["tier"] +
+                                    " " + rank["RANKED_SOLO_5x5"]["rank"] +
+                                    " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
+                                    " LP (" + LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)");
+                            } else if (
+                                (
+                                    current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
+                                    current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
+                                    current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
+                                )
+                                && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
+                            ) {
+                                channel.send("Rank Flex update for " +
+                                    current["username"] +
+                                    " : " + rank["RANKED_FLEX_SR"]["tier"] +
+                                    " " + rank["RANKED_FLEX_SR"]["rank"] +
+                                    " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
+                                    " LP (" + LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)");
+                            }
+                        }
 
+                    }
                 }
-
-
             }
 
             if (discordid !== "503109625772507136") {
