@@ -358,6 +358,7 @@ client.lol = async function () {
         const interaction = x["interaction"];
         const discordid = x["discordid"];
         const region = x["region"];
+        const priority = x["priority"];
         const summonerObject = await lol_api.summonersByName(apiKey, region, username, client);
         if (summonerObject === null) {
             try {
@@ -400,7 +401,7 @@ client.lol = async function () {
                 rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
                 region + '\', ' +
-                "0" +
+                priority +
                 ')'
             );
 
