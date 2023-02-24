@@ -194,10 +194,10 @@ async function set_update(number) {
     let start = (Date.now() - 31536000000).toString();
     start = start.substring(0, start.length - 3);
     //if (number["first"] !== true) {
-    const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
+    /*const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
     if (response.rowCount !== 0) {
         start = Math.floor(response.rows[0].timestamp / 1000);
-    }
+    }*/
     //}
 
     do {
