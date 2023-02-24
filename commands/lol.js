@@ -2812,11 +2812,11 @@ module.exports = {
 };
 
 async function addSumoner(client, name, interaction, region) {
-    client.requests["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region });
+    client.requests["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region, "first": false });
     await client.lol();
 }
 
 async function add_summoner_manual(client, name, discordid, region) {
-    client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region });
+    client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region, "first": false });
     await client.lol();
 }

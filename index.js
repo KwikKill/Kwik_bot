@@ -193,12 +193,12 @@ async function set_update(number) {
 
     let start = (Date.now() - 31536000000).toString();
     start = start.substring(0, start.length - 3);
-    //if (number["first"] !== true) {
-    /*const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
-    if (response.rowCount !== 0) {
-        start = Math.floor(response.rows[0].timestamp / 1000);
-    }*/
-    //}
+    if (number["first"] !== true) {
+        const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
+        if (response.rowCount !== 0) {
+            start = Math.floor(response.rows[0].timestamp / 1000);
+        }
+    }
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
@@ -951,10 +951,10 @@ function matchHistoryOutput(match) {
         /*
         const turretKills = match['info']['participants'][participantId]['turretKills'];
         const turretAssists = match['info']['participants'][participantId]['turretTakedowns'];
-
+ 
         const inhibitorKills = match['info']['participants'][participantId]['inhibitorKills'];
         const inhibitorAssists = match['info']['participants'][participantId]['inhibitorTakedowns'];
-
+ 
         const nexusKills = match['info']['participants'][participantId]['nexusKills'];
         const nexusAssists = match['info']['participants'][participantId]['nexusTakedowns'];
         //}
@@ -964,11 +964,11 @@ function matchHistoryOutput(match) {
         //{ First Blood & First Brick
         const firstBloodKill = match['info']['participants'][participantId]['firstBloodKill'];
         const firstBloodAssist = match['info']['participants'][participantId]['firstBloodAssist'];
-
+ 
         const firstBrickKill = match['info']['participants'][participantId]['firstTowerKill'];
         const firstBrickAssist = match['info']['participants'][participantId]['firstTowerAssist'];
         //}
-
+ 
         //{ Champion Exp & Level
         const level = match['info']['participants'][participantId]['champLevel'];
         const experience = match['info']['participants'][participantId]['champExperience'];
