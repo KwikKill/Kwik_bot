@@ -459,6 +459,8 @@ client.lol = async function () {
             }
         }*/
         current = await set_update(current);
+        console.log("start", current["matchs"].length);
+        let nb = 0;
 
         const puuid = current["puuid"];
         const discordid = current["discordid"];
@@ -624,6 +626,7 @@ client.lol = async function () {
                                             summary["team_id"]
                                         ]
                                     );
+                                    nb += 1;
                                 } catch (e) {
                                     //console.log(e);
                                 }
@@ -716,7 +719,7 @@ client.lol = async function () {
             }
             //console.log("- lol (done): " + puuid);
         }
-
+        console.log("done", nb);
     }
     client.running = false;
     if (client.requests["summoners"].length > 0 || client.requests["updates"].length > 0) {
@@ -952,10 +955,10 @@ function matchHistoryOutput(match) {
         /*
         const turretKills = match['info']['participants'][participantId]['turretKills'];
         const turretAssists = match['info']['participants'][participantId]['turretTakedowns'];
- 
+
         const inhibitorKills = match['info']['participants'][participantId]['inhibitorKills'];
         const inhibitorAssists = match['info']['participants'][participantId]['inhibitorTakedowns'];
- 
+
         const nexusKills = match['info']['participants'][participantId]['nexusKills'];
         const nexusAssists = match['info']['participants'][participantId]['nexusTakedowns'];
         //}
@@ -965,11 +968,11 @@ function matchHistoryOutput(match) {
         //{ First Blood & First Brick
         const firstBloodKill = match['info']['participants'][participantId]['firstBloodKill'];
         const firstBloodAssist = match['info']['participants'][participantId]['firstBloodAssist'];
- 
+
         const firstBrickKill = match['info']['participants'][participantId]['firstTowerKill'];
         const firstBrickAssist = match['info']['participants'][participantId]['firstTowerAssist'];
         //}
- 
+
         //{ Champion Exp & Level
         const level = match['info']['participants'][participantId]['champLevel'];
         const experience = match['info']['participants'][participantId]['champExperience'];
