@@ -994,14 +994,11 @@ function matchHistoryOutput(match) {
         const totalTimeSpentDead = match['info']['participants'][participantId]['totalTimeSpentDead'];
 
         // Remake Check
-        const inactivity = (kills + deaths + assists) + dealt + taken + laneCS + jungleCS;
         // if the match was less than 6 minutes and the player was active, then set the result to remake
         const ff_duration = 360;
-        if (duration < ff_duration && inactivity > 0) {
+        if (duration < ff_duration) {
             result = "Remake";
             // If the match was less than 6 minutes and the player was AFK, then set the result to LEAVE
-        } else if (duration < ff_duration && inactivity === 0) {
-            result = "LEAVE";
         }
         //}
 
