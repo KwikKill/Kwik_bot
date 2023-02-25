@@ -459,8 +459,6 @@ client.lol = async function () {
             }
         }*/
         current = await set_update(current);
-        console.log("start", current["puuid"], current["discordid"], current["matchs"].length);
-        let nb = 0;
 
         const puuid = current["puuid"];
         const discordid = current["discordid"];
@@ -626,9 +624,6 @@ client.lol = async function () {
                                             summary["team_id"]
                                         ]
                                     );
-                                    if (summary["summonerpuuid"] === puuid) {
-                                        nb += 1;
-                                    }
                                 } catch (e) {
                                     //console.log(e);
                                 }
@@ -721,7 +716,6 @@ client.lol = async function () {
             }
             //console.log("- lol (done): " + puuid);
         }
-        console.log("done", nb);
     }
     client.running = false;
     if (client.requests["summoners"].length > 0 || client.requests["updates"].length > 0) {
