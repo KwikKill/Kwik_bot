@@ -340,6 +340,14 @@ client.update_mastery = async function (discordid, region) {
     return data;
 };
 
+client.set_rank = async function (puuid) {
+    for (let i = 0; i < client.requests["summoners"].length; i++) {
+        if (client.requests["summoners"][i]["puuid"] === puuid) {
+            client.requests["summoners"][i]["rank"] = true;
+        }
+    }
+};
+
 
 /**
  * Fetch summoner game list and add games to the database
@@ -444,7 +452,7 @@ client.lol = async function () {
             } catch {
 
             }
-            client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true });
+            client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
         }
     }
     while (client.requests["updates"].length > 0) {
@@ -464,7 +472,7 @@ client.lol = async function () {
         const discordid = current["discordid"];
         const region = current["region"];
 
-        if (current["matchs"].length > 0) {
+        if (current["matchs"].length > 0 || current["rank"] === true) {
             //console.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
             while (current["matchs"].length > 0) {
                 const matchId = current["matchs"].shift();
@@ -624,6 +632,7 @@ client.lol = async function () {
                                             summary["team_id"]
                                         ]
                                     );
+                                    client.set_rank(summary["summonerpuuid"]);
                                 } catch (e) {
                                     //console.log(e);
                                 }
