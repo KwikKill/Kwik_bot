@@ -229,9 +229,9 @@ async function update(client) {
         if (!found) {
             if (result.rows[i].priority > 0) {
                 // insert in position 1
-                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": true });
+                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false });
             } else {
-                client.requests["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": true });
+                client.requests["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false });
             }
         }
     }
