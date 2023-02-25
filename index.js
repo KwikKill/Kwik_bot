@@ -459,7 +459,7 @@ client.lol = async function () {
             }
         }*/
         current = await set_update(current);
-        console.log("start", current["matchs"].length);
+        console.log("start", current["puuid"], current["discordid"], current["matchs"].length);
         let nb = 0;
 
         const puuid = current["puuid"];
@@ -626,7 +626,9 @@ client.lol = async function () {
                                             summary["team_id"]
                                         ]
                                     );
-                                    nb += 1;
+                                    if (summary["summonerpuuid"] === puuid) {
+                                        nb += 1;
+                                    }
                                 } catch (e) {
                                     //console.log(e);
                                 }
