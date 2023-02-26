@@ -341,9 +341,9 @@ client.update_mastery = async function (discordid, region) {
 };
 
 client.set_rank = async function (puuid) {
-    for (let i = 0; i < client.requests["summoners"].length; i++) {
-        if (client.requests["summoners"][i]["puuid"] === puuid) {
-            client.requests["summoners"][i]["rank"] = true;
+    for (let i = 0; i < client.requests["updates"].length; i++) {
+        if (client.requests["updates"][i]["puuid"] === puuid) {
+            client.requests["updates"][i]["rank"] = true;
         }
     }
 };
