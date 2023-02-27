@@ -293,14 +293,14 @@ module.exports = {
                 const ENEMY_ADC = interaction.options.getString("enadc");
                 const ENEMY_SUPPORT = interaction.options.getString("ensupp");
 
-                picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "ADC"], [SUPPORT, "SUPPORT"]];
-                enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "ADC"], [ENEMY_SUPPORT, "SUPPORT"]];
+                const picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "ADC"], [SUPPORT, "SUPPORT"]];
+                const enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "ADC"], [ENEMY_SUPPORT, "SUPPORT"]];
 
-                confidence = 0, 5;
+                let confidence = 0;
 
                 for (const pick of picks) {
                     if (pick[0] !== null) {
-                        query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
+                        const query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
                             "count(*) " +
                             "FROM matchs m " +
                             "WHERE puuid IN (" +
@@ -315,19 +315,25 @@ module.exports = {
                             "SELECT m2.team_id " +
                             "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
                             ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
-                        result = await client.pg.query(query, [pick[0], pick[1]]);
+                        const result = await client.pg.query(query, [pick[0], pick[1]]);
                         if (result.rows[0] !== undefined) {
                             if (result.rows[0].count >= 5) {
                                 console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
-                                confidence *= 2 * (result.rows[0].winrate / 100);
+                                confidence += result.rows[0].winrate / 100;
+                            } else {
+                                confidence += 0.5;
                             }
+                        } else {
+                            confidence += 0.5;
                         }
 
+                    } else {
+                        confidence += 0.5;
                     }
                 }
 
                 for (const pick of enemy_picks) {
-                    query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
+                    const query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
                         "count(*) " +
                         "FROM matchs m " +
                         "WHERE puuid IN (" +
@@ -342,16 +348,20 @@ module.exports = {
                         "SELECT m2.team_id " +
                         "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
                         ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
-                    result = await client.pg.query(query, [pick[0], pick[1]]);
+                    const result = await client.pg.query(query, [pick[0], pick[1]]);
                     if (result.rows[0] !== undefined) {
                         if (result.rows[0].count >= 5) {
                             console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
-                            confidence *= 2 * (result.rows[0].winrate / 100);
+                            confidence += result.rows[0].winrate / 100;
+                        } else {
+                            confidence += 0.5;
                         }
+                    } else {
+                        confidence += 0.5;
                     }
                 }
 
-                await interaction.editReply({ content: "Confidence: " + confidence, ephemeral: true });
+                await interaction.editReply({ content: "Confidence: " + confidence / 10, ephemeral: true });
             }
         }
     },
