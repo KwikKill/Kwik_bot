@@ -321,6 +321,8 @@ module.exports = {
                                 console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
                                 confidence *= result.rows[0].winrate;
                             }
+                        } else {
+                            console.log(pick)
                         }
 
                     }
@@ -351,7 +353,7 @@ module.exports = {
                     }
                 }
 
-                await interaction.reply({ content: "Confidence: " + confidence, ephemeral: true });
+                await interaction.editReply({ content: "Confidence: " + confidence, ephemeral: true });
             }
         }
     },
