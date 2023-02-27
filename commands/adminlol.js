@@ -299,7 +299,9 @@ module.exports = {
                 confidence = 1;
 
                 for (const pick of picks) {
+                    console.log(pick)
                     if (pick[0] !== null) {
+                        console.log("a")
                         query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
                             "count(*) " +
                             "FROM matchs m " +
@@ -316,10 +318,12 @@ module.exports = {
                             "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
                             ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
                         result = await client.pg.query(query, [pick[0], pick[1]]);
+                        console.log("b")
                         if (result.rows[0] !== undefined) {
+                            console.log("c")
                             if (result.rows[0].count >= 5) {
                                 console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
-                                confidence *= (result.rows[0].winrate / 100);
+                                confidence *= 2 * (result.rows[0].winrate / 100);
                             }
                         }
 
@@ -346,7 +350,7 @@ module.exports = {
                     if (result.rows[0] !== undefined) {
                         if (result.rows[0].count >= 5) {
                             console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
-                            confidence *= (result.rows[0].winrate / 100);
+                            confidence *= 2 * (result.rows[0].winrate / 100);
                         }
                     }
                 }
