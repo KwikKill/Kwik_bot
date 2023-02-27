@@ -293,8 +293,8 @@ module.exports = {
                 const ENEMY_ADC = interaction.options.getString("enadc");
                 const ENEMY_SUPPORT = interaction.options.getString("ensupp");
 
-                picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "BOTTOM"], [SUPPORT, "BOTTOM"]];
-                enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "BOTTOM"], [ENEMY_SUPPORT, "BOTTOM"]];
+                picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "ADC"], [SUPPORT, "SUPPORT"]];
+                enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "ADC"], [ENEMY_SUPPORT, "SUPPORT"]];
 
                 confidence = 0, 5;
 
