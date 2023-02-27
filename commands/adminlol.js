@@ -317,7 +317,6 @@ module.exports = {
                             ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
                         result = await client.pg.query(query, [pick[0], pick[1]]);
                         if (result.rows[0] !== undefined) {
-                            console.log(result)
                             if (result.rows[0].count >= 5) {
                                 console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
                                 confidence *= 2 * (result.rows[0].winrate / 100);
