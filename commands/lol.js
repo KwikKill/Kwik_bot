@@ -912,14 +912,6 @@ module.exports = {
             } else if (interaction.options.getSubcommand() === "remove") {
                 const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
                 if (response.rows.length > 0) {
-                    await client.pg.query("DELETE FROM matchs " +
-                        "WHERE player IN (" +
-                        "SELECT puuid " +
-                        "FROM summoners " +
-                        "WHERE LOWER(username)=LOWER($1)" +
-                        ");",
-                        [summoner_name]
-                    );
                     await client.pg.query("DELETE FROM summoners " +
                         "WHERE discordid=$1 " +
                         "AND LOWER(username)=LOWER($2)" +
