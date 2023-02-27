@@ -2723,7 +2723,7 @@ module.exports = {
                     const response = await client.pg.query(query4, query_values);
 
                     if (response.rowCount === 0) {
-                        return message.channel.send("No data found");
+                        return interaction.editReply("There are not enought summoners in the database or the filters are too restrictings.");
                     }
 
                     const embed = new MessageEmbed()
