@@ -28,62 +28,69 @@ module.exports = {
         {
             name: 'analyze',
             description: 'analyze a game comp post launch',
-            type: 'SUB_COMMAND',
+            type: 'SUB_COMMAND_GROUP',
             options: [
                 {
-                    name: 'top',
-                    description: 'allied TOP laner',
-                    type: 'STRING'
-                },
-                {
-                    name: 'jungle',
-                    description: 'allied JUNGLE laner',
-                    type: 'STRING'
-                },
-                {
-                    name: 'mid',
-                    description: 'allied MID laner',
-                    type: 'STRING'
-                },
-                {
-                    name: 'adc',
-                    description: 'allied ADC laner',
-                    type: 'STRING'
-                },
-                {
-                    name: 'support',
-                    description: 'allied SUPPORT laner',
-                    type: 'STRING'
-                },
-                {
-                    name: 'enemytop',
-                    description: 'enemy TOP laner',
-                    type: 'STRING',
-                    required: true
-                },
-                {
-                    name: 'enemyjungle',
-                    description: 'enemy JUNGLE laner',
-                    type: 'STRING',
-                    required: true
-                },
-                {
-                    name: 'enemymid',
-                    description: 'enemy MID laner',
-                    type: 'STRING',
-                    required: true
-                },
-                {
-                    name: 'enemyadc',
-                    description: 'enemy ADC laner',
-                    type: 'STRING',
-                    required: true
-                },
-                {
-                    name: 'enemysupport',
-                    description: 'enemy SUPPORT laner',
-                    type: 'STRING',
-                    required: true
+                    name: 'test',
+                    description: 'update all lol accounts',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'top',
+                            description: 'allied TOP laner',
+                            type: 'STRING'
+                        },
+                        {
+                            name: 'jungle',
+                            description: 'allied JUNGLE laner',
+                            type: 'STRING'
+                        },
+                        {
+                            name: 'mid',
+                            description: 'allied MID laner',
+                            type: 'STRING'
+                        },
+                        {
+                            name: 'adc',
+                            description: 'allied ADC laner',
+                            type: 'STRING'
+                        },
+                        {
+                            name: 'supp',
+                            description: 'allied SUPPORT laner',
+                            type: 'STRING'
+                        },
+                        {
+                            name: 'entop',
+                            description: 'enemy TOP laner',
+                            type: 'STRING',
+                            required: true
+                        },
+                        {
+                            name: 'enjungle',
+                            description: 'enemy JUNGLE laner',
+                            type: 'STRING',
+                            required: true
+                        },
+                        {
+                            name: 'enmid',
+                            description: 'enemy MID laner',
+                            type: 'STRING',
+                            required: true
+                        },
+                        {
+                            name: 'enadc',
+                            description: 'enemy ADC laner',
+                            type: 'STRING',
+                            required: true
+                        },
+                        {
+                            name: 'ensupp',
+                            description: 'enemy SUPPORT laner',
+                            type: 'STRING',
+                            required: true
+                        }
+                    ]
                 }
             ]
         }
@@ -273,13 +280,13 @@ module.exports = {
                 const JUNGLE = interaction.options.getString("jungle");
                 const MID = interaction.options.getString("mid");
                 const ADC = interaction.options.getString("adc");
-                const SUPPORT = interaction.options.getString("support");
+                const SUPPORT = interaction.options.getString("supp");
 
-                const ENEMY_TOP = interaction.options.getString("enemy_top");
-                const ENEMY_JUNGLE = interaction.options.getString("enemy_jungle");
-                const ENEMY_MID = interaction.options.getString("enemy_mid");
-                const ENEMY_ADC = interaction.options.getString("enemy_adc");
-                const ENEMY_SUPPORT = interaction.options.getString("enemy_support");
+                const ENEMY_TOP = interaction.options.getString("entop");
+                const ENEMY_JUNGLE = interaction.options.getString("enjungle");
+                const ENEMY_MID = interaction.options.getString("enmid");
+                const ENEMY_ADC = interaction.options.getString("enadc");
+                const ENEMY_SUPPORT = interaction.options.getString("ensupp");
 
                 picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "BOTTOM"], [SUPPORT, "BOTTOM"]];
                 enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "BOTTOM"], [ENEMY_SUPPORT, "BOTTOM"]];
