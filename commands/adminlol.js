@@ -300,7 +300,7 @@ module.exports = {
 
                 for (const pick of picks) {
                     if (pick === null) {
-                        query = "SELECT CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) AS winrate," +
+                        query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
                             "count(*) " +
                             "FROM matchs m " +
                             "WHERE puuid IN (" +
@@ -314,7 +314,7 @@ module.exports = {
                             ") AND team_id = (" +
                             "SELECT m2.team_id " +
                             "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
-                            ") AND count(*) > 4 AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
+                            ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
                         result = await client.pg.query(query, [pick[0], pick[1]]);
                         if (result.rows[0] !== undefined) {
                             if (result.rows[0].count >= 5) {
@@ -327,7 +327,7 @@ module.exports = {
                 }
 
                 for (const pick of enemy_picks) {
-                    query = "SELECT CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) AS winrate," +
+                    query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
                         "count(*) " +
                         "FROM matchs m " +
                         "WHERE puuid IN (" +
@@ -341,7 +341,7 @@ module.exports = {
                         ") AND team_id <> (" +
                         "SELECT m2.team_id " +
                         "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
-                        ") AND count(*) > 4 AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
+                        ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
                     result = await client.pg.query(query, [pick[0], pick[1]]);
                     if (result.rows[0] !== undefined) {
                         if (result.rows[0].count >= 5) {
