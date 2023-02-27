@@ -299,7 +299,7 @@ module.exports = {
                 confidence = 1;
 
                 for (const pick of picks) {
-                    if (pick === null) {
+                    if (pick[0] !== null) {
                         query = "SELECT (CASE WHEN count(*) > 0 THEN CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) ELSE 0 END) AS winrate," +
                             "count(*) " +
                             "FROM matchs m " +
@@ -319,10 +319,8 @@ module.exports = {
                         if (result.rows[0] !== undefined) {
                             if (result.rows[0].count >= 5) {
                                 console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
-                                confidence *= result.rows[0].winrate;
+                                confidence *= (result.rows[0].winrate / 100);
                             }
-                        } else {
-                            console.log(pick)
                         }
 
                     }
@@ -348,7 +346,7 @@ module.exports = {
                     if (result.rows[0] !== undefined) {
                         if (result.rows[0].count >= 5) {
                             console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
-                            confidence *= result.rows[0].winrate;
+                            confidence *= (result.rows[0].winrate / 100);
                         }
                     }
                 }
