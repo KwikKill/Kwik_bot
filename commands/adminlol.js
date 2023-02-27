@@ -63,32 +63,27 @@ module.exports = {
                         {
                             name: 'entop',
                             description: 'enemy TOP laner',
-                            type: 'STRING',
-                            required: true
+                            type: 'STRING'
                         },
                         {
                             name: 'enjungle',
                             description: 'enemy JUNGLE laner',
-                            type: 'STRING',
-                            required: true
+                            type: 'STRING'
                         },
                         {
                             name: 'enmid',
                             description: 'enemy MID laner',
-                            type: 'STRING',
-                            required: true
+                            type: 'STRING'
                         },
                         {
                             name: 'enadc',
                             description: 'enemy ADC laner',
-                            type: 'STRING',
-                            required: true
+                            type: 'STRING'
                         },
                         {
                             name: 'ensupp',
                             description: 'enemy SUPPORT laner',
-                            type: 'STRING',
-                            required: true
+                            type: 'STRING'
                         }
                     ]
                 }
