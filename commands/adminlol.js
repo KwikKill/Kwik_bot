@@ -31,56 +31,56 @@ module.exports = {
             type: 'SUB_COMMAND',
             options: [
                 {
-                    name: 'TOP',
+                    name: 'top',
                     description: 'allied TOP laner',
                     type: 'STRING'
                 },
                 {
-                    name: 'JUNGLE',
+                    name: 'jungle',
                     description: 'allied JUNGLE laner',
                     type: 'STRING'
                 },
                 {
-                    name: 'MID',
+                    name: 'mid',
                     description: 'allied MID laner',
                     type: 'STRING'
                 },
                 {
-                    name: 'ADC',
+                    name: 'adc',
                     description: 'allied ADC laner',
                     type: 'STRING'
                 },
                 {
-                    name: 'SUPPORT',
+                    name: 'support',
                     description: 'allied SUPPORT laner',
                     type: 'STRING'
                 },
                 {
-                    name: 'ENEMY_TOP',
+                    name: 'enemytop',
                     description: 'enemy TOP laner',
                     type: 'STRING',
                     required: true
                 },
                 {
-                    name: 'ENEMY_JUNGLE',
+                    name: 'enemyjungle',
                     description: 'enemy JUNGLE laner',
                     type: 'STRING',
                     required: true
                 },
                 {
-                    name: 'ENEMY_MID',
+                    name: 'enemymid',
                     description: 'enemy MID laner',
                     type: 'STRING',
                     required: true
                 },
                 {
-                    name: 'ENEMY_ADC',
+                    name: 'enemyadc',
                     description: 'enemy ADC laner',
                     type: 'STRING',
                     required: true
                 },
                 {
-                    name: 'ENEMY_SUPPORT',
+                    name: 'enemysupport',
                     description: 'enemy SUPPORT laner',
                     type: 'STRING',
                     required: true
@@ -269,17 +269,17 @@ module.exports = {
                     await client.lol();
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
-                const TOP = interaction.options.getString("TOP");
-                const JUNGLE = interaction.options.getString("JUNGLE");
-                const MID = interaction.options.getString("MID");
-                const ADC = interaction.options.getString("ADC");
-                const SUPPORT = interaction.options.getString("SUPPORT");
+                const TOP = interaction.options.getString("top");
+                const JUNGLE = interaction.options.getString("jungle");
+                const MID = interaction.options.getString("mid");
+                const ADC = interaction.options.getString("adc");
+                const SUPPORT = interaction.options.getString("support");
 
-                const ENEMY_TOP = interaction.options.getString("ENEMY_TOP");
-                const ENEMY_JUNGLE = interaction.options.getString("ENEMY_JUNGLE");
-                const ENEMY_MID = interaction.options.getString("ENEMY_MID");
-                const ENEMY_ADC = interaction.options.getString("ENEMY_ADC");
-                const ENEMY_SUPPORT = interaction.options.getString("ENEMY_SUPPORT");
+                const ENEMY_TOP = interaction.options.getString("enemy_top");
+                const ENEMY_JUNGLE = interaction.options.getString("enemy_jungle");
+                const ENEMY_MID = interaction.options.getString("enemy_mid");
+                const ENEMY_ADC = interaction.options.getString("enemy_adc");
+                const ENEMY_SUPPORT = interaction.options.getString("enemy_support");
 
                 picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "BOTTOM"], [SUPPORT, "BOTTOM"]];
                 enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "BOTTOM"], [ENEMY_SUPPORT, "BOTTOM"]];
