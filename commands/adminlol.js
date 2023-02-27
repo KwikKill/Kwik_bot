@@ -24,6 +24,68 @@ module.exports = {
                     type: 'SUB_COMMAND'
                 }
             ]
+        },
+        {
+            name: 'analyze',
+            description: 'analyze a game comp post launch',
+            type: 'SUB_COMMAND',
+            options: [
+                {
+                    name: 'TOP',
+                    description: 'allied TOP laner',
+                    type: 'STRING'
+                },
+                {
+                    name: 'JUNGLE',
+                    description: 'allied JUNGLE laner',
+                    type: 'STRING'
+                },
+                {
+                    name: 'MID',
+                    description: 'allied MID laner',
+                    type: 'STRING'
+                },
+                {
+                    name: 'ADC',
+                    description: 'allied ADC laner',
+                    type: 'STRING'
+                },
+                {
+                    name: 'SUPPORT',
+                    description: 'allied SUPPORT laner',
+                    type: 'STRING'
+                },
+                {
+                    name: 'ENEMY_TOP',
+                    description: 'enemy TOP laner',
+                    type: 'STRING',
+                    required: true
+                },
+                {
+                    name: 'ENEMY_JUNGLE',
+                    description: 'enemy JUNGLE laner',
+                    type: 'STRING',
+                    required: true
+                },
+                {
+                    name: 'ENEMY_MID',
+                    description: 'enemy MID laner',
+                    type: 'STRING',
+                    required: true
+                },
+                {
+                    name: 'ENEMY_ADC',
+                    description: 'enemy ADC laner',
+                    type: 'STRING',
+                    required: true
+                },
+                {
+                    name: 'ENEMY_SUPPORT',
+                    description: 'enemy SUPPORT laner',
+                    type: 'STRING',
+                    required: true
+                }
+            ]
         }
     ],
     async run(message, client, interaction = undefined) {
@@ -206,6 +268,67 @@ module.exports = {
                     client.commands.get('lol').add_summoner_manual(client, "Enemy Swain", "503109625772507136", "NA1");
                     await client.lol();
                 }
+            } else if (interaction.options.getSubcommandGroup() === "analyze") {
+                const TOP = interaction.options.getString("TOP");
+                const JUNGLE = interaction.options.getString("JUNGLE");
+                const MID = interaction.options.getString("MID");
+                const ADC = interaction.options.getString("ADC");
+                const SUPPORT = interaction.options.getString("SUPPORT");
+
+                const ENEMY_TOP = interaction.options.getString("ENEMY_TOP");
+                const ENEMY_JUNGLE = interaction.options.getString("ENEMY_JUNGLE");
+                const ENEMY_MID = interaction.options.getString("ENEMY_MID");
+                const ENEMY_ADC = interaction.options.getString("ENEMY_ADC");
+                const ENEMY_SUPPORT = interaction.options.getString("ENEMY_SUPPORT");
+
+                picks = [[TOP, "TOP"], [JUNGLE, "JUNGLE"], [MID, "MIDDLE"], [ADC, "BOTTOM"], [SUPPORT, "BOTTOM"]];
+                enemy_picks = [[ENEMY_TOP, "TOP"], [ENEMY_JUNGLE, "JUNGLE"], [ENEMY_MID, "MIDDLE"], [ENEMY_ADC, "BOTTOM"], [ENEMY_SUPPORT, "BOTTOM"]];
+
+                confidence = 1;
+
+                for (const pick of picks) {
+                    if (pick === null) {
+                        query = "SELECT CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) AS winrate," +
+                            "count(*) " +
+                            "FROM matchs m " +
+                            "WHERE puuid IN (" +
+                            "SELECT matchs.puuid " +
+                            "FROM matchs, " +
+                            "summoners " +
+                            "WHERE player = summoners.puuid " +
+                            "AND discordid = '297409548703105035' " +
+                            "AND lane = 'MIDDLE' " +
+                            "AND (result = 'Win' OR result = 'Lose') " +
+                            ") AND team_id = (" +
+                            "SELECT m2.team_id " +
+                            "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
+                            ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
+                        result = client.pg.query(query, [pick[0], pick[1]]);
+                        confidence *= result.rows[0].winrate;
+                    }
+                }
+
+                for (const pick of enemy_picks) {
+                    query = "SELECT CAST(count(*) FILTER (WHERE result = 'Win')*100 AS FLOAT)/count(*) AS winrate," +
+                        "count(*) " +
+                        "FROM matchs m " +
+                        "WHERE puuid IN (" +
+                        "SELECT matchs.puuid " +
+                        "FROM matchs, " +
+                        "summoners " +
+                        "WHERE player = summoners.puuid " +
+                        "AND discordid = '297409548703105035' " +
+                        "AND lane = 'MIDDLE' " +
+                        "AND (result = 'Win' OR result = 'Lose') " +
+                        ") AND team_id <> (" +
+                        "SELECT m2.team_id " +
+                        "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
+                        ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
+                    result = client.pg.query(query, [pick[0], pick[1]]);
+                    confidence *= result.rows[0].winrate;
+                }
+
+                await interaction.reply({ content: "Confidence: " + confidence, ephemeral: true });
             }
         }
     },
