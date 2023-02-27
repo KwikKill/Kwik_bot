@@ -38,52 +38,62 @@ module.exports = {
                         {
                             name: 'top',
                             description: 'allied TOP laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'jungle',
                             description: 'allied JUNGLE laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'mid',
                             description: 'allied MID laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'adc',
                             description: 'allied ADC laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'supp',
                             description: 'allied SUPPORT laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'entop',
                             description: 'enemy TOP laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'enjungle',
                             description: 'enemy JUNGLE laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'enmid',
                             description: 'enemy MID laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'enadc',
                             description: 'enemy ADC laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         },
                         {
                             name: 'ensupp',
                             description: 'enemy SUPPORT laner',
-                            type: 'STRING'
+                            type: 'STRING',
+                            autocomplete: true,
                         }
                     ]
                 }
@@ -333,6 +343,24 @@ module.exports = {
                 await interaction.reply({ content: "Confidence: " + confidence, ephemeral: true });
             }
         }
+    },
+    async autocomplete(client, interaction) {
+        const focusedValue = interaction.options.getFocused().replaceAll("'", "");
+        const query = "SELECT DISTINCT champion " +
+            "FROM matchs " +
+            "WHERE lower(champion) LIKE '" + focusedValue.toLowerCase() + "%'" +
+            "AND champion <> 'Invalid' " +
+            "ORDER BY champion " +
+            "LIMIT 15;";
+        const response = await client.pg.query(query);
+        const champs = [];
+        for (const x of response.rows) {
+            champs.push({
+                name: x.champion,
+                value: x.champion
+            });
+        }
+        return await interaction.respond(champs);
     },
     update
 };
