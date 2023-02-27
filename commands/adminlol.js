@@ -316,7 +316,12 @@ module.exports = {
                             "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
                             ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
                         result = client.pg.query(query, [pick[0], pick[1]]);
-                        confidence *= result.rows[0].winrate;
+                        if (result.rows[0] !== undefined) {
+                            if (result.rows[0].count >= 5) {
+                                confidence *= result.rows[0].winrate;
+                            }
+                        }
+
                     }
                 }
 
@@ -337,7 +342,11 @@ module.exports = {
                         "FROM matchs m2, summoners WHERE m2.player = summoners.puuid AND discordid = '297409548703105035' AND m2.puuid = m.puuid" +
                         ") AND player not IN (SELECT puuid FROM summoners WHERE discordid = '297409548703105035') AND champion = $1 AND lane = $2;";
                     result = client.pg.query(query, [pick[0], pick[1]]);
-                    confidence *= result.rows[0].winrate;
+                    if (result.rows[0] !== undefined) {
+                        if (result.rows[0].count >= 5) {
+                            confidence *= result.rows[0].winrate;
+                        }
+                    }
                 }
 
                 await interaction.reply({ content: "Confidence: " + confidence, ephemeral: true });
