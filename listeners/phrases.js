@@ -147,7 +147,12 @@ module.exports = {
 
                 const last = arr[arr.length - 1];
                 if (last.substr(last.length - 4) === "quoi" || last.substr(last.length - 3) === "koi" || last.substr(last.length - 7) === "quoient" || last.substr(last.length - 3) === "coi" || last.substr(last.length - 4) === "koua" || last.substr(last.length - 3) === "kwa") {
-                    msg.reply("feur");
+                    const random = Math.floor(Math.random() * (100 + 1));
+                    if (random <= 5) {
+                        msg.reply("quoicoubeh");
+                    }else{
+                        msg.reply("feur");
+                    }
                     return;
                 }
 
