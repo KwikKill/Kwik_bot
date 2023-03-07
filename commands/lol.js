@@ -2695,7 +2695,7 @@ module.exports = {
                         "(cast(" +
                         "count(*) FILTER (" +
                         "WHERE first_gold AND first_damages AND first_tanked" +
-                        ")*100 as float)/count(*)) as hardcarry, avg(score) as delta" +
+                        ")*100 as float)/count(*)) as hardcarry, avg(score) as delta " +
                         "FROM matchs, summoners, COEF " +
                         "WHERE matchs.player = summoners.puuid AND COEF.champion = matchs.champion" +
                         query2 +
