@@ -2679,8 +2679,7 @@ module.exports = {
                         i++;
                     }
 
-                    const query =
-                        "SELECT summoners.discordid, " +
+                    const query = "SELECT summoners.discordid, " +
                         "count(*), " +
                         "(cast(" +
                         "count(*) FILTER (" +
@@ -2696,19 +2695,36 @@ module.exports = {
                         "(cast(" +
                         "count(*) FILTER (" +
                         "WHERE first_gold AND first_damages AND first_tanked" +
-                        ")*100 as float)/count(*)) as hardcarry " +
-                        "FROM matchs, summoners " +
+                        ")*100 as float)/count(*)) as hardcarry, avg(score) as delta" +
+                        "FROM matchs, summoners, COEF " +
                         "WHERE matchs.player = summoners.puuid" +
                         query2 +
                         queryrole +
                         queryall +
                         " GROUP BY summoners.discordid";
 
-                    const query4 = "SELECT discordid, " +
+                    const query4 = "WITH COEF AS (" +
+                        "SELECT champion, " +
                         "count, " +
-                        "CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) " +
+                        "200/(CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) ELSE (carry+wr+kp+vs*25+10*cs) END) AS score " +
+                        "FROM (" +
+                        "SELECT champion, " +
+                        "count(*), " +
+                        "(cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*)) as WR, " +
+                        "(cast(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100 as float)/count(*)) as CARRY, " +
+                        "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+                        "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
+                        "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
+                        "(cast(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100 as float)/count(*)) as hardcarry " +
+                        "FROM matchs " +
+                        "GROUP BY champion " +
+                        ") AS t1 " +
+                        ")" +
+                        "SELECT discordid, " +
+                        "count, " +
+                        "(CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) " +
                         "ELSE (carry+wr+kp+vs*25+10*cs) " +
-                        "END AS KS " +
+                        "END)*delta AS KS " +
                         "FROM (" + query + ") AS t1 " +
                         "ORDER BY KS DESC " +
                         "LIMIT 10;";
