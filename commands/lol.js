@@ -1198,7 +1198,6 @@ module.exports = {
                     score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
                     score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
                     score += 10 * average_cs;
-                    console.log(score, delta, score * delta);
                     score *= delta;
                     if (100 - response.rows[0].games_played > 0) {
                         score = score * 0.99 ** (100 - response.rows[0].games_played);
