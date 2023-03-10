@@ -1026,7 +1026,24 @@ module.exports = {
                     const query_values = [discordaccount];
                     const query_values2 = [discordaccount];
 
-                    let query = "SELECT " +
+                    let query = "WITH COEF AS (" +
+                        "SELECT champion, " +
+                        "count, " +
+                        "200/(CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) ELSE (carry+wr+kp+vs*25+10*cs) END) AS score " +
+                        "FROM (" +
+                        "SELECT champion, " +
+                        "count(*), " +
+                        "(cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*)) as WR, " +
+                        "(cast(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100 as float)/count(*)) as CARRY, " +
+                        "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+                        "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
+                        "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
+                        "(cast(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100 as float)/count(*)) as hardcarry " +
+                        "FROM matchs " +
+                        "GROUP BY champion " +
+                        ") AS t1 " +
+                        ")" +
+                        "SELECT " +
                         "AVG(gold) as avg_gold, " +
                         "AVG(kill) as avg_kills, " +
                         "AVG(deaths) as avg_deaths, " +
@@ -1048,9 +1065,10 @@ module.exports = {
                         "CAST(SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_damage, " +
                         "CAST(SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_tanked, " +
                         "CAST(SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100 AS FLOAT) / count(*) as hard_carry, " +
-                        "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as win_rate " +
-                        "FROM matchs, summoners " +
-                        "WHERE summoners.discordid=$" + i + " " +
+                        "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as win_rate, " +
+                        "avg(score) as delta" +
+                        "FROM matchs, summoners, COEF " +
+                        "WHERE summoners.discordid=$" + i + " AND COEF.champion = matchs.champion " +
                         "AND matchs.player = summoners.puuid";
 
                     let query3 = "SELECT " +
@@ -1150,6 +1168,7 @@ module.exports = {
                     const overall = response.rows[0].carry;
                     const hard_carry = response.rows[0].hard_carry;
                     const win = response.rows[0].win_rate;
+                    const delta = response.rows[0].delta;
 
                     // 2) Average stats
 
@@ -1179,6 +1198,8 @@ module.exports = {
                     score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
                     score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
                     score += 10 * average_cs;
+                    console.log(score, delta, score * delta);
+                    score *= delta;
                     if (100 - response.rows[0].games_played > 0) {
                         score = score * 0.99 ** (100 - response.rows[0].games_played);
                     }
