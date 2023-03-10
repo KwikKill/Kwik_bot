@@ -1066,7 +1066,7 @@ module.exports = {
                         "CAST(SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_tanked, " +
                         "CAST(SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100 AS FLOAT) / count(*) as hard_carry, " +
                         "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as win_rate, " +
-                        "avg(score) as delta" +
+                        "avg(score) as delta " +
                         "FROM matchs, summoners, COEF " +
                         "WHERE summoners.discordid=$" + i + " AND COEF.champion = matchs.champion " +
                         "AND matchs.player = summoners.puuid";
