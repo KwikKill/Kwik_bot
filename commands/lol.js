@@ -215,6 +215,11 @@ module.exports = {
                             description: 'account',
                             type: 'STRING'
                         },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
+                        }
                     ]
                 },
                 {
@@ -226,7 +231,7 @@ module.exports = {
                             name: 'discordaccount',
                             description: 'Discord account',
                             type: 'USER',
-                        },
+                        }
                     ]
                 },
                 /*{
@@ -397,6 +402,11 @@ module.exports = {
                             description: 'account',
                             type: 'STRING'
                         },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
+                        }
                     ]
                 },
                 {
@@ -475,6 +485,11 @@ module.exports = {
                             name: 'account',
                             description: 'account',
                             type: 'STRING'
+                        },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
                         }
                     ]
                 },
@@ -556,6 +571,11 @@ module.exports = {
                                     value: 'ULTBOOK'
                                 }
                             ]
+                        },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
                         }
                     ]
                 },
@@ -641,6 +661,11 @@ module.exports = {
                             name: 'account',
                             description: 'account',
                             type: 'STRING'
+                        },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
                         }
                     ]
                 },
@@ -778,6 +803,11 @@ module.exports = {
                             name: 'all',
                             description: 'All',
                             type: 'BOOLEAN'
+                        },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
                         }
                     ]
                 },
@@ -823,6 +853,11 @@ module.exports = {
                             name: 'all',
                             description: 'All',
                             type: 'BOOLEAN'
+                        },
+                        {
+                            name: 'season',
+                            description: 'Season',
+                            type: 'STRING',
                         }
                     ]
                 }
@@ -879,6 +914,7 @@ module.exports = {
         }
         //const puuid = interaction.options.getString("id");
         let discordaccount = interaction.options.getUser("discordaccount");
+        const season = interaction.options.getString("season");
 
         await interaction.deferReply();
         if (interaction.options.getSubcommandGroup() === "account") {
@@ -1099,6 +1135,13 @@ module.exports = {
                         query_values2.push(account);
                         i++;
                     }
+                    if (season !== null) {
+                        query += " AND patch LIKE $" + i;
+                        query3 += " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
+                        query_values2.push(season + "%");
+                        i++;
+                    }
                     if (gamemode !== null) {
                         query += " AND matchs.gamemode=$" + i;
                         query_values.push(gamemode);
@@ -1106,6 +1149,8 @@ module.exports = {
                     }
                     query += ";";
                     query3 += " GROUP BY gamemode;";
+
+                    console.log(query);
 
                     const response = await client.pg.query(query, query_values);
                     if (response.rows.length === 0) {
@@ -1325,6 +1370,11 @@ module.exports = {
                         query_values.push(account);
                         i++;
                     }
+                    if (season !== null) {
+                        query += " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
+                        i++;
+                    }
                     query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
 
                     const response = await client.pg.query(query, query_values);
@@ -1506,6 +1556,11 @@ module.exports = {
                     if (account !== null) {
                         query += " AND summoners.username=$" + i;
                         query_values.push(account);
+                        i++;
+                    }
+                    if (season !== null) {
+                        query += " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
                         i++;
                     }
                     query += " GROUP BY champion ORDER BY count(*) DESC;";
@@ -1695,6 +1750,13 @@ module.exports = {
                         i++;
                     }
 
+                    let queryseason = "";
+                    if (season !== null) {
+                        queryseason = " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
+                        i++;
+                    }
+
                     const query =
                         "WITH weekly_matches AS (" +
                         "SELECT " +
@@ -1714,6 +1776,7 @@ module.exports = {
                         querygamemode +
                         queryrole +
                         querychamp +
+                        queryseason +
                         " GROUP BY week " +
                         ")" +
                         "SELECT " +
@@ -2108,6 +2171,12 @@ module.exports = {
                         query_values.push(gamemode);
                         i++;
                     }
+                    if (season !== null) {
+                        query += " AND patch LIKE $" + i;
+                        query3 += " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
+                        i++;
+                    }
                     query += ";";
                     query2 += ";";
 
@@ -2484,6 +2553,13 @@ module.exports = {
                         i++;
                     }
 
+                    let queryseason = "";
+                    if (season !== null) {
+                        queryseason = " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
+                        i++;
+                    }
+
                     const all = interaction.options.getBoolean("all") === true;
                     let queryall = "";
                     if (!all) {
@@ -2510,6 +2586,7 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
+                        queryseason +
                         " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;";
                     let response = await client.pg.query(query, query_values);
 
@@ -2699,6 +2776,13 @@ module.exports = {
                         i++;
                     }
 
+                    let queryseason = "";
+                    if (season !== null) {
+                        queryseason = " AND patch LIKE $" + i;
+                        query_values.push(season + "%");
+                        i++;
+                    }
+
                     const query = "SELECT summoners.discordid, " +
                         "count(*), " +
                         "(cast(" +
@@ -2721,6 +2805,7 @@ module.exports = {
                         query2 +
                         queryrole +
                         queryall +
+                        queryseason +
                         " GROUP BY summoners.discordid";
 
                     const query4 = "WITH COEF AS (" +
@@ -2817,20 +2902,15 @@ module.exports = {
         }
     },
     async autocomplete(client, interaction) {
-        const focusedValue = interaction.options.getFocused().replaceAll("'", "");
-        const query = "SELECT DISTINCT champion " +
-            "FROM matchs " +
-            "WHERE lower(champion) LIKE '" + focusedValue.toLowerCase() + "%'" +
-            "AND champion <> 'Invalid' " +
-            "ORDER BY champion " +
-            "LIMIT 15;";
-        const response = await client.pg.query(query);
+        const focusedValue = interaction.options.getFocused();
         const champs = [];
-        for (const x of response.rows) {
-            champs.push({
-                name: x.champion,
-                value: x.champion
-            });
+        for (const x of client.champions) {
+            if (x.toLowerCase().startsWith(focusedValue.toLowerCase()) && champs.length < 25) {
+                champs.push({
+                    name: x,
+                    value: x
+                });
+            }
         }
         return await interaction.respond(champs);
     },

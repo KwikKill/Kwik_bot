@@ -185,7 +185,11 @@ module.exports = {
      */
     async matchesById(apiKey, route, matchId, client) {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        const result = await this.apiCall(url, client);
+        if (result === null) {
+            console.log(matchId);
+        }
+        return result;
     },
 
     /**

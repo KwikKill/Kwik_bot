@@ -27,6 +27,13 @@ let champions = [];
 const max_games = 100;
 lol_api.championList(apiKey, "EUW1", language, client).then(list => {
     champions = list;
+    client.champions = [];
+    for (let i = 0; i < list.length; i++) {
+        if (list[i] !== undefined) {
+            client.champions.push(list[i]);
+        }
+    }
+    client.champions.sort();
 });
 
 client.markov = new Markov({ stateSize: 3 });
