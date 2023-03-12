@@ -1064,7 +1064,6 @@ module.exports = {
 
                     let query = "WITH COEF AS (" +
                         "SELECT champion, " +
-                        "count, " +
                         "200/(CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) ELSE (carry+wr+kp+vs*25+10*cs) END) AS score " +
                         "FROM (" +
                         "SELECT champion, " +
@@ -1096,16 +1095,14 @@ module.exports = {
                         "AVG(total_kills) as avg_total_kills, " +
                         "AVG(time_spent_dead) as avg_time_spent_dead, " +
                         "count(*) as games_played, " +
-                        "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry, " +
-                        "CAST(SUM(CASE WHEN first_gold THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_gold, " +
-                        "CAST(SUM(CASE WHEN first_damages THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_damage, " +
-                        "CAST(SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as carry_tanked, " +
-                        "CAST(SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100 AS FLOAT) / count(*) as hard_carry, " +
-                        "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)*100 / count(*) as win_rate, " +
+                        "SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as carry, " +
+                        "SUM(CASE WHEN first_gold THEN 1 ELSE 0 END)*100.0 / count(*) as carry_gold, " +
+                        "SUM(CASE WHEN first_damages THEN 1 ELSE 0 END)*100.0 / count(*) as carry_damage, " +
+                        "SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END)*100.0 / count(*) as carry_tanked, " +
+                        "SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as hard_carry, " +
+                        "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 / count(*) as win_rate, " +
                         "avg(score) as delta " +
-                        "FROM matchs, summoners, COEF " +
-                        "WHERE summoners.discordid=$" + i + " AND COEF.champion = matchs.champion " +
-                        "AND matchs.player = summoners.puuid";
+                        "FROM summoners LEFT JOIN (matchs INNER JOIN COEF ON COEF.champion = matchs.champion";
 
                     let query3 = "SELECT " +
                         "gamemode, " +
@@ -1147,10 +1144,9 @@ module.exports = {
                         query_values.push(gamemode);
                         i++;
                     }
-                    query += ";";
+                    query += ") ON matchs.player = summoners.puuid " +
+                        "WHERE summoners.discordid=$1;";
                     query3 += " GROUP BY gamemode;";
-
-                    console.log(query);
 
                     const response = await client.pg.query(query, query_values);
                     if (response.rows.length === 0) {
@@ -1207,25 +1203,25 @@ module.exports = {
 
                     // 1) Carry stats
 
-                    const carry_damage = response.rows[0].carry_damage;
-                    const carry_tanked = response.rows[0].carry_tanked;
-                    const carry_gold = response.rows[0].carry_gold;
-                    const overall = response.rows[0].carry;
-                    const hard_carry = response.rows[0].hard_carry;
-                    const win = response.rows[0].win_rate;
-                    const delta = response.rows[0].delta;
+                    const carry_damage = Number(response.rows[0].carry_damage);
+                    const carry_tanked = Number(response.rows[0].carry_tanked);
+                    const carry_gold = Number(response.rows[0].carry_gold);
+                    const overall = Number(response.rows[0].carry);
+                    const hard_carry = Number(response.rows[0].hard_carry);
+                    const win = Number(response.rows[0].win_rate);
+                    const delta = Number(response.rows[0].delta);
 
                     // 2) Average stats
 
-                    const length = response.rows[0].avg_length;
+                    const length = Number(response.rows[0].avg_length);
 
                     const average_kills = Number.parseFloat(response.rows[0].avg_kills).toFixed(decimal);
                     const average_deaths = Number.parseFloat(response.rows[0].avg_deaths).toFixed(decimal);
                     const average_assists = Number.parseFloat(response.rows[0].avg_assists).toFixed(decimal);
                     let average_cs = Number.parseFloat(response.rows[0].avg_cs).toFixed(decimal);
-                    let average_gold = response.rows[0].avg_gold;
-                    let average_damages = response.rows[0].avg_damage;
-                    let average_tanked = response.rows[0].avg_tanked_damage;
+                    let average_gold = Number(response.rows[0].avg_gold);
+                    let average_damages = Number(response.rows[0].avg_damage);
+                    let average_tanked = Number(response.rows[0].avg_tanked_damage);
                     const average_pinks = Number.parseFloat(response.rows[0].avg_pinks).toFixed(decimal);
                     const average_vision_score = Number.parseFloat(response.rows[0].avg_vision_score).toFixed(decimal);
                     const average_total_kills = Number.parseFloat(response.rows[0].avg_total_kills).toFixed(decimal);
@@ -1245,7 +1241,7 @@ module.exports = {
                     score += 10 * average_cs;
                     score *= delta;
                     if (100 - response.rows[0].games_played > 0) {
-                        score = score * 0.99 ** (100 - response.rows[0].games_played);
+                        score = score * 0.99 ** (100 - Number(response.rows[0].games_played));
                     }
 
                     let title = "" + discordusername + "'s stats";
@@ -2282,7 +2278,7 @@ module.exports = {
                         "avg(total_kills) as total_kills " +
                         "FROM matchs, summoners " +
                         "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
-                    i++;
+                    j++;
 
                     if (champion !== null) {
                         query3 += " AND matchs.champion=$" + j;
@@ -2523,10 +2519,13 @@ module.exports = {
                     console.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
-                            discordaccount: discordaccount
+                            discordaccount: discordaccount,
+                            champion: champion,
+                            role: role,
+                            season: season
                         };
                         const Js = JSON.stringify(params);
-                        user.send("Error with command /lol stats profile " + Js + " from user " + interaction.user.id);
+                        user.send("Error with command /lol stats compare " + Js + " from user " + interaction.user.id);
 
                     });
                     return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
@@ -2577,10 +2576,10 @@ module.exports = {
                     let query =
                         "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" +
+                        "(" +
                         "count(*) FILTER (" +
                         "WHERE (matchs.first_tanked OR first_gold OR first_damages)" +
-                        ")*100 as float)/count(*)) as carry " +
+                        ")*100.0/count(*)) as carry " +
                         "FROM matchs, summoners " +
                         "WHERE matchs.player = summoners.puuid" +
                         query2 +
@@ -2603,10 +2602,10 @@ module.exports = {
                     query =
                         "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" +
+                        "(" +
                         "count(*) FILTER (" +
                         "WHERE matchs.first_damages" +
-                        ")*100 as float)/count(*)) as damage " +
+                        ")*100.0/count(*)) as damage " +
                         "FROM matchs, summoners " +
                         "WHERE matchs.player = summoners.puuid" +
                         query2 +
@@ -2628,10 +2627,10 @@ module.exports = {
                     query =
                         "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" +
+                        "(" +
                         "count(*) FILTER (" +
                         "WHERE matchs.first_tanked" +
-                        ")*100 as float)/count(*)) as tanked " +
+                        ")*100.0/count(*)) as tanked " +
                         "FROM matchs, summoners " +
                         "WHERE matchs.player = summoners.puuid" +
                         query2 +
@@ -2653,10 +2652,10 @@ module.exports = {
                     query =
                         "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" +
+                        "(" +
                         "count(*) FILTER (" +
                         "WHERE matchs.first_gold" +
-                        ")*100 as float)/count(*)) as gold " +
+                        ")*100.0/count(*)) as gold " +
                         "FROM matchs, summoners " +
                         "WHERE matchs.player = summoners.puuid" +
                         query2 +
@@ -2678,10 +2677,10 @@ module.exports = {
                     query =
                         "SELECT summoners.discordid, " +
                         "count(*) as count, " +
-                        "(cast(" +
+                        "(" +
                         "count(*) FILTER (" +
                         "WHERE matchs.first_damages AND first_gold AND first_tanked" +
-                        ")*100 as float)/count(*)) as hardcarry " +
+                        ")*100.0/count(*)) as hardcarry " +
                         "FROM matchs, summoners " +
                         "WHERE matchs.player = summoners.puuid" +
                         query2 +
@@ -2754,13 +2753,13 @@ module.exports = {
                     if (!all) {
                         let members = await interaction.guild.members.fetch();
                         members = members.filter(member => !member.user.bot);
-                        let list = "(";
+                        let list = "(VALUES ";
                         members.forEach(member => {
-                            list += "'" + member.user.id + "',";
+                            list += "('" + member.user.id + "'),";
                         });
                         list = list.slice(0, -1);
                         list += ")";
-                        queryall = " AND summoners.discordid IN " + list;
+                        queryall = " AND summoners.discordid = ANY" + list;
                     }
                     let query2 = "";
                     if (champion !== null) {
@@ -2811,7 +2810,7 @@ module.exports = {
                     const query4 = "WITH COEF AS (" +
                         "SELECT champion, " +
                         "count, " +
-                        "200/(CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) ELSE (carry+wr+kp+vs*25+10*cs) END) AS score " +
+                        "200/(carry+wr+kp+vs*25+10*cs) AS score " +
                         "FROM (" +
                         "SELECT champion, " +
                         "count(*), " +
