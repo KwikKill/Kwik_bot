@@ -273,7 +273,7 @@ module.exports = {
             return data;
         } catch (error) {
             console.warn(error.name + " : " + url);
-            await delay(delay_time);
+            await delay(1000);
             return await this.apiCall(url, client);
         }
     },
