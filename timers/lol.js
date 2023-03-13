@@ -8,6 +8,7 @@ module.exports = {
     description: "Fetch des utilisateurs toutes les heures",
     async run(client) {
         if (client.running) {
+            console.log("[Rank Up] skipped update, already running");
             return;
         }
         await client.commands.get("adminlol").update(client);
