@@ -26,24 +26,28 @@ module.exports = {
                 const user = message.mentions.members.first();
                 const pseudo = message.args[2];
                 if (user !== undefined) {
-                    user.setNickname(pseudo).catch(() => {
+                    try {
+                        await user.setNickname(pseudo);
+                        message.channel.send(`${user.user.username} a été renommé en ${pseudo}`);
+                        return;
+                    } catch (e) {
                         message.channel.send(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
                         return;
-                    });
-                    message.channel.send(`${user.user.username} a été renommé en ${pseudo}`);
+                    }
                 }
             }
         } else {
             const user = interaction.options.getMember('user');
             const pseudo = interaction.options.getString('pseudo');
 
-            user.setNickname(pseudo).catch(() => {
-                interaction.reply(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
-                return;
-            }).then(() => {
+            try {
+                await user.setNickname(pseudo);
                 interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
                 return;
-            });
+            } catch (e) {
+                interaction.reply(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
+                return;
+            }
         }
     }
 };
