@@ -269,6 +269,9 @@ module.exports = {
                 case 400:
                     console.warn("400: La requête est invalide.", url);
                     return null;
+                case 403:
+                    console.warn("403: La clé API n'est pas valide.", url);
+                    return null;
             }
             return data;
         } catch (error) {
