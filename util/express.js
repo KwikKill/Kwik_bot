@@ -895,7 +895,7 @@ function register(client) {
                     number = 5;
                 }
                 // list matchs of the team
-                let query = 'SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs, summoners, team WHERE matchs.player = summoners.puuid AND summoners.discordid = team.discordid AND LOWER(team.team_name) = LOWER($1)';
+                let query = 'SELECT matchs.puuid, result, gamemode, total_kills, length, timestamp FROM matchs INNER JOIN summoners ON matchs.player = summoners.puuid INNER JOIN team ON summoners.discordid = team.discordid WHERE LOWER(team.team_name) = LOWER($1)';
                 const values = [req.query.team, number];
                 let i = 3;
                 if (req.query.last) {
@@ -1012,6 +1012,11 @@ function register(client) {
                     }
                 }
                 data.stats.winrate = winrate / nbmatchs;
+                for (let j = 0; j < data.players.length; j++) {
+                    if (data.stats[data.players[j]]) {
+                        data.stats[data.players[j]].winrate = data.stats[data.players[j]].winrate / data.stats[data.players[j]].nbmatchs;
+                    }
+                }
                 data.stats.nbmatchs = nbmatchs;
                 // wait 2s
                 return res.send(data);
