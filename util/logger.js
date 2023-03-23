@@ -28,18 +28,18 @@ module.exports = {
     BgGray: "\x1b[100m",
 
     log(message) {
-        console.log(`${this.FgCyan}[RANKUP]${this.FgGreen}${message}${this.Reset}`);
+        console.log(`${this.FgCyan}[RANKUP] ${this.FgGreen}${message}${this.Reset}`);
     },
 
     warn(message) {
-        console.log(`${this.FgCyan}[RANKUP]${this.FgYellow}${message}${this.Reset}`);
+        console.log(`${this.FgCyan}[RANKUP] ${this.FgYellow}${message}${this.Reset}`);
     },
 
     error(message, code = undefined) {
         if (code) {
-            console.log(`${this.FgCyan}[RANKUP]${this.FgRed}${message} (${code})${this.Reset}`);
+            console.log(`${this.FgCyan}[RANKUP](${code}) ${this.FgRed}${message}${this.Reset}`);
         } else {
-            console.log(`${this.FgCyan}[RANKUP]${this.FgRed}${message}${this.Reset}`);
+            console.log(`${this.FgCyan}[RANKUP] ${this.FgRed}${message}${this.Reset}`);
         }
     },
 };
