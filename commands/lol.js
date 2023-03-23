@@ -1,5 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const logger = require('../util/logger');
 
 const decimal = 2;
 const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
@@ -936,7 +937,7 @@ module.exports = {
                         }
                         return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **KwikKill#6123**");
                     }
-                    if (number < 3) {
+                    if (number < 3 || priority.rows[0].priority === 10) {
                         await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
                         return await addSumoner(client, summoner_name, interaction, region);
                     }
@@ -1306,7 +1307,7 @@ module.exports = {
                     ).setImage("attachment://stats.png");
                     return await interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
@@ -1495,7 +1496,7 @@ module.exports = {
 
                     return await interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
@@ -1673,7 +1674,7 @@ module.exports = {
                     }
                     return await interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
@@ -1695,7 +1696,7 @@ module.exports = {
                         return await interaction.editReply("This match doesn't exist.");
                     }
                     const match = response.rows[0];
-                    console.log(match);
+                    logger.log(match);
                 } else {
                     //let queryaccount = ""
                     if (account !== null) {
@@ -1846,7 +1847,7 @@ module.exports = {
 
                     interaction.editReply({ embeds: [embed], files: [attachment] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
@@ -1957,13 +1958,13 @@ module.exports = {
                     queryrole +
                     querychamp +
                     ") AS SUB GROUP BY mate HAVING count(*) > 1 ORDER BY COUNT(*) DESC;";
-                console.log(query);
+                logger.log(query);
                 const response = await client.pg.query(query, query_values);
                 if (response.rows.length === 0) {
                     interaction.editReply("No data found for this account");
                     return;
                 }
-                console.log(response.rows);
+                logger.log(response.rows);
                 */
             } else if (interaction.options.getSubcommand() === "profile") {
                 try {
@@ -2104,7 +2105,7 @@ module.exports = {
                     //.setURL(url);
                     return await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount
@@ -2516,7 +2517,7 @@ module.exports = {
 
                     await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             discordaccount: discordaccount,
@@ -2731,7 +2732,7 @@ module.exports = {
                     );
                     return await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             role: role,
@@ -2859,7 +2860,7 @@ module.exports = {
 
                     return await interaction.editReply({ embeds: [embed] });
                 } catch (e) {
-                    console.log(e);
+                    logger.log(e);
                     client.users.fetch(client.owners[0]).then((user) => {
                         const params = {
                             role: role,

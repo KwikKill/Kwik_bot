@@ -2,6 +2,7 @@ const { Client, Collection, Intents } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol_api = require("./util/lol_api.js");
+const logger = require("./util/logger.js");
 const express_server = require("./util/express.js");
 const Markov = require('markov-strings').default;
 
@@ -188,7 +189,7 @@ async function set_update(number) {
     const region = number["region"];
 
     if (config.verbose) {
-        console.log("- lol (update 1) : " + puuid);
+        logger.log("- lol (update 1) : " + puuid);
     }
 
     const matchs = [];
@@ -196,7 +197,7 @@ async function set_update(number) {
     let indexed = 0;
     let gamesToIndex = true;
     let listOfMatches = {};
-    //console.log(x)
+    //logger.log(x)
 
     let start = (Date.now() - 31536000000).toString();
     start = start.substring(0, start.length - 3);
@@ -209,13 +210,19 @@ async function set_update(number) {
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
-        listOfMatches = { 'matches': await lol_api.matchlistsByAccount(apiKey, route[region], puuid, options, client) };
+        listOfMatches = { 'matches': [] };
+        const list = await lol_api.matchlistsByAccount(apiKey, route[region], puuid, options, client);
+        if (list === null || (list["status_code"] !== undefined && list["status_code"] !== 200)) {
+            logger.error("Error while fetching match list for " + puuid + " in " + region, list["status_code"]);
+        } else {
+            listOfMatches['matches'] = list;
+        }
         // If there are less than 100 matches in the object, then this is the last match list
         if (listOfMatches['matches'].length < max_games) {
             gamesToIndex = false;
         }
 
-        //console.log(listOfMatches)
+        //logger.log(listOfMatches)
         // Populate matchIds Array
         for (const match in listOfMatches['matches']) {
             matchIds[indexed] = listOfMatches['matches'][match];
@@ -230,7 +237,7 @@ async function set_update(number) {
     } while (gamesToIndex);
 
 
-    //console.log(matchIds)
+    //logger.log(matchIds)
     const al = await client.pg.query('SELECT matchs.puuid FROM matchs WHERE player = \'' + puuid + '\'');
     const already = [];
     for (const y of al.rows) {
@@ -361,13 +368,13 @@ client.set_rank = async function (puuid) {
  * @function lol
  */
 client.lol = async function () {
-    //console.log(client.running, client.requests)
+    //logger.log(client.running, client.requests)
     if (client.running === true) { return; }
     client.running = true;
     while (client.requests["summoners"].length > 0) {
         const x = client.requests["summoners"].shift();
         if (config.verbose) {
-            console.log("- lol (summoner) : " + x["username"], x["discordid"]);
+            logger.log("- lol (summoner) : " + x["username"] + "  " + x["discordid"]);
         }
         const username = x["username"];
         const interaction = x["interaction"];
@@ -480,11 +487,11 @@ client.lol = async function () {
         const region = current["region"];
 
         if (current["matchs"].length > 0 || current["rank"] === true) {
-            //console.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
+            //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
             while (current["matchs"].length > 0) {
                 const matchId = current["matchs"].shift();
                 if (config.verbose) {
-                    console.log("- lol (update 2) : " + puuid, matchId);
+                    logger.log("- lol (update 2) : " + puuid + "  " + matchId);
                 }
                 client.queue_length -= 1;
                 lol_api.matchesById(apiKey, route[region], matchId, client).then(match => {
@@ -641,14 +648,14 @@ client.lol = async function () {
                                     );
                                     client.set_rank(summary["summonerpuuid"]);
                                 } catch (e) {
-                                    //console.log(e);
+                                    //logger.log(e);
                                 }
                             }
                         }
                     }
                 });
             }
-            //console.log("- lol (update 2) : rank");
+            //logger.log("- lol (update 2) : rank");
             const rank = await client.update_rank(current["id"], current["region"]);
             // read current rank and send message if rank changed
             const current_rank = await client.pg.query("SELECT * FROM summoners WHERE id = '" + current["id"] + "'");
@@ -713,7 +720,7 @@ client.lol = async function () {
             }
 
             if (discordid !== "503109625772507136") {
-                //console.log("- lol (update 3): mastery");
+                //logger.log("- lol (update 3): mastery");
                 client.update_mastery(current["discordid"], current["region"]).then(mastery => {
                     client.pg.query("UPDATE mastery " +
                         "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
@@ -730,7 +737,7 @@ client.lol = async function () {
                     );
                 });
             }
-            //console.log("- lol (done): " + puuid);
+            //logger.log("- lol (done): " + puuid);
         }
     }
     client.running = false;
@@ -758,7 +765,7 @@ function matchHistoryOutput(match) {
 
         let teamKills = 0;
         if (match['info']['participants'][participantId] === undefined) {
-            console.log("error : ", participantId);
+            logger.error("error : " + participantId);
         }
         const puuid = match['info']['participants'][participantId]['puuid'];
 
@@ -967,10 +974,10 @@ function matchHistoryOutput(match) {
         /*
         const turretKills = match['info']['participants'][participantId]['turretKills'];
         const turretAssists = match['info']['participants'][participantId]['turretTakedowns'];
-
+ 
         const inhibitorKills = match['info']['participants'][participantId]['inhibitorKills'];
         const inhibitorAssists = match['info']['participants'][participantId]['inhibitorTakedowns'];
-
+ 
         const nexusKills = match['info']['participants'][participantId]['nexusKills'];
         const nexusAssists = match['info']['participants'][participantId]['nexusTakedowns'];
         //}
@@ -980,11 +987,11 @@ function matchHistoryOutput(match) {
         //{ First Blood & First Brick
         const firstBloodKill = match['info']['participants'][participantId]['firstBloodKill'];
         const firstBloodAssist = match['info']['participants'][participantId]['firstBloodAssist'];
-
+ 
         const firstBrickKill = match['info']['participants'][participantId]['firstTowerKill'];
         const firstBrickAssist = match['info']['participants'][participantId]['firstTowerAssist'];
         //}
-
+ 
         //{ Champion Exp & Level
         const level = match['info']['participants'][participantId]['champLevel'];
         const experience = match['info']['participants'][participantId]['champExperience'];
@@ -1026,6 +1033,15 @@ function matchHistoryOutput(match) {
         }
 
         const champname = champions[championId];
+        if (champname === undefined || champname === null) {
+            logger.error("Champion ID: " + championId + " is not in the champion list. Fetching new champion list.");
+            champions = lol_api.championList(apiKey, "EUW1", language, client);
+            const champname = champions[championId];
+            if (champname === undefined || champname === null) {
+                logger.error("Champion ID: " + championId + " is still not in the champion list. Skipping match " + matchId + ".");
+                return null;
+            }
+        }
         let matchupname;
         if (matchupId === "None") {
             matchupname = "None";

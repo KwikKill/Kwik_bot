@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const config = require('../config.json');
+const logger = require('./logger.js');
 
 const delay_time = 10000;
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -187,7 +188,7 @@ module.exports = {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
         const result = await this.apiCall(url, client);
         if (result === null) {
-            console.log(matchId);
+            logger.error("error while fetching match" + matchId);
         }
         return result;
     },
@@ -240,7 +241,7 @@ module.exports = {
     async apiCall(url, client) {
         try {
             if (config.verbose) {
-                console.log("API CALL: " + url);
+                logger.log("API CALL: " + url);
             }
             // Fetch Data from provided URL & Options
             const responsefetch = await fetch(url);
@@ -255,7 +256,7 @@ module.exports = {
                     // Special Handling here - 429 is Rate Limit Reached.
                     // Alert the User
                     if (config.verbose) {
-                        console.warn("429: Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.");
+                        logger.error("Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.", "429");
                     }
                     client.api_limit = true;
                     // Wait the time specified by the reponse header
@@ -264,18 +265,27 @@ module.exports = {
                     // Retry
                     return await this.apiCall(url, client);
                 case 404:
-                    console.warn("404: La ressource demandée n'existe pas.", url);
+                    logger.error("La ressource demandée n'existe pas. " + url, "404");
                     return null;
                 case 400:
-                    console.warn("400: La requête est invalide.", url);
+                    logger.error("La requête est invalide." + url, "400");
                     return null;
                 case 403:
-                    console.warn("403: La clé API n'est pas valide.", url);
+                    logger.error("La clé API n'est pas valide." + url, "403");
+                    return null;
+                case 503:
+                    logger.error("Le service est temporairement indisponible. Mise en pause. " + url, "503");
+                    await delay(60000);
+                    return await this.apiCall(url, client);
+                default:
+                    logger.error("Erreur inconnue: " + statut + " " + url);
+                    if (data) {
+                        return data;
+                    }
                     return null;
             }
-            return data;
         } catch (error) {
-            console.warn(error.name + " : " + url);
+            logger.error(error.name + " : " + url);
             await delay(1000);
             return await this.apiCall(url, client);
         }
@@ -300,14 +310,14 @@ module.exports = {
             //Logger.log(url)
             return this.apiCall(url, client);
         } catch (error) {
-            console.warn(error);
+            logger.error(error);
         }
 
         try {
             const url = "https://ddragon.leagueoflegends.com/cdn/10.9.1/data/" + language + "/champion.json" + "?api_key=" + apiKey;
             return await this.apiCall(url, client);
         } catch (error) {
-            console.warn(error);
+            logger.error(error);
         }
     },
 
