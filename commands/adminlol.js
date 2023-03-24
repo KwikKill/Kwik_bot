@@ -386,7 +386,7 @@ module.exports = {
     update
 };
 
-async function update(client) {
+async function update(client, debug = false) {
     const query = "SELECT DISTINCT puuid, id, username, discordid, region, priority FROM summoners ORDER BY priority DESC;";
     const result = await client.pg.query(query);
 
@@ -411,5 +411,5 @@ async function update(client) {
     for (let i = prio.length - 1; i >= 0; i--) {
         client.requests["updates"].splice(1, 0, prio[i]);
     }
-    await client.lol();
+    await client.lol(debug);
 }

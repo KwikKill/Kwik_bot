@@ -184,7 +184,7 @@ function checkpermission(message, perm) {
  * @function set_update
  * @param {*} number  id of the summoner in client.requests["updates"]
  */
-async function set_update(number) {
+async function set_update(number, debug = false) {
     const puuid = number["puuid"];
     const region = number["region"];
 
@@ -199,14 +199,25 @@ async function set_update(number) {
     let listOfMatches = {};
     //logger.log(x)
 
-    let start = (Date.now() - 31536000000).toString();
-    start = start.substring(0, start.length - 3);
+    let start;
+    let timer1;
+    let timer2;
     if (number["first"] !== true) {
-        const response = await client.pg.query("SELECT timestamp FROM matchs WHERE player = $1 ORDER BY timestamp DESC LIMIT 1", [puuid]);
+        timer1 = Date.now();
+        const response = await client.pg.query({
+            name: "get_date",
+            text: "SELECT DISTINCT timestamp FROM matchs WHERE puuid IN (SELECT max(puuid) FROM matchs WHERE player = $1)",
+            values: [puuid]
+        });
+        timer2 = Date.now();
         if (response.rowCount !== 0) {
-            start = Math.floor(response.rows[0].timestamp / 1000);
+            start = Math.floor(response.rows[0].timestamp / 1000 + 1);
         }
+    } else {
+        start = (Date.now() - 31536000000).toString();
+        start = start.substring(0, start.length - 3);
     }
+    //const timer2 = Date.now();
 
     do {
         const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
@@ -236,30 +247,58 @@ async function set_update(number) {
         }
     } while (gamesToIndex);
 
+    const timer3 = Date.now();
 
-    //logger.log(matchIds)
-    const al = await client.pg.query('SELECT matchs.puuid FROM matchs WHERE player = \'' + puuid + '\'');
-    const already = [];
-    for (const y of al.rows) {
-        already.push(y["puuid"]);
+    if (number["first"] !== true) {
+        matchIds.pop();
     }
-    for (const y of number["matchs"]) {
-        already.push(y);
-    }
-    for (const y of matchIds) {
-        if (!already.includes(y)) {
-            matchs.push(y);
-        }
-    }
-    if (matchs.length === 0) {
+
+    if (matchIds.length === 0) {
         number["total"] = "none";
+        const timer4 = Date.now();
+        if (debug) {
+            logger.log(timer2 - timer1);
+            logger.log(timer3 - timer2);
+            logger.log(timer4 - timer3);
+        }
         return number;
     }
+
+    let puuids = "(";
+    for (const y of matchIds) {
+        puuids += "'" + y + "',";
+    }
+    puuids = puuids.substring(0, puuids.length - 1);
+    puuids += ")";
+
+    //logger.log(matchIds)
+    const al = await client.pg.query({
+        //name: 'get_matchs',
+        text: 'SELECT matchs.puuid FROM matchs WHERE player = $1 AND matchs.puuid IN ' + puuids + ';',
+        values: [puuid]
+    });
+    const already = [];
+    for (const x of al.rows) {
+        already.push(x.puuid);
+    }
+    for (const x of matchIds) {
+        if (!already.includes(x)) {
+            matchs.push(x);
+        }
+    }
+
     number["matchs"] = number["matchs"].concat(matchs);
     client.queue_length += matchs.length;
     number["total"] = number["matchs"].length;
-    return number;
 
+    const timer4 = Date.now();
+    if (debug) {
+        logger.log(timer2 - timer1);
+        logger.log(timer3 - timer2);
+        logger.log(timer4 - timer3);
+    }
+
+    return number;
 }
 
 /**
@@ -367,11 +406,13 @@ client.set_rank = async function (puuid) {
  * Fetch summoner game list and add games to the database
  * @function lol
  */
-client.lol = async function () {
+client.lol = async function (debug = false) {
     //logger.log(client.running, client.requests)
     if (client.running === true) { return; }
     client.running = true;
+    const start = Date.now();
     while (client.requests["summoners"].length > 0) {
+        const timer1 = Date.now();
         const x = client.requests["summoners"].shift();
         if (config.verbose) {
             logger.log("- lol (summoner) : " + x["username"] + "  " + x["discordid"]);
@@ -468,8 +509,17 @@ client.lol = async function () {
             }
             client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
         }
+        if (debug) {
+            const timer2 = Date.now();
+            logger.log("lol (summoner) : [" + x["username"] + "]" + (timer2 - timer1) + " ms");
+        }
+    }
+    const checkpoint1 = Date.now();
+    if (debug) {
+        logger.log("lol (summoner) : total took " + (start - checkpoint1) + " ms");
     }
     while (client.requests["updates"].length > 0) {
+        const timer1 = Date.now();
         if (client.requests["summoners"].length > 0) {
             client.running = false;
             return client.lol();
@@ -480,11 +530,13 @@ client.lol = async function () {
                 await set_update(i);
             }
         }*/
-        current = await set_update(current);
+        current = await set_update(current, debug);
+        const timer2 = Date.now();
 
         const puuid = current["puuid"];
         const discordid = current["discordid"];
         const region = current["region"];
+        const nb = current["matchs"].length;
 
         if (current["matchs"].length > 0 || current["rank"] === true) {
             //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
@@ -739,6 +791,14 @@ client.lol = async function () {
             }
             //logger.log("- lol (done): " + puuid);
         }
+        if (debug) {
+            const timer3 = new Date();
+            logger.log("lol (update) : [" + current["puuid"] + "] " + (timer3 - timer1) + "ms for " + nb + " games. " + (timer2 - timer1) + "ms for update.");
+        }
+    }
+    const end = new Date();
+    if (debug) {
+        logger.log("lol (total) : " + (end - start) + "ms");
     }
     client.running = false;
     if (client.requests["summoners"].length > 0 || client.requests["updates"].length > 0) {
@@ -796,6 +856,10 @@ function matchHistoryOutput(match) {
                 }
                 break;
 
+        }
+
+        if (lanePlayed === "UTLITY" || lanePlayed === "BOTTOM") {
+            lanePlayed = "MIDDLE";
         }
 
         let support = "None";
