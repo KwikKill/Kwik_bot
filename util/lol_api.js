@@ -188,7 +188,7 @@ module.exports = {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
         const result = await this.apiCall(url, client);
         if (result === null) {
-            logger.error("error while fetching match" + matchId);
+            logger.error("error while fetching match " + matchId);
         }
         return result;
     },

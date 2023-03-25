@@ -1126,8 +1126,9 @@ module.exports = {
                         query_values2.push(role);
                         i++;
                     }
+                    let test2 = "";
                     if (account !== null) {
-                        query += " AND summoners.username=$" + i;
+                        test2 += " AND summoners.username=$" + i;
                         query3 += " AND summoners.username=$" + i;
                         query_values.push(account);
                         query_values2.push(account);
@@ -1145,8 +1146,9 @@ module.exports = {
                         query_values.push(gamemode);
                         i++;
                     }
-                    query += ") ON matchs.player = summoners.puuid " +
-                        "WHERE summoners.discordid=$1;";
+                    query += ") ON matchs.player = summoners.puuid ";
+                    query += test2;
+                    query += " WHERE summoners.discordid=$1;";
                     query3 += " GROUP BY gamemode;";
 
                     const response = await client.pg.query(query, query_values);
@@ -1336,29 +1338,26 @@ module.exports = {
                     }
                     const query_values = [discordaccount];
 
-                    let query = "SELECT matchs.matchup, count(*) AS count1, (cast(" +
-                        "count(*) FILTER (" +
-                        "WHERE result = 'Win'" +
-                        ")*100 as float)/count(*)) AS winrate, (cast(" +
-                        "count(*) FILTER (" +
-                        "WHERE (first_tanked OR first_gold OR first_damages)" +
-                        ")*100 as float)/count(*)) AS carry " +
-                        "FROM matchs, summoners " +
-                        "WHERE summoners.discordid=$1 AND matchs.player = summoners.puuid";
+                    let query = "SELECT m2.champion AS matchup," +
+                        "count(*) AS count1," +
+                        "(cast(count(*) FILTER (WHERE m1.result = 'Win')*100 as float)/count(*)) AS winrate," +
+                        "(cast(count(*) FILTER (WHERE (m1.first_tanked OR m1.first_gold OR m1.first_damages))*100 as float)/count(*)) AS carry " +
+                        "FROM summoners, matchs m1 INNER JOIN matchs m2 ON (m1.lane = m2.lane AND m1.lane <> 'Invalid' AND m1.puuid = m2.puuid AND m1.team_id <> m2.team_id)" +
+                        "WHERE summoners.discordid=$1 AND m1.player = summoners.puuid";
                     i++;
 
                     if (champion !== null) {
-                        query += " AND matchs.champion=$" + i;
+                        query += " AND m1.champion=$" + i;
                         query_values.push(champion);
                         i++;
                     }
                     if (role !== null) {
-                        query += " AND matchs.lane=$" + i;
+                        query += " AND m1.lane=$" + i;
                         query_values.push(role);
                         i++;
                     }
                     if (gamemode !== null) {
-                        query += " AND matchs.gamemode=$" + i;
+                        query += " AND m1.gamemode=$" + i;
                         query_values.push(gamemode);
                         i++;
                     }
@@ -1368,11 +1367,11 @@ module.exports = {
                         i++;
                     }
                     if (season !== null) {
-                        query += " AND patch LIKE $" + i;
+                        query += " AND m1.patch LIKE $" + i;
                         query_values.push(season + "%");
                         i++;
                     }
-                    query += " GROUP BY matchs.matchup ORDER BY count1 DESC;";
+                    query += " GROUP BY m2.champion ORDER BY count1 DESC;";
 
                     const response = await client.pg.query(query, query_values);
                     if (response.rows.length === 0) {

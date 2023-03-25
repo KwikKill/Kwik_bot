@@ -98,6 +98,155 @@ module.exports = {
                     ]
                 }
             ]
+        },
+        {
+            name: 'add',
+            description: 'add a summoner to the database',
+            type: 'SUB_COMMAND_GROUP',
+            options: [
+                {
+                    name: 'summoner',
+                    description: 'add a summoner to the database',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'summonerid',
+                            description: 'summoner id',
+                            type: 'STRING',
+                            required: true,
+                        },
+                        {
+                            name: 'region',
+                            description: 'region',
+                            type: 'STRING',
+                            required: true,
+                            choices: [
+                                {
+                                    name: 'EUW',
+                                    value: 'EUW1',
+                                },
+                                {
+                                    name: 'EUNE',
+                                    value: 'EUN1',
+                                },
+                                {
+                                    name: 'NA',
+                                    value: 'NA1',
+                                },
+                                {
+                                    name: 'OCE',
+                                    value: 'OC1',
+                                },
+                                {
+                                    name: 'LAN',
+                                    value: 'LA1',
+                                },
+                                {
+                                    name: 'LAS',
+                                    value: 'LA2',
+                                },
+                                {
+                                    name: 'RU',
+                                    value: 'RU',
+                                },
+                                {
+                                    name: 'TR',
+                                    value: 'TR1',
+                                },
+                                {
+                                    name: 'JP',
+                                    value: 'JP1',
+                                },
+                                {
+                                    name: 'KR',
+                                    value: 'KR',
+                                },
+                                {
+                                    name: 'BR',
+                                    value: 'BR1',
+                                }
+                            ]
+                        },
+                        {
+                            name: 'discordid',
+                            description: 'discord id',
+                            type: 'STRING',
+                            required: true,
+                        },
+                        {
+                            name: 'priority',
+                            description: 'priority',
+                            type: 'INTEGER',
+                            required: true,
+                        }
+                    ]
+                },
+                {
+                    name: 'game',
+                    description: 'add a game to the database',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'gameid',
+                            description: 'game id',
+                            type: 'STRING',
+                            required: true,
+                        },
+                        {
+                            name: 'region',
+                            description: 'region',
+                            type: 'STRING',
+                            required: true,
+                            choices: [
+                                {
+                                    name: 'EUW',
+                                    value: 'EUW1',
+                                },
+                                {
+                                    name: 'EUNE',
+                                    value: 'EUN1',
+                                },
+                                {
+                                    name: 'NA',
+                                    value: 'NA1',
+                                },
+                                {
+                                    name: 'OCE',
+                                    value: 'OC1',
+                                },
+                                {
+                                    name: 'LAN',
+                                    value: 'LA1',
+                                },
+                                {
+                                    name: 'LAS',
+                                    value: 'LA2',
+                                },
+                                {
+                                    name: 'RU',
+                                    value: 'RU',
+                                },
+                                {
+                                    name: 'TR',
+                                    value: 'TR1',
+                                },
+                                {
+                                    name: 'JP',
+                                    value: 'JP1',
+                                },
+                                {
+                                    name: 'KR',
+                                    value: 'KR',
+                                },
+                                {
+                                    name: 'BR',
+                                    value: 'BR1',
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ],
     async run(message, client, interaction = undefined) {
@@ -362,6 +511,28 @@ module.exports = {
                 }
 
                 await interaction.editReply({ content: "Confidence: " + confidence / 10, ephemeral: true });
+            } else if (interaction.options.getSubcommandGroup() === "add") {
+                if (interaction.options.getSubcommand() === "summoner") {
+                    const summoner = interaction.options.getString("summoner");
+                    const region = interaction.options.getString("region");
+                    const priority = interaction.options.getInteger("priority");
+                    const discordid = interaction.options.getString("discordid");
+                    await client.commands.get('lol').add_summoner_manual(client, summoner, discordid, region, priority);
+                    await interaction.editReply({ content: "Summoner added!", ephemeral: true });
+                } else if (interaction.options.getSubcommand() === "game") {
+                    const matchid = interaction.options.getString("gameid");
+                    const region = interaction.options.getString("region");
+
+                    client.requests["updates"].push({
+                        "type": "match",
+                        "matchid": matchid,
+                        "region": region,
+                        "puuid": "noone"
+                    });
+
+                    await interaction.editReply({ content: "Match added!", ephemeral: true });
+                    client.lol();
+                }
             }
         }
     },
