@@ -22,6 +22,11 @@ module.exports = {
                     name: 'swain',
                     description: 'add swain main summoners to the database',
                     type: 'SUB_COMMAND'
+                },
+                {
+                    name: 'add',
+                    description: 'add more summoners to the database',
+                    type: 'SUB_COMMAND'
                 }
             ]
         },
@@ -270,163 +275,183 @@ module.exports = {
                     }
                 } else if (interaction.options.getSubcommand() === "swain") {
                     await interaction.editReply("done");
-                    /*client.commands.get('lol').add_summoner_manual(client, "원픽스웨인", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "obluda", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "쫠 메", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "sa1", "503109625772507136", "JP1");
-                    client.commands.get('lol').add_summoner_manual(client, "채팅욕설비방금지", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "ekkoike", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "KodyKensei", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "배꼽맞추까", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "시밤쾅쾅쾅", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "롤처음하노", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Aitch3", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "알테라", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "꽃총각스웨인", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "TheAfricanDream", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "성라대연", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Fishlord", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "병진이형은 나가", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "ABEGEN", "503109625772507136", "JP1");
-                    client.commands.get('lol').add_summoner_manual(client, "전라인스웨인만함", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Etiopp", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Yarmo", "503109625772507136", "LA1");
-                    client.commands.get('lol').add_summoner_manual(client, "Amillio88", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "Sportbong", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Fluentes", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "Laaemel", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "so4ke", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "sippinsoju", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "파워빅뱅", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Obεron", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "About Swain", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "더블킬맛있어", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "GilGodMed", "503109625772507136", "LA1");
-                    client.commands.get('lol').add_summoner_manual(client, "ptiteface", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "Make Me Lucky", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Demoniac Swain", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "01003443492", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "스웨인89", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Sadam HusSwain", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Wilde Wind", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "까막눈 까마긔", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Ξ Cąz Ξ", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "MarryingMaryJane", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "derswainler", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "허경영 각하", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "나도뭘하는지모름", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Одинокий Гей", "503109625772507136", "RU");
-                    client.commands.get('lol').add_summoner_manual(client, "Krzysiekp4", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "WishmasteR87", "503109625772507136", "LA2");
-                    client.commands.get('lol').add_summoner_manual(client, "dgindex1", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "아마추어수학", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "TEAMup Will Dive", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Kellersen", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "시라소니 아들", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "MataRatas 23", "503109625772507136", "LA2");
-                    client.commands.get('lol').add_summoner_manual(client, "파찬이", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "HoLy21", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "예 래", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "WhiteDelight", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "McDumy2", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "SellMyDrugs", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "BulutShen", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "Cerlitzi", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "one shot are fun", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "fiazyy", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "강약약강원조", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Lab", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "다이애나 겨울", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "AndryEagle", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "ttittuttitt", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "Uncultured Swain", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "BIaming", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "에이 피가 없어요", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "joonsama07", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "FoxKillaa", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "twin222", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "제2막", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "유리구슬", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "XanTi", "503109625772507136", "OC1");
-                    client.commands.get('lol').add_summoner_manual(client, "pooop66", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "PONEY du ghetto", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Lokipaly", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "Aballonn", "503109625772507136", "BR1");
-                    client.commands.get('lol').add_summoner_manual(client, "Spraakmeneer", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "AlisyO", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Alamander", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "AnulusLeDevoreur", "503109625772507136", "EUW1");*/
-                    client.commands.get('lol').add_summoner_manual(client, "피태혁", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "꽃중년 스웨인", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "정수웨인", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Milda7711", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "cabezathebest", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "금곧휴", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "5às6", "503109625772507136", "BR1");
-                    client.commands.get('lol').add_summoner_manual(client, "Emperσr Time", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "소년가장 상묵", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "벌레 터뜨리는 새", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "kosa091", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "PB Fireman", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "MILLION DOLLAR", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "정반2", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Vlloviano", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "blurryfac", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "VànNìstèlròòy10", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "legato86", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "c0sette", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "HEALING PIG", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Dongburger", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "럴도사", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Rcenala", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "dogland", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "McMickey", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Broo Swain", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "GetsiT", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "멀리서 통통", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "İvârTheBoneless", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "Elephant Gang", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Miarzch", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Ordàlium", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "JerichoNoxianG", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "Stonky Bonk", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "GEORGEFLOYD1337", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "beglula", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "차 슘", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "GG e a s y XD", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "Steedthehorse", "503109625772507136", "BR1");
-                    client.commands.get('lol').add_summoner_manual(client, "녹색스웨인", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Banette", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "SERDARLAYAN", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "찐찌버거토핑추가", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "robertcrg", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "플레이보이인직", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "TreeLeef", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "BDJE31", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "LAROYE EXU", "503109625772507136", "BR1");
-                    client.commands.get('lol').add_summoner_manual(client, "꾸러기쩡미니", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "전설의니니요", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "영훈아그만던져", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Knαx", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "o카페라떼o", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Exotics", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "LuaniHunter", "503109625772507136", "LA1");
-                    client.commands.get('lol').add_summoner_manual(client, "킹 스웬", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "ToXwain", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "빵댕이씨", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "iNego of BordeL", "503109625772507136", "BR1");
-                    client.commands.get('lol').add_summoner_manual(client, "PuleaSpataru", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "Il Mr BRÓCOLI lI", "503109625772507136", "LA1");
-                    client.commands.get('lol').add_summoner_manual(client, "Old Things", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "Manos Swain Main", "503109625772507136", "EUN1");
-                    client.commands.get('lol').add_summoner_manual(client, "뚜루루아기상어", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "스웨인97", "503109625772507136", "KR");
-                    client.commands.get('lol').add_summoner_manual(client, "jkpwn", "503109625772507136", "NA1");
-                    client.commands.get('lol').add_summoner_manual(client, "xXxLoliHuntxXx", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "Saltriver77", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "MaxiMonnaie09", "503109625772507136", "EUW1");
-                    client.commands.get('lol').add_summoner_manual(client, "GNG ORBAY", "503109625772507136", "TR1");
-                    client.commands.get('lol').add_summoner_manual(client, "Enemy Swain", "503109625772507136", "NA1");
+                    const sums = [
+                        ["원픽스웨인", "503109625772507136", "KR"],
+                        ["obluda", "503109625772507136", "KR"],
+                        ["쫠 메", "503109625772507136", "KR"],
+                        ["sa1", "503109625772507136", "JP1"],
+                        ["채팅욕설비방금지", "503109625772507136", "KR"],
+                        ["ekkoike", "503109625772507136", "EUW1"],
+                        ["KodyKensei", "503109625772507136", "EUW1"],
+                        ["배꼽맞추까", "503109625772507136", "KR"],
+                        ["시밤쾅쾅쾅", "503109625772507136", "KR"],
+                        ["롤처음하노", "503109625772507136", "KR"],
+                        ["Aitch3", "503109625772507136", "NA1"],
+                        ["알테라", "503109625772507136", "KR"],
+                        ["꽃총각스웨인", "503109625772507136", "KR"],
+                        ["TheAfricanDream", "503109625772507136", "EUW1"],
+                        ["성라대연", "503109625772507136", "KR"],
+                        ["Fishlord", "503109625772507136", "NA1"],
+                        ["병진이형은 나가", "503109625772507136", "KR"],
+                        ["ABEGEN", "503109625772507136", "JP1"],
+                        ["전라인스웨인만함", "503109625772507136", "KR"],
+                        ["Etiopp", "503109625772507136", "EUW1"],
+                        ["Yarmo", "503109625772507136", "LA1"],
+                        ["Amillio88", "503109625772507136", "NA1"],
+                        ["Sportbong", "503109625772507136", "EUW1"],
+                        ["Fluentes", "503109625772507136", "EUN1"],
+                        ["Laaemel", "503109625772507136", "NA1"],
+                        ["so4ke", "503109625772507136", "EUW1"],
+                        ["sippinsoju", "503109625772507136", "NA1"],
+                        ["파워빅뱅", "503109625772507136", "KR"],
+                        ["Obεron", "503109625772507136", "EUW1"],
+                        ["About Swain", "503109625772507136", "KR"],
+                        ["더블킬맛있어", "503109625772507136", "KR"],
+                        ["GilGodMed", "503109625772507136", "LA1"],
+                        ["ptiteface", "503109625772507136", "NA1"],
+                        ["Make Me Lucky", "503109625772507136", "KR"],
+                        ["Demoniac Swain", "503109625772507136", "EUW1"],
+                        ["01003443492", "503109625772507136", "KR"],
+                        ["스웨인89", "503109625772507136", "KR"],
+                        ["Sadam HusSwain", "503109625772507136", "EUW1"],
+                        ["Wilde Wind", "503109625772507136", "NA1"],
+                        ["까막눈 까마긔", "503109625772507136", "KR"],
+                        ["Ξ Cąz Ξ", "503109625772507136", "EUN1"],
+                        ["MarryingMaryJane", "503109625772507136", "EUW1"],
+                        ["derswainler", "503109625772507136", "EUW1"],
+                        ["허경영 각하", "503109625772507136", "KR"],
+                        ["나도뭘하는지모름", "503109625772507136", "KR"],
+                        ["Одинокий Гей", "503109625772507136", "RU"],
+                        ["Krzysiekp4", "503109625772507136", "EUN1"],
+                        ["WishmasteR87", "503109625772507136", "LA2"],
+                        ["dgindex1", "503109625772507136", "KR"],
+                        ["아마추어수학", "503109625772507136", "KR"],
+                        ["TEAMup Will Dive", "503109625772507136", "EUW1"],
+                        ["Kellersen", "503109625772507136", "EUW1"],
+                        ["시라소니 아들", "503109625772507136", "KR"],
+                        ["MataRatas 23", "503109625772507136", "LA2"],
+                        ["파찬이", "503109625772507136", "KR"],
+                        ["HoLy21", "503109625772507136", "TR1"],
+                        ["예 래", "503109625772507136", "KR"],
+                        ["WhiteDelight", "503109625772507136", "NA1"],
+                        ["McDumy2", "503109625772507136", "EUN1"],
+                        ["SellMyDrugs", "503109625772507136", "NA1"],
+                        ["BulutShen", "503109625772507136", "TR1"],
+                        ["Cerlitzi", "503109625772507136", "EUW1"],
+                        ["one shot are fun", "503109625772507136", "EUW1"],
+                        ["fiazyy", "503109625772507136", "EUN1"],
+                        ["강약약강원조", "503109625772507136", "KR"],
+                        ["Lab", "503109625772507136", "NA1"],
+                        ["다이애나 겨울", "503109625772507136", "KR"],
+                        ["AndryEagle", "503109625772507136", "EUW1"],
+                        ["ttittuttitt", "503109625772507136", "TR1"],
+                        ["Uncultured Swain", "503109625772507136", "EUN1"],
+                        ["BIaming", "503109625772507136", "EUW1"],
+                        ["에이 피가 없어요", "503109625772507136", "KR"],
+                        ["joonsama07", "503109625772507136", "KR"],
+                        ["FoxKillaa", "503109625772507136", "EUN1"],
+                        ["twin222", "503109625772507136", "EUW1"],
+                        ["제2막", "503109625772507136", "KR"],
+                        ["유리구슬", "503109625772507136", "KR"],
+                        ["XanTi", "503109625772507136", "OC1"],
+                        ["pooop66", "503109625772507136", "EUN1"],
+                        ["PONEY du ghetto", "503109625772507136", "EUW1"],
+                        ["Lokipaly", "503109625772507136", "NA1"],
+                        ["Aballonn", "503109625772507136", "BR1"],
+                        ["Spraakmeneer", "503109625772507136", "EUW1"],
+                        ["AlisyO", "503109625772507136", "EUW1"],
+                        ["Alamander", "503109625772507136", "NA1"],
+                        ["AnulusLeDevoreur", "503109625772507136", "EUW1"],
+                        ["피태혁", "503109625772507136", "KR"],
+                        ["꽃중년 스웨인", "503109625772507136", "KR"],
+                        ["정수웨인", "503109625772507136", "KR"],
+                        ["Milda7711", "503109625772507136", "EUN1"],
+                        ["cabezathebest", "503109625772507136", "EUW1"],
+                        ["금곧휴", "503109625772507136", "KR"],
+                        ["5às6", "503109625772507136", "BR1"],
+                        ["Emperσr Time", "503109625772507136", "EUW1"],
+                        ["소년가장 상묵", "503109625772507136", "KR"],
+                        ["벌레 터뜨리는 새", "503109625772507136", "KR"],
+                        ["kosa091", "503109625772507136", "EUN1"],
+                        ["PB Fireman", "503109625772507136", "EUW1"],
+                        ["MILLION DOLLAR", "503109625772507136", "EUW1"],
+                        ["정반2", "503109625772507136", "KR"],
+                        ["Vlloviano", "503109625772507136", "EUN1"],
+                        ["blurryfac", "503109625772507136", "EUN1"],
+                        ["VànNìstèlròòy10", "503109625772507136", "EUW1"],
+                        ["legato86", "503109625772507136", "EUW1"],
+                        ["c0sette", "503109625772507136", "NA1"],
+                        ["HEALING PIG", "503109625772507136", "EUW1"],
+                        ["Dongburger", "503109625772507136", "KR"],
+                        ["럴도사", "503109625772507136", "KR"],
+                        ["Rcenala", "503109625772507136", "EUW1"],
+                        ["dogland", "503109625772507136", "EUW1"],
+                        ["McMickey", "503109625772507136", "EUW1"],
+                        ["Broo Swain", "503109625772507136", "EUW1"],
+                        ["GetsiT", "503109625772507136", "EUW1"],
+                        ["멀리서 통통", "503109625772507136", "KR"],
+                        ["İvârTheBoneless", "503109625772507136", "TR1"],
+                        ["Elephant Gang", "503109625772507136", "KR"],
+                        ["Miarzch", "503109625772507136", "EUW1"],
+                        ["Ordàlium", "503109625772507136", "EUW1"],
+                        ["JerichoNoxianG", "503109625772507136", "NA1"],
+                        ["Stonky Bonk", "503109625772507136", "NA1"],
+                        ["GEORGEFLOYD1337", "503109625772507136", "EUN1"],
+                        ["beglula", "503109625772507136", "EUW1"],
+                        ["차 슘", "503109625772507136", "KR"],
+                        ["GG e a s y XD", "503109625772507136", "EUN1"],
+                        ["Steedthehorse", "503109625772507136", "BR1"],
+                        ["녹색스웨인", "503109625772507136", "KR"],
+                        ["Banette", "503109625772507136", "TR1"],
+                        ["SERDARLAYAN", "503109625772507136", "TR1"],
+                        ["찐찌버거토핑추가", "503109625772507136", "KR"],
+                        ["robertcrg", "503109625772507136", "NA1"],
+                        ["플레이보이인직", "503109625772507136", "KR"],
+                        ["TreeLeef", "503109625772507136", "NA1"],
+                        ["BDJE31", "503109625772507136", "EUW1"],
+                        ["LAROYE EXU", "503109625772507136", "BR1"],
+                        ["꾸러기쩡미니", "503109625772507136", "KR"],
+                        ["전설의니니요", "503109625772507136", "KR"],
+                        ["영훈아그만던져", "503109625772507136", "KR"],
+                        ["Knαx", "503109625772507136", "EUW1"],
+                        ["o카페라떼o", "503109625772507136", "KR"],
+                        ["Exotics", "503109625772507136", "EUW1"],
+                        ["LuaniHunter", "503109625772507136", "LA1"],
+                        ["킹 스웬", "503109625772507136", "KR"],
+                        ["ToXwain", "503109625772507136", "EUW1"],
+                        ["빵댕이씨", "503109625772507136", "KR"],
+                        ["iNego of BordeL", "503109625772507136", "BR1"],
+                        ["PuleaSpataru", "503109625772507136", "EUN1"],
+                        ["Il Mr BRÓCOLI lI", "503109625772507136", "LA1"],
+                        ["Old Things", "503109625772507136", "KR"],
+                        ["Manos Swain Main", "503109625772507136", "EUN1"],
+                        ["뚜루루아기상어", "503109625772507136", "KR"],
+                        ["스웨인97", "503109625772507136", "KR"],
+                        ["jkpwn", "503109625772507136", "NA1"],
+                        ["xXxLoliHuntxXx", "503109625772507136", "EUW1"],
+                        ["Saltriver77", "503109625772507136", "EUW1"],
+                        ["MaxiMonnaie09", "503109625772507136", "EUW1"],
+                        ["GNG ORBAY", "503109625772507136", "TR1"],
+                        ["Enemy Swain", "503109625772507136", "NA1"]
+                    ];
+                    for (const summoner of sums) {
+                        const resp = await client.pg.query("SELECT puuid FROM summoners WHERE username = $1 AND region = $2 AND discord_id = $3", [summoner[0], summoner[2], summoner[1]]);
+                        if (resp.rows.length === 0) {
+                            client.commands.get('lol').add_summoner_manual(client, summoner[0], summoner[1], summoner[2]);
+                        }
+                    }
+                    await client.lol();
+                } else if (interaction.options.getSubcommand() === "add") {
+                    const resp = await client.pg.query("SELECT player, SPLIT_PART(puuid, '_', 1) AS region FROM matchs WHERE player IN (SELECT player FROM matchs GROUP BY player ORDER BY count(*) LIMIT 30)");
+                    for (const summoner of resp.rows) {
+                        client.requests["updates"].push({
+                            "type": "sum",
+                            "puuid": summoner.player,
+                            "region": summoner.region,
+                            "matchs": []
+                        });
+                    }
+                    interaction.editReply("Added " + resp.rows.length + " summoners to the queue");
                     await client.lol();
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
@@ -527,7 +552,8 @@ module.exports = {
                         "type": "match",
                         "matchid": matchid,
                         "region": region,
-                        "puuid": "noone"
+                        "puuid": "noone",
+                        "first": true
                     });
 
                     await interaction.editReply({ content: "Match added!", ephemeral: true });
