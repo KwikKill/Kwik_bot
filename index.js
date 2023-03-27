@@ -254,6 +254,31 @@ async function update_step_2(number, start) {
 }
 
 /**
+ * Fetch summoner and update the username
+ * @function update_pseudo
+ * @param {*} number  summoner in client.requests["updates"]
+ */
+async function update_pseudo(number) {
+    const puuid = number["puuid"];
+    const username = number["username"];
+
+    const pseudo = await lol_api.summonerByPuuid(apiKey, number["region"], puuid, client);
+    if (pseudo === null || (pseudo["status_code"] !== undefined && pseudo["status_code"] !== 200)) {
+        logger.error("Error while fetching summoner name for " + puuid + " in " + number["region"]);
+    } else {
+        if (pseudo["name"].toLowerCase() !== username.toLowerCase()) {
+            //console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
+            await client.pg.query({
+                name: "update_pseudo",
+                text: "UPDATE summoners SET username = $1 WHERE puuid = $2",
+                values: [pseudo["name"].toLowerCase(), puuid]
+            });
+            number["username"] = pseudo["name"].toLowerCase();
+        }
+    }
+}
+
+/**
  * Fetch summoner game list
  * @function update_step_2
  * @param {*} number  id of the summoner in client.requests["updates"]
@@ -313,6 +338,8 @@ async function set_update(number, debug = false) {
     if (config.verbose) {
         logger.log("- lol (update 1) : " + puuid);
     }
+
+    update_pseudo(number);
 
     const timer1 = Date.now();
 

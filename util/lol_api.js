@@ -75,6 +75,19 @@ module.exports = {
     },
 
     /**
+     * Get the summoner data from the API by name
+     * @function summonersByPuuid
+     * @param {*} apiKey         Riot API key
+     * @param {*} region         region of the player
+     * @param {*} summonerPuuid  name of the summoner
+     * @returns {Object}         summoner's data
+     */
+    async summonerByPuuid(apiKey, region, summonerPuuid, client) {
+        const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/" + summonerPuuid + "?api_key=" + apiKey;
+        return await this.apiCall(url, client);
+    },
+
+    /**
      * Get Challenge data from the API
      * @function challenge
      * @param {*} apiKey   Riot API key
