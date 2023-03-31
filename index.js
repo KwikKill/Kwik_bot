@@ -1160,7 +1160,7 @@ client.lol = async function (debug = false) {
                                             " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                             " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
                                             " LP (" + LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)" +
-                                            " | " + last_game["champion"] + "(" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
+                                            " | " + last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
                                     } else {
                                         channel.send("Rank Solo/Duo update for " +
                                             current["username"] +
@@ -1185,7 +1185,7 @@ client.lol = async function (debug = false) {
                                             " " + rank["RANKED_FLEX_SR"]["rank"] +
                                             " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
                                             " LP (" + LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)" +
-                                            " | " + last_game["champion"] + "(" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
+                                            " | " + last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
                                     } else {
                                         channel.send("Rank Flex update for " +
                                             current["username"] +
