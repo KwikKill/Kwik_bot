@@ -933,7 +933,7 @@ client.lol = async function (debug = false) {
             current = await set_update(current);//, debug);
             const timer2 = Date.now();
 
-            let last_game = new Promise();
+            let last_game = null;
 
             const puuid = current["puuid"];
             const discordid = current["discordid"];
@@ -955,8 +955,8 @@ client.lol = async function (debug = false) {
                             if (exit !== null) {
                                 current["count"] = current["count"] + 1;
                                 for (const summary of exit) {
-                                    if (summary["summonerpuuid"] === puuid && current["matchs"].length === 0) {
-                                        last_game.resolve(summary);
+                                    if (summary["summonerpuuid"] === puuid) {
+                                        last_game = summary;
                                     }
                                     try {
                                         client.pg.query("INSERT INTO matchs(" +
@@ -1153,15 +1153,22 @@ client.lol = async function (debug = false) {
                                     )
                                     && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
                                 ) {
-                                    last_game.then(l_g => {
+                                    if (last_game !== null) {
                                         channel.send("Rank Solo/Duo update for " +
                                             current["username"] +
                                             " : " + rank["RANKED_SOLO_5x5"]["tier"] +
                                             " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                             " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
                                             " LP (" + LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)" +
-                                            " | " + l_g["champion"] + " (" + l_g["kills"] + "/" + l_g["deaths"] + "/" + l_g["assists"] + ")");
-                                    });
+                                            " | " + last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
+                                    } else {
+                                        channel.send("Rank Solo/Duo update for " +
+                                            current["username"] +
+                                            " : " + rank["RANKED_SOLO_5x5"]["tier"] +
+                                            " " + rank["RANKED_SOLO_5x5"]["rank"] +
+                                            " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
+                                            " LP (" + LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)");
+                                    }
 
                                 } else if (
                                     (
@@ -1171,15 +1178,22 @@ client.lol = async function (debug = false) {
                                     )
                                     && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
                                 ) {
-                                    last_game.then(l_g => {
+                                    if (last_game !== null) {
                                         channel.send("Rank Flex update for " +
                                             current["username"] +
                                             " : " + rank["RANKED_FLEX_SR"]["tier"] +
                                             " " + rank["RANKED_FLEX_SR"]["rank"] +
                                             " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
                                             " LP (" + LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)" +
-                                            " | " + l_g["champion"] + " (" + l_g["kills"] + "/" + l_g["deaths"] + "/" + l_g["assists"] + ")");
-                                    });
+                                            " | " + last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
+                                    } else {
+                                        channel.send("Rank Flex update for " +
+                                            current["username"] +
+                                            " : " + rank["RANKED_FLEX_SR"]["tier"] +
+                                            " " + rank["RANKED_FLEX_SR"]["rank"] +
+                                            " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
+                                            " LP (" + LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)");
+                                    }
                                 }
                             }
 
