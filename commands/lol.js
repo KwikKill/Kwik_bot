@@ -2901,6 +2901,7 @@ module.exports = {
         }
     },
     async autocomplete(client, interaction) {
+        return;
         const focusedValue = interaction.options.getFocused();
         const champs = [];
         for (const x of client.champions) {
@@ -2911,7 +2912,6 @@ module.exports = {
                 });
             }
         }
-        console.log(champs);
         return await interaction.respond(champs);
     },
     addSumoner,
