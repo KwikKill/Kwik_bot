@@ -5,6 +5,7 @@ module.exports = {
     serverid: ["513776796211085342", "890915473363980308"],
     async run(interaction, client) {
         // parameters
+        console.log("button nextweek pressed");
         const classs = interaction.message.embeds[0].title.replace("Emploi du temps de la classe : ", '');
         const date1 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[0]);
         const date2 = new Date(interaction.message.embeds[0].description.replace("Semaine du ", '').split(" ")[2]);
