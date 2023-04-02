@@ -2911,6 +2911,7 @@ module.exports = {
                 });
             }
         }
+        console.log(champs);
         return await interaction.respond(champs);
     },
     addSumoner,
