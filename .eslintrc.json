@@ -22,7 +22,10 @@
         "no-unreachable": "error",
         "no-unreachable-loop": "error",
         "no-unused-vars": "error",
-        //"complexity": "warn",
+        /*"complexity": [
+            "warn",
+            20
+        ],*/
         "semi": "error",
         //"no-await-in-loop": "error",
         "eqeqeq": "error",

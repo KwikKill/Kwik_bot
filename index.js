@@ -5,7 +5,23 @@ const lol = require("./util/lol_functions.js");
 const express_server = require("./util/express.js");
 const Markov = require('markov-strings').default;
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+const client = new Client(
+    {
+        intents: [
+            Intents.FLAGS.GUILDS,
+            Intents.FLAGS.GUILD_MESSAGES,
+            Intents.FLAGS.DIRECT_MESSAGES,
+            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+            Intents.FLAGS.GUILD_MEMBERS
+        ],
+        partials: [
+            'MESSAGE',
+            'CHANNEL',
+            'REACTION'
+        ]
+    }
+);
 
 // -------------- LOL -----------------
 client.lol = lol;
@@ -74,9 +90,6 @@ client.commands.forEach((item) => {
 client.isOwner = function (user) {
     return client.owners.includes(user.id);
 };
-
-// init trackers as undefined
-client.trackers = [];
 
 // -------------- Express -----------------
 

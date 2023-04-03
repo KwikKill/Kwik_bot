@@ -35,7 +35,7 @@ module.exports = {
             });
             client.pg.query("SELECT * FROM trackers").then(trackers => {
                 trackers.rows.forEach(tracker => {
-                    client.trackers.push(tracker.channelid);
+                    client.lol.trackers.push(tracker.channelid);
                 });
             });
         });

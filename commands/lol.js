@@ -2884,7 +2884,7 @@ module.exports = {
                     return await interaction.editReply("A tracker channel already exists in this guild !");
                 }
                 const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
-                client.trackers.push(channel.id);
+                client.lol.trackers.push(channel.id);
                 await client.pg.query(query, [channel.id, channel.guild.id]);
                 return await interaction.editReply("tracker channel added !");
             } else if (interaction.options.getSubcommand() === "remove") {
@@ -2894,7 +2894,7 @@ module.exports = {
                     return await interaction.editReply("This channel is currently not a tracker channel !");
                 }
                 const query = "DELETE FROM trackers WHERE channelid=$1;";
-                client.trackers.splice(client.trackers.indexOf(channel.id), 1);
+                client.lol.trackers.splice(client.trackers.indexOf(channel.id), 1);
                 await client.pg.query(query, [channel.id]);
                 return await interaction.editReply("tracker channel removed !");
             }

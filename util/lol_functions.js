@@ -20,13 +20,17 @@ module.exports = {
     },
     max_games: 100,
     champions: [],
-    apiKey: process.env.RIOT_API_KEY,
     language: "en_US", // Players Language - Only Used for Champion Names
+
+    apiKey: process.env.RIOT_API_KEY,
     client: null,
+
     queue: { "summoners": [], "updates": [], "add": [] },
     running: false,
     queue_length: 0,
     api_limit: false,
+
+    trackers: [],
 
     /**
      * setup champion list
@@ -350,7 +354,7 @@ module.exports = {
         // read current rank and send message if rank changed
         const current_rank = await this.client.pg.query("SELECT * FROM summoners WHERE id = '" + current["id"] + "'");
         if (current_rank.rows[0] !== undefined) {
-            for (const x of this.client.trackers) {
+            for (const x of this.trackers) {
                 const channel = await this.client.channels.fetch(x);
                 let user = false;
                 try {
