@@ -468,9 +468,10 @@ client.set_rank = async function (puuid) {
 };
 
 /**
+ * Update rank of user in the database
  * @function send_tracker_message
- * @param {*} current current summoner data
- * @param {*} last_game last game data
+ * @param {object} current current summoner data
+ * @param {object} last_game last game data
  */
 async function send_tracker_message(current, last_game) {
     const discordid = current["discordid"];
@@ -557,6 +558,189 @@ async function send_tracker_message(current, last_game) {
 
             }
         }
+    }
+}
+
+/**
+ * Save match in the database
+ * @function save_matchs
+ * @param {object} current - Current match
+ */
+async function save_matchs(current) {
+    const puuid = current["puuid"];
+    const region = current["region"];
+
+    while (current["matchs"].length > 0) {
+        const matchId = current["matchs"].shift();
+        if (config.verbose) {
+            logger.log("- lol (update 2) : " + puuid + "  " + matchId);
+        }
+        client.queue_length -= 1;
+        lol_api.matchesById(apiKey, route[region], matchId, client).then(match => {
+
+            if (match?.status?.status_code !== 404) {
+                const exit = matchHistoryOutput(match);
+                if (exit !== null) {
+                    current["count"] = current["count"] + 1;
+                    for (const summary of exit) {
+                        if (current["matchs"].length === 0) {
+                            if (summary["summonerpuuid"] === puuid) {
+                                send_tracker_message(current, summary);
+                            }
+                        }
+                        try {
+                            client.pg.query("INSERT INTO matchs(" +
+                                "puuid, " +
+                                "player, " +
+                                "gamemode, " +
+                                "champion, " +
+                                "matchup, " +
+                                "support, " +
+                                "lane, " +
+                                "gold, " +
+                                "kill, " +
+                                "deaths, " +
+                                "assists, " +
+                                "result, " +
+                                "total_damage, " +
+                                "tanked_damage, " +
+                                "heal, " +
+                                "neutral_objectives, " +
+                                " wards, " +
+                                "pinks, " +
+                                "vision_score, " +
+                                "cs, " +
+                                "length, " +
+                                "total_kills, " +
+                                "first_gold, " +
+                                "first_damages, " +
+                                "first_tanked, " +
+                                "double, " +
+                                "tripple, " +
+                                "quadra, " +
+                                "penta, " +
+                                "time_spent_dead, " +
+                                "timestamp, " +
+                                "summoner1Id, " +
+                                "summoner2Id, " +
+                                "item0, " +
+                                "item1, " +
+                                "item2, " +
+                                "item3, " +
+                                "item4, " +
+                                "item5, " +
+                                "item6, " +
+                                "patch, " +
+                                "rune_0_perk, " +
+                                "rune_0_var1, " +
+                                "rune_0_var2, " +
+                                "rune_0_var3, " +
+                                "team_id " +
+                                ") VALUES (" +
+                                "$1," +
+                                "$2," +
+                                "$3," +
+                                "$4," +
+                                "$5," +
+                                "$6," +
+                                "$7," +
+                                "$8," +
+                                "$9," +
+                                "$10," +
+                                "$11," +
+                                "$12," +
+                                "$13," +
+                                "$14," +
+                                "$15," +
+                                "$16," +
+                                "$17," +
+                                "$18," +
+                                "$19," +
+                                "$20," +
+                                "$21," +
+                                "$22," +
+                                "$23," +
+                                "$24," +
+                                "$25," +
+                                "$26," +
+                                "$27," +
+                                "$28," +
+                                "$29," +
+                                "$30," +
+                                "$31," +
+                                "$32," +
+                                "$33," +
+                                "$34," +
+                                "$35," +
+                                "$36," +
+                                "$37," +
+                                "$38," +
+                                "$39," +
+                                "$40," +
+                                "$41," +
+                                "$42," +
+                                "$43," +
+                                "$44," +
+                                "$45," +
+                                "$46" +
+                                ") ON CONFLICT (puuid, player) DO NOTHING;",
+                                [
+                                    matchId,
+                                    summary["summonerpuuid"],
+                                    summary["queueName"],
+                                    summary["champion"],
+                                    summary["matchup"],
+                                    summary["support"],
+                                    summary["lane"],
+                                    summary["gold"],
+                                    summary["kills"],
+                                    summary["deaths"],
+                                    summary["assists"],
+                                    summary["result"],
+                                    summary["dealt"],
+                                    summary["taken"],
+                                    summary["healed"],
+                                    summary["objectifs"],
+                                    summary["wardsPlaced"],
+                                    summary["pinkPlaced"],
+                                    summary["visionScore"],
+                                    summary["CS"],
+                                    summary["duration"],
+                                    summary["teamKills"],
+                                    summary["firstGold"],
+                                    summary["firstDamage"],
+                                    summary["firstTanked"],
+                                    summary["doubles"],
+                                    summary["triples"],
+                                    summary["quadras"],
+                                    summary["penta"],
+                                    summary["totalTimeSpentDead"],
+                                    summary["date"],
+                                    summary["summoner1Id"],
+                                    summary["summoner2Id"],
+                                    summary["item0"],
+                                    summary["item1"],
+                                    summary["item2"],
+                                    summary["item3"],
+                                    summary["item4"],
+                                    summary["item5"],
+                                    summary["item6"],
+                                    summary["patch"],
+                                    summary["rune_0_perk"],
+                                    summary["rune_0_var1"],
+                                    summary["rune_0_var2"],
+                                    summary["rune_0_var3"],
+                                    summary["team_id"]
+                                ]
+                            );
+                            client.set_rank(summary["summonerpuuid"]);
+                        } catch (e) {
+                            //logger.log(e);
+                        }
+                    }
+                }
+            }
+        });
     }
 }
 
@@ -1026,187 +1210,12 @@ client.lol = async function (debug = false) {
             current = await set_update(current);//, debug);
             const timer2 = Date.now();
 
-            let last_game = null;
-
-            const puuid = current["puuid"];
             const discordid = current["discordid"];
-            const region = current["region"];
             const nb = current["matchs"].length;
 
             if (current["matchs"].length > 0 || current["rank"] === true) {
                 //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
-                while (current["matchs"].length > 0) {
-                    const matchId = current["matchs"].shift();
-                    if (config.verbose) {
-                        logger.log("- lol (update 2) : " + puuid + "  " + matchId);
-                    }
-                    client.queue_length -= 1;
-                    lol_api.matchesById(apiKey, route[region], matchId, client).then(match => {
-
-                        if (match?.status?.status_code !== 404) {
-                            const exit = matchHistoryOutput(match);
-                            if (exit !== null) {
-                                current["count"] = current["count"] + 1;
-                                for (const summary of exit) {
-                                    if (current["matchs"].length === 0) {
-                                        if (summary["summonerpuuid"] === puuid) {
-                                            send_tracker_message(current, summary);
-                                        }
-                                    }
-                                    try {
-                                        client.pg.query("INSERT INTO matchs(" +
-                                            "puuid, " +
-                                            "player, " +
-                                            "gamemode, " +
-                                            "champion, " +
-                                            "matchup, " +
-                                            "support, " +
-                                            "lane, " +
-                                            "gold, " +
-                                            "kill, " +
-                                            "deaths, " +
-                                            "assists, " +
-                                            "result, " +
-                                            "total_damage, " +
-                                            "tanked_damage, " +
-                                            "heal, " +
-                                            "neutral_objectives, " +
-                                            " wards, " +
-                                            "pinks, " +
-                                            "vision_score, " +
-                                            "cs, " +
-                                            "length, " +
-                                            "total_kills, " +
-                                            "first_gold, " +
-                                            "first_damages, " +
-                                            "first_tanked, " +
-                                            "double, " +
-                                            "tripple, " +
-                                            "quadra, " +
-                                            "penta, " +
-                                            "time_spent_dead, " +
-                                            "timestamp, " +
-                                            "summoner1Id, " +
-                                            "summoner2Id, " +
-                                            "item0, " +
-                                            "item1, " +
-                                            "item2, " +
-                                            "item3, " +
-                                            "item4, " +
-                                            "item5, " +
-                                            "item6, " +
-                                            "patch, " +
-                                            "rune_0_perk, " +
-                                            "rune_0_var1, " +
-                                            "rune_0_var2, " +
-                                            "rune_0_var3, " +
-                                            "team_id " +
-                                            ") VALUES (" +
-                                            "$1," +
-                                            "$2," +
-                                            "$3," +
-                                            "$4," +
-                                            "$5," +
-                                            "$6," +
-                                            "$7," +
-                                            "$8," +
-                                            "$9," +
-                                            "$10," +
-                                            "$11," +
-                                            "$12," +
-                                            "$13," +
-                                            "$14," +
-                                            "$15," +
-                                            "$16," +
-                                            "$17," +
-                                            "$18," +
-                                            "$19," +
-                                            "$20," +
-                                            "$21," +
-                                            "$22," +
-                                            "$23," +
-                                            "$24," +
-                                            "$25," +
-                                            "$26," +
-                                            "$27," +
-                                            "$28," +
-                                            "$29," +
-                                            "$30," +
-                                            "$31," +
-                                            "$32," +
-                                            "$33," +
-                                            "$34," +
-                                            "$35," +
-                                            "$36," +
-                                            "$37," +
-                                            "$38," +
-                                            "$39," +
-                                            "$40," +
-                                            "$41," +
-                                            "$42," +
-                                            "$43," +
-                                            "$44," +
-                                            "$45," +
-                                            "$46" +
-                                            ") ON CONFLICT (puuid, player) DO NOTHING;",
-                                            [
-                                                matchId,
-                                                summary["summonerpuuid"],
-                                                summary["queueName"],
-                                                summary["champion"],
-                                                summary["matchup"],
-                                                summary["support"],
-                                                summary["lane"],
-                                                summary["gold"],
-                                                summary["kills"],
-                                                summary["deaths"],
-                                                summary["assists"],
-                                                summary["result"],
-                                                summary["dealt"],
-                                                summary["taken"],
-                                                summary["healed"],
-                                                summary["objectifs"],
-                                                summary["wardsPlaced"],
-                                                summary["pinkPlaced"],
-                                                summary["visionScore"],
-                                                summary["CS"],
-                                                summary["duration"],
-                                                summary["teamKills"],
-                                                summary["firstGold"],
-                                                summary["firstDamage"],
-                                                summary["firstTanked"],
-                                                summary["doubles"],
-                                                summary["triples"],
-                                                summary["quadras"],
-                                                summary["penta"],
-                                                summary["totalTimeSpentDead"],
-                                                summary["date"],
-                                                summary["summoner1Id"],
-                                                summary["summoner2Id"],
-                                                summary["item0"],
-                                                summary["item1"],
-                                                summary["item2"],
-                                                summary["item3"],
-                                                summary["item4"],
-                                                summary["item5"],
-                                                summary["item6"],
-                                                summary["patch"],
-                                                summary["rune_0_perk"],
-                                                summary["rune_0_var1"],
-                                                summary["rune_0_var2"],
-                                                summary["rune_0_var3"],
-                                                summary["team_id"]
-                                            ]
-                                        );
-                                        client.set_rank(summary["summonerpuuid"]);
-                                    } catch (e) {
-                                        //logger.log(e);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
+                save_matchs(current);
                 const timer4 = Date.now();
 
                 if (discordid !== "503109625772507136") {
