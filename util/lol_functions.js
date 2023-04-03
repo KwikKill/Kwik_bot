@@ -1,5 +1,5 @@
-const logger = require("./util/logger.js");
-const lol_api = require("./util/lol_api.js");
+const logger = require("./logger.js");
+const lol_api = require("./lol_api.js");
 
 
 module.exports = {
