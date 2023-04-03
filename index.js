@@ -594,8 +594,6 @@ async function save_matchs(current) {
                                 "player, " +
                                 "gamemode, " +
                                 "champion, " +
-                                "matchup, " +
-                                "support, " +
                                 "lane, " +
                                 "gold, " +
                                 "kill, " +
@@ -680,17 +678,13 @@ async function save_matchs(current) {
                                 "$41," +
                                 "$42," +
                                 "$43," +
-                                "$44," +
-                                "$45," +
-                                "$46" +
+                                "$44" +
                                 ") ON CONFLICT (puuid, player) DO NOTHING;",
                                 [
                                     matchId,
                                     summary["summonerpuuid"],
                                     summary["queueName"],
                                     summary["champion"],
-                                    summary["matchup"],
-                                    summary["support"],
                                     summary["lane"],
                                     summary["gold"],
                                     summary["kills"],
@@ -868,11 +862,6 @@ client.lol = async function (debug = false) {
             return client.lol();
         }
         let current = client.requests["updates"].shift();
-        /*for (let i = 0; i < client.requests["updates"].length; i++) {
-            if (client.requests["updates"][i]["matchs"].length === 0 && client.requests["updates"][i]["total"] !== "none") {
-                await set_update(i);
-            }
-        }*/
         if (current["type"] === "match") {
             const region = current["region"];
             const matchId = current["matchid"];
@@ -889,8 +878,6 @@ client.lol = async function (debug = false) {
                                     "player, " +
                                     "gamemode, " +
                                     "champion, " +
-                                    "matchup, " +
-                                    "support, " +
                                     "lane, " +
                                     "gold, " +
                                     "kill, " +
@@ -975,17 +962,13 @@ client.lol = async function (debug = false) {
                                     "$41," +
                                     "$42," +
                                     "$43," +
-                                    "$44," +
-                                    "$45," +
-                                    "$46" +
+                                    "$44" +
                                     ") ON CONFLICT (puuid, player) DO NOTHING;",
                                     [
                                         matchId,
                                         summary["summonerpuuid"],
                                         summary["queueName"],
                                         summary["champion"],
-                                        summary["matchup"],
-                                        summary["support"],
                                         summary["lane"],
                                         summary["gold"],
                                         summary["kills"],
@@ -1057,8 +1040,6 @@ client.lol = async function (debug = false) {
                                             "player, " +
                                             "gamemode, " +
                                             "champion, " +
-                                            "matchup, " +
-                                            "support, " +
                                             "lane, " +
                                             "gold, " +
                                             "kill, " +
@@ -1143,17 +1124,13 @@ client.lol = async function (debug = false) {
                                             "$41," +
                                             "$42," +
                                             "$43," +
-                                            "$44," +
-                                            "$45," +
-                                            "$46" +
+                                            "$44" +
                                             ") ON CONFLICT (puuid, player) DO NOTHING;",
                                             [
                                                 matchId,
                                                 summary["summonerpuuid"],
                                                 summary["queueName"],
                                                 summary["champion"],
-                                                summary["matchup"],
-                                                summary["support"],
                                                 summary["lane"],
                                                 summary["gold"],
                                                 summary["kills"],
@@ -1316,8 +1293,6 @@ function matchHistoryOutput(match) {
             lanePlayed = "MIDDLE";
         }
 
-        let support = "None";
-
         // Players Team Id - 100 for Blue or 200 for Red
         const teamId = match['info']['participants'][participantId]['teamId'];
         let firstgold = 1;
@@ -1344,38 +1319,6 @@ function matchHistoryOutput(match) {
             if (match['info']['participants'][member]['totalDamageTaken'] > match['info']['participants'][participantId]['totalDamageTaken']) {
                 firsttanked = 0;
             }
-            if (lanePlayed === "ADC") {
-                const lane2 = match['info']['participants'][member]['teamPosition'];
-                let lanePlayed2 = "";
-                switch (lane2) {
-                    case "TOP":
-                        lanePlayed2 = "TOP";
-                        break;
-                    case "JUNGLE":
-                        lanePlayed2 = "JUNGLE";
-                        break;
-                    case "Middle":
-                        lanePlayed2 = "MIDDLE";
-                        break;
-                    case "BOTTOM":
-                        lanePlayed2 = "ADC";
-                        break;
-                    case "UTILITY":
-                        lanePlayed2 = "SUPPORT";
-                        break;
-                    default:
-                        if (match['info']['participants'][member]["individualPosition"] !== undefined) {
-                            lanePlayed2 = match['info']['participants'][member]["individualPosition"];
-                        } else {
-                            lanePlayed2 = "Invalid";
-                        }
-                        break;
-
-                }
-                if (lanePlayed2 === "SUPPORT") {
-                    support = match['info']['participants'][member]['championId'];
-                }
-            }
         }
         //let cary = 0;
         if (firstgold === 1 || firstdegats === 1 || firsttanked === 1) {
@@ -1395,17 +1338,6 @@ function matchHistoryOutput(match) {
         const kills = match['info']['participants'][participantId]['kills'];
         const deaths = match['info']['participants'][participantId]['deaths'];
         const assists = match['info']['participants'][participantId]['assists'];
-
-        let matchupId = "None";
-        let x = 0;
-        while (x < 10) {
-            if (match['info']['participants'][x]["teamPosition"] === lane) {
-                if (participantId !== x) {
-                    matchupId = match['info']['participants'][x]['championId'];
-                }
-            }
-            x++;
-        }
 
         //const kda = kills + " / " + deaths + " / " + assists;
         /*let killParticipation = (kills + assists) / teamKills;
@@ -1492,10 +1424,10 @@ function matchHistoryOutput(match) {
         /*
         const turretKills = match['info']['participants'][participantId]['turretKills'];
         const turretAssists = match['info']['participants'][participantId]['turretTakedowns'];
- 
+
         const inhibitorKills = match['info']['participants'][participantId]['inhibitorKills'];
         const inhibitorAssists = match['info']['participants'][participantId]['inhibitorTakedowns'];
- 
+
         const nexusKills = match['info']['participants'][participantId]['nexusKills'];
         const nexusAssists = match['info']['participants'][participantId]['nexusTakedowns'];
         //}
@@ -1505,11 +1437,11 @@ function matchHistoryOutput(match) {
         //{ First Blood & First Brick
         const firstBloodKill = match['info']['participants'][participantId]['firstBloodKill'];
         const firstBloodAssist = match['info']['participants'][participantId]['firstBloodAssist'];
- 
+
         const firstBrickKill = match['info']['participants'][participantId]['firstTowerKill'];
         const firstBrickAssist = match['info']['participants'][participantId]['firstTowerAssist'];
         //}
- 
+
         //{ Champion Exp & Level
         const level = match['info']['participants'][participantId]['champLevel'];
         const experience = match['info']['participants'][participantId]['champExperience'];
@@ -1560,19 +1492,6 @@ function matchHistoryOutput(match) {
                 return null;
             }
         }
-        let matchupname;
-        if (matchupId === "None") {
-            matchupname = "None";
-        } else {
-            matchupname = champions[matchupId];
-        }
-
-        let supportname;
-        if (support === "None") {
-            supportname = "None";
-        } else {
-            supportname = champions[support];
-        }
 
         const rune_0_perk = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['perk'];
         const rune_0_var1 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var1'];
@@ -1586,8 +1505,6 @@ function matchHistoryOutput(match) {
             "summonerpuuid": puuid,
             "queueName": queueName,
             "champion": champname,
-            "matchup": matchupname,
-            "support": supportname,
             "gold": gold,
             "lane": lanePlayed,
             "kills": kills,
