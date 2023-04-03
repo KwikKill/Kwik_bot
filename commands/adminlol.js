@@ -440,8 +440,9 @@ module.exports = {
                             client.commands.get('lol').add_summoner_manual(client, summoner[0], summoner[1], summoner[2]);
                         }
                     }
-                    await client.lol();
+                    await client.lol.main();
                 } else if (interaction.options.getSubcommand() === "add") {
+                    await interaction.editReply("loading summoners...");
                     const resp = await client.pg.query("SELECT player, SPLIT_PART(puuid, '_', 1) AS region FROM matchs WHERE player IN (SELECT player FROM matchs GROUP BY player ORDER BY count(*) LIMIT 30)");
                     for (const summoner of resp.rows) {
                         client.requests["updates"].push({
@@ -451,8 +452,8 @@ module.exports = {
                             "matchs": []
                         });
                     }
-                    interaction.editReply("Added " + resp.rows.length + " summoners to the queue");
-                    await client.lol();
+                    interaction.editReply("Adding " + resp.rows.length + " summoners to the queue, please wait");
+                    await client.lol.main();
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
                 const TOP = interaction.options.getString("top");
@@ -557,7 +558,7 @@ module.exports = {
                     });
 
                     await interaction.editReply({ content: "Match added!", ephemeral: true });
-                    client.lol();
+                    client.lol.main();
                 }
             }
         }
@@ -609,5 +610,5 @@ async function update(client, debug = false) {
     for (let i = prio.length - 1; i >= 0; i--) {
         client.requests["updates"].splice(1, 0, prio[i]);
     }
-    await client.lol(debug);
+    await client.lol.main(debug);
 }

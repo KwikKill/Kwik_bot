@@ -2921,10 +2921,10 @@ module.exports = {
 
 async function addSumoner(client, name, interaction, region) {
     client.requests["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0 });
-    await client.lol();
+    await client.lol.main();
 }
 
 async function add_summoner_manual(client, name, discordid, region, priority = 0) {
     client.requests["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority });
-    await client.lol();
+    await client.lol.main();
 }
