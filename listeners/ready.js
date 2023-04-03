@@ -1,5 +1,6 @@
 const pg = require('pg');
 const packageJSON = require("../package.json");
+const logger = require('../utils/logger.js');
 
 module.exports = {
     name: 'ready',
@@ -12,8 +13,7 @@ module.exports = {
 
         const discordJSVersion = packageJSON.dependencies["discord.js"];
 
-        console.log(discordJSVersion);
-        console.log('Le bot est démarré !');
+        logger.log(`Logged in as ${client.user.tag}! Discord.js version: ${discordJSVersion}`);
         client.user.setActivity("with your lol stats", { type: 'PLAYING' });
 
         const pgclient = new pg.Client({
@@ -26,7 +26,7 @@ module.exports = {
         pgclient.connect(function (err) {
             if (err) { throw err; }
             client.pg = pgclient;
-            console.log("Connected!");
+            logger.log("Database Connected!");
             client.timers.forEach(timer => {
                 if (timer.onsetup) {
                     timer.run(client);
