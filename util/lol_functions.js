@@ -609,6 +609,105 @@ module.exports = {
         }
     },
 
+    /**
+     * update summoner info
+     * @function update_summoner
+     * @param {*} current current summoner
+     */
+    async update_summoner(current) {
+        const username = current["username"];
+        const interaction = current["interaction"];
+        const discordid = current["discordid"];
+        const region = current["region"];
+        const priority = current["priority"];
+        const summonerObject = await lol_api.summonersByName(this.apiKey, region, username, this.client);
+        if (summonerObject === null) {
+            try {
+                await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
+            } catch {
+
+            }
+        } else {
+            const id = summonerObject['id'];
+            const accountId = summonerObject['accountId'];
+            const puuid = summonerObject['puuid'];
+
+            const rank = await this.update_rank(id, region);
+
+            await this.client.pg.query('INSERT INTO summoners(' +
+                'puuid, ' +
+                'username, ' +
+                'accountid, ' +
+                'id, ' +
+                'discordid, ' +
+                'rank_solo, ' +
+                'tier_solo, ' +
+                'LP_solo, ' +
+                'rank_flex, ' +
+                'tier_flex, ' +
+                'LP_flex, ' +
+                'region, ' +
+                'priority' +
+                ') ' +
+                'VALUES(\'' +
+                puuid + '\', \'' +
+                username.toLowerCase() + '\', ' + '\'' +
+                accountId + '\', \'' +
+                id + '\', \'' +
+                discordid + '\', \'' +
+                rank["RANKED_SOLO_5x5"]["rank"] + '\', \'' +
+                rank["RANKED_SOLO_5x5"]["tier"] + '\', \'' +
+                rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
+                rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
+                rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
+                rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
+                region + '\', ' +
+                priority +
+                ')'
+            );
+
+            const response = await this.client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordid + "'");
+            if (response.rowCount === 0) {
+                const mastery = await this.update_mastery(discordid, region);
+                await this.client.pg.query("INSERT INTO mastery(" +
+                    "discordid, " +
+                    "first_mastery_champ, " +
+                    "first_mastery, " +
+                    "second_mastery_champ, " +
+                    "second_mastery, " +
+                    "third_mastery_champ, " +
+                    "third_mastery, " +
+                    "total_point, " +
+                    "mastery7, " +
+                    "mastery6, " +
+                    "mastery5" +
+                    ") " +
+                    "VALUES('" +
+                    discordid + "', '" +
+                    mastery["first_mastery_champ"] + "', " +
+                    mastery["first_mastery"] + ", '" +
+                    mastery["second_mastery_champ"] + "', " +
+                    mastery["second_mastery"] + ", '" +
+                    mastery["third_mastery_champ"] + "', " +
+                    mastery["third_mastery"] + ", " +
+                    mastery["total_point"] + ", " +
+                    mastery["mastery7"] + ", " +
+                    mastery["mastery6"] + ", " +
+                    mastery["mastery5"] +
+                    ")"
+                );
+            }
+
+
+
+            try {
+                await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
+            } catch {
+
+            }
+            this.queue["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+        }
+    },
 
     /**
      * Fetch summoner game list and add games to the database
@@ -621,102 +720,13 @@ module.exports = {
         const start = Date.now();
         while (this.queue["summoners"].length > 0) {
             const timer1 = Date.now();
-            const x = this.queue["summoners"].shift();
-            const username = x["username"];
-            const interaction = x["interaction"];
-            const discordid = x["discordid"];
-            const region = x["region"];
-            const priority = x["priority"];
-            const summonerObject = await lol_api.summonersByName(this.apiKey, region, username, this.client);
-            if (summonerObject === null) {
-                try {
-                    await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
-                } catch {
 
-                }
-            } else {
-                const id = summonerObject['id'];
-                const accountId = summonerObject['accountId'];
-                const puuid = summonerObject['puuid'];
+            const current = this.queue["summoners"].shift();
+            await this.update_summoner(current);
 
-                const rank = await this.update_rank(id, region);
-
-                await this.client.pg.query('INSERT INTO summoners(' +
-                    'puuid, ' +
-                    'username, ' +
-                    'accountid, ' +
-                    'id, ' +
-                    'discordid, ' +
-                    'rank_solo, ' +
-                    'tier_solo, ' +
-                    'LP_solo, ' +
-                    'rank_flex, ' +
-                    'tier_flex, ' +
-                    'LP_flex, ' +
-                    'region, ' +
-                    'priority' +
-                    ') ' +
-                    'VALUES(\'' +
-                    puuid + '\', \'' +
-                    username.toLowerCase() + '\', ' + '\'' +
-                    accountId + '\', \'' +
-                    id + '\', \'' +
-                    discordid + '\', \'' +
-                    rank["RANKED_SOLO_5x5"]["rank"] + '\', \'' +
-                    rank["RANKED_SOLO_5x5"]["tier"] + '\', \'' +
-                    rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
-                    rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
-                    rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
-                    rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
-                    region + '\', ' +
-                    priority +
-                    ')'
-                );
-
-                const response = await this.client.pg.query("SELECT * FROM mastery WHERE discordid = '" + discordid + "'");
-                if (response.rowCount === 0) {
-                    const mastery = await this.update_mastery(discordid, region);
-                    await this.client.pg.query("INSERT INTO mastery(" +
-                        "discordid, " +
-                        "first_mastery_champ, " +
-                        "first_mastery, " +
-                        "second_mastery_champ, " +
-                        "second_mastery, " +
-                        "third_mastery_champ, " +
-                        "third_mastery, " +
-                        "total_point, " +
-                        "mastery7, " +
-                        "mastery6, " +
-                        "mastery5" +
-                        ") " +
-                        "VALUES('" +
-                        discordid + "', '" +
-                        mastery["first_mastery_champ"] + "', " +
-                        mastery["first_mastery"] + ", '" +
-                        mastery["second_mastery_champ"] + "', " +
-                        mastery["second_mastery"] + ", '" +
-                        mastery["third_mastery_champ"] + "', " +
-                        mastery["third_mastery"] + ", " +
-                        mastery["total_point"] + ", " +
-                        mastery["mastery7"] + ", " +
-                        mastery["mastery6"] + ", " +
-                        mastery["mastery5"] +
-                        ")"
-                    );
-                }
-
-
-
-                try {
-                    await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
-                } catch {
-
-                }
-                this.queue["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
-            }
             if (debug) {
                 const timer2 = Date.now();
-                logger.log("lol (summoner) : [" + x["username"] + "] " + (timer2 - timer1) + " ms");
+                logger.log("lol (summoner) : [" + current["username"] + "] " + (timer2 - timer1) + " ms");
             }
         }
         const checkpoint1 = Date.now();
