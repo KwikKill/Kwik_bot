@@ -1,6 +1,6 @@
 const pg = require('pg');
 const packageJSON = require("../package.json");
-const logger = require('../utils/logger.js');
+const logger = require('../util/logger');
 
 module.exports = {
     name: 'ready',
