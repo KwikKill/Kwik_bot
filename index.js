@@ -11,6 +11,8 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 client.lol = lol;
 client.lol.setup(client);
 
+// -------------- Markov -----------------
+
 client.markov = new Markov({ stateSize: 3 });
 client.markov.import(JSON.parse(fs.readFileSync('markov.json', 'utf8')));
 
@@ -27,11 +29,6 @@ client.listeners = new Collection();
 client.amonglegends = new Collection();
 
 client.owners = config["owner"];
-
-client.requests = { "summoners": [], "updates": [], "add": [] };
-client.running = false;
-client.queue_length = 0;
-client.api_limit = false;
 
 const ListenerFiles = fs.readdirSync('./listeners').filter(file => file.endsWith('.js'));
 for (const file of ListenerFiles) {

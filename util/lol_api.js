@@ -263,7 +263,7 @@ module.exports = {
             statut = statut.status;
             switch (statut) {
                 case 200:
-                    client.api_limit = false;
+                    client.lol.api_limit = false;
                     return data;
                 case 429:
                     // Special Handling here - 429 is Rate Limit Reached.
@@ -271,7 +271,7 @@ module.exports = {
                     if (config.verbose) {
                         logger.error("Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.", "429");
                     }
-                    client.api_limit = true;
+                    client.lol.api_limit = true;
                     // Wait the time specified by the reponse header
                     //await client.
                     await delay(delay_time);

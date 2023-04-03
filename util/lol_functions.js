@@ -23,6 +23,10 @@ module.exports = {
     apiKey: process.env.RIOT_API_KEY,
     language: "en_US", // Players Language - Only Used for Champion Names
     client: null,
+    queue: { "summoners": [], "updates": [], "add": [] },
+    running: false,
+    queue_length: 0,
+    api_limit: false,
 
     /**
      * setup champion list
@@ -215,7 +219,7 @@ module.exports = {
         const matchs = await this.update_step_3(number, matchIds);
         if (matchs !== null) {
             number["matchs"] = number["matchs"].concat(matchs);
-            this.client.queue_length += matchs.length;
+            this.queue_length += matchs.length;
             number["total"] = number["matchs"].length;
         }
         const timer4 = Date.now();
@@ -326,9 +330,9 @@ module.exports = {
      * @param {*} puuid puuid of the user
      */
     async set_rank(puuid) {
-        for (let i = 0; i < this.client.requests["updates"].length; i++) {
-            if (this.client.requests["updates"][i]["puuid"] === puuid) {
-                this.client.requests["updates"][i]["rank"] = true;
+        for (let i = 0; i < this.queue["updates"].length; i++) {
+            if (this.queue["updates"][i]["puuid"] === puuid) {
+                this.queue["updates"][i]["rank"] = true;
             }
         }
     },
@@ -437,7 +441,7 @@ module.exports = {
 
         while (current["matchs"].length > 0) {
             const matchId = current["matchs"].shift();
-            this.client.queue_length -= 1;
+            this.queue_length -= 1;
             lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
 
                 if (match?.status?.status_code !== 404) {
@@ -609,12 +613,12 @@ module.exports = {
      */
     async main(debug = false) {
         //logger.log(client.running, client.requests)
-        if (this.client.running === true) { return; }
-        this.client.running = true;
+        if (this.running === true) { return; }
+        this.running = true;
         const start = Date.now();
-        while (this.client.requests["summoners"].length > 0) {
+        while (this.queue["summoners"].length > 0) {
             const timer1 = Date.now();
-            const x = this.client.requests["summoners"].shift();
+            const x = this.queue["summoners"].shift();
             const username = x["username"];
             const interaction = x["interaction"];
             const discordid = x["discordid"];
@@ -705,7 +709,7 @@ module.exports = {
                 } catch {
 
                 }
-                this.client.requests["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+                this.queue["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
             }
             if (debug) {
                 const timer2 = Date.now();
@@ -716,13 +720,13 @@ module.exports = {
         if (debug) {
             logger.log("lol (summoner) : total took " + (checkpoint1 - start) + " ms");
         }
-        while (this.client.requests["updates"].length > 0) {
+        while (this.queue["updates"].length > 0) {
             const timer1 = Date.now();
-            if (this.client.requests["summoners"].length > 0) {
-                this.client.running = false;
+            if (this.queue["summoners"].length > 0) {
+                this.running = false;
                 return this.main();
             }
-            let current = this.client.requests["updates"].shift();
+            let current = this.queue["updates"].shift();
             if (current["type"] === "match") {
                 const region = current["region"];
                 const matchId = current["matchid"];
@@ -934,8 +938,8 @@ module.exports = {
         if (debug) {
             logger.log("lol (total) : " + (end - start) + "ms");
         }
-        this.client.running = false;
-        if (this.client.requests["summoners"].length > 0 || this.client.requests["updates"].length > 0) {
+        this.running = false;
+        if (this.queue["summoners"].length > 0 || this.queue["updates"].length > 0) {
             return await this.main();
         }
         //await client.channels.cache.get("991052056657793124").send("Finished updating");
@@ -1254,6 +1258,17 @@ module.exports = {
         return exit;
     },
 
+    /**
+     * Get the LP change of a match
+     * @function LP_change
+     * @param {String} old_rank - Old rank of the player
+     * @param {String} old_tier - Old tier of the player
+     * @param {Number} old_LP - Old LP of the player
+     * @param {String} rank - New rank of the player
+     * @param {String} tier - New tier of the player
+     * @param {Number} LP - New LP of the player
+     * @returns {Number} The LP change
+     */
     LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
         const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(tier) * 400
             + ["IV", "III", "II", "I"].indexOf(rank) * 100

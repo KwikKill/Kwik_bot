@@ -445,7 +445,7 @@ module.exports = {
                     await interaction.editReply("loading summoners...");
                     const resp = await client.pg.query("SELECT player, SPLIT_PART(puuid, '_', 1) AS region FROM matchs WHERE player IN (SELECT player FROM matchs GROUP BY player ORDER BY count(*) LIMIT 30)");
                     for (const summoner of resp.rows) {
-                        client.requests["updates"].push({
+                        client.lol.requests["updates"].push({
                             "type": "sum",
                             "puuid": summoner.player,
                             "region": summoner.region,
@@ -549,7 +549,7 @@ module.exports = {
                     const matchid = interaction.options.getString("gameid");
                     const region = interaction.options.getString("region");
 
-                    client.requests["updates"].push({
+                    client.lol.requests["updates"].push({
                         "type": "match",
                         "matchid": matchid,
                         "region": region,
@@ -593,8 +593,8 @@ async function update(client, debug = false) {
 
     for (let i = 0; i < result.rows.length; i++) {
         let found = false;
-        for (let j = 0; j < client.requests["updates"].length; j++) {
-            if (client.requests["updates"][j].puuid === result.rows[i].puuid) {
+        for (let j = 0; j < client.lol.requests["updates"].length; j++) {
+            if (client.lol.requests["updates"][j].puuid === result.rows[i].puuid) {
                 found = true;
                 break;
             }
@@ -603,12 +603,12 @@ async function update(client, debug = false) {
             if (result.rows[i].priority > 0) {
                 prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false, "rank": false });
             } else {
-                client.requests["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false, "rank": false });
+                client.lol.requests["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false, "rank": false });
             }
         }
     }
     for (let i = prio.length - 1; i >= 0; i--) {
-        client.requests["updates"].splice(1, 0, prio[i]);
+        client.lol.requests["updates"].splice(1, 0, prio[i]);
     }
     await client.lol.main(debug);
 }
