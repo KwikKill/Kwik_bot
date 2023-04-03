@@ -202,29 +202,30 @@ module.exports = {
     /**
      * Fetch summoner game list
      * @function set_update
-     * @param {*} number  id of the summoner in client.requests["updates"]
+     * @param {*} current summoner data
      * @param {Boolean} debug  if true, print debug log
+     * @returns {Object} summoner data with list of match ids
      */
-    async set_update(number, debug = false) {
-        if (number["type"] !== "sum" && number["type"] !== "match") {
-            this.update_pseudo(number);
+    async set_update(current, debug = false) {
+        if (current["type"] !== "sum" && current["type"] !== "match") {
+            this.update_pseudo(current);
         }
 
         const timer1 = Date.now();
 
-        const start = await this.update_step_1(number);
+        const start = await this.update_step_1(current);
 
         const timer2 = Date.now();
 
-        const matchIds = await this.update_step_2(number, start);
+        const matchIds = await this.update_step_2(current, start);
 
         const timer3 = Date.now();
 
-        const matchs = await this.update_step_3(number, matchIds);
+        const matchs = await this.update_step_3(current, matchIds);
         if (matchs !== null) {
-            number["matchs"] = number["matchs"].concat(matchs);
+            current["matchs"] = current["matchs"].concat(matchs);
             this.queue_length += matchs.length;
-            number["total"] = number["matchs"].length;
+            current["total"] = current["matchs"].length;
         }
         const timer4 = Date.now();
         if (debug) {
@@ -233,13 +234,15 @@ module.exports = {
             logger.log(timer4 - timer3);
         }
 
-        return number;
+        return current;
     },
 
     /**
      * Update rank of user in the database
      * @function update_rank
-     * @param {*} summoner_id  summoner id
+     * @param {*} summoner_id summoner id
+     * @param {*} region region of the summoner
+     * @returns {Object} rank data
      */
     async update_rank(summoner_id, region) {
         const response = await lol_api.leaguesBySummoner(this.apiKey, region, summoner_id, this.client);
@@ -271,6 +274,8 @@ module.exports = {
      * Update mastery data of user in the database
      * @function update_mastery
      * @param {*} discordid  discord id
+     * @param {*} region  region of the summoner
+     * @returns {Object} mastery data
      */
     async update_mastery(discordid, region) {
 
@@ -438,7 +443,7 @@ module.exports = {
     /**
      * Save match in the database
      * @function save_matchs
-     * @param {object} current - Current match
+     * @param {object} current Current match
      */
     async save_matchs(current) {
         const puuid = current["puuid"];
@@ -715,7 +720,8 @@ module.exports = {
 
     /**
      * Fetch summoner game list and add games to the database
-     * @function lol
+     * @function main
+     * @param {*} debug debug mode
      */
     async main(debug = false) {
         //logger.log(client.running, client.requests)
@@ -969,7 +975,6 @@ module.exports = {
      * Return stats from a match
      * @function matchHistoryOutput
      * @param {*} match   Match data
-     * @param {*} puuid   Puuid of the summoner
      * @returns {Object}  Stats of the match
      */
     matchHistoryOutput(match) {

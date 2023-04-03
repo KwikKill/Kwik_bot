@@ -586,7 +586,7 @@ module.exports = {
                     const responses4 = await client.pg.query("SELECT pg_size_pretty( pg_database_size('lol_database') );");
                     const size = responses4.rows[0].pg_size_pretty;
 
-                    await interaction.editReply({ content: "There are " + count + " users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size.", ephemeral: false });
+                    await interaction.editReply({ content: "There are " + count + " real users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size.", ephemeral: false });
                 }
             }
         }
