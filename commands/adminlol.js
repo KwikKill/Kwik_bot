@@ -252,6 +252,18 @@ module.exports = {
                     ]
                 }
             ]
+        },
+        {
+            name: 'status',
+            description: 'check the status of the bot',
+            type: 'SUB_COMMAND_GROUP',
+            options: [
+                {
+                    name: 'summarized',
+                    description: 'summarized status',
+                    type: 'SUB_COMMAND',
+                },
+            ]
         }
     ],
     async run(message, client, interaction = undefined) {
@@ -559,6 +571,22 @@ module.exports = {
 
                     await interaction.editReply({ content: "Match added!", ephemeral: true });
                     client.lol.main();
+                }
+            } else if (interaction.options.getSubcommandGroup() === "status") {
+                if (interaction.options.getSubcommand() === "summarized") {
+                    const responses = await client.pg.query("SELECT count(*) FROM summoners WHERE priority = 0 AND discordid <> '503109625772507136';");
+                    const count = responses.rows[0].count;
+
+                    const responses2 = await client.pg.query("SELECT count(*) FROM summoners;");
+                    const count2 = responses2.rows[0].count;
+
+                    const responses3 = await client.pg.query("SELECT count(*) FROM matchs;");
+                    const number = responses3.rows[0].count;
+
+                    const responses4 = await client.pg.query("SELECT pg_size_pretty( pg_database_size('lol_database') );");
+                    const size = responses4.rows[0].pg_size_pretty;
+
+                    await interaction.editReply({ content: "There are " + count + " users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size.", ephemeral: false });
                 }
             }
         }
