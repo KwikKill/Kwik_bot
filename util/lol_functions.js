@@ -1254,7 +1254,7 @@ module.exports = {
         return exit;
     },
 
-    async LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
+    LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
         const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(tier) * 400
             + ["IV", "III", "II", "I"].indexOf(rank) * 100
             + LP;
