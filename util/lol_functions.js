@@ -455,98 +455,100 @@ module.exports = {
                                 }
                             }
                             try {
-                                this.client.pg.query("INSERT INTO matchs(" +
-                                    "puuid, " +
-                                    "player, " +
-                                    "gamemode, " +
-                                    "champion, " +
-                                    "lane, " +
-                                    "gold, " +
-                                    "kill, " +
-                                    "deaths, " +
-                                    "assists, " +
-                                    "result, " +
-                                    "total_damage, " +
-                                    "tanked_damage, " +
-                                    "heal, " +
-                                    "neutral_objectives, " +
-                                    " wards, " +
-                                    "pinks, " +
-                                    "vision_score, " +
-                                    "cs, " +
-                                    "length, " +
-                                    "total_kills, " +
-                                    "first_gold, " +
-                                    "first_damages, " +
-                                    "first_tanked, " +
-                                    "double, " +
-                                    "tripple, " +
-                                    "quadra, " +
-                                    "penta, " +
-                                    "time_spent_dead, " +
-                                    "timestamp, " +
-                                    "summoner1Id, " +
-                                    "summoner2Id, " +
-                                    "item0, " +
-                                    "item1, " +
-                                    "item2, " +
-                                    "item3, " +
-                                    "item4, " +
-                                    "item5, " +
-                                    "item6, " +
-                                    "patch, " +
-                                    "rune_0_perk, " +
-                                    "rune_0_var1, " +
-                                    "rune_0_var2, " +
-                                    "rune_0_var3, " +
-                                    "team_id " +
-                                    ") VALUES (" +
-                                    "$1," +
-                                    "$2," +
-                                    "$3," +
-                                    "$4," +
-                                    "$5," +
-                                    "$6," +
-                                    "$7," +
-                                    "$8," +
-                                    "$9," +
-                                    "$10," +
-                                    "$11," +
-                                    "$12," +
-                                    "$13," +
-                                    "$14," +
-                                    "$15," +
-                                    "$16," +
-                                    "$17," +
-                                    "$18," +
-                                    "$19," +
-                                    "$20," +
-                                    "$21," +
-                                    "$22," +
-                                    "$23," +
-                                    "$24," +
-                                    "$25," +
-                                    "$26," +
-                                    "$27," +
-                                    "$28," +
-                                    "$29," +
-                                    "$30," +
-                                    "$31," +
-                                    "$32," +
-                                    "$33," +
-                                    "$34," +
-                                    "$35," +
-                                    "$36," +
-                                    "$37," +
-                                    "$38," +
-                                    "$39," +
-                                    "$40," +
-                                    "$41," +
-                                    "$42," +
-                                    "$43," +
-                                    "$44" +
-                                    ") ON CONFLICT (puuid, player) DO NOTHING;",
-                                    [
+                                this.client.pg.query({
+                                    name: "insert_match",
+                                    text: "INSERT INTO matchs(" +
+                                        "puuid, " +
+                                        "player, " +
+                                        "gamemode, " +
+                                        "champion, " +
+                                        "lane, " +
+                                        "gold, " +
+                                        "kill, " +
+                                        "deaths, " +
+                                        "assists, " +
+                                        "result, " +
+                                        "total_damage, " +
+                                        "tanked_damage, " +
+                                        "heal, " +
+                                        "neutral_objectives, " +
+                                        " wards, " +
+                                        "pinks, " +
+                                        "vision_score, " +
+                                        "cs, " +
+                                        "length, " +
+                                        "total_kills, " +
+                                        "first_gold, " +
+                                        "first_damages, " +
+                                        "first_tanked, " +
+                                        "double, " +
+                                        "tripple, " +
+                                        "quadra, " +
+                                        "penta, " +
+                                        "time_spent_dead, " +
+                                        "timestamp, " +
+                                        "summoner1Id, " +
+                                        "summoner2Id, " +
+                                        "item0, " +
+                                        "item1, " +
+                                        "item2, " +
+                                        "item3, " +
+                                        "item4, " +
+                                        "item5, " +
+                                        "item6, " +
+                                        "patch, " +
+                                        "rune_0_perk, " +
+                                        "rune_0_var1, " +
+                                        "rune_0_var2, " +
+                                        "rune_0_var3, " +
+                                        "team_id " +
+                                        ") VALUES (" +
+                                        "$1," +
+                                        "$2," +
+                                        "$3," +
+                                        "$4," +
+                                        "$5," +
+                                        "$6," +
+                                        "$7," +
+                                        "$8," +
+                                        "$9," +
+                                        "$10," +
+                                        "$11," +
+                                        "$12," +
+                                        "$13," +
+                                        "$14," +
+                                        "$15," +
+                                        "$16," +
+                                        "$17," +
+                                        "$18," +
+                                        "$19," +
+                                        "$20," +
+                                        "$21," +
+                                        "$22," +
+                                        "$23," +
+                                        "$24," +
+                                        "$25," +
+                                        "$26," +
+                                        "$27," +
+                                        "$28," +
+                                        "$29," +
+                                        "$30," +
+                                        "$31," +
+                                        "$32," +
+                                        "$33," +
+                                        "$34," +
+                                        "$35," +
+                                        "$36," +
+                                        "$37," +
+                                        "$38," +
+                                        "$39," +
+                                        "$40," +
+                                        "$41," +
+                                        "$42," +
+                                        "$43," +
+                                        "$44" +
+                                        ") ON CONFLICT (puuid, player) DO NOTHING;",
+                                    values: [
                                         matchId,
                                         summary["summonerpuuid"],
                                         summary["queueName"],
@@ -592,6 +594,7 @@ module.exports = {
                                         summary["rune_0_var3"],
                                         summary["team_id"]
                                     ]
+                                }
                                 );
                                 if (current["type"] !== "sum") {
                                     this.client.set_rank(summary["summonerpuuid"]);
@@ -738,98 +741,100 @@ module.exports = {
                         if (exit !== null) {
                             for (const summary of exit) {
                                 try {
-                                    this.client.pg.query("INSERT INTO matchs(" +
-                                        "puuid, " +
-                                        "player, " +
-                                        "gamemode, " +
-                                        "champion, " +
-                                        "lane, " +
-                                        "gold, " +
-                                        "kill, " +
-                                        "deaths, " +
-                                        "assists, " +
-                                        "result, " +
-                                        "total_damage, " +
-                                        "tanked_damage, " +
-                                        "heal, " +
-                                        "neutral_objectives, " +
-                                        " wards, " +
-                                        "pinks, " +
-                                        "vision_score, " +
-                                        "cs, " +
-                                        "length, " +
-                                        "total_kills, " +
-                                        "first_gold, " +
-                                        "first_damages, " +
-                                        "first_tanked, " +
-                                        "double, " +
-                                        "tripple, " +
-                                        "quadra, " +
-                                        "penta, " +
-                                        "time_spent_dead, " +
-                                        "timestamp, " +
-                                        "summoner1Id, " +
-                                        "summoner2Id, " +
-                                        "item0, " +
-                                        "item1, " +
-                                        "item2, " +
-                                        "item3, " +
-                                        "item4, " +
-                                        "item5, " +
-                                        "item6, " +
-                                        "patch, " +
-                                        "rune_0_perk, " +
-                                        "rune_0_var1, " +
-                                        "rune_0_var2, " +
-                                        "rune_0_var3, " +
-                                        "team_id " +
-                                        ") VALUES (" +
-                                        "$1," +
-                                        "$2," +
-                                        "$3," +
-                                        "$4," +
-                                        "$5," +
-                                        "$6," +
-                                        "$7," +
-                                        "$8," +
-                                        "$9," +
-                                        "$10," +
-                                        "$11," +
-                                        "$12," +
-                                        "$13," +
-                                        "$14," +
-                                        "$15," +
-                                        "$16," +
-                                        "$17," +
-                                        "$18," +
-                                        "$19," +
-                                        "$20," +
-                                        "$21," +
-                                        "$22," +
-                                        "$23," +
-                                        "$24," +
-                                        "$25," +
-                                        "$26," +
-                                        "$27," +
-                                        "$28," +
-                                        "$29," +
-                                        "$30," +
-                                        "$31," +
-                                        "$32," +
-                                        "$33," +
-                                        "$34," +
-                                        "$35," +
-                                        "$36," +
-                                        "$37," +
-                                        "$38," +
-                                        "$39," +
-                                        "$40," +
-                                        "$41," +
-                                        "$42," +
-                                        "$43," +
-                                        "$44" +
-                                        ") ON CONFLICT (puuid, player) DO NOTHING;",
-                                        [
+                                    this.client.pg.query({
+                                        name: "insert_match",
+                                        text: "INSERT INTO matchs(" +
+                                            "puuid, " +
+                                            "player, " +
+                                            "gamemode, " +
+                                            "champion, " +
+                                            "lane, " +
+                                            "gold, " +
+                                            "kill, " +
+                                            "deaths, " +
+                                            "assists, " +
+                                            "result, " +
+                                            "total_damage, " +
+                                            "tanked_damage, " +
+                                            "heal, " +
+                                            "neutral_objectives, " +
+                                            " wards, " +
+                                            "pinks, " +
+                                            "vision_score, " +
+                                            "cs, " +
+                                            "length, " +
+                                            "total_kills, " +
+                                            "first_gold, " +
+                                            "first_damages, " +
+                                            "first_tanked, " +
+                                            "double, " +
+                                            "tripple, " +
+                                            "quadra, " +
+                                            "penta, " +
+                                            "time_spent_dead, " +
+                                            "timestamp, " +
+                                            "summoner1Id, " +
+                                            "summoner2Id, " +
+                                            "item0, " +
+                                            "item1, " +
+                                            "item2, " +
+                                            "item3, " +
+                                            "item4, " +
+                                            "item5, " +
+                                            "item6, " +
+                                            "patch, " +
+                                            "rune_0_perk, " +
+                                            "rune_0_var1, " +
+                                            "rune_0_var2, " +
+                                            "rune_0_var3, " +
+                                            "team_id " +
+                                            ") VALUES (" +
+                                            "$1," +
+                                            "$2," +
+                                            "$3," +
+                                            "$4," +
+                                            "$5," +
+                                            "$6," +
+                                            "$7," +
+                                            "$8," +
+                                            "$9," +
+                                            "$10," +
+                                            "$11," +
+                                            "$12," +
+                                            "$13," +
+                                            "$14," +
+                                            "$15," +
+                                            "$16," +
+                                            "$17," +
+                                            "$18," +
+                                            "$19," +
+                                            "$20," +
+                                            "$21," +
+                                            "$22," +
+                                            "$23," +
+                                            "$24," +
+                                            "$25," +
+                                            "$26," +
+                                            "$27," +
+                                            "$28," +
+                                            "$29," +
+                                            "$30," +
+                                            "$31," +
+                                            "$32," +
+                                            "$33," +
+                                            "$34," +
+                                            "$35," +
+                                            "$36," +
+                                            "$37," +
+                                            "$38," +
+                                            "$39," +
+                                            "$40," +
+                                            "$41," +
+                                            "$42," +
+                                            "$43," +
+                                            "$44" +
+                                            ") ON CONFLICT (puuid, player) DO NOTHING;",
+                                        values: [
                                             matchId,
                                             summary["summonerpuuid"],
                                             summary["queueName"],
@@ -875,6 +880,7 @@ module.exports = {
                                             summary["rune_0_var3"],
                                             summary["team_id"]
                                         ]
+                                    }
                                     );
                                     this.set_rank(summary["summonerpuuid"]);
                                 } catch (e) {

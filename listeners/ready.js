@@ -40,18 +40,6 @@ module.exports = {
             });
         });
 
-        /*
-        client.champions = []
-        champions = await client.championList(region, language);
-
-        for(var x of champions) {
-            if(x != undefined) {
-                client.champions.push(x)
-
-            }
-        }
-        */
-
         await client.commands.get("deploy").auto_deploy(client);
     }
 };
