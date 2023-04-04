@@ -606,7 +606,7 @@ module.exports = {
                                 }
                                 );
                                 if (current["type"] !== "sum") {
-                                    this.client.set_rank(summary["summonerpuuid"]);
+                                    this.set_rank(summary["summonerpuuid"]);
                                 }
                             } catch (e) {
                                 //logger.log(e);
