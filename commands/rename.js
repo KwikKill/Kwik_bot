@@ -41,9 +41,18 @@ module.exports = {
             const pseudo = interaction.options.getString('pseudo');
 
             try {
+                if (user.id === "413718694758318081" && interaction.guild.id === "890915473363980308") {
+                    await user.setNickname(pseudo);
+                    await interaction.guild.members.cache.get("297409548703105035").setNickname(pseudo);
+                    return await interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
+                } else if (user.id === "297409548703105035" && interaction.guild.id === "890915473363980308") {
+                    await user.setNickname(pseudo);
+                    await interaction.guild.members.cache.get("413718694758318081").setNickname(pseudo);
+                    return await interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
+                }
                 await user.setNickname(pseudo);
-                interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
-                return;
+                return await interaction.reply(`${user.user.username} a été renommé en ${pseudo}`);
+
             } catch (e) {
                 interaction.reply(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
                 return;
