@@ -338,10 +338,10 @@ module.exports = {
      * @function update_rank
      * @param {*} puuid puuid of the user
      */
-    async set_rank(puuid) {
+    async set_rank(puuid, match) {
         for (let i = 0; i < this.queue["updates"].length; i++) {
             if (this.queue["updates"][i]["puuid"] === puuid) {
-                this.queue["updates"][i]["rank"] = true;
+                this.queue["updates"][i]["rank"] = match;
             }
         }
     },
@@ -606,7 +606,7 @@ module.exports = {
                                 }
                                 );
                                 if (current["type"] !== "sum") {
-                                    this.set_rank(summary["summonerpuuid"]);
+                                    this.set_rank(summary["summonerpuuid"], summary);
                                 }
                             } catch (e) {
                                 //logger.log(e);
@@ -902,7 +902,7 @@ module.exports = {
                                         ]
                                     }
                                     );
-                                    this.set_rank(summary["summonerpuuid"]);
+                                    this.set_rank(summary["summonerpuuid"], summary);
                                 } catch (e) {
                                     //logger.log(e);
                                 }
@@ -913,7 +913,7 @@ module.exports = {
             } else if (current["type"] === "sum") {
                 current = await this.set_update(current);
 
-                if (current["matchs"].length > 0 || current["rank"] === true) {
+                if (current["matchs"].length > 0 || current["rank"] !== false) {
                     this.save_matchs(current);
                 }
             } else {
@@ -923,7 +923,11 @@ module.exports = {
                 const discordid = current["discordid"];
                 const nb = current["matchs"].length;
 
-                if (current["matchs"].length > 0 || current["rank"] === true) {
+                if (current["rank"] !== false && current["matchs"].length === 0) {
+                    this.send_tracker_message(current, current["rank"]);
+                }
+
+                if (current["matchs"].length > 0 || current["rank"] !== false) {
                     //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
                     this.save_matchs(current);
                     const timer4 = Date.now();
