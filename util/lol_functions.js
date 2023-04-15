@@ -455,13 +455,11 @@ module.exports = {
             lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
 
                 if (match?.status?.status_code !== 404) {
-                    let exit = this.matchHistoryOutput(match);
+                    const exit = this.matchHistoryOutput(match);
                     if (exit !== null) {
-                        exit = exit[0];
-                        const matchId = exit[1];
                         current["count"] = current["count"] + 1;
                         for (const summary of exit) {
-                            if (current["type"] !== "sum" && current["last_id"] === matchId) {
+                            if (current["type"] !== "sum" && current["last_id"] === exit[0]["matchId"]) {
                                 if (summary["summonerpuuid"] === puuid) {
                                     this.send_tracker_message(current, summary);
                                 }
@@ -561,7 +559,7 @@ module.exports = {
                                         "$44" +
                                         ") ON CONFLICT (puuid, player) DO NOTHING;",
                                     values: [
-                                        matchId,
+                                        summary["matchId"],
                                         summary["summonerpuuid"],
                                         summary["queueName"],
                                         summary["champion"],
@@ -991,8 +989,6 @@ module.exports = {
 
         const exit = [];
 
-        const matchId = match['metadata']['matchId'];
-
         for (let participantId = 0; participantId < 10; participantId++) {
 
             let teamKills = 0;
@@ -1289,7 +1285,7 @@ module.exports = {
             });
 
         }
-        return [exit, matchId];
+        return exit;
     },
 
     /**
