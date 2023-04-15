@@ -181,7 +181,7 @@ function register(client) {
 
     app.post("/lol/register", function (req, res) {
         console.log("[POST] /lol/register", req.body);
-        if (req.body.username && req.body.discordid) {
+        if (req.body.username && req.body.discordid && req.body.region && req.body.region !== "--Please choose an option--") {
             client.pg.query('SELECT * FROM summoners WHERE discordid = $1', [req.body.discordid], (err, result) => {
                 if (err) {
                     console.error(err);
@@ -193,14 +193,14 @@ function register(client) {
                 }
                 let al = false;
                 result.rows.forEach(element => {
-                    if (element.username === req.body.username) {
+                    if (element.username === req.body.username && element.region === req.body.region) {
                         al = true;
                     }
                 });
                 if (al) {
                     return res.render("../Site/lol/message", { text: "This account is already registered" });
                 }
-                client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid);
+                client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid, req.body.region);
                 delay(1800).then(() => {
                     return res.redirect("/lol/queue");
                 });
