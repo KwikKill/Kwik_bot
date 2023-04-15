@@ -188,8 +188,11 @@ function register(client) {
                     res.statusCode(500);
                     return res.render("../Site/lol/message", { text: "Internal server error" });
                 }
-                if (result.rows.length >= 3) {
-                    return res.render("../Site/lol/message", { text: "You already have 3 accounts registered" });
+                if (result.rows[0].priority === 0 && result.rows.length <= 1) {
+                    return res.render("../Site/lol/message", { text: "You already have the maximum number of accounts registered. If you want to have more, you can contact me on discord KwikKill#6123" });
+                }
+                if (result.rows[0].priority < 10 && result.rows.length <= 3) {
+                    return res.render("../Site/lol/message", { text: "You already have the maximum number of accounts registered. If you want to have more, you can contact me on discord KwikKill#6123" });
                 }
                 let al = false;
                 result.rows.forEach(element => {
