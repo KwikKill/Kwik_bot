@@ -204,7 +204,7 @@ function register(client) {
                     return res.render("../Site/lol/message", { text: "This account is already registered" });
                 }
                 client.commands.get("lol").add_summoner_manual(client, req.body.username, req.body.discordid, req.body.region);
-                delay(1800).then(() => {
+                delay(1000).then(() => {
                     return res.redirect("/lol/queue");
                 });
             });

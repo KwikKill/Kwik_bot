@@ -22,7 +22,7 @@
             <% 
             let count = 1;
             let number = "";
-            jsclient.requests.updates.forEach(function(update) {
+            jsclient.lol.queue.updates.forEach(function(update) {
                 if(update.discordid == data.id) {
                     if(number !== "") {
                         number += ", ";
@@ -55,7 +55,7 @@
         </tr>
       </thead>
       <tbody>
-        <% jsclient.requests.updates.forEach(function(update) {%>
+        <% jsclient.lol.queue.updates.forEach(function(update) {%>
         <tr <% if(update.discordid == data.id) { %> style="border: 3px solid darkgreen;" <% } %>>
           <td>
             <%= update.username %>
