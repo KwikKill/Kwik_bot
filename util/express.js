@@ -5,7 +5,6 @@ const { request } = require('undici');
 const cookieParser = require('cookie-parser');
 const lol_api = require("./lol_api.js");
 const { sseMiddleware } = require('express-sse-middleware');
-const fetch = require('node-fetch');
 
 const Roles = [
     "Serpentin",

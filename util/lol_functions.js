@@ -226,6 +226,7 @@ module.exports = {
             current["matchs"] = current["matchs"].concat(matchs);
             this.queue_length += matchs.length;
             current["total"] = current["matchs"].length;
+            current["last_id"] = current["matchs"][current["matchs"].length - 1];
         }
         const timer4 = Date.now();
         if (debug) {
@@ -454,11 +455,13 @@ module.exports = {
             lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
 
                 if (match?.status?.status_code !== 404) {
-                    const exit = this.matchHistoryOutput(match);
+                    let exit = this.matchHistoryOutput(match);
                     if (exit !== null) {
+                        exit = exit[0];
+                        const matchId = exit[1];
                         current["count"] = current["count"] + 1;
                         for (const summary of exit) {
-                            if (current["type"] !== "sum" && current["matchs"].length === 0) {
+                            if (current["type"] !== "sum" && current["last_id"] === matchId) {
                                 if (summary["summonerpuuid"] === puuid) {
                                     this.send_tracker_message(current, summary);
                                 }
@@ -988,6 +991,8 @@ module.exports = {
 
         const exit = [];
 
+        const matchId = match['metadata']['matchId'];
+
         for (let participantId = 0; participantId < 10; participantId++) {
 
             let teamKills = 0;
@@ -1284,7 +1289,7 @@ module.exports = {
             });
 
         }
-        return exit;
+        return [exit, matchId];
     },
 
     /**
