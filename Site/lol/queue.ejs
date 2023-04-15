@@ -32,7 +32,7 @@
                 count += 1
             });
             %>
-            <% if(number != undefined) { %>
+            <% if(number != undefined && number != null) { %>
             You are <%= number %> in the queue.
             <% } else { %>
             You are not in the queue.
