@@ -592,7 +592,6 @@ module.exports = {
         }
     },
     async autocomplete(client, interaction) {
-        return;
         const focusedValue = interaction.options.getFocused().replaceAll("'", "");
         const query = "SELECT DISTINCT champion " +
             "FROM matchs " +

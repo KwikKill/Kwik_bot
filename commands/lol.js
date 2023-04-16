@@ -962,7 +962,6 @@ module.exports = {
         }
     },
     async autocomplete(client, interaction) {
-        return;
         const focusedValue = interaction.options.getFocused();
         const champs = [];
         for (const x of client.champions) {
