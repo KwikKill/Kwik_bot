@@ -1291,7 +1291,13 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         query += " WHERE summoners.discordid=$1;";
         query3 += " GROUP BY gamemode;";
 
-        const response = await client.pg.query(query, query_values);
+        console.log(query);
+        console.log(query_values);
+
+        const response = await client.pg.query({
+            text: query,
+            values: query_values
+        });
         if (response.rows.length === 0) {
             return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
         }
