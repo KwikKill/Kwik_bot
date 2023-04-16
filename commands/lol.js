@@ -920,15 +920,15 @@ module.exports = {
         await interaction.deferReply();
         if (interaction.options.getSubcommandGroup() === "account") {
             if (interaction.options.getSubcommand() === "add") {
-                account_add(interaction, client, summoner_name, region);
+                account_add(client, interaction, summoner_name, region);
             } else if (interaction.options.getSubcommand() === "remove") {
-                account_remove(interaction, client, summoner_name);
+                account_remove(client, interaction, summoner_name);
             } else if (interaction.options.getSubcommand() === "list") {
-                account_list(interaction, client);
+                account_list(client, interaction);
             }
         } else if (interaction.options.getSubcommandGroup() === "queue") {
             if (interaction.options.getSubcommand() === "status") {
-                queue(interaction, client);
+                queue(client, interaction);
             }
         } else if (interaction.options.getSubcommandGroup() === "stats") {
             if (interaction.options.getSubcommand() === "summarized") {
@@ -955,9 +955,9 @@ module.exports = {
                 return await interaction.editReply("You don't have the permission to use this command !");
             }
             if (interaction.options.getSubcommand() === "add") {
-                tracker_add(interaction, client);
+                tracker_add(client, interaction);
             } else if (interaction.options.getSubcommand() === "remove") {
-                tracker_remove(interaction, client);
+                tracker_remove(client, interaction);
             }
         }
     },
