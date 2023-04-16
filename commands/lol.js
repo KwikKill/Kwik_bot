@@ -1190,6 +1190,7 @@ async function queue(client, interaction) {
  */
 async function stats_summarized(client, interaction, discordaccount, champion, role, account, season, gamemode) {
     try {
+        const start = Date.now();
         let i = 1;
 
         let discordusername = "";
@@ -1291,13 +1292,16 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         query += " WHERE summoners.discordid=$1;";
         query3 += " GROUP BY gamemode;";
 
-        console.log(query);
-        console.log(query_values);
+        const start2 = Date.now();
 
         const response = await client.pg.query({
             text: query,
             values: query_values
         });
+
+        const end = Date.now();
+        console.log("Query took " + (end - start2) + "ms");
+
         if (response.rows.length === 0) {
             return await interaction.editReply("You don't have any matchs in the database or the filters are too restrictings.");
         }
@@ -1453,6 +1457,10 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
                 inline: true
             }
         ).setImage("attachment://stats.png");
+
+        const end2 = Date.now();
+        logger.log("Stats command took " + (end2 - start) + " ms");
+
         return await interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (e) {
         logger.log(e);
