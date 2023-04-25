@@ -2843,7 +2843,7 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
             general = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
             for (const x of response.rows) {
-                general += "- <@" + x.discordid + "> : " + x.carry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                general += "- <@" + x.discordid + "> : " + parseInt(x.carry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
             }
         }
 
@@ -2868,7 +2868,7 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
             damages = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
             for (const x of response.rows) {
-                damages += "- <@" + x.discordid + "> : " + x.damage.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                damages += "- <@" + x.discordid + "> : " + parseInt(x.damage).toFixed(decimal) + " % (" + x.count + " matchs)\n";
             }
         }
 
@@ -2893,7 +2893,7 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
             tanked = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
             for (const x of response.rows) {
-                tanked += "- <@" + x.discordid + "> : " + x.tanked.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                tanked += "- <@" + x.discordid + "> : " + parseInt(x.tanked).toFixed(decimal) + " % (" + x.count + " matchs)\n";
             }
         }
 
@@ -2918,7 +2918,7 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
             gold = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
             for (const x of response.rows) {
-                gold += "- <@" + x.discordid + "> : " + x.gold.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                gold += "- <@" + x.discordid + "> : " + parseInt(x.gold).toFixed(decimal) + " % (" + x.count + " matchs)\n";
             }
         }
 
@@ -2942,7 +2942,7 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
             hard = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
             for (const x of response.rows) {
-                hard += "- <@" + x.discordid + "> : " + x.hardcarry.toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                hard += "- <@" + x.discordid + "> : " + parseInt(x.hardcarry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
             }
         }
 
