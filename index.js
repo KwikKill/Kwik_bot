@@ -5,6 +5,8 @@ const lol = require("./util/lol_functions.js");
 const express_server = require("./util/express.js");
 const Markov = require('markov-strings').default;
 
+dns.setDefaultResultOrder('ipv4first')
+
 const client = new Client(
     {
         intents: [
