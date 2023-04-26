@@ -184,7 +184,7 @@ module.exports = {
         const username = number["username"];
 
         const pseudo = await lol_api.summonerByPuuid(this.apiKey, number["region"], puuid, this.client);
-        if (pseudo === null || (pseudo["status_code"] !== undefined && pseudo["status_code"] !== 200)) {
+        if (pseudo === null || (pseudo["status_code"] !== undefined && pseudo["status_code"] !== 200) || pseudo["name"] === undefined) {
             logger.error("Error while fetching summoner name for " + puuid + " in " + number["region"]);
         } else {
             if (pseudo["name"].toLowerCase() !== username.toLowerCase()) {
