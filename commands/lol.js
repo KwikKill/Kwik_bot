@@ -1292,6 +1292,8 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         query += " WHERE summoners.discordid=$1;";
         query3 += " GROUP BY gamemode;";
 
+        console.log(query);
+
         const response = await client.pg.query({
             text: query,
             values: query_values
