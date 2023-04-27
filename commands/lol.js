@@ -1205,16 +1205,16 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
 
         let query = "WITH COEF AS (" +
             "SELECT champion, " +
-            "200/(CASE WHEN count<100 THEN (carry+wr+kp+vs*25+10*cs)*POWER(0.99, (100-count)) ELSE (carry+wr+kp+vs*25+10*cs) END) AS score " +
+            "200/(carry+wr+kp+vs*25+10*cs) AS score " +
             "FROM (" +
             "SELECT champion, " +
             "count(*), " +
-            "(cast(count(*) FILTER (WHERE result = 'Win')*100 as float)/count(*)) as WR, " +
-            "(cast(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100 as float)/count(*)) as CARRY, " +
-            "cast((avg(kill)+avg(assists))*100 as float)/avg(total_kills) as KP, " +
+            "(count(*) FILTER (WHERE result = 'Win')*100.0/count(*)) as WR, " +
+            "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/count(*)) as CARRY, " +
+            "(avg(kill)+avg(assists))*100.0/avg(total_kills) as KP, " +
             "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
             "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
-            "(cast(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100 as float)/count(*)) as hardcarry " +
+            "(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100.0/count(*)) as hardcarry " +
             "FROM matchs " +
             "GROUP BY champion " +
             ") AS t1 " +
@@ -1243,7 +1243,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             "SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as hard_carry, " +
             "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 / count(*) as win_rate, " +
             "avg(score) as delta " +
-            "FROM summoners LEFT JOIN (matchs INNER JOIN COEF ON COEF.champion = matchs.champion";
+            "FROM summoners LEFT JOIN (matchs LEFT JOIN COEF ON COEF.champion = matchs.champion";
 
         let query3 = "SELECT " +
             "gamemode, " +
@@ -1290,8 +1290,6 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         query += test2;
         query += " WHERE summoners.discordid=$1;";
         query3 += " GROUP BY gamemode;";
-
-        console.log(query);
 
         const response = await client.pg.query({
             text: query,
