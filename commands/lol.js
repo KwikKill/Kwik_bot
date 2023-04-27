@@ -1244,7 +1244,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             "SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as hard_carry, " +
             "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 / count(*) as win_rate, " +
             "avg(score) as delta " +
-            "FROM summoners LEFT JOIN (matchs LEFT JOIN COEF ON COEF.champion = matchs.champion";
+            "FROM summoners LEFT JOIN (matchs LEFT JOIN COEF ON COEF.champion = matchs.champion) ON matchs.player = summoners.puuid";
 
         let query3 = "SELECT " +
             "gamemode, " +
@@ -1287,12 +1287,10 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             query_values.push(gamemode);
             i++;
         }
-        query += ") ON matchs.player = summoners.puuid ";
+        //query += ") ON matchs.player = summoners.puuid ";
         query += test2;
         query += " WHERE summoners.discordid=$1;";
         query3 += " GROUP BY gamemode;";
-
-        console.log(query);
 
         const response = await client.pg.query({
             text: query,
