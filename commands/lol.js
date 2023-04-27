@@ -1190,6 +1190,7 @@ async function queue(client, interaction) {
  */
 async function stats_summarized(client, interaction, discordaccount, champion, role, account, season, gamemode) {
     try {
+        const start = Date.now();
         let i = 1;
 
         let discordusername = "";
@@ -1401,13 +1402,14 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         if (account !== null) {
             title += " on \"" + account + "\"";
         }
+        const end = new Date();
 
         // send embed
         const embed = new MessageEmbed()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp();
@@ -1485,6 +1487,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
  */
 async function stats_matchups(client, interaction, discordaccount, champion, role, account, season, gamemode) {
     try {
+        const start = new Date();
         let i = 1;
 
         let discordusername = "";
@@ -1608,12 +1611,14 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
             title += " on \"" + account + "\"";
         }
 
+        const end = new Date();
+
         // send embed
         const embed = new MessageEmbed()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp();
@@ -1685,6 +1690,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
  */
 async function stats_champions(client, interaction, discordaccount, champion, role, account, season, gamemode) {
     try {
+        const start = new Date();
         let i = 1;
 
         let discordusername = "";
@@ -1799,12 +1805,14 @@ async function stats_champions(client, interaction, discordaccount, champion, ro
             title += " on \"" + account + "\"";
         }
 
+        const end = new Date();
+
         // send embed
         const embed = new MessageEmbed()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp()
@@ -2023,6 +2031,7 @@ async function stats_friend(client, interaction, discordaccount, champion, role,
  */
 async function stats_evolution(client, interaction, discordaccount, champion, role, account, season, gamemode) {
     try {
+        const start = Date.now();
         let i = 1;
 
         let discordusername = "";
@@ -2145,12 +2154,14 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
         const image = await chartJSNodeCanvas.renderToBuffer(configuration);
         const attachment = new MessageAttachment(image, 'ks.png');
 
+        const end = Date.now();
+
         // create embed
         const embed = new MessageEmbed()
             .setTitle("" + discordusername + "'s ks")
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp()
@@ -2354,6 +2365,9 @@ async function stats_profile(client, interaction, discordaccount) {
  */
 async function stats_compare(client, interaction, discordaccount, champion, role, account, season, gamemode) {
     try {
+
+        const start = Date.now();
+
         const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
         if (priority.rows[0].priority === 0) {
             return await interaction.editReply("This feature is not available for the moment. If you want to support me, you can contact me on discord : **KwikKill#6123**");
@@ -2736,11 +2750,13 @@ async function stats_compare(client, interaction, discordaccount, champion, role
 
         text += "```";
 
+        const end = new Date();
+
         const embed = new MessageEmbed()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp()
@@ -2783,6 +2799,9 @@ async function stats_compare(client, interaction, discordaccount, champion, role
  */
 async function top_carry(client, interaction, discordaccount, champion, role, season) {
     try {
+
+        const start = new Date();
+
         let i = 1;
 
         const query_values = [];
@@ -2946,12 +2965,14 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
             }
         }
 
+        const end = Date.now();
+
         // send embed
         const embed = new MessageEmbed()
             .setTitle("Top carry :")
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp();
@@ -3006,6 +3027,9 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
  */
 async function top_kwikscore(client, interaction, discordaccount, champion, role, season) {
     try {
+
+        const start = Date.now();
+
         let i = 1;
         const query_values = [];
 
@@ -3099,11 +3123,13 @@ async function top_kwikscore(client, interaction, discordaccount, champion, role
             return interaction.editReply("There are not enought summoners in the database or the filters are too restrictings.");
         }
 
+        const end = Date.now();
+
         const embed = new MessageEmbed()
             .setTitle("Top KS :")
             .setColor("#00FF00")
             .setFooter({
-                text: "Requested by " + interaction.user.username,
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
                 //iconURL: interaction.user.displayAvatarURL()
             })
             .setTimestamp();
