@@ -3193,7 +3193,7 @@ async function tracker_remove(client, interaction) {
         return await interaction.editReply("This channel is currently not a tracker channel !");
     }
     const query = "DELETE FROM trackers WHERE channelid=$1;";
-    client.lol.trackers.splice(client.trackers.indexOf(channel.id), 1);
+    client.lol.trackers.splice(client.lol.trackers.indexOf(channel.id), 1);
     await client.pg.query(query, [channel.id]);
     return await interaction.editReply("tracker channel removed !");
 }

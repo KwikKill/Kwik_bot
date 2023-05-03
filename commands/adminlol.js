@@ -263,6 +263,11 @@ module.exports = {
                     description: 'summarized status',
                     type: 'SUB_COMMAND',
                 },
+                {
+                    name: 'maintenance',
+                    description: 'send a maintenance message',
+                    type: 'SUB_COMMAND',
+                },
             ]
         }
     ],
@@ -505,7 +510,7 @@ module.exports = {
                         const result = await client.pg.query(query, [pick[0], pick[1]]);
                         if (result.rows[0] !== undefined) {
                             if (result.rows[0].count >= 5) {
-                                console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
+                                console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count);
                                 confidence += result.rows[0].winrate / 100;
                             } else {
                                 confidence += 0.5;
@@ -538,7 +543,7 @@ module.exports = {
                     const result = await client.pg.query(query, [pick[0], pick[1]]);
                     if (result.rows[0] !== undefined) {
                         if (result.rows[0].count >= 5) {
-                            console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count)
+                            console.log(pick[0], pick[1], result.rows[0].winrate, result.rows[0].count);
                             confidence += result.rows[0].winrate / 100;
                         } else {
                             confidence += 0.5;
@@ -587,6 +592,12 @@ module.exports = {
                     const size = responses4.rows[0].pg_size_pretty;
 
                     await interaction.editReply({ content: "There are " + count + " real users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size.", ephemeral: false });
+                } else if (interaction.options.getSubcommand() === "maintenance") {
+                    client.lol.trackers.forEach(ch => {
+                        client.channels.fetch(ch).then(chs => {
+                            chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations")
+                        });
+                    });
                 }
             }
         }
