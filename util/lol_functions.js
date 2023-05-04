@@ -357,6 +357,13 @@ module.exports = {
         const discordid = current["discordid"];
         const rank = await this.update_rank(current["id"], current["region"]);
 
+        let game;
+        if (last_game === "none") {
+            game = "1+ games";
+        } else {
+            game = last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")";
+        }
+
         // read current rank and send message if rank changed
         const current_rank = await this.client.pg.query("SELECT * FROM summoners WHERE id = '" + current["id"] + "'");
         if (current_rank.rows[0] !== undefined) {
@@ -399,7 +406,7 @@ module.exports = {
                                     " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                     " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
                                     " LP (" + this.LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)" +
-                                    " | " + last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
+                                    " | " + game);
                             } else {
                                 channel.send("Rank Solo/Duo update for " +
                                     current["username"] +
@@ -424,7 +431,7 @@ module.exports = {
                                     " " + rank["RANKED_FLEX_SR"]["rank"] +
                                     " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
                                     " LP (" + this.LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)" +
-                                    " | " + last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")");
+                                    " | " + game);
                             } else {
                                 channel.send("Rank Flex update for " +
                                     current["username"] +
@@ -461,7 +468,11 @@ module.exports = {
                         for (const summary of exit) {
                             if (current["type"] !== "sum" && current["last_id"] === exit[0]["matchId"]) {
                                 if (summary["summonerpuuid"] === puuid) {
-                                    this.send_tracker_message(current, summary);
+                                    if (current["total"] > 1) {
+                                        this.send_tracker_message(current, summary);
+                                    } else {
+                                        this.send_tracker_message(current, "none");
+                                    }
                                 }
                             }
                             try {
