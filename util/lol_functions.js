@@ -359,7 +359,6 @@ module.exports = {
 
         let game;
         if (last_game === "none") {
-            console.log(current);
             game = "1+ games";
         } else {
             game = last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")";
@@ -470,9 +469,9 @@ module.exports = {
                             if (current["type"] !== "sum" && current["last_id"] === exit[0]["matchId"]) {
                                 if (summary["summonerpuuid"] === puuid) {
                                     if (current["total"] > 1) {
-                                        this.send_tracker_message(current, summary);
-                                    } else {
                                         this.send_tracker_message(current, "none");
+                                    } else {
+                                        this.send_tracker_message(current, summary);
                                     }
                                 }
                             }
