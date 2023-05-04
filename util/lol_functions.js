@@ -359,6 +359,7 @@ module.exports = {
 
         let game;
         if (last_game === "none") {
+            console.log(current);
             game = "1+ games";
         } else {
             game = last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")";
