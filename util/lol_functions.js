@@ -184,14 +184,14 @@ module.exports = {
         const username = number["username"];
 
         const pseudo = summonerName;
-        if (pseudo["name"].toLowerCase() !== username.toLowerCase()) {
+        if (pseudo.toLowerCase() !== username.toLowerCase()) {
             //console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
             await this.client.pg.query({
                 name: "update_pseudo",
                 text: "UPDATE summoners SET username = $1 WHERE puuid = $2",
-                values: [pseudo["name"].toLowerCase(), puuid]
+                values: [pseudo.toLowerCase(), puuid]
             });
-            number["username"] = pseudo["name"].toLowerCase();
+            number["username"] = pseudo.toLowerCase();
         }
     },
 
