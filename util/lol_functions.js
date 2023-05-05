@@ -179,23 +179,19 @@ module.exports = {
     * @function update_pseudo
     * @param {*} number  summoner in client.requests["updates"]
     */
-    async update_pseudo(number) {
+    async update_pseudo(number, summonerName) {
         const puuid = number["puuid"];
         const username = number["username"];
 
-        const pseudo = await lol_api.summonerByPuuid(this.apiKey, number["region"], puuid, this.client);
-        if (pseudo === null || (pseudo["status_code"] !== undefined && pseudo["status_code"] !== 200) || pseudo["name"] === undefined) {
-            logger.error("Error while fetching summoner name for " + puuid + " in " + number["region"]);
-        } else {
-            if (pseudo["name"].toLowerCase() !== username.toLowerCase()) {
-                //console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
-                await this.client.pg.query({
-                    name: "update_pseudo",
-                    text: "UPDATE summoners SET username = $1 WHERE puuid = $2",
-                    values: [pseudo["name"].toLowerCase(), puuid]
-                });
-                number["username"] = pseudo["name"].toLowerCase();
-            }
+        const pseudo = summonerName;
+        if (pseudo["name"].toLowerCase() !== username.toLowerCase()) {
+            //console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
+            await this.client.pg.query({
+                name: "update_pseudo",
+                text: "UPDATE summoners SET username = $1 WHERE puuid = $2",
+                values: [pseudo["name"].toLowerCase(), puuid]
+            });
+            number["username"] = pseudo["name"].toLowerCase();
         }
     },
 
@@ -207,10 +203,6 @@ module.exports = {
      * @returns {Object} summoner data with list of match ids
      */
     async set_update(current, debug = false) {
-        if (current["type"] !== "sum" && current["type"] !== "match") {
-            this.update_pseudo(current);
-        }
-
         const timer1 = Date.now();
 
         const start = await this.update_step_1(current);
@@ -473,6 +465,7 @@ module.exports = {
                                     } else {
                                         this.send_tracker_message(current, summary);
                                     }
+                                    this.update_pseudo(current, summary["summonerName"]);
                                 }
                             }
                             try {
@@ -1041,6 +1034,8 @@ module.exports = {
                 lanePlayed = "MIDDLE";
             }
 
+            const summonerName = match['info']['participants'][participantId]['summonerName'];
+
             // Players Team Id - 100 for Blue or 200 for Red
             const teamId = match['info']['participants'][participantId]['teamId'];
             let firstgold = 1;
@@ -1250,6 +1245,7 @@ module.exports = {
             // Create Output Array
             exit.push({
                 "matchId": matchId,
+                "summonerName": summonerName,
                 "summonerpuuid": puuid,
                 "queueName": queueName,
                 "champion": champname,
