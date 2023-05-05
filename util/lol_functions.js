@@ -23,7 +23,9 @@ module.exports = {
     language: "en_US", // Players Language - Only Used for Champion Names
 
     apiKey: process.env.RIOT_API_KEY,
-    client: null,
+    client: [],
+
+    last: null,
 
     queue: { "summoners": [], "updates": [], "add": [] },
     running: false,
