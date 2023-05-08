@@ -460,7 +460,7 @@ module.exports = {
                     await client.lol.main();
                 } else if (interaction.options.getSubcommand() === "add") {
                     await interaction.editReply("loading summoners...");
-                    const resp = await client.pg.query("SELECT player, SPLIT_PART(puuid, '_', 1) AS region FROM matchs WHERE player IN (SELECT player FROM matchs GROUP BY player ORDER BY count(*) LIMIT 30)");
+                    const resp = await client.pg.query("SELECT player, SPLIT_PART(puuid, '_', 1) AS region FROM matchs WHERE player IN (SELECT player FROM matchs GROUP BY player ORDER BY count(*) ASC, RANDOM() LIMIT 30)");
                     for (const summoner of resp.rows) {
                         client.lol.queue["updates"].push({
                             "type": "sum",

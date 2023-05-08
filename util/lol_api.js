@@ -299,6 +299,7 @@ module.exports = {
             }
         } catch (error) {
             logger.error(error.name + " : " + url);
+            console.log(error);
             await delay(1000);
             return await this.apiCall(url, client);
         }
