@@ -991,7 +991,7 @@ module.exports = {
  * @returns {Promise<void>}
  */
 async function addSumoner(client, name, interaction, region) {
-    client.lol.queue["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0 });
+    client.lol.queue["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0, "first": true });
     await client.lol.main();
 }
 
@@ -1006,7 +1006,7 @@ async function addSumoner(client, name, interaction, region) {
  * @returns {Promise<void>}
  */
 async function add_summoner_manual(client, name, discordid, region, priority = 0) {
-    client.lol.queue["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority });
+    client.lol.queue["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority, "first": true });
     await client.lol.main();
 }
 
