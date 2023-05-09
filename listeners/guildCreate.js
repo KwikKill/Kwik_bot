@@ -9,11 +9,19 @@ module.exports = {
         const first_channel = guild.channels.cache.find(channel => channel.type === "GUILD_TEXT" && channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
         let message;
         if (first_channel) {
-            message = await first_channel.send({ content: "Deploying commands,..." });
+            try {
+                message = await first_channel.send({ content: "Deploying commands,..." });
+            } catch (error) {
+                console.log(error);
+            }
         }
         await client.commands.get("deploy").deploy(client, guild);
         if (message) {
-            await message.edit("Deployed !");
+            try {
+                await message.edit("Deployed !");
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 };

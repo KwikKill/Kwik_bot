@@ -72,6 +72,9 @@ module.exports = {
             });
             if (response.rowCount !== 0) {
                 start = Math.floor(response.rows[0].timestamp / 1000 + 1);
+            } else {
+                start = (Date.now() - 31536000000).toString();
+                start = start.substring(0, start.length - 3);
             }
         } else {
             start = (Date.now() - 31536000000).toString();
