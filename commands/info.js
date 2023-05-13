@@ -13,11 +13,11 @@ module.exports = {
 
             const embed = new MessageEmbed()
                 .setColor("0xffe402")
-                .setTitle("Information about RankUpLoL")
+                .setTitle("Information about the Bot")
                 .setAuthor("RankUpLoL", client.user.avatarURL())//, '
                 .addFields(
                     {
-                        name: "Description",
+                        name: " - Description",
                         value:
                             "RankUpLoL is a bot that allows you to see your league of legends stats.\n" +
                             "It is possible to filter your games by champion, role, queue and more.\n" +
@@ -28,7 +28,7 @@ module.exports = {
                             "If you want to support the bot, please vote for it on [top.gg](https://top.gg/bot/559371363035381777)\n"
                     },
                     {
-                        name: "Commands",
+                        name: " - Commands",
                         value: "You can see all the commands with `/help`"
                     }
                 )
