@@ -591,7 +591,19 @@ module.exports = {
                     const responses4 = await client.pg.query("SELECT pg_size_pretty( pg_database_size('lol_database') );");
                     const size = responses4.rows[0].pg_size_pretty;
 
-                    await interaction.editReply({ content: "There are " + count + " real users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size.", ephemeral: false });
+                    const servers = client.guilds.cache.filter(g => g.id !== '480142959501901845' &&
+                        g.id !== '513776796211085342' &&
+                        g.id !== '671289237982806026' &&
+                        g.id !== "890915473363980308" &&
+                        g.id !== "768786745931333634" &&
+                        g.id !== "717475578176864277" &&
+                        g.id !== "960284706073612379" &&
+                        g.id !== "962329252550807592" &&
+                        g.id !== "1030883669491069099" &&
+                        g.id !== "1071211787707494452"
+                    ).size;
+
+                    await interaction.editReply({ content: "There are " + count + " real users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size. The bot is on " + servers + " servers.", ephemeral: false });
                 } else if (interaction.options.getSubcommand() === "maintenance") {
                     client.lol.trackers.forEach(ch => {
                         client.channels.fetch(ch).then(chs => {
@@ -603,20 +615,15 @@ module.exports = {
         }
     },
     async autocomplete(client, interaction) {
-        const focusedValue = interaction.options.getFocused().replaceAll("'", "");
-        const query = "SELECT DISTINCT champion " +
-            "FROM matchs " +
-            "WHERE lower(champion) LIKE '" + focusedValue.toLowerCase() + "%'" +
-            "AND champion <> 'Invalid' " +
-            "ORDER BY champion " +
-            "LIMIT 15;";
-        const response = await client.pg.query(query);
+        const focusedValue = interaction.options.getFocused();
         const champs = [];
-        for (const x of response.rows) {
-            champs.push({
-                name: x.champion,
-                value: x.champion
-            });
+        for (const x of client.champions) {
+            if (x.toLowerCase().startsWith(focusedValue.toLowerCase()) && champs.length < 25) {
+                champs.push({
+                    name: x,
+                    value: x
+                });
+            }
         }
         return await interaction.respond(champs);
     },
