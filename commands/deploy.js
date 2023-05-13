@@ -9,6 +9,7 @@ module.exports = {
     place: "guild",
     options: undefined,
     commande_channel: true,
+    serverid: ["513776796211085342", "890915473363980308", "962329252550807592"],
     async run(message, client, interaction = undefined, mssg = true) {
 
         let number;
@@ -43,6 +44,7 @@ async function auto_deploy(client) {
             console.log("- auto-deploy for guild " + guild.id + " : " + number);
         }
     }
+    deploy_global(client);
 }
 
 async function deploy(client, guild) {
@@ -63,7 +65,7 @@ async function deploy(client, guild) {
     */
 
     client.commands.forEach((item) => {
-        if (item.deploy !== false && (item.serverid === undefined || item.serverid !== undefined && item.serverid.includes(guild.id))) {
+        if (item.deploy !== false && (item.serverid !== undefined && item.serverid.includes(guild.id))) {
             if (item.name === "help") {
                 commands.push({
                     name: item.name,
@@ -91,7 +93,7 @@ async function deploy(client, guild) {
     });
 
     client.context_menu.forEach((item) => {
-        if (item.serverid === undefined || item.serverid !== undefined && item.serverid.includes(guild.id)) {
+        if (item.serverid !== undefined && item.serverid.includes(guild.id)) {
             commands.push({
                 name: item.name,
                 type: item.type,
@@ -184,4 +186,63 @@ async function deploy(client, guild) {
             }
         }
     });*/
+}
+
+async function deploy_global(client) {
+    const commands = [];
+
+    const permission = {};
+
+    permission["none"] = [];
+    permission["modo"] = [];
+    permission["owner"] = client.owners;
+
+    /*let roles = guild.roles.cache;
+    roles.forEach(role => {
+        if (role.permissions.has("ADMINISTRATOR") && !role.managed) {
+            permission["modo"].push(role.id);
+        }
+    });
+    */
+
+    client.commands.forEach((item) => {
+        if (item.deploy !== false && (item.serverid === undefined)) {
+            if (item.name === "help") {
+                commands.push({
+                    name: item.name,
+                    description: item.description,
+                    options: item.options,
+                    defaultPermission: item.permission === "none",
+                });
+            } else {
+                if (item.options !== undefined) {
+                    commands.push({
+                        name: item.name,
+                        description: item.description,
+                        options: item.options,
+                        defaultPermission: item.permission === "none",
+                    });
+                } else {
+                    commands.push({
+                        name: item.name,
+                        description: item.description,
+                        defaultPermission: item.permission === "none",
+                    });
+                }
+            }
+        }
+    });
+
+    client.context_menu.forEach((item) => {
+        if (item.serverid === undefined) {
+            commands.push({
+                name: item.name,
+                type: item.type,
+                defaultPermission: item.permission === "none",
+            });
+        }
+    });
+
+    await client.application.commands.set(commands);
+    return commands.length.toString();
 }

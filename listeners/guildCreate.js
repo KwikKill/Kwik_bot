@@ -6,7 +6,7 @@ module.exports = {
     place: "guild",
     options: undefined,
     async run(client, guild) {
-        const first_channel = guild.channels.cache.find(channel => channel.type === "GUILD_TEXT" && channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
+        const first_channel = guild.channels.cache.find(channel => channel.type === "GUILD_TEXT" && channel.permissionsFor(guild.members.me).has("SEND_MESSAGES"));
         let message;
         if (first_channel) {
             try {
