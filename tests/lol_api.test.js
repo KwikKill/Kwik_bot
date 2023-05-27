@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { LolApi } = require('../util/lol_api');
 const { describe, it, expect, beforeEach } = require('@jest/globals');
 
@@ -17,9 +18,16 @@ const client_preset = {
             "OC1": "SEA",
             "TR1": "EUROPE",
             "RU": "EUROPE"
-        }
+        },
+        "routes": [
+            "EUROPE",
+            "AMERICAS",
+            "ASIA",
+            "SEA"
+        ],
     }
 };
+let matchId = null;
 
 describe('getChampsId', () => {
     let client;
@@ -344,5 +352,148 @@ describe('masterLeagues', () => {
         const error = new Error('API call failed');
         api.apiCall = jest.fn().mockRejectedValue(error);
         await expect(api.masterLeagues(api_key, 'EUW1', 'RANKED_SOLO_5x5', client)).rejects.toThrow(error);
+    });
+});
+
+describe('matchlistsByAccount', () => {
+    let client;
+
+    beforeEach(() => {
+        client = client_preset; // mock client object
+    });
+
+    it('should return an array of match IDs when given valid input', async () => {
+        const api = new LolApi();
+        const matchIds = await api.matchlistsByAccount(api_key, client.lol.route['EUW1'], '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client);
+        expect(Array.isArray(matchIds)).toBe(true);
+        expect(matchIds.length).toBeGreaterThan(0);
+        expect(typeof matchIds[0]).toBe('string');
+        matchId = matchIds[0];
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.matchlistsByAccount(api_key, 'invalid', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.apiCall = jest.fn().mockRejectedValue(error);
+        await expect(api.matchlistsByAccount(api_key, client.lol.route['EUW1'], '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client)).rejects.toThrow(error);
+    });
+});
+
+describe('matchesById', () => {
+    let client;
+
+    beforeEach(() => {
+        client = client_preset; // mock client object
+    });
+
+    it('should return a match object when given valid input', async () => {
+        const api = new LolApi();
+        const match = await api.matchesById(api_key, client.lol.route['EUW1'], matchId, client);
+        expect(typeof match).toBe('object');
+        expect(match).toHaveProperty('metadata');
+        expect(match).toHaveProperty('info');
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.matchesById(api_key, 'invalid', matchId, client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.apiCall = jest.fn().mockRejectedValue(error);
+        await expect(api.matchesById(api_key, client.lol.route['EUW1'], matchId, client)).rejects.toThrow(error);
+    });
+});
+
+describe('timelinesByMatchId', () => {
+    let client;
+
+    beforeEach(() => {
+        client = client_preset; // mock client object
+    });
+
+    it('should return a timeline object when given valid input', async () => {
+        const api = new LolApi();
+        const timeline = await api.timelinesByMatchId(api_key, client.lol.route['EUW1'], matchId, client);
+        expect(typeof timeline).toBe('object');
+        expect(timeline).toHaveProperty('metadata');
+        expect(timeline).toHaveProperty('info');
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.timelinesByMatchId(api_key, 'invalid', matchId, client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.apiCall = jest.fn().mockRejectedValue(error);
+        await expect(api.timelinesByMatchId(api_key, client.lol.route['EUW1'], matchId, client)).rejects.toThrow(error);
+    });
+});
+
+describe('championmasteriesBySummoner', () => {
+    let client;
+
+    beforeEach(() => {
+        client = client_preset; // mock client object
+    });
+
+    it('should return an array of champion mastery objects when given valid input', async () => {
+        const api = new LolApi();
+        const championMasteries = await api.championmasteriesBySummoner(api_key, 'EUW1', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client);
+        expect(Array.isArray(championMasteries)).toBe(true);
+        expect(championMasteries.length).toBeGreaterThan(0);
+        expect(typeof championMasteries[0]).toBe('object');
+        expect(championMasteries[0]).toHaveProperty('championId');
+        expect(championMasteries[0]).toHaveProperty('championLevel');
+        expect(championMasteries[0]).toHaveProperty('championPoints');
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.championmasteriesBySummoner(api_key, 'invalid', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.apiCall = jest.fn().mockRejectedValue(error);
+        await expect(api.championmasteriesBySummoner(api_key, 'EUW1', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client)).rejects.toThrow(error);
+    });
+});
+
+describe('championList', () => {
+    let client;
+
+    beforeEach(() => {
+        client = client_preset; // mock client object
+    });
+
+    it('should return an array of champion names indexed by ID when given valid input', async () => {
+        const api = new LolApi();
+        const championList = await api.championList(api_key, 'EUW1', 'en_US', client);
+        expect(Array.isArray(championList)).toBe(true);
+        expect(championList.length).toBeGreaterThan(0);
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.championList(api_key, 'invalid', 'en_US', client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.getCurrentPatch = jest.fn().mockRejectedValue(error);
+        await expect(api.championList(api_key, 'EUW1', 'en_US', client)).rejects.toThrow(error);
     });
 });

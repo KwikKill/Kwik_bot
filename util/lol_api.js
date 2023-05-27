@@ -208,6 +208,7 @@ class LolApi {
      * @returns {Object}      match data
      */
     async matchesById(apiKey, route, matchId, client) {
+        this.checkRoute(route, client);
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
         const result = await this.apiCall(url, client);
         if (result === null) {
@@ -225,6 +226,7 @@ class LolApi {
      * @returns {Object}      match data
      */
     async matchlistsByAccount(apiKey, route, puuid, options, client) {
+        this.checkRoute(route, client);
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids" + options + "&api_key=" + apiKey;
         return await this.apiCall(url, client);
     }
@@ -238,6 +240,7 @@ class LolApi {
      * @returns {Object}      timeline data
      */
     async timelinesByMatchId(apiKey, route, matchId, client) {
+        this.checkRoute(route, client);
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "/timeline" + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
     }
@@ -390,6 +393,23 @@ class LolApi {
             return true;
         }
         throw new Error("Invalid Region");
+
+    }
+
+    /**
+    * Check route validity
+    * @function checkRoute
+    * @param {*} route    route of the server
+    * @param {*} client    discord client
+    * @returns {Boolean}   true if route is valid
+    * @throws {Error}      if route is invalid
+    */
+    checkRoute(route, client) {
+        // Check if region is valid
+        if (client.lol.routes.includes(route)) {
+            return true;
+        }
+        throw new Error("Invalid Route");
 
     }
 }

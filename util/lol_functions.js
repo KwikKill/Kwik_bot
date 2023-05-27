@@ -20,6 +20,12 @@ module.exports = {
         "TR1": "EUROPE",
         "RU": "EUROPE"
     },
+    routes: [
+        "EUROPE",
+        "AMERICAS",
+        "ASIA",
+        "SEA"
+    ],
     max_games: 100,
     champions: [],
     language: "en_US", // Players Language - Only Used for Champion Names
