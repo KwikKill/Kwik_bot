@@ -243,18 +243,19 @@ describe('challengerLeagues', () => {
     it('should return an array of league entries when given valid input', async () => {
         const api = new LolApi();
         const leagues = await api.challengerLeagues(api_key, 'EUW1', 'RANKED_SOLO_5x5', client);
-        expect(Array.isArray(leagues)).toBe(true);
-        expect(leagues.length).toBeGreaterThan(0);
-        expect(leagues[0]).toHaveProperty('queueType');
-        expect(leagues[0]).toHaveProperty('tier');
-        expect(leagues[0]).toHaveProperty('rank');
-        expect(leagues[0]).toHaveProperty('leaguePoints');
-        expect(leagues[0]).toHaveProperty('wins');
-        expect(leagues[0]).toHaveProperty('losses');
-        expect(leagues[0]).toHaveProperty('hotStreak');
-        expect(leagues[0]).toHaveProperty('veteran');
-        expect(leagues[0]).toHaveProperty('freshBlood');
-        expect(leagues[0]).toHaveProperty('inactive');
+        expect(leagues).toHaveProperty('tier', 'CHALLENGER');
+        expect(Array.isArray(leagues["entries"])).toBe(true);
+        expect(leagues["entries"].length).toBeGreaterThan(0);
+        expect(leagues["entries"][0]).toHaveProperty('summonerId');
+        expect(leagues["entries"][0]).toHaveProperty('summonerName');
+        expect(leagues["entries"][0]).toHaveProperty('leaguePoints');
+        expect(leagues["entries"][0]).toHaveProperty('rank');
+        expect(leagues["entries"][0]).toHaveProperty('wins');
+        expect(leagues["entries"][0]).toHaveProperty('losses');
+        expect(leagues["entries"][0]).toHaveProperty('hotStreak');
+        expect(leagues["entries"][0]).toHaveProperty('veteran');
+        expect(leagues["entries"][0]).toHaveProperty('freshBlood');
+        expect(leagues["entries"][0]).toHaveProperty('inactive');
     });
 
     it('should throw an error when given an invalid region', async () => {
@@ -280,18 +281,19 @@ describe('grandmasterLeagues', () => {
     it('should return an array of league entries when given valid input', async () => {
         const api = new LolApi();
         const leagues = await api.grandmasterLeagues(api_key, 'EUW1', 'RANKED_SOLO_5x5', client);
-        expect(Array.isArray(leagues)).toBe(true);
-        expect(leagues.length).toBeGreaterThan(0);
-        expect(leagues[0]).toHaveProperty('queueType');
-        expect(leagues[0]).toHaveProperty('tier');
-        expect(leagues[0]).toHaveProperty('rank');
-        expect(leagues[0]).toHaveProperty('leaguePoints');
-        expect(leagues[0]).toHaveProperty('wins');
-        expect(leagues[0]).toHaveProperty('losses');
-        expect(leagues[0]).toHaveProperty('hotStreak');
-        expect(leagues[0]).toHaveProperty('veteran');
-        expect(leagues[0]).toHaveProperty('freshBlood');
-        expect(leagues[0]).toHaveProperty('inactive');
+        expect(leagues).toHaveProperty('tier', 'GRANDMASTER');
+        expect(Array.isArray(leagues["entries"])).toBe(true);
+        expect(leagues["entries"].length).toBeGreaterThan(0);
+        expect(leagues["entries"][0]).toHaveProperty('summonerId');
+        expect(leagues["entries"][0]).toHaveProperty('summonerName');
+        expect(leagues["entries"][0]).toHaveProperty('leaguePoints');
+        expect(leagues["entries"][0]).toHaveProperty('rank');
+        expect(leagues["entries"][0]).toHaveProperty('wins');
+        expect(leagues["entries"][0]).toHaveProperty('losses');
+        expect(leagues["entries"][0]).toHaveProperty('hotStreak');
+        expect(leagues["entries"][0]).toHaveProperty('veteran');
+        expect(leagues["entries"][0]).toHaveProperty('freshBlood');
+        expect(leagues["entries"][0]).toHaveProperty('inactive');
     });
 
     it('should throw an error when given an invalid region', async () => {
@@ -304,5 +306,43 @@ describe('grandmasterLeagues', () => {
         const error = new Error('API call failed');
         api.apiCall = jest.fn().mockRejectedValue(error);
         await expect(api.grandmasterLeagues(api_key, 'EUW1', 'RANKED_SOLO_5x5', client)).rejects.toThrow(error);
+    });
+});
+
+describe('masterLeagues', () => {
+    let client;
+
+    beforeEach(() => {
+        client = client_preset; // mock client object
+    });
+
+    it('should return an array of league entries when given valid input', async () => {
+        const api = new LolApi();
+        const leagues = await api.masterLeagues(api_key, 'EUW1', 'RANKED_SOLO_5x5', client);
+        expect(leagues).toHaveProperty('tier', 'MASTER');
+        expect(Array.isArray(leagues["entries"])).toBe(true);
+        expect(leagues["entries"].length).toBeGreaterThan(0);
+        expect(leagues["entries"][0]).toHaveProperty('summonerId');
+        expect(leagues["entries"][0]).toHaveProperty('summonerName');
+        expect(leagues["entries"][0]).toHaveProperty('leaguePoints');
+        expect(leagues["entries"][0]).toHaveProperty('rank');
+        expect(leagues["entries"][0]).toHaveProperty('wins');
+        expect(leagues["entries"][0]).toHaveProperty('losses');
+        expect(leagues["entries"][0]).toHaveProperty('hotStreak');
+        expect(leagues["entries"][0]).toHaveProperty('veteran');
+        expect(leagues["entries"][0]).toHaveProperty('freshBlood');
+        expect(leagues["entries"][0]).toHaveProperty('inactive');
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.masterLeagues(api_key, 'invalid', 'RANKED_SOLO_5x5', client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.apiCall = jest.fn().mockRejectedValue(error);
+        await expect(api.masterLeagues(api_key, 'EUW1', 'RANKED_SOLO_5x5', client)).rejects.toThrow(error);
     });
 });
