@@ -1,5 +1,7 @@
-const lolapi = require('../util/lol_api');
+const { LolApi } = require('../util/lol_api');
 const { describe, it, expect, beforeEach } = require('@jest/globals');
+
+const api_key = process.env.RIOT_API_KEY;
 
 describe('getChampsId', () => {
     let client;
@@ -7,12 +9,26 @@ describe('getChampsId', () => {
     beforeEach(() => {
         client = {
             'lol': {
-                "api_limit": false
+                "api_limit": false,
+                "route": {
+                    "EUW1": "EUROPE",
+                    "NA1": "AMERICAS",
+                    "KR": "ASIA",
+                    "EUN1": "EUROPE",
+                    "BR1": "AMERICAS",
+                    "JP1": "ASIA",
+                    "LA1": "AMERICAS",
+                    "LA2": "AMERICAS",
+                    "OC1": "SEA",
+                    "TR1": "EUROPE",
+                    "RU": "EUROPE"
+                }
             }
         }; // mock client object
     });
 
     it('should return an object with champion names as keys and IDs as values', async () => {
+        const lolapi = new LolApi();
         const champs = await lolapi.getChampsId('NA1', client);
         expect(champs).toHaveProperty('Aatrox', 'Aatrox');
         expect(champs).toHaveProperty('Ahri', 'Ahri');
@@ -22,20 +38,17 @@ describe('getChampsId', () => {
     });
 
     it('should throw an error when given an invalid region', async () => {
+        const lolapi = new LolApi();
         await expect(lolapi.getChampsId('invalid', client)).rejects.toThrow();
     });
 
     it('should throw an error when the API call fails', async () => {
+        const lolapi = new LolApi();
         const error = new Error('API call failed');
         lolapi.apiCall = jest.fn().mockRejectedValue(error);
         await expect(lolapi.getChampsId('NA1', client)).rejects.toThrow(error);
     });
 
-    it('should throw an error when the API call fails', async () => {
-        const error = new Error('API call failed');
-        lolapi.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(lolapi.getChampsId('NA1', client)).rejects.toThrow(error);
-    });
 });
 
 describe('summonersByName', () => {
@@ -44,30 +57,94 @@ describe('summonersByName', () => {
     beforeEach(() => {
         client = {
             'lol': {
-                "api_limit": false
+                "api_limit": false,
+                "route": {
+                    "EUW1": "EUROPE",
+                    "NA1": "AMERICAS",
+                    "KR": "ASIA",
+                    "EUN1": "EUROPE",
+                    "BR1": "AMERICAS",
+                    "JP1": "ASIA",
+                    "LA1": "AMERICAS",
+                    "LA2": "AMERICAS",
+                    "OC1": "SEA",
+                    "TR1": "EUROPE",
+                    "RU": "EUROPE"
+                }
             }
         }; // mock client object
     });
 
     it('should return a summoner object when given valid input', async () => {
-        const summoner = await lolapi.summonersByName(process.env.RIOT_API_KEY, 'EUW1', 'KwikKill', client);
-        console.log(summoner);
+        const lolapi = new LolApi();
+        const summoner = await lolapi.summonersByName(api_key, 'EUW1', 'KwikKill', client);
         expect(summoner).toHaveProperty('id');
         expect(summoner).toHaveProperty('accountId');
         expect(summoner).toHaveProperty('puuid');
-        expect(summoner).toHaveProperty('name', 'SummonerName');
+        expect(summoner).toHaveProperty('name', 'KwikKill');
         expect(summoner).toHaveProperty('profileIconId');
         expect(summoner).toHaveProperty('revisionDate');
         expect(summoner).toHaveProperty('summonerLevel');
     });
 
     it('should throw an error when given an invalid region', async () => {
-        await expect(lolapi.summonersByName(process.env.RIOT_API_KEY, 'invalid', 'SummonerName', client)).rejects.toThrow();
+        const lolapi = new LolApi();
+        await expect(lolapi.summonersByName(api_key, 'invalid', 'SummonerName', client)).rejects.toThrow();
     });
 
     it('should throw an error when the API call fails', async () => {
+        const lolapi = new LolApi();
         const error = new Error('API call failed');
         lolapi.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(lolapi.summonersByName(process.env.RIOT_API_KEY, 'EUW1', 'KwikKill', client)).rejects.toThrow(error);
+        await expect(lolapi.summonersByName(api_key, 'EUW1', 'KwikKill', client)).rejects.toThrow(error);
+    });
+});
+
+describe('summonerByPuuid', () => {
+    let client;
+
+    beforeEach(() => {
+        client = {
+            'lol': {
+                "api_limit": false,
+                "route": {
+                    "EUW1": "EUROPE",
+                    "NA1": "AMERICAS",
+                    "KR": "ASIA",
+                    "EUN1": "EUROPE",
+                    "BR1": "AMERICAS",
+                    "JP1": "ASIA",
+                    "LA1": "AMERICAS",
+                    "LA2": "AMERICAS",
+                    "OC1": "SEA",
+                    "TR1": "EUROPE",
+                    "RU": "EUROPE"
+                }
+            }
+        }; // mock client object
+    });
+
+    it('should return a summoner object when given valid input', async () => {
+        const api = new LolApi();
+        const summoner = await api.summonerByPuuid(api_key, 'EUW1', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client);
+        expect(summoner).toHaveProperty('id');
+        expect(summoner).toHaveProperty('accountId');
+        expect(summoner).toHaveProperty('puuid', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA');
+        expect(summoner).toHaveProperty('name');
+        expect(summoner).toHaveProperty('profileIconId');
+        expect(summoner).toHaveProperty('revisionDate');
+        expect(summoner).toHaveProperty('summonerLevel');
+    });
+
+    it('should throw an error when given an invalid region', async () => {
+        const api = new LolApi();
+        await expect(api.summonerByPuuid(api_key, '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client)).rejects.toThrow();
+    });
+
+    it('should throw an error when the API call fails', async () => {
+        const api = new LolApi();
+        const error = new Error('API call failed');
+        api.apiCall = jest.fn().mockRejectedValue(error);
+        await expect(api.summonerByPuuid(api_key, 'EUW1', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client)).rejects.toThrow(error);
     });
 });

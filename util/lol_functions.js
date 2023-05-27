@@ -1,8 +1,10 @@
 const logger = require("./logger.js");
-const lol_api = require("./lol_api.js");
+const { LolApi } = require("./lol_api.js");
 
 
 module.exports = {
+    lol_api: new LolApi(),
+
     RANKED_FLEX: 440,
     RANKED_SOLO: 420,
     route: {
@@ -42,7 +44,7 @@ module.exports = {
     async setup(client) {
         this.client = client;
         this.champions = [];
-        lol_api.championList(this.apiKey, "EUW1", this.language, client).then(list => {
+        this.lol_api.championList(this.apiKey, "EUW1", this.language, client).then(list => {
             this.champions = list;
             this.client.champions = [];
             for (let i = 0; i < list.length; i++) {
@@ -103,7 +105,7 @@ module.exports = {
         do {
             const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
             listOfMatches = { 'matches': [] };
-            const list = await lol_api.matchlistsByAccount(this.apiKey, this.route[region], puuid, options, this.client);
+            const list = await this.lol_api.matchlistsByAccount(this.apiKey, this.route[region], puuid, options, this.client);
             if (list === null || (list["status_code"] !== undefined && list["status_code"] !== 200)) {
                 logger.error("Error while fetching match list for " + puuid + " in " + region, list["status_code"]);
             } else {
@@ -243,7 +245,7 @@ module.exports = {
      * @returns {Object} rank data
      */
     async update_rank(summoner_id, region) {
-        const response = await lol_api.leaguesBySummoner(this.apiKey, region, summoner_id, this.client);
+        const response = await this.lol_api.leaguesBySummoner(this.apiKey, region, summoner_id, this.client);
 
         const data = {
             "RANKED_SOLO_5x5": {
@@ -280,7 +282,7 @@ module.exports = {
         const masteries = {};
         const query = await this.client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
         for (const x of query.rows) {
-            const response = await lol_api.championmasteriesBySummoner(this.apiKey, region, x.id, this.client);
+            const response = await this.lol_api.championmasteriesBySummoner(this.apiKey, region, x.id, this.client);
             for (const y of response) {
                 if (masteries[y.championId] === undefined) {
                     masteries[y.championId] = y;
@@ -456,7 +458,7 @@ module.exports = {
         while (current["matchs"].length > 0) {
             const matchId = current["matchs"].shift();
             this.queue_length -= 1;
-            lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
+            this.lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
 
                 if (match?.status?.status_code !== 404) {
                     const exit = this.matchHistoryOutput(match);
@@ -639,7 +641,7 @@ module.exports = {
         const discordid = current["discordid"];
         const region = current["region"];
         const priority = current["priority"];
-        const summonerObject = await lol_api.summonersByName(this.apiKey, region, username, this.client);
+        const summonerObject = await this.lol_api.summonersByName(this.apiKey, region, username, this.client);
         if (summonerObject === null) {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
@@ -764,7 +766,7 @@ module.exports = {
                 const region = current["region"];
                 const matchId = current["matchid"];
 
-                lol_api.matchesById(this.apiKey, this.route[region], matchId, this.client).then(match => {
+                this.lol_api.matchesById(this.apiKey, this.route[region], matchId, this.client).then(match => {
 
                     if (match?.status?.status_code !== 404) {
                         const exit = this.matchHistoryOutput(match);
@@ -1233,7 +1235,7 @@ module.exports = {
             const champname = this.champions[championId];
             if (champname === undefined || champname === null) {
                 logger.error("Champion ID: " + championId + " is not in the champion list. Fetching new champion list.");
-                this.champions = lol_api.championList(this.apiKey, "EUW1", this.language, this.client);
+                this.champions = this.lol_api.championList(this.apiKey, "EUW1", this.language, this.client);
                 const champname = this.champions[championId];
                 if (champname === undefined || champname === null) {
                     logger.error("Champion ID: " + championId + " is still not in the champion list. Skipping match " + matchId + ".");

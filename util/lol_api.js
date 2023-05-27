@@ -5,7 +5,7 @@ const logger = require('./logger.js');
 const delay_time = 10000;
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
-module.exports = {
+class LolApi {
     /**
      * Get the current patch version
      * @function getCurrentPatch
@@ -41,7 +41,7 @@ module.exports = {
 
         const url = "https://ddragon.leagueoflegends.com/realms/" + region + ".json";
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * Get a dict with champion name and champion id
@@ -59,7 +59,7 @@ module.exports = {
             data[raw['data'][champ]['name']] = raw['data'][champ]['id'];
         }
         return data;
-    },
+    }
 
     /**
      * Get the summoner data from the API by name
@@ -70,9 +70,10 @@ module.exports = {
      * @returns {Object}        summoner's data
      */
     async summonersByName(apiKey, region, summonerName, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * Get the summoner data from the API by name
@@ -83,9 +84,10 @@ module.exports = {
      * @returns {Object}         summoner's data
      */
     async summonerByPuuid(apiKey, region, summonerPuuid, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/" + summonerPuuid + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * Get Challenge data from the API
@@ -95,9 +97,10 @@ module.exports = {
      * @returns {Object}   Challenge's data
      */
     async challenge(apiKey, region, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/challenges/percentiles?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * Get ChallengeConfig data from the API
@@ -107,9 +110,10 @@ module.exports = {
      * @returns {Object}   ChallengeConfig
      */
     async challengeconfig(apiKey, region, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/challenges/config?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * Get Challenge data of a player by puuid from the API
@@ -120,9 +124,10 @@ module.exports = {
      * @returns {Object}   Challenge data of the player
      */
     async challengebypuuid(apiKey, region, puuid, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/player-data/" + puuid + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get the leagues of a summoner by summoner id
@@ -133,9 +138,10 @@ module.exports = {
      * @returns {Object}      leagues of the player
      */
     async leaguesBySummoner(apiKey, region, summonerId, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerId + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get challenger league
@@ -146,9 +152,10 @@ module.exports = {
      * @returns {Object}      challenger league
      */
     async challengerLeagues(apiKey, region, queue, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/challengerleagues/by-queue/" + queue + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get grandmaster league
@@ -159,9 +166,10 @@ module.exports = {
      * @returns {Object}      grandmaster league
      */
     async grandmasterLeagues(apiKey, region, queue, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/grandmasterleagues/by-queue/" + queue + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get master league
@@ -172,9 +180,10 @@ module.exports = {
      * @returns {Object}      master league
      */
     async masterLeagues(apiKey, region, queue, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/masterleagues/by-queue/" + queue + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get the leagues of a summoner by league id
@@ -185,9 +194,10 @@ module.exports = {
      * @returns {Object}      league data
      */
     async leaguesByLeagueId(apiKey, region, leagueId, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/leagues/" + leagueId + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get match by match id
@@ -204,7 +214,7 @@ module.exports = {
             logger.error("error while fetching match " + matchId);
         }
         return result;
-    },
+    }
 
     /**
      * get match by match id
@@ -217,7 +227,7 @@ module.exports = {
     async matchlistsByAccount(apiKey, route, puuid, options, client) {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids" + options + "&api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * get timeline by match id
@@ -230,7 +240,7 @@ module.exports = {
     async timelinesByMatchId(apiKey, route, matchId, client) {
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "/timeline" + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
     * get champion mastery by summoner id
@@ -241,9 +251,10 @@ module.exports = {
     * @returns {Object}      champion mastery data
     */
     async championmasteriesBySummoner(apiKey, region, summonerId, client) {
+        this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/" + summonerId + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
-    },
+    }
 
     /**
      * Fetch the data from the API
@@ -307,7 +318,7 @@ module.exports = {
             await delay(1000);
             return await this.apiCall(url, client);
         }
-    },
+    }
 
     /**
     * get champion stats
@@ -337,7 +348,7 @@ module.exports = {
         } catch (error) {
             logger.error(error);
         }
-    },
+    }
 
     /**
     * get champion list
@@ -364,4 +375,25 @@ module.exports = {
 
         return champions;
     }
+
+    /**
+    * Check region validity
+    * @function checkRegion
+    * @param {*} region    region of the server
+    * @param {*} client    discord client
+    * @returns {Boolean}   true if region is valid
+    * @throws {Error}      if region is invalid
+    */
+    checkRegion(region, client) {
+        // Check if region is valid
+        if (client.lol.route[region] !== undefined) {
+            return true;
+        }
+        throw new Error("Invalid Region");
+
+    }
+}
+
+module.exports = {
+    LolApi
 };
