@@ -1,4 +1,6 @@
 name: Jest Tests
+env:
+  RIOT_API_KEY: '${{ env.RIOT_API_KEY }}'
 
 on: [push, pull_request]
 
