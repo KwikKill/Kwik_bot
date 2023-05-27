@@ -607,7 +607,7 @@ module.exports = {
                 } else if (interaction.options.getSubcommand() === "maintenance") {
                     client.lol.trackers.forEach(ch => {
                         client.channels.fetch(ch).then(chs => {
-                            chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations")
+                            chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations");
                         });
                     });
                 }

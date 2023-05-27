@@ -298,6 +298,10 @@ module.exports = {
                     return null;
             }
         } catch (error) {
+            // catch Invalid JSON
+            if (error.type === 'invalid-json') {
+                throw error;
+            }
             logger.error(error.name + " : " + url);
             console.log(error);
             await delay(1000);
