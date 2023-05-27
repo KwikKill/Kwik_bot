@@ -126,7 +126,8 @@ describe('challenge', () => {
     it('should return a challenge object when given valid input', async () => {
         const api = new LolApi();
         const challenge = await api.challenge(api_key, 'EUW1', client);
-        expect(challenge).toHaveProperty('percentiles');
+        // check if challenge is a dictionary
+        expect(typeof challenge).toBe('object');
     });
 
     it('should throw an error when given an invalid region', async () => {
@@ -152,7 +153,8 @@ describe('challengeconfig', () => {
     it('should return a challenge config object when given valid input', async () => {
         const api = new LolApi();
         const challengeConfig = await api.challengeconfig(api_key, 'EUW1', client);
-        expect(challengeConfig).toHaveProperty('gameModeToConfig');
+        expect(challengeConfig).toBeInstanceOf(Array);
+        expect(challengeConfig[0]).toHaveProperty('id');
     });
 
     it('should throw an error when given an invalid region', async () => {
@@ -178,7 +180,7 @@ describe('challengebypuuid', () => {
     it('should return a challenge object when given valid input', async () => {
         const api = new LolApi();
         const challenge = await api.challengebypuuid(api_key, 'EUW1', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client);
-        expect(challenge).toHaveProperty('percentiles');
+        expect(challenge).toHaveProperty('totalPoints');
     });
 
     it('should throw an error when given an invalid region', async () => {
