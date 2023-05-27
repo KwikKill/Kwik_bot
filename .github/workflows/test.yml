@@ -1,8 +1,9 @@
 name: Jest Tests
-env:
-  RIOT_API_KEY: '${{ env.RIOT_API_KEY }}'
 
 on: [push, pull_request]
+
+env:
+  RIOT_API_KEY: '${{ secrets.RIOT_API_KEY }}'
 
 jobs:
   test:
