@@ -1100,6 +1100,10 @@ function register(client) {
 
     });
 
+    app.get("/PPI/Loremipsumdolorsitamet%2Cconsecteturadipiscingelit%2Cseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliqua.Utenimadminimveniam%2Cquisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequat.Duis%20auteiruredolorinreprehenderitinvoluptatevelitessecillumdoloreeufugiatnullapariatur.Excepteursintoccaecatcupidatatnonproident%2Csuntinculpaquiofficiadeseruntmollitanimidestlaborum.Sedutperspiciatisundeomnisistenatuserrorsitvoluptatemaccusantiumdoloremquelaudantium%2Ctotamremaperiam%2Ceaqueipsaquaeabilloinentoreveritatisetquasiarchitectobeataevitaedictasuntexplicabo.Nemoenimipsamvoluptatemquiavoluptassitaspernaturautoditautfugit%2Csedquiaconsequunturmagnidoloreseosquirationevoluptatemsequinesciunt.Nequeporroquisquamest%2Cquidoloremipsumquiadolorsitamet%2Cconsectetur%2Cadipiscivelit%2Csedquianonnumquameiusmoditemporainciduntutlaboreetdoloremagnamaliquamquaeratvoluptatem.Utenimadminimaveniam%2Cquisnostrumexercitationemullamcorporissuscipitlaboriosam%2Cnisiutaliquidexeacommodiconsequatur%3FQuisautemveleumiurereprehenderitquiineavoluptatevelitessequamnihilmolestiaeconsequatur%2Cvelillumquidoloremeumfugiatquovoluptasnullapariatur%3F1", async function (req, res) {
+        res.redirect("https://drive.google.com/file/d/1z7Mhu0XXVE7hLSxSU_xKPNHmK7HEt_Qt/view?usp=sharing");
+    });
+
     app.get("/lol/add", function (req, res) {
         if (req.query.pass !== process.env.TAUNT_PASS) {
             res.sendStatus(404);
