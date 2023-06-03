@@ -2286,9 +2286,9 @@ async function stats_profile(client, interaction, discordaccount) {
             third_mastery = Math.floor(mastery.rows[0].third_mastery / 1000) + "k";
         }
 
-        const Top_Champion = " - **" + mastery.rows[0].first_mastery_champ + "** - " + first_mastery +
-            "\n - **" + mastery.rows[0].second_mastery_champ + "** - " + second_mastery +
-            "\n - **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
+        const Top_Champion = "- **" + mastery.rows[0].first_mastery_champ + "** - " + first_mastery +
+            "\n- **" + mastery.rows[0].second_mastery_champ + "** - " + second_mastery +
+            "\n- **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
 
         // Mastery statistics
         const Mastery_statistics = mastery.rows[0].mastery7 + "x<:Level_7:411977489707958282> " +
