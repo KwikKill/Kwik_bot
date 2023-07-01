@@ -455,6 +455,7 @@ module.exports = {
                         // delete the channel from the database
                         logger.log("Channel " + x + " not found, deleting from database");
                         await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);
+                        this.trackers.delete(x);
                     }
                 }
             }
