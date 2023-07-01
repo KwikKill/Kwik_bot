@@ -453,7 +453,7 @@ module.exports = {
                     // if bot can't fetch the discord channel
                     if (e.code === 50001) {
                         // delete the channel from the database
-                        await this.client.query("DELETE FROM trackers WHERE channelid = $1", [x]);
+                        await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);
                     }
                 }
             }

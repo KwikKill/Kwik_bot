@@ -1,6 +1,6 @@
 const config = require('../config.json');
 const logger = require('./logger.js');
-const axios = require('axios')
+const axios = require('axios');
 
 const delay_time = 10000;
 const delay = ms => new Promise(res => setTimeout(res, ms));
