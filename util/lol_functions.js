@@ -31,7 +31,7 @@ module.exports = {
     language: "en_US", // Players Language - Only Used for Champion Names
 
     apiKey: process.env.RIOT_API_KEY,
-    client: [],
+    client: {},
 
     last: null,
 
@@ -455,7 +455,8 @@ module.exports = {
                         // delete the channel from the database
                         logger.log("Channel " + x + " not found, deleting from database");
                         await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);
-                        this.trackers.delete(x);
+                        const index = this.trackers.indexOf(x);
+                        this.trackers.splice(index, 1);
                     }
                 }
             }

@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const json = require("express");
 
 module.exports = {
     name: 'info',
@@ -8,6 +9,18 @@ module.exports = {
     hidden: false,
     place: "both",
     async run(message, client, interaction = undefined) {
+        client.pg.query({
+            name: "insert-logs",
+            text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+            values: [
+                new Date(),
+                interaction.user.id,
+                "info",
+                json.stringify({
+                }),
+                interaction.guild.id
+            ]
+        });
         if (interaction !== undefined) {
             await interaction.deferReply();
 

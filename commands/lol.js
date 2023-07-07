@@ -1,6 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const logger = require('../util/logger');
+const { json } = require('express');
 
 const decimal = 2;
 const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
@@ -936,19 +937,19 @@ module.exports = {
             } else if (interaction.options.getSubcommand() === "matchups") {
                 stats_matchups(client, interaction, discordaccount, champion, role, account, season, gamemode);
             } else if (interaction.options.getSubcommand() === "champions") {
-                stats_champions(client, interaction, discordaccount, champion, role, account, season, gamemode);
+                stats_champions(client, interaction, discordaccount, role, account, season, gamemode);
             } else if (interaction.options.getSubcommand() === "evolution") {
                 stats_evolution(client, interaction, discordaccount, champion, role, account, season, gamemode);
             } else if (interaction.options.getSubcommand() === "profile") {
                 stats_profile(client, interaction, discordaccount);
             } else if (interaction.options.getSubcommand() === "compare") {
-                stats_compare(client, interaction, discordaccount, champion, role, account, season, gamemode);
+                stats_compare(client, interaction, discordaccount, champion, role, season, gamemode);
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
             if (interaction.options.getSubcommand() === "carry") {
-                top_carry(client, interaction, discordaccount, champion, role, account, season, gamemode);
+                top_carry(client, interaction, champion, role, account, season, gamemode);
             } else if (interaction.options.getSubcommand() === "kwikscore") {
-                top_kwikscore(client, interaction, discordaccount, champion, role, account, season, gamemode);
+                top_kwikscore(client, interaction, champion, role, account, season, gamemode);
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
             if (!interaction.member.permissions.has("ADMINISTRATOR")) {
@@ -1021,6 +1022,20 @@ async function add_summoner_manual(client, name, discordid, region, priority = 0
  * @param {String} region - summoner's region
  */
 async function account_add(client, interaction, summoner_name, region) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/account/add",
+            json.stringify({
+                summoner_name: summoner_name,
+                region: region
+            }),
+            interaction.guild.id
+        ]
+    });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2) AND region=$3;", [interaction.user.id, summoner_name, region]);
     if (!client.lol.queue["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
         const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
@@ -1055,6 +1070,19 @@ async function account_add(client, interaction, summoner_name, region) {
  * @param {String} summoner_name - summoner's username
  */
 async function account_remove(client, interaction, summoner_name) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/account/remove",
+            json.stringify({
+                summoner_name: summoner_name
+            }),
+            interaction.guild.id
+        ]
+    });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
     if (response.rows.length > 0) {
         await client.pg.query({
@@ -1077,6 +1105,17 @@ async function account_remove(client, interaction, summoner_name) {
  * @param {Interaction} interaction - command's interaction
  */
 async function account_list(client, interaction) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/account/list",
+            json.stringify({}),
+            interaction.guild.id
+        ],
+    });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
     if (response.rows.length === 0) {
         return await interaction.editReply("You don't have any account linked. Please use the command `/lol account add <name>` to add an account.");
@@ -1112,6 +1151,17 @@ async function account_list(client, interaction) {
  * @param {Interaction} interaction - command's interaction
  */
 async function queue(client, interaction) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/queue",
+            json.stringify({}),
+            interaction.guild.id
+        ]
+    });
     const embed = new MessageEmbed()
         .setTitle("Queue status")
         .setColor("#00FF00")
@@ -1189,6 +1239,24 @@ async function queue(client, interaction) {
  * @param {String} gamemode - gamemode to get stats from
  */
 async function stats_summarized(client, interaction, discordaccount, champion, role, account, season, gamemode) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/summarized",
+            json.stringify({
+                discordaccount: discordaccount,
+                champion: champion,
+                role: role,
+                account: account,
+                season: season,
+                gamemode: gamemode
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
         const start = Date.now();
         let i = 1;
@@ -1486,6 +1554,24 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
  * @param {String} gamemode - gamemode to get stats from
  */
 async function stats_matchups(client, interaction, discordaccount, champion, role, account, season, gamemode) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/matchups",
+            json.stringify({
+                discordaccount: discordaccount,
+                champion: champion,
+                role: role,
+                account: account,
+                season: season,
+                gamemode: gamemode
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
         const start = new Date();
         let i = 1;
@@ -1682,13 +1768,29 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
  * @param {Client} client - bot's client
  * @param {Interaction} interaction - command's interaction
  * @param {User} discordaccount - discord account to get stats from
- * @param {String} champion - champion to get stats from
  * @param {String} role - role to get stats from
  * @param {String} account - account to get stats from
  * @param {String} season - season to get stats from
  * @param {String} gamemode - gamemode to get stats from
  */
-async function stats_champions(client, interaction, discordaccount, champion, role, account, season, gamemode) {
+async function stats_champions(client, interaction, discordaccount, role, account, season, gamemode) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/champions",
+            json.stringify({
+                discordaccount: discordaccount,
+                role: role,
+                account: account,
+                season: season,
+                gamemode: gamemode
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
         const start = new Date();
         let i = 1;
@@ -2030,6 +2132,24 @@ async function stats_friend(client, interaction, discordaccount, champion, role,
  * @param {String} gamemode - gamemode to get stats from
  */
 async function stats_evolution(client, interaction, discordaccount, champion, role, account, season, gamemode) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/evolution",
+            json.stringify({
+                discordaccount: discordaccount,
+                champion: champion,
+                role: role,
+                account: account,
+                season: season,
+                gamemode: gamemode
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
         const start = Date.now();
         let i = 1;
@@ -2200,6 +2320,19 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
  * @param {User} discordaccount - discord account to get stats from
  */
 async function stats_profile(client, interaction, discordaccount) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/profile",
+            json.stringify({
+                discordaccount: discordaccount
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
         let discordusername = "";
         if (discordaccount === null) {
@@ -2359,11 +2492,27 @@ async function stats_profile(client, interaction, discordaccount) {
  * @param {User} discordaccount - discord account to get stats from
  * @param {String} champion - champion to get stats from
  * @param {String} role - role to get stats from
- * @param {String} account - account to get stats from
  * @param {String} season - season to get stats from
  * @param {String} gamemode - gamemode to get stats from
  */
-async function stats_compare(client, interaction, discordaccount, champion, role, account, season, gamemode) {
+async function stats_compare(client, interaction, discordaccount, champion, role, season, gamemode) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/compare",
+            json.stringify({
+                discordaccount: discordaccount,
+                champion: champion,
+                role: role,
+                season: season,
+                gamemode: gamemode
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
 
         const start = Date.now();
@@ -2792,12 +2941,26 @@ async function stats_compare(client, interaction, discordaccount, champion, role
  * @function top_carry
  * @param {Client} client - bot's client
  * @param {Interaction} interaction - command's interaction
- * @param {User} discordaccount - discord account to get stats from
  * @param {String} champion - champion to get stats from
  * @param {String} role - role to get stats from
  * @param {String} season - season to get stats from
  */
-async function top_carry(client, interaction, discordaccount, champion, role, season) {
+async function top_carry(client, interaction, champion, role, season) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/top/carry",
+            json.stringify({
+                champion: champion,
+                role: role,
+                season: season
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
 
         const start = new Date();
@@ -3020,14 +3183,27 @@ async function top_carry(client, interaction, discordaccount, champion, role, se
  * @function top_kwikscore
  * @param {Client} client - bot's client
  * @param {Interaction} interaction - command's interaction
- * @param {User} discordaccount - discord account to get stats from
  * @param {String} champion - champion to get stats from
  * @param {String} role - role to get stats from
  * @param {String} season - season to get stats from
  */
-async function top_kwikscore(client, interaction, discordaccount, champion, role, season) {
+async function top_kwikscore(client, interaction, champion, role, season) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/top/kwikscore",
+            json.stringify({
+                champion: champion,
+                role: role,
+                season: season
+            }),
+            interaction.guild.id
+        ]
+    });
     try {
-
         const start = Date.now();
 
         let i = 1;
@@ -3169,6 +3345,20 @@ async function top_kwikscore(client, interaction, discordaccount, champion, role
  * @param {Interaction} interaction - command's interaction
  */
 async function tracker_add(client, interaction) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/tracker/add",
+            json.stringify({
+                channel: interaction.channel.id,
+                guild: interaction.guild.id
+            }),
+            interaction.guild.id
+        ]
+    });
     const channel = interaction.options.getChannel("channel");
     const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
     if (response.rowCount !== 0) {
@@ -3187,6 +3377,20 @@ async function tracker_add(client, interaction) {
  * @param {Interaction} interaction - command's interaction
  */
 async function tracker_remove(client, interaction) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/tracker/remove",
+            json.stringify({
+                channel: interaction.channel.id,
+                guild: interaction.guild.id
+            }),
+            interaction.guild.id
+        ]
+    });
     const channel = interaction.options.getChannel("channel");
     const response = await client.pg.query("SELECT * FROM trackers WHERE channelid=$1;", [channel.id]);
     if (response.rowCount === 0) {

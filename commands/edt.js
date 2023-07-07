@@ -3,6 +3,8 @@ const https = require("https");
 const { MessageEmbed, MessageAttachment, MessageActionRow, MessageButton } = require('discord.js');
 const Canvas = require('canvas');
 const ical = require('node-ical');
+const json = require("express");
+
 
 const codes = {
     "a": "348,2237",
@@ -103,6 +105,19 @@ module.exports = {
         },
     ],
     async run(message, client, interaction = undefined) {
+        client.pg.query({
+            name: "insert-logs",
+            text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+            values: [
+                new Date(),
+                interaction.user.id,
+                "edt",
+                json.stringify({
+                    classe: interaction.options.getString("classe").toLowerCase()
+                }),
+                interaction.guild.id
+            ]
+        });
         if (interaction !== undefined) {
             // deferReply is necessary to send a delayed response
             await interaction.deferReply();

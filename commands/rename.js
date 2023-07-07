@@ -1,3 +1,5 @@
+const json = require('json');
+
 module.exports = {
     name: 'rename',
     group: 'util',
@@ -21,22 +23,21 @@ module.exports = {
         },
     ],
     async run(message, client, interaction = undefined) {
-        if (interaction === undefined) {
-            if (message.mentions.members.size === 1 && message.args.length === 3) {
-                const user = message.mentions.members.first();
-                const pseudo = message.args[2];
-                if (user !== undefined) {
-                    try {
-                        await user.setNickname(pseudo);
-                        message.channel.send(`${user.user.username} a été renommé en ${pseudo}`);
-                        return;
-                    } catch (e) {
-                        message.channel.send(`Cette personne a plus de permissions que le bot et ne peut pas être rennomée.`);
-                        return;
-                    }
-                }
-            }
-        } else {
+        client.pg.query({
+            name: "insert-logs",
+            text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+            values: [
+                new Date(),
+                interaction.user.id,
+                "rename",
+                json.stringify({
+                    user: interaction.options.getMember('user'),
+                    pseudo: interaction.options.getString('pseudo'),
+                }),
+                interaction.guild.id
+            ]
+        });
+        if (interaction !== undefined) {
             const user = interaction.options.getMember('user');
             const pseudo = interaction.options.getString('pseudo');
 
