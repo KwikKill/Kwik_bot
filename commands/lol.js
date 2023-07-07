@@ -1,7 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const logger = require('../util/logger');
-const { json } = require('express');
 
 const decimal = 2;
 const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
@@ -1029,7 +1028,7 @@ async function account_add(client, interaction, summoner_name, region) {
             new Date(),
             interaction.user.id,
             "lol/account/add",
-            json.stringify({
+            JSON.stringify({
                 summoner_name: summoner_name,
                 region: region
             }),
@@ -1077,7 +1076,7 @@ async function account_remove(client, interaction, summoner_name) {
             new Date(),
             interaction.user.id,
             "lol/account/remove",
-            json.stringify({
+            JSON.stringify({
                 summoner_name: summoner_name
             }),
             interaction.guild.id
@@ -1112,7 +1111,7 @@ async function account_list(client, interaction) {
             new Date(),
             interaction.user.id,
             "lol/account/list",
-            json.stringify({}),
+            JSON.stringify({}),
             interaction.guild.id
         ],
     });
@@ -1158,7 +1157,7 @@ async function queue(client, interaction) {
             new Date(),
             interaction.user.id,
             "lol/queue",
-            json.stringify({}),
+            JSON.stringify({}),
             interaction.guild.id
         ]
     });
@@ -1246,7 +1245,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             new Date(),
             interaction.user.id,
             "lol/stats/summarized",
-            json.stringify({
+            JSON.stringify({
                 discordaccount: discordaccount,
                 champion: champion,
                 role: role,
@@ -1561,7 +1560,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
             new Date(),
             interaction.user.id,
             "lol/stats/matchups",
-            json.stringify({
+            JSON.stringify({
                 discordaccount: discordaccount,
                 champion: champion,
                 role: role,
@@ -1781,7 +1780,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             new Date(),
             interaction.user.id,
             "lol/stats/champions",
-            json.stringify({
+            JSON.stringify({
                 discordaccount: discordaccount,
                 role: role,
                 account: account,
@@ -2139,7 +2138,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
             new Date(),
             interaction.user.id,
             "lol/stats/evolution",
-            json.stringify({
+            JSON.stringify({
                 discordaccount: discordaccount,
                 champion: champion,
                 role: role,
@@ -2327,7 +2326,7 @@ async function stats_profile(client, interaction, discordaccount) {
             new Date(),
             interaction.user.id,
             "lol/stats/profile",
-            json.stringify({
+            JSON.stringify({
                 discordaccount: discordaccount
             }),
             interaction.guild.id
@@ -2503,7 +2502,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
             new Date(),
             interaction.user.id,
             "lol/stats/compare",
-            json.stringify({
+            JSON.stringify({
                 discordaccount: discordaccount,
                 champion: champion,
                 role: role,
@@ -2953,7 +2952,7 @@ async function top_carry(client, interaction, champion, role, season) {
             new Date(),
             interaction.user.id,
             "lol/top/carry",
-            json.stringify({
+            JSON.stringify({
                 champion: champion,
                 role: role,
                 season: season
@@ -3195,7 +3194,7 @@ async function top_kwikscore(client, interaction, champion, role, season) {
             new Date(),
             interaction.user.id,
             "lol/top/kwikscore",
-            json.stringify({
+            JSON.stringify({
                 champion: champion,
                 role: role,
                 season: season
@@ -3352,7 +3351,7 @@ async function tracker_add(client, interaction) {
             new Date(),
             interaction.user.id,
             "lol/tracker/add",
-            json.stringify({
+            JSON.stringify({
                 channel: interaction.channel.id,
                 guild: interaction.guild.id
             }),
@@ -3384,7 +3383,7 @@ async function tracker_remove(client, interaction) {
             new Date(),
             interaction.user.id,
             "lol/tracker/remove",
-            json.stringify({
+            JSON.stringify({
                 channel: interaction.channel.id,
                 guild: interaction.guild.id
             }),

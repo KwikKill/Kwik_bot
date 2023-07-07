@@ -3,7 +3,6 @@ const https = require("https");
 const { MessageEmbed, MessageAttachment, MessageActionRow, MessageButton } = require('discord.js');
 const Canvas = require('canvas');
 const ical = require('node-ical');
-const json = require("express");
 
 
 const codes = {
@@ -112,7 +111,7 @@ module.exports = {
                 new Date(),
                 interaction.user.id,
                 "edt",
-                json.stringify({
+                JSON.stringify({
                     classe: interaction.options.getString("classe").toLowerCase()
                 }),
                 interaction.guild.id

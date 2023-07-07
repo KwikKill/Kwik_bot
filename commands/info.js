@@ -1,5 +1,4 @@
 const { MessageEmbed } = require('discord.js');
-const json = require("express");
 
 module.exports = {
     name: 'info',
@@ -16,7 +15,7 @@ module.exports = {
                 new Date(),
                 interaction.user.id,
                 "info",
-                json.stringify({
+                JSON.stringify({
                 }),
                 interaction.guild.id
             ]

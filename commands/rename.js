@@ -1,5 +1,3 @@
-const json = require('express');
-
 module.exports = {
     name: 'rename',
     group: 'util',
@@ -30,7 +28,7 @@ module.exports = {
                 new Date(),
                 interaction.user.id,
                 "rename",
-                json.stringify({
+                JSON.stringify({
                     user: interaction.options.getMember('user'),
                     pseudo: interaction.options.getString('pseudo'),
                 }),
