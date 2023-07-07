@@ -1,4 +1,4 @@
-const json = require('json');
+const json = require('express');
 
 module.exports = {
     name: 'rename',
