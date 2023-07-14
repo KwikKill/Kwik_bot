@@ -309,8 +309,8 @@ class LolApi {
             if (error.type === 'invalid-json') {
                 throw error;
             }
-            logger.error(error.name + " : " + url);
-            console.log(error);
+            logger.error(error.name + ", " + error.code + " : " + url);
+            //console.log(error);
             await delay(1000);
             return await this.apiCall(url, client);
 
