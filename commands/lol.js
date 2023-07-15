@@ -1321,10 +1321,10 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
 
         i++;
         if (champion !== null) {
-            query += " AND matchs.champion=$" + i;
-            query3 += " AND matchs.champion=$" + i;
-            query_values.push(champion);
-            query_values2.push(champion);
+            query += " AND lower(matchs.champion)=$" + i;
+            query3 += " AND lower(matchs.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
+            query_values2.push(champion.toLowerCase());
             i++;
         }
         if (role !== null) {
@@ -1594,8 +1594,8 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
         i++;
 
         if (champion !== null) {
-            query += " AND m1.champion=$" + i;
-            query_values.push(champion);
+            query += " AND lower(m1.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
             i++;
         }
         if (role !== null) {
@@ -2187,8 +2187,8 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
 
         let querychamp = "";
         if (champion !== null) {
-            querychamp = " AND matchs.champion=$" + i;
-            query_values.push(champion);
+            querychamp = " AND lower(matchs.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
             i++;
         }
 
@@ -2549,9 +2549,9 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         i++;
 
         if (champion !== null) {
-            query += " AND matchs.champion=$" + i;
-            query2 += " AND matchs.champion=$" + i;
-            query_values.push(champion);
+            query += " AND lower(matchs.champion)=$" + i;
+            query2 += " AND lower(matchs.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
             i++;
         }
         if (role !== null) {
@@ -2680,8 +2680,8 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         j++;
 
         if (champion !== null) {
-            query3 += " AND matchs.champion=$" + j;
-            query4 += " AND matchs.champion=$" + j;
+            query3 += " AND lower(matchs.champion)=$" + j;
+            query4 += " AND lower(matchs.champion)=$" + j;
             j++;
         }
         if (role !== null) {
@@ -2970,8 +2970,8 @@ async function top_carry(client, interaction, champion, role, season) {
 
         let query2 = "";
         if (champion !== null) {
-            query2 += " AND matchs.champion=$" + i;
-            query_values.push(champion);
+            query2 += " AND lower(matchs.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
             i++;
         }
 
@@ -3223,8 +3223,8 @@ async function top_kwikscore(client, interaction, champion, role, season) {
         }
         let query2 = "";
         if (champion !== null) {
-            query2 += " AND matchs.champion=$" + i;
-            query_values.push(champion);
+            query2 += " AND lower(matchs.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
             i++;
         }
 
