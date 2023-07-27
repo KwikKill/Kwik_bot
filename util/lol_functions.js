@@ -358,7 +358,7 @@ module.exports = {
         const region = data.rows[0]["region"];
         const username = data.rows[0]["username"];
         const id = data.rows[0]["id"];
-        const rank = await this.update_rank(discordid, region);
+        const rank = await this.update_rank(id, region);
 
         let game;
         if (last_game === "none") {
