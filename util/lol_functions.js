@@ -343,27 +343,22 @@ module.exports = {
     },
 
     /**
-     * mark a user as updated
-     * @function update_rank
-     * @param {*} puuid puuid of the user
-     */
-    async set_rank(puuid, match) {
-        for (let i = 0; i < this.queue["updates"].length; i++) {
-            if (this.queue["updates"][i]["puuid"] === puuid) {
-                this.queue["updates"][i]["rank"] = match;
-            }
-        }
-    },
-
-    /**
      * Update rank of user in the database
      * @function send_tracker_message
      * @param {object} current current summoner data
      * @param {object} last_game last game data
      */
-    async send_tracker_message(current, last_game) {
-        const discordid = current["discordid"];
-        const rank = await this.update_rank(current["id"], current["region"]);
+    async send_tracker_message(puuid, last_game) {
+
+        const data = await this.client.pg.query("SELECT * FROM summoners WHERE puuid = $1", [puuid]);
+        if (data.rows.length === 0) {
+            return;
+        }
+        const discordid = data.rows[0]["discordid"];
+        const region = data.rows[0]["region"];
+        const username = data.rows[0]["username"];
+        const id = data.rows[0]["id"];
+        const rank = await this.update_rank(discordid, region);
 
         let game;
         if (last_game === "none") {
@@ -373,7 +368,7 @@ module.exports = {
         }
 
         // read current rank and send message if rank changed
-        const current_rank = await this.client.pg.query("SELECT * FROM summoners WHERE id = '" + current["id"] + "'");
+        const current_rank = await this.client.pg.query("SELECT * FROM summoners WHERE id = '" + id + "'");
         if (current_rank.rows[0] !== undefined) {
             for (const x of this.trackers) {
                 try {
@@ -393,12 +388,12 @@ module.exports = {
                             current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
                             current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
                         ) {
-                            await this.client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + current["id"] + "'");
+                            await this.client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + id + "'");
                             if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
-                                channel.send("Placement Solo/Duo completed for " + current["username"] + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                                channel.send("Placement Solo/Duo completed for " + username + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
                             }
                             else if (current_rank.rows[0].tier_flex === 'unranked' && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked') {
-                                channel.send("Placement Flex completed for " + current["username"] + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                                channel.send("Placement Flex completed for " + username + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
                             }
                             else if (
                                 (
@@ -410,7 +405,7 @@ module.exports = {
                             ) {
                                 if (last_game !== null) {
                                     channel.send("Rank Solo/Duo update for " +
-                                        current["username"] +
+                                        username +
                                         " : " + rank["RANKED_SOLO_5x5"]["tier"] +
                                         " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                         " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
@@ -418,7 +413,7 @@ module.exports = {
                                         " | " + game);
                                 } else {
                                     channel.send("Rank Solo/Duo update for " +
-                                        current["username"] +
+                                        username +
                                         " : " + rank["RANKED_SOLO_5x5"]["tier"] +
                                         " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                         " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
@@ -435,7 +430,7 @@ module.exports = {
                             ) {
                                 if (last_game !== null) {
                                     channel.send("Rank Flex update for " +
-                                        current["username"] +
+                                        username +
                                         " : " + rank["RANKED_FLEX_SR"]["tier"] +
                                         " " + rank["RANKED_FLEX_SR"]["rank"] +
                                         " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
@@ -443,7 +438,7 @@ module.exports = {
                                         " | " + game);
                                 } else {
                                     channel.send("Rank Flex update for " +
-                                        current["username"] +
+                                        username +
                                         " : " + rank["RANKED_FLEX_SR"]["tier"] +
                                         " " + rank["RANKED_FLEX_SR"]["rank"] +
                                         " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
@@ -485,12 +480,12 @@ module.exports = {
                         current["count"] = current["count"] + 1;
                         for (const summary of exit) {
                             if (current["type"] !== "sum" && current["last_id"] === exit[0]["matchId"]) {
+                                if (current["total"] > 1) {
+                                    this.send_tracker_message(summary["summonerpuuid"], "none");
+                                } else {
+                                    this.send_tracker_message(summary["summonerpuuid"], summary);
+                                }
                                 if (summary["summonerpuuid"] === puuid) {
-                                    if (current["total"] > 1) {
-                                        this.send_tracker_message(current, "none");
-                                    } else {
-                                        this.send_tracker_message(current, summary);
-                                    }
                                     this.update_pseudo(current, summary["summonerName"]);
                                 }
                             }
@@ -636,9 +631,6 @@ module.exports = {
                                     ]
                                 }
                                 );
-                                if (current["type"] !== "sum") {
-                                    this.set_rank(summary["summonerpuuid"], summary);
-                                }
                             } catch (e) {
                                 //logger.log(e);
                             }
@@ -933,7 +925,6 @@ module.exports = {
                                         ]
                                     }
                                     );
-                                    this.set_rank(summary["summonerpuuid"], summary);
                                 } catch (e) {
                                     //logger.log(e);
                                 }
@@ -956,7 +947,7 @@ module.exports = {
                     const nb = current["matchs"].length;
 
                     if (current["rank"] !== false && current["matchs"].length === 0) {
-                        this.send_tracker_message(current, current["rank"]);
+                        this.send_tracker_message(current["puuid"], current["rank"]);
                     }
 
                     if (current["matchs"].length > 0 || current["rank"] !== false) {
