@@ -2166,7 +2166,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
 
         let queryaccount = "";
         if (account !== null) {
-            queryaccount = " AND summoners.account = $" + i;
+            queryaccount = " AND summoners.username = $" + i;
             query_values.push(account);
             i++;
         }
