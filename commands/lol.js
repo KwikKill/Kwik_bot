@@ -1246,7 +1246,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             interaction.user.id,
             "lol/stats/summarized",
             JSON.stringify({
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 account: account,
@@ -1526,7 +1526,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         logger.log(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 account: account,
@@ -1561,7 +1561,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
             interaction.user.id,
             "lol/stats/matchups",
             JSON.stringify({
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 account: account,
@@ -1747,7 +1747,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
         logger.log(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 account: account,
@@ -1781,7 +1781,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             interaction.user.id,
             "lol/stats/champions",
             JSON.stringify({
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 role: role,
                 account: account,
                 season: season,
@@ -1958,7 +1958,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
         logger.log(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 role: role,
                 account: account,
                 gamemode: gamemode
@@ -2139,7 +2139,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
             interaction.user.id,
             "lol/stats/evolution",
             JSON.stringify({
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 account: account,
@@ -2297,7 +2297,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
         logger.log(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 role: role,
                 champion: champion,
                 account: account,
@@ -2327,7 +2327,7 @@ async function stats_profile(client, interaction, discordaccount) {
             interaction.user.id,
             "lol/stats/profile",
             JSON.stringify({
-                discordaccount: discordaccount
+                discordaccount: discordaccount?.id
             }),
             interaction.guild.id
         ]
@@ -2473,7 +2473,7 @@ async function stats_profile(client, interaction, discordaccount) {
         logger.log(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
-                discordaccount: discordaccount
+                discordaccount: discordaccount?.id
             };
             const Js = JSON.stringify(params);
             user.send("Error with command /lol stats profile " + Js + " from user " + interaction.user.id);
@@ -2503,7 +2503,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
             interaction.user.id,
             "lol/stats/compare",
             JSON.stringify({
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 season: season,
@@ -2920,7 +2920,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         logger.log(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
-                discordaccount: discordaccount,
+                discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
                 season: season
@@ -3344,29 +3344,41 @@ async function top_kwikscore(client, interaction, champion, role, season) {
  * @param {Interaction} interaction - command's interaction
  */
 async function tracker_add(client, interaction) {
-    client.pg.query({
-        name: "insert-logs",
-        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
-        values: [
-            new Date(),
-            interaction.user.id,
-            "lol/tracker/add",
-            JSON.stringify({
-                channel: interaction.channel.id,
-                guild: interaction.guild.id
-            }),
-            interaction.guild.id
-        ]
-    });
     const channel = interaction.options.getChannel("channel");
-    const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
-    if (response.rowCount !== 0) {
-        return await interaction.editReply("A tracker channel already exists in this guild !");
+    try {
+        client.pg.query({
+            name: "insert-logs",
+            text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+            values: [
+                new Date(),
+                interaction.user.id,
+                "lol/tracker/add",
+                JSON.stringify({
+                    channel: channel?.id,
+                    guild: channel?.guild?.id
+                }),
+                interaction.guild.id
+            ]
+        });
+        const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
+        if (response.rowCount !== 0) {
+            return await interaction.editReply("A tracker channel already exists in this guild !");
+        }
+        const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
+        client.lol.trackers.push(channel.id);
+        await client.pg.query(query, [channel.id, channel.guild.id]);
+        return await interaction.editReply("tracker channel added !");
+    } catch (e) {
+        logger.log(e);
+        client.users.fetch(client.owners[0]).then((user) => {
+            const params = {
+                channel: channel
+            };
+            const Js = JSON.stringify(params);
+            user.send("Error with command /lol tracker add " + Js + " from user " + interaction.user.id);
+        });
+        return await interaction.editReply("Error while adding tracker channel, this error has been reported to the bot owner and will be fixed as soon as possible.");
     }
-    const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
-    client.lol.trackers.push(channel.id);
-    await client.pg.query(query, [channel.id, channel.guild.id]);
-    return await interaction.editReply("tracker channel added !");
 }
 
 /**
@@ -3376,27 +3388,39 @@ async function tracker_add(client, interaction) {
  * @param {Interaction} interaction - command's interaction
  */
 async function tracker_remove(client, interaction) {
-    client.pg.query({
-        name: "insert-logs",
-        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
-        values: [
-            new Date(),
-            interaction.user.id,
-            "lol/tracker/remove",
-            JSON.stringify({
-                channel: interaction.channel.id,
-                guild: interaction.guild.id
-            }),
-            interaction.guild.id
-        ]
-    });
     const channel = interaction.options.getChannel("channel");
-    const response = await client.pg.query("SELECT * FROM trackers WHERE channelid=$1;", [channel.id]);
-    if (response.rowCount === 0) {
-        return await interaction.editReply("This channel is currently not a tracker channel !");
+    try {
+        client.pg.query({
+            name: "insert-logs",
+            text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+            values: [
+                new Date(),
+                interaction.user.id,
+                "lol/tracker/remove",
+                JSON.stringify({
+                    channel: channel?.id,
+                    guild: channel?.guild?.id
+                }),
+                interaction.guild.id
+            ]
+        });
+        const response = await client.pg.query("SELECT * FROM trackers WHERE channelid=$1;", [channel.id]);
+        if (response.rowCount === 0) {
+            return await interaction.editReply("This channel is currently not a tracker channel !");
+        }
+        const query = "DELETE FROM trackers WHERE channelid=$1;";
+        client.lol.trackers.splice(client.lol.trackers.indexOf(channel.id), 1);
+        await client.pg.query(query, [channel.id]);
+        return await interaction.editReply("tracker channel removed !");
+    } catch (e) {
+        logger.log(e);
+        client.users.fetch(client.owners[0]).then((user) => {
+            const params = {
+                channel: channel
+            };
+            const Js = JSON.stringify(params);
+            user.send("Error with command /lol remove add " + Js + " from user " + interaction.user.id);
+        });
+        return await interaction.editReply("Error while removing tracker channel, this error has been reported to the bot owner and will be fixed as soon as possible.");
     }
-    const query = "DELETE FROM trackers WHERE channelid=$1;";
-    client.lol.trackers.splice(client.lol.trackers.indexOf(channel.id), 1);
-    await client.pg.query(query, [channel.id]);
-    return await interaction.editReply("tracker channel removed !");
 }
