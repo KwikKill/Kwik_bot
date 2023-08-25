@@ -59,10 +59,12 @@ const codes = {
     "postec": "408",
 };
 
+const projectId = "2";
+
 const TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE", "CA"];
 const LANGUES = ["LV2", "LV3", "ANGLAIS", "ALLEMAND", "ESPAGNOL", "ITALIEN", "CHINOIS", "JAPONAIS", "RUSSE", "ARABE", "PORTUGAIS"];
 
-const url = "https://ade.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=1&calType=ical&firstDate={1}&lastDate={2}";
+const url = "https://ade.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=" + projectId + "&calType=ical&firstDate={1}&lastDate={2}";
 
 module.exports = {
     name: 'edt',
@@ -161,7 +163,6 @@ async function classic(client, monday, sunday, interaction, rt = false) {
         arg = interaction.options.getString("classe").toLowerCase();
     }
     const url_modified = url.replace("{0}", codes[arg]).replace("{1}", monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate()).replace("{2}", sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate());
-    console.log(url_modified);
 
     const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
     https.get(url_modified, function (response) {
