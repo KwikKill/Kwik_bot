@@ -33,31 +33,27 @@ const codes = {
     "2l": "897,2221",
 
     "3info": "1212,1213",
-    "4info": "1214,1215",
-    "5info": "1216,1217",
-
     "3et": "1017,1023",
-    "4et": "1057,1058",
-    "5et": "1072,1110",
-
     "3eii": "1132,1131",
-    "4eii": "1133,1134",
-    "5eii": "1135,1136",
-
     "3gcu": "1152,1153",
-    "4gcu": "1154,1155",
-    "5gcu": "1156,1157",
-
     "3gma": "1182,1183",
-    "4gma": "1184,1185",
-    "5gma": "1186,1187",
-
     "3gpm": "1242,1243",
-    "4gpm": "1244,1245",
-    "5gpm": "1246,1247",
-
     "3ma": "31,3768",
+
+    "4info": "1214,1215",
+    "4et": "1057,1058",
+    "4eii": "1133,1134",
+    "4gcu": "1154,1155",
+    "4gma": "1184,1185",
+    "4gpm": "1244,1245",
     "4ma": "37,3770",
+
+    "5info": "1216,1217",
+    "5et": "1072,1110",
+    "5eii": "1135,1136",
+    "5gcu": "1156,1157",
+    "5gma": "1186,1187",
+    "5gpm": "1246,1247",
     "5ma": "1536,1982",
 
     "postec": "408",
@@ -165,6 +161,7 @@ async function classic(client, monday, sunday, interaction, rt = false) {
         arg = interaction.options.getString("classe").toLowerCase();
     }
     const url_modified = url.replace("{0}", codes[arg]).replace("{1}", monday.getFullYear() + "-" + (monday.getMonth() + 1) + "-" + monday.getDate()).replace("{2}", sunday.getFullYear() + "-" + (sunday.getMonth() + 1) + "-" + sunday.getDate());
+    console.log(url_modified);
 
     const file = fs.createWriteStream("/opt/gab_bot/temp/file.ics");
     https.get(url_modified, function (response) {
