@@ -6,18 +6,6 @@ const ical = require('node-ical');
 
 
 const codes = {
-    "a": "348,2237",
-    "b": "354,2241",
-    "c": "356,2243",
-    "d": "365,2239",
-    "e": "367,2245",
-    "f": "372,2246",
-    "g": "374,2248",
-    "h": "382,2249",
-    "i": "2387,2394",
-    "j": "2390,2397",
-    "k": "389,2250",
-    "l": "897,2221",
     "1a": "2444,396",
     "1b": "460,2445",
     "1c": "466,2446",
@@ -30,59 +18,53 @@ const codes = {
     "1j": "892,1274",
     "1k": "496,2455",
     "1l": "795,1584",
+
+    "2a": "348,2237",
+    "2b": "354,2241",
+    "2c": "356,2243",
+    "2d": "365,2239",
+    "2e": "367,2245",
+    "2f": "372,2246",
+    "2g": "374,2248",
+    "2h": "382,2249",
+    "2i": "2387,2394",
+    "2j": "2390,2397",
+    "2k": "389,2250",
+    "2l": "897,2221",
+
+    "3info": "1212,1213",
+    "4info": "1214,1215",
+    "5info": "1216,1217",
+
+    "3et": "1017,1023",
+    "4et": "1057,1058",
+    "5et": "1072,1110",
+
+    "3eii": "1132,1131",
+    "4eii": "1133,1134",
+    "5eii": "1135,1136",
+
+    "3gcu": "1152,1153",
+    "4gcu": "1154,1155",
+    "5gcu": "1156,1157",
+
+    "3gma": "1182,1183",
+    "4gma": "1184,1185",
+    "5gma": "1186,1187",
+
+    "3gpm": "1242,1243",
+    "4gpm": "1244,1245",
+    "5gpm": "1246,1247",
+
+    "3ma": "31,3768",
+    "4ma": "37,3770",
+    "5ma": "1536,1982",
+
     "postec": "408",
-    "raph": {
-        // 1B
-        "460,2445": [
-            "ALGEBRE 1_ABCDE",
-            "ALGEBRE 2_ABCDE",
-            "ANALYSE 1_ABCDE",
-            "ANALYSE 2_ABCDE",
-            "ELECTRICITE 1_B",
-            "ELECTRICITE 1_ABCDE",
-            "ELECTRICITE 2_B",
-            "ELECTRICITE 2_ABCDE",
-            "MECANIQUE 1_ABCDE",
-            "MECANIQUE 1_B",
-            "MECANIQUE 2_ABCDE",
-            "MECANIQUE 2_B",
-            "OMSP ABCDE",
-            "CHIMIE 1_ABCDE",
-            "CHIMIE 2_ABCDE",
-            "TP CHIMIE 2_B",
-            "OPTIQUE_ABCDE",
-            "PHYSIQUE_B",
-            "CHIMIE 1_B",
-            "THERMOPHYSIQUE_ABCDE",
-            "DS physique_B"
-
-        ],
-        // 1F
-        //  "2433,469": [
-        //    "ALGEBRE 1_F"
-        //],
-        // 1K
-        //"496,2455": [
-        //    "ANALYSE 1 (Base d'analyse réelle)_K"
-        //],
-        // 2B
-        "354,2241": [
-            //"SCIENCE INDUSTRIEL",
-            "EPS-AB",
-            //"EPS AB - CHOIX des ACTIVITES & ORGANISATION ANNEE",
-            //"PARCOURS RIE",
-        ],
-        // 2A
-        "348,2237": [
-            "LV2_A allemand",
-            "ANGLAIS_A"
-        ]
-
-    }
 };
 
 const TD = ["MECANIQUE 2", "INFO", "CHIMIE 2", "ANALYSE 2", "ALGEBRE 2", "ELECTRICITE 2", "EPS", "CULTURE", "CA"];
-const LANGUES = ["LV2", "LV3", "ANGLAIS"];
+const LANGUES = ["LV2", "LV3", "ANGLAIS", "ALLEMAND", "ESPAGNOL", "ITALIEN", "CHINOIS", "JAPONAIS", "RUSSE", "ARABE", "PORTUGAIS"];
 
 const url = "https://ade.insa-rennes.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources={0}&projectId=1&calType=ical&firstDate={1}&lastDate={2}";
 
@@ -101,6 +83,7 @@ module.exports = {
             description: 'classe',
             type: 'STRING',
             required: true,
+            autocomplete: true,
         },
     ],
     async run(message, client, interaction = undefined) {
@@ -153,6 +136,19 @@ module.exports = {
             await classic(client, monday, sunday, interaction);
 
         }
+    },
+    async autocomplete(client, interaction) {
+        const focusedValue = interaction.options.getFocused();
+        const values = [];
+        for (const x in codes) {
+            if (x.toLowerCase().startsWith(focusedValue.toLowerCase()) && values.length < 25) {
+                values.push({
+                    name: x,
+                    value: x
+                });
+            }
+        }
+        return await interaction.respond(values);
     },
     create_di,
     generate_canvas,
