@@ -12,7 +12,7 @@ module.exports = {
     options: undefined,
     commande_channel: true,
     async run(client, msg) {
-        const guilds = ["513776796211085342", "890915473363980308", "480142959501901845", "768786745931333634"];
+        const guilds = ["513776796211085342", "480142959501901845", "768786745931333634"];
 
         if (msg.guild?.id === "513776796211085342" && msg.author.bot !== true) {
             const random = Math.floor(Math.random() * (100 + 1));
@@ -51,8 +51,8 @@ module.exports = {
 
             }
         } else {
-            if (!msg.author.bot && msg.channel?.id !== "940543958394732555" && msg.guild?.id === "890915473363980308") {
-                for (const x in japonais) {
+            if (!msg.author.bot && msg.channel?.id !== "940543958394732555") {
+                /*for (const x in japonais) {
                     if (msg.content.includes(japonais[x])) {
                         client.channels.fetch("1004443609355002027").then(general => {
                             try {
@@ -78,7 +78,7 @@ module.exports = {
                             return;
                         });
                     }
-                }
+                }*/
             }
 
             if (msg.channel.type === "GUILD_TEXT" && guilds.includes(msg.channel.guild.id) && !msg.author.bot) {
