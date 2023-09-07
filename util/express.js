@@ -1160,7 +1160,7 @@ function register(client) {
             console.log(req.cookies['token']);
             return res.redirect("/lol/profile");
         }
-    }); * /
+    }); */
 
     app.get('*', function (req, res) {
         return res.render('../Site/404.ejs');
