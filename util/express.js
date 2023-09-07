@@ -149,6 +149,7 @@ function register(client) {
         });
     }
 
+    /*
     app.get("/lol/", function (req, res) {
         return res.render("../Site/lol/index");
     });
@@ -1100,18 +1101,6 @@ function register(client) {
 
     });
 
-    app.get("/PPI/Loremipsumdolorsitamet%2Cconsecteturadipiscingelit%2Cseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliqua.Utenimadminimveniam%2Cquisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequat.Duis%20auteiruredolorinreprehenderitinvoluptatevelitessecillumdoloreeufugiatnullapariatur.Excepteursintoccaecatcupidatatnonproident%2Csuntinculpaquiofficiadeseruntmollitanimidestlaborum.Sedutperspiciatisundeomnisistenatuserrorsitvoluptatemaccusantiumdoloremquelaudantium%2Ctotamremaperiam%2Ceaqueipsaquaeabilloinentoreveritatisetquasiarchitectobeataevitaedictasuntexplicabo.Nemoenimipsamvoluptatemquiavoluptassitaspernaturautoditautfugit%2Csedquiaconsequunturmagnidoloreseosquirationevoluptatemsequinesciunt.Nequeporroquisquamest%2Cquidoloremipsumquiadolorsitamet%2Cconsectetur%2Cadipiscivelit%2Csedquianonnumquameiusmoditemporainciduntutlaboreetdoloremagnamaliquamquaeratvoluptatem.Utenimadminimaveniam%2Cquisnostrumexercitationemullamcorporissuscipitlaboriosam%2Cnisiutaliquidexeacommodiconsequatur%3FQuisautemveleumiurereprehenderitquiineavoluptatevelitessequamnihilmolestiaeconsequatur%2Cvelillumquidoloremeumfugiatquovoluptasnullapariatur%3F1", async function (req, res) {
-        console.log("Someone opened the first PPI link, Might be VDR !");
-        client.channels.cache.get("955126663358849065").send("Someone opened the first PPI link, Might be VDR !")
-        res.redirect("https://drive.google.com/file/d/1z7Mhu0XXVE7hLSxSU_xKPNHmK7HEt_Qt/view?usp=sharing");
-    });
-
-    app.get("/PPI/Loremipsumdolorsitamet%2Cconsecteturadipiscingelit%2Cseddoeiusmodtemporincididuntutlaboreetdoloremagnaaliqua.Utenimadminimveniam%2Cquisnostrudexercitationullamcolaborisnisiutaliquipexeacommodoconsequat.Duis%20auteiruredolorinreprehenderitinvoluptatevelitessecillumdoloreeufugiatnullapariatur.Excepteursintoccaecatcupidatatnonproident%2Csuntinculpaquiofficiadeseruntmollitanimidestlaborum.Sedutperspiciatisundeomnisistenatuserrorsitvoluptatemaccusantiumdoloremquelaudantium%2Ctotamremaperiam%2Ceaqueipsaquaeabilloinentoreveritatisetquasiarchitectobeataevitaedictasuntexplicabo.Nemoenimipsamvoluptatemquiavoluptassitaspernaturautoditautfugit%2Csedquiaconsequunturmagnidoloreseosquirationevoluptatemsequinesciunt.Nequeporroquisquamest%2Cquidoloremipsumquiadolorsitamet%2Cconsectetur%2Cadipiscivelit%2Csedquianonnumquameiusmoditemporainciduntutlaboreetdoloremagnamaliquamquaeratvoluptatem.Utenimadminimaveniam%2Cquisnostrumexercitationemullamcorporissuscipitlaboriosam%2Cnisiutaliquidexeacommodiconsequatur%3FQuisautemveleumiurereprehenderitquiineavoluptatevelitessequamnihilmolestiaeconsequatur%2Cvelillumquidoloremeumfugiatquovoluptasnullapariatur%3F2", async function (req, res) {
-        console.log("Someone opened the second PPI link, Might be VDR !");
-        client.channels.cache.get("955126663358849065").send("Someone opened the second PPI link, Might be VDR !")
-        res.redirect("https://drive.google.com/file/d/1C9LW4KcZRZ3oBlXu0zc_dpaRrtG1cN8R/view?usp=sharing");
-    });
-
     app.get("/lol/add", function (req, res) {
         if (req.query.pass !== process.env.TAUNT_PASS) {
             res.sendStatus(404);
@@ -1171,7 +1160,7 @@ function register(client) {
             console.log(req.cookies['token']);
             return res.redirect("/lol/profile");
         }
-    });
+    });* /
 
     app.get('*', function (req, res) {
         return res.render('../Site/404.ejs');
