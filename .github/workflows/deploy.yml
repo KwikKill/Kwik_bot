@@ -8,5 +8,5 @@ jobs:
       - run: mkdir temp/
       - run: echo "${{ secrets.KEY }}" > temp/key
       - run: chmod 700 temp/key
-      - run: ssh -o 'StrictHostKeyChecking no' -i temp/key ${{ secrets.USERNAME }}@${{ secrets.HOST }} sudo update-gab_bot.sh
+      - run: ssh -o 'StrictHostKeyChecking no' -i temp/key ${{ secrets.USERNAME }}@${{ secrets.HOST }} "echo ${{ secrets.PASSWORD }} | sudo -S update-gab_bot.sh"
       - run: rm -rf temp/
