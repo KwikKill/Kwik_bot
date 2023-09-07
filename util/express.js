@@ -781,7 +781,7 @@ function register(client) {
         });
     });*/
 
-    app.get("/lol/who", function (req, res) {
+    /*app.get("/lol/who", function (req, res) {
         lol_api.getCurrentPatch("EUW1", client).then(version => {
             lol_api.getChampsId("EUW1", client).then(champs => {
                 return res.render("../Site/lol/who", { champs: champs, version: version['v'] });
@@ -1083,7 +1083,7 @@ function register(client) {
                         }
                     }
                     return res.send(data);
-                });*/
+                });*//*
             }
             return res.sendStatus(404);
 
@@ -1160,7 +1160,7 @@ function register(client) {
             console.log(req.cookies['token']);
             return res.redirect("/lol/profile");
         }
-    });* /
+    }); * /
 
     app.get('*', function (req, res) {
         return res.render('../Site/404.ejs');
