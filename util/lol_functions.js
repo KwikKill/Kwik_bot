@@ -473,7 +473,9 @@ module.exports = {
             const matchId = current["matchs"].shift();
             this.queue_length -= 1;
             this.lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
-
+                if (match === null) {
+                    console.log(current["puuid"]);
+                }
                 if (match?.status?.status_code !== 404) {
                     const exit = this.matchHistoryOutput(match);
                     if (exit !== null) {
