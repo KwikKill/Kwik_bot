@@ -473,7 +473,10 @@ module.exports = {
             const matchId = current["matchs"].shift();
             this.queue_length -= 1;
             this.lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
-                if (match?.status?.status_code !== 404) {
+                if (match === null) {
+                    logger.log("Match " + matchId + " not found for " + puuid);
+                }
+                else if (match?.status?.status_code !== 404) {
                     const exit = this.matchHistoryOutput(match);
                     if (exit !== null) {
                         current["count"] = current["count"] + 1;
@@ -635,8 +638,6 @@ module.exports = {
                             }
                         }
                     }
-                } else {
-                    console.log("Match " + matchId + " not found for " + puuid);
                 }
             });
         }
