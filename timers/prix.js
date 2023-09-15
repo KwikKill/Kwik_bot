@@ -32,6 +32,7 @@ module.exports = {
             const date = product[i].date;
             const responsefetch = await fetch(url);
             const a = await responsefetch.text();
+            console.log(a);
             const html = parse.parse(a);
             const price = html.querySelectorAll(identifier);
             console.log(price);
