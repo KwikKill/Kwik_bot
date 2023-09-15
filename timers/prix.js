@@ -19,7 +19,6 @@ module.exports = {
                 "FROM prix p1 GROUP BY url;"
         });
         product.push(...response.rows);
-        console.log(product);
         for (let i = 0; i < product.length; i++) {
             const url = product[i].url;
             const identifier = product[i].identifier;
@@ -29,7 +28,7 @@ module.exports = {
             const responsefetch = await fetch(url);
             const a = await responsefetch.text();
             const html = parse.parse(a);
-            const price_text = html.querySelector(identifier).innerHTML;
+            const price_text = html.querySelector(identifier).innerHTML.trim();
             const price = parseFloat(html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end).trim());
             console.log([url, new Date(), identifier, char_start, char_end, price])
             if (price !== prix) {
