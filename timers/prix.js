@@ -22,6 +22,10 @@ module.exports = {
         for (let i = 0; i < product.length; i++) {
             const url = product[i].url;
             const identifier = product[i].identifier;
+
+            console.log(url);
+            console.log(identifier);
+
             const prix = product[i].prix;
             const char_start = product[i].char_start;
             const char_end = product[i].char_end;
