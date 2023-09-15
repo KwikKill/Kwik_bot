@@ -29,7 +29,7 @@ module.exports = {
             const responsefetch = await fetch(url);
             const a = await responsefetch.text();
             const html = parse.parse(a);
-            const price = html.querySelector(identifier).innerHTML;
+            const price = html.querySelector(identifier);
             console.log(price);
         }
 
