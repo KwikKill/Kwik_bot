@@ -22,20 +22,22 @@ module.exports = {
         for (let i = 0; i < product.length; i++) {
             const url = product[i].url;
             const identifier = product[i].identifier;
-
-            console.log(url);
-            console.log(identifier);
-
             const prix = product[i].prix;
             const char_start = product[i].char_start;
             const char_end = product[i].char_end;
-            const date = product[i].date;
             const responsefetch = await fetch(url);
             const a = await responsefetch.text();
             const html = parse.parse(a);
             const price_text = html.querySelector(identifier).innerHTML;
-            const price = html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end);
-            console.log(price);
+            const price = parseFloat(html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end));
+            if (price !== prix) {
+                client.channels.cache.get('523429014703177729').send(`<@297409548703105035> Le prix de ${url} a changé de ${prix}€ à ${price}€`);
+                await client.pg.query({
+                    name: "insert-price",
+                    text: "INSERT INTO prix (url, prix, identifier, date, char_start, char_end) VALUES ($1, $2, $3, $4)",
+                    values: [url, price, identifier, new Date(), char_start, char_end]
+                });
+            }
         }
 
     }
