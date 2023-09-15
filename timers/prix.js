@@ -1,4 +1,5 @@
-const config = require('../config.json');
+const https = require('https');
+const parse = require('node-html-parser');
 
 module.exports = {
     name: 'prix',
@@ -18,6 +19,31 @@ module.exports = {
                 "max(char_end) as char_end " +
                 "FROM prix p1 GROUP BY url;"
         });
-        console.log(response.rows);
+        product.push(...response.rows);
+        for (let i = 0; i < product.length; i++) {
+            const url = product[i].url;
+            const identifier = product[i].identifier;
+            const prix = product[i].prix;
+            const char_start = product[i].char_start;
+            const char_end = product[i].char_end;
+            const date = product[i].date;
+            const response = await new Promise((resolve, reject) => {
+                https.get(url, (res) => {
+                    let data = '';
+                    res.on('data', (chunk) => {
+                        data += chunk;
+                    });
+                    res.on('end', () => {
+                        resolve(data);
+                    });
+                }).on("error", (err) => {
+                    reject(err);
+                });
+            });
+            const root = parse.parse(response);
+            const price = root.querySelector(identifier).innerHTML;
+            console.log(price);
+        }
+
     }
 };
