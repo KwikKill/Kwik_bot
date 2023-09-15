@@ -35,7 +35,7 @@ module.exports = {
 
                 await client.pg.query({
                     name: "insert-price",
-                    text: "INSERT INTO prix (url, date, identifier, char_start, char_end, prix) VALUES ($1, $2, $3, $4)",
+                    text: "INSERT INTO prix (url, date, identifier, char_start, char_end, prix) VALUES ($1, $2, $3, $4, $5, $6)",
                     values: [url, new Date(), identifier, char_start, char_end, price]
                 });
             }
