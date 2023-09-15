@@ -12,7 +12,7 @@ module.exports = {
             name: "select-product",
             text: "SELECT url, " +
                 "max(date) as date, " +
-                "(SELECT identifier FROM prix p2 WHERE p2.url = p1.url), " +
+                "(SELECT identifier FROM prix p2 WHERE p2.url = p1.url and p2.date = max(p1.date)), " +
                 "(SELECT prix FROM prix p2 WHERE p2.url = p1.url AND p2.date = max(p1.date)), " +
                 "max(char_start) as char_start, " +
                 "max(char_end) as char_end " +
@@ -36,7 +36,7 @@ module.exports = {
                 await client.pg.query({
                     name: "insert-price",
                     text: "INSERT INTO prix (url, date, identifier, char_start, char_end, prix) VALUES ($1, $2, $3, $4, $5, $6)",
-                    values: [url, new Date(new Date().toISOString()), identifier, char_start, char_end, price]
+                    values: [url, new Date().getTime(), identifier, char_start, char_end, price]
                 });
             }
         }
