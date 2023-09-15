@@ -30,13 +30,15 @@ module.exports = {
             const a = await responsefetch.text();
             const html = parse.parse(a);
             const price_text = html.querySelector(identifier).innerHTML;
-            const price = parseFloat(html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end));
+            const price = parseFloat(html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end).trim());
+            console.log([url, new Date(), identifier, char_start, char_end, price])
             if (price !== prix) {
                 client.channels.cache.get('523429014703177729').send(`<@297409548703105035> Le prix de ${url} a changé de ${prix}€ à ${price}€`);
+
                 await client.pg.query({
                     name: "insert-price",
-                    text: "INSERT INTO prix (url, prix, identifier, date, char_start, char_end) VALUES ($1, $2, $3, $4)",
-                    values: [url, price, identifier, new Date(), char_start, char_end]
+                    text: "INSERT INTO prix (url, date, identifier, char_start, char_end, prix) VALUES ($1, $2, $3, $4)",
+                    values: [url, new Date(), identifier, char_start, char_end, price]
                 });
             }
         }
