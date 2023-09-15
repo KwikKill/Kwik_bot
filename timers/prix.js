@@ -1,4 +1,3 @@
-const https = require('https');
 const parse = require('node-html-parser');
 
 module.exports = {
@@ -27,21 +26,10 @@ module.exports = {
             const char_start = product[i].char_start;
             const char_end = product[i].char_end;
             const date = product[i].date;
-            const response = await new Promise((resolve, reject) => {
-                https.get(url, (res) => {
-                    let data = '';
-                    res.on('data', (chunk) => {
-                        data += chunk;
-                    });
-                    res.on('end', () => {
-                        resolve(data);
-                    });
-                }).on("error", (err) => {
-                    reject(err);
-                });
-            });
-            const root = parse.parse(response);
-            const price = root.querySelector(identifier).innerHTML;
+            const responsefetch = await fetch(url);
+            const a = await responsefetch.text();
+            const html = parse.parse(a);
+            const price = html.querySelector(identifier).innerHTML;
             console.log(price);
         }
 
