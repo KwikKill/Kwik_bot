@@ -19,6 +19,7 @@ module.exports = {
                 "FROM prix p1 GROUP BY url;"
         });
         product.push(...response.rows);
+        console.log(product);
         for (let i = 0; i < product.length; i++) {
             const url = product[i].url;
             const identifier = product[i].identifier;
