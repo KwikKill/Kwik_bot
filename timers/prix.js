@@ -33,7 +33,8 @@ module.exports = {
             const responsefetch = await fetch(url);
             const a = await responsefetch.text();
             const html = parse.parse(a);
-            const price = html.querySelector(identifier).innerHTML;
+            const price_text = html.querySelector(identifier).innerHTML;
+            const price = html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end);
             console.log(price);
         }
 
