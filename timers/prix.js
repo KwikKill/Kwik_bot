@@ -29,9 +29,7 @@ module.exports = {
             const a = await responsefetch.text();
             const html = parse.parse(a);
             const price_text = html.querySelector(identifier).innerHTML.trim();
-            console.log(price_text);
-            const price = parseFloat(html.querySelector(identifier).innerHTML.substring(char_start, price_text.length - char_end).trim());
-            console.log([url, new Date(), identifier, char_start, char_end, price])
+            const price = parseFloat(html.querySelector(identifier).innerHTML.trim().substring(char_start, price_text.length - char_end));
             if (price !== prix) {
                 client.channels.cache.get('523429014703177729').send(`<@297409548703105035> Le prix de ${url} a changé de ${prix}€ à ${price}€`);
 
