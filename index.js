@@ -2,10 +2,9 @@ const { Client, Collection, Intents } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol = require("./util/lol_functions.js");
-const express_server = require("./util/express.js");
-const Markov = require('markov-strings').default;
-const dns = require('node:dns');
+const index2 = require('./index2.js');
 
+const dns = require('node:dns');
 dns.setDefaultResultOrder('ipv4first');
 
 const client = new Client(
@@ -29,11 +28,6 @@ const client = new Client(
 // -------------- LOL -----------------
 client.lol = lol;
 client.lol.setup(client);
-
-// -------------- Markov -----------------
-
-client.markov = new Markov({ stateSize: 3 });
-client.markov.import(JSON.parse(fs.readFileSync('markov.json', 'utf8')));
 
 // -------------- Commandes -----------------
 client.commands = new Collection();
@@ -93,10 +87,6 @@ client.commands.forEach((item) => {
 client.isOwner = function (user) {
     return client.owners.includes(user.id);
 };
-
-// -------------- Express -----------------
-
-express_server.register(client);
 
 // -------------- Utils -----------------
 if (!String.prototype.format) {
@@ -162,6 +152,10 @@ function checkpermission(message, perm) {
     return false;
 
 }
+
+// -------------- Index2 -----------------
+
+index2.main(client);
 
 // -------------- Login -----------------
 client.login(process.env.DISCORD_TOKEN);
