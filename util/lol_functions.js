@@ -1328,10 +1328,10 @@ module.exports = {
      * @returns {Number} The LP change
      */
     LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
-        const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(tier) * 400
+        const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(tier) * 400
             + ["IV", "III", "II", "I"].indexOf(rank) * 100
             + LP;
-        const old_value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(old_tier) * 400
+        const old_value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(old_tier) * 400
             + ["IV", "III", "II", "I"].indexOf(old_rank) * 100
             + old_LP;
 
