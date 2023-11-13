@@ -877,7 +877,8 @@ module.exports = {
                         {
                             name: 'channel',
                             description: 'Channel',
-                            type: 'CHANNEL'
+                            type: 'CHANNEL',
+                            required: true
                         }
                     ]
                 },
@@ -889,7 +890,8 @@ module.exports = {
                         {
                             name: 'channel',
                             description: 'Channel',
-                            type: 'CHANNEL'
+                            type: 'CHANNEL',
+                            required: true
                         }
                     ]
                 }
