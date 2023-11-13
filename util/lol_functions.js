@@ -113,7 +113,11 @@ module.exports = {
             listOfMatches = { 'matches': [] };
             const list = await this.lol_api.matchlistsByAccount(this.apiKey, this.route[region], puuid, options, this.client);
             if (list === null || (list["status_code"] !== undefined && list["status_code"] !== 200)) {
-                logger.error("Error while fetching match list for " + puuid + " in " + region, list["status_code"]);
+                if (list !== null) {
+                    logger.error("Error while fetching match list for " + puuid + " in " + region, list["status_code"]);
+                } else {
+                    logger.error("Error while fetching match list for " + puuid + " in " + region, "null");
+                }
             } else {
                 listOfMatches['matches'] = list;
             }
