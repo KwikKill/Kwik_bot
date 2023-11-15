@@ -248,6 +248,12 @@ module.exports = {
                                     value: 'BR1',
                                 }
                             ]
+                        },
+                        {
+                            name: 'debug',
+                            description: 'debug',
+                            type: 'BOOLEAN',
+                            required: true
                         }
                     ]
                 }
@@ -566,12 +572,15 @@ module.exports = {
                     const matchid = interaction.options.getString("gameid");
                     const region = interaction.options.getString("region");
 
+                    const debug = interaction.options.getBoolean("debug");
+
                     client.lol.queue["updates"].push({
                         "type": "match",
                         "matchid": matchid,
                         "region": region,
                         "puuid": "noone",
-                        "first": true
+                        "first": true,
+                        "debug": debug
                     });
 
                     await interaction.editReply({ content: "Match added!", ephemeral: true });

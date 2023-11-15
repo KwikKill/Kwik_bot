@@ -786,7 +786,7 @@ module.exports = {
                 this.lol_api.matchesById(this.apiKey, this.route[region], matchId, this.client).then(match => {
 
                     if (match?.status?.status_code !== 404) {
-                        const exit = this.matchHistoryOutput(match);
+                        const exit = this.matchHistoryOutput(match, current["debug"]);
                         if (exit !== null) {
                             for (const summary of exit) {
                                 try {
@@ -1011,8 +1011,8 @@ module.exports = {
      * @param {*} match   Match data
      * @returns {Object}  Stats of the match
      */
-    matchHistoryOutput(match) {
-        if (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10 || match["info"]["participants"].length !== 10) {
+    matchHistoryOutput(match, debug = false) {
+        if (!debug && (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10 || match["info"]["participants"].length !== 10)) {
             return null;
         }
 
@@ -1316,6 +1316,10 @@ module.exports = {
                 "team_id": teamId
             });
 
+        }
+        if (debug) {
+            logger.log(exit);
+            return null;
         }
         return exit;
     },
