@@ -16,7 +16,15 @@ module.exports = {
                 {
                     name: 'all',
                     description: 'update all lol accounts',
-                    type: 'SUB_COMMAND'
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'first',
+                            description: 'first',
+                            type: 'BOOLEAN',
+                            required: true
+                        }
+                    ]
                 },
                 {
                     name: 'swain',
@@ -284,7 +292,7 @@ module.exports = {
                 if (interaction.options.getSubcommand() === "all") {
                     await interaction.editReply("Processing.");
                     const start = Date.now();
-                    await update(client, interaction);
+                    await update(client, true, interaction.options.getBoolean("first"));
                     const end = Date.now();
                     const time = (end - start) / 1000;
                     try {
@@ -639,7 +647,7 @@ module.exports = {
     update
 };
 
-async function update(client, debug = false) {
+async function update(client, debug = false, first = false) {
     const query = "SELECT DISTINCT puuid, id, username, discordid, region, priority FROM summoners ORDER BY priority DESC;";
     const result = await client.pg.query(query);
 
@@ -655,9 +663,9 @@ async function update(client, debug = false) {
         }
         if (!found) {
             if (result.rows[i].priority > 0) {
-                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false, "rank": false });
+                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
             } else {
-                client.lol.queue["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": false, "rank": false });
+                client.lol.queue["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
             }
         }
     }
