@@ -542,7 +542,8 @@ module.exports = {
                                         "rune_0_var1, " +
                                         "rune_0_var2, " +
                                         "rune_0_var3, " +
-                                        "team_id " +
+                                        "team_id, " +
+                                        "placement " +
                                         ") VALUES (" +
                                         "$1," +
                                         "$2," +
@@ -587,7 +588,8 @@ module.exports = {
                                         "$41," +
                                         "$42," +
                                         "$43," +
-                                        "$44" +
+                                        "$44," +
+                                        "$45" +
                                         ") ON CONFLICT (puuid, player) DO NOTHING;",
                                     values: [
                                         summary["matchId"],
@@ -633,7 +635,8 @@ module.exports = {
                                         summary["rune_0_var1"],
                                         summary["rune_0_var2"],
                                         summary["rune_0_var3"],
-                                        summary["team_id"]
+                                        summary["team_id"],
+                                        summary["placement"]
                                     ]
                                 }
                                 );
@@ -836,7 +839,8 @@ module.exports = {
                                             "rune_0_var1, " +
                                             "rune_0_var2, " +
                                             "rune_0_var3, " +
-                                            "team_id " +
+                                            "team_id, " +
+                                            "placement " +
                                             ") VALUES (" +
                                             "$1," +
                                             "$2," +
@@ -881,7 +885,8 @@ module.exports = {
                                             "$41," +
                                             "$42," +
                                             "$43," +
-                                            "$44" +
+                                            "$44," +
+                                            "$45" +
                                             ") ON CONFLICT (puuid, player) DO NOTHING;",
                                         values: [
                                             matchId,
@@ -927,7 +932,8 @@ module.exports = {
                                             summary["rune_0_var1"],
                                             summary["rune_0_var2"],
                                             summary["rune_0_var3"],
-                                            summary["team_id"]
+                                            summary["team_id"],
+                                            summary["placement"]
                                         ]
                                     }
                                     );
@@ -1224,6 +1230,7 @@ module.exports = {
             //const creation = match['info']['gameCreation'];
             const matchId = match['metadata']['matchId'];
             let result = (match['info']['participants'][participantId]['win']) ? "Win" : "Lose";
+            const placement = match['info']['participants'][participantId]['placement'] ? match['info']['participants'][participantId]['placement'] : -1;
 
             const totalTimeSpentDead = match['info']['participants'][participantId]['totalTimeSpentDead'];
 
@@ -1315,7 +1322,8 @@ module.exports = {
                 "rune_0_var1": rune_0_var1,
                 "rune_0_var2": rune_0_var2,
                 "rune_0_var3": rune_0_var3,
-                "team_id": teamId
+                "team_id": teamId,
+                "placement": placement
             });
 
         }
