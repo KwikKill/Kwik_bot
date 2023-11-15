@@ -1319,7 +1319,7 @@ module.exports = {
 
         }
         if (debug) {
-            logger.log(exit);
+            logger.log(JSON.stringify(exit));
             return null;
         }
         return exit;
