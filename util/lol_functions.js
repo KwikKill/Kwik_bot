@@ -1062,7 +1062,8 @@ module.exports = {
             const summonerName = match['info']['participants'][participantId]['summonerName'];
 
             // Players Team Id - 100 for Blue or 200 for Red
-            const teamId = match['info']['participants'][participantId]['teamId'];
+            const teamId = match['info']['participants'][participantId]['subteamPlacement'] ? match['info']['participants'][participantId]['subteamPlacement'] : ((match['info']['participants'][participantId]['teamId'] / 100) - 1);
+
             let firstgold = 1;
             let firstdegats = 1;
             let firsttanked = 1;
