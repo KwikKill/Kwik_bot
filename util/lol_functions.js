@@ -1018,7 +1018,7 @@ module.exports = {
 
         const exit = [];
 
-        for (let participantId = 0; participantId < 10; participantId++) {
+        for (let participantId = 0; participantId < match["info"]["participants"].length; participantId++) {
 
             let teamKills = 0;
             if (match['info']['participants'][participantId] === undefined) {
@@ -1067,25 +1067,26 @@ module.exports = {
             let firstdegats = 1;
             let firsttanked = 1;
             // "team" is used to loop through the players team
-            const team = (teamId === 100) ? 5 : 10;
 
-            for (let member = team - 5; member < team; member++) {
-                //teamVisionScore += match['info']['participants'][member]['visionScore'];
-                teamKills += match['info']['participants'][member]['kills'];
-                //teamDeaths += match['info']['participants'][member]['deaths'];
-                //teamDamage += match['info']['participants'][member]['totalDamageDealtToChampions'];
-                //teamHealed += match['info']['participants'][member]['totalHeal'];
-                //teamTaken += match['info']['participants'][member]['totalDamageTaken'];
-                //teamMitigated += match['info']['participants'][member]['damageSelfMitigated'];
-                //teamGold += match['info']['participants'][member]['goldEarned'];
-                if (match['info']['participants'][member]['goldEarned'] > match['info']['participants'][participantId]['goldEarned']) {
-                    firstgold = 0;
-                }
-                if (match['info']['participants'][member]['totalDamageDealtToChampions'] > match['info']['participants'][participantId]['totalDamageDealtToChampions']) {
-                    firstdegats = 0;
-                }
-                if (match['info']['participants'][member]['totalDamageTaken'] > match['info']['participants'][participantId]['totalDamageTaken']) {
-                    firsttanked = 0;
+            for (let member = 0; member < match["info"]["participants"].length; member++) {
+                if (teamId === match['info']['participants'][member]['teamId']) {
+                    //teamVisionScore += match['info']['participants'][member]['visionScore'];
+                    teamKills += match['info']['participants'][member]['kills'];
+                    //teamDeaths += match['info']['participants'][member]['deaths'];
+                    //teamDamage += match['info']['participants'][member]['totalDamageDealtToChampions'];
+                    //teamHealed += match['info']['participants'][member]['totalHeal'];
+                    //teamTaken += match['info']['participants'][member]['totalDamageTaken'];
+                    //teamMitigated += match['info']['participants'][member]['damageSelfMitigated'];
+                    //teamGold += match['info']['participants'][member]['goldEarned'];
+                    if (match['info']['participants'][member]['goldEarned'] > match['info']['participants'][participantId]['goldEarned']) {
+                        firstgold = 0;
+                    }
+                    if (match['info']['participants'][member]['totalDamageDealtToChampions'] > match['info']['participants'][participantId]['totalDamageDealtToChampions']) {
+                        firstdegats = 0;
+                    }
+                    if (match['info']['participants'][member]['totalDamageTaken'] > match['info']['participants'][participantId]['totalDamageTaken']) {
+                        firsttanked = 0;
+                    }
                 }
             }
             //let cary = 0;
