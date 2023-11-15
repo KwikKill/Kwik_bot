@@ -1018,7 +1018,7 @@ module.exports = {
      * @returns {Object}  Stats of the match
      */
     matchHistoryOutput(match, debug = false) {
-        if (!debug && (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME" || match["metadata"]["participants"].length !== 10 || match["info"]["participants"].length !== 10)) {
+        if (!debug && (match === null || match === undefined || match["info"] === undefined || match["info"]["gameMode"] === "PRACTICETOOL" || match["info"]["gameType"] === "CUSTOM_GAME")) {
             return null;
         }
 
