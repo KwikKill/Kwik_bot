@@ -1061,7 +1061,7 @@ module.exports = {
 
             }
 
-            if (lanePlayed === "UTLITY" || lanePlayed === "BOTTOM") {
+            if (lanePlayed === "UTILITY" || lanePlayed === "BOTTOM") {
                 lanePlayed = "MIDDLE";
             }
 
