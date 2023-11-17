@@ -1104,7 +1104,8 @@ async function account_remove(client, interaction, gamename, tagline) {
             name: "remove_account",
             text: "DELETE FROM summoners " +
                 "WHERE discordid=$1 " +
-                "AND LOWER(username)=LOWER($2)" +
+                "AND gamename=$2 " +
+                "AND tagline=$3" +
                 ";",
             values: [interaction.user.id, gamename, tagline]
         });
@@ -1189,10 +1190,10 @@ async function queue(client, interaction) {
     if (client.lol.queue["updates"].length > 0) {
         if (client.lol.queue["updates"][0]["count"] === 0) {
             step = //"- Step : 1/2 (Fetching game list)" +
-                "- Current : <@" + client.lol.queue["updates"][0]["discordid"] + "> (" + client.lol.queue["updates"][0]["username"] + ") : Fetching match list";
+                "- Current : <@" + client.lol.queue["updates"][0]["discordid"] + "> (" + client.lol.queue["updates"][0]["gamename"] + "#" + client.lol.queue["updates"][0]["tagline"] + ") : Fetching match list";
         } else {
             step = //"- Step : 2/2 (Fetching matchs details)\n" +
-                "- Current : <@" + client.lol.queue["updates"][0]["discordid"] + "> (" + client.lol.queue["updates"][0]["username"] + ") : " + client.lol.queue["updates"][0]["count"] + "/" + client.lol.queue["updates"][0]["total"] + " matchs";
+                "- Current : <@" + client.lol.queue["updates"][0]["discordid"] + "> (" + client.lol.queue["updates"][0]["gamename"] + "#" + client.lol.queue["updates"][0]["tagline"] + ") : " + client.lol.queue["updates"][0]["count"] + "/" + client.lol.queue["updates"][0]["total"] + " matchs";
         }
         embed.addFields(
             {
@@ -1204,7 +1205,7 @@ async function queue(client, interaction) {
         const pos = [];
         for (let i = 1; i < client.lol.queue["updates"].length; i++) {
             if (client.lol.queue["updates"][i]["discordid"] === interaction.user.id) {
-                pos.push([i, client.lol.queue["updates"][i]["username"]]);
+                pos.push([i, client.lol.queue["updates"][i]["gamename"] + "#" + client.lol.queue["updates"][i]["tagline"]]);
                 break;
             }
         }
