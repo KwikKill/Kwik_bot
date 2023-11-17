@@ -666,7 +666,7 @@ module.exports = {
         const discordid = current["discordid"];
         const region = current["region"];
         const priority = current["priority"];
-        let puuid = await this.lol_api.account_by_riotid(this.apiKey, region, gamename, tagline, this.client);
+        let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client);
         if (puuid === null) {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + gamename + "#" + tagline + " not found.");
