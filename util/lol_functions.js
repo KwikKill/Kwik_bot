@@ -1361,7 +1361,7 @@ module.exports = {
      * @function full_transition_from_puuid_to_gametag
      */
     async full_transition_from_puuid_to_gametag() {
-        this.client.pg.query("SELECT * FROM summoners WHERE gameName = '' AND tagLine = ''").then(response => {
+        this.client.pg.query("SELECT * FROM summoners WHERE gameName IS NULL AND tagLine IS NULL").then(response => {
             if (response.rowCount > 0) {
                 for (const summoner of response.rows) {
                     this.lol_api.account_by_puuid(this.apiKey, summoner["puuid"], this.client).then(account => {
