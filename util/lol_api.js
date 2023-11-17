@@ -407,6 +407,18 @@ class LolApi {
         throw new Error("Invalid Route");
 
     }
+
+    /**
+     * Get account by puuid
+     * @function account_by_puuid
+     * @param {*} api_key   Riot API key
+     * @param {*} puuid     puuid of the player
+     * @returns {Object}    account data
+     */
+    account_by_puuid(api_key, puuid, client) {
+        const url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/" + puuid + "?api_key=" + api_key;
+        return this.apiCall(url, client);
+    }
 }
 
 module.exports = {

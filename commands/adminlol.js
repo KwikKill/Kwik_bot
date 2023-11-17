@@ -35,6 +35,11 @@ module.exports = {
                     name: 'add',
                     description: 'add more summoners to the database',
                     type: 'SUB_COMMAND'
+                },
+                {
+                    name: 'transition',
+                    description: 'transition to the new database',
+                    type: 'SUB_COMMAND'
                 }
             ]
         },
@@ -485,6 +490,9 @@ module.exports = {
                     }
                     interaction.editReply("Adding " + resp.rows.length + " summoners to the queue, please wait");
                     await client.lol.main();
+                } else if (interaction.options.getSubcommand() === "transition") {
+                    client.lol.full_transition_from_puuid_to_gametag();
+                    await interaction.editReply("done");
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
                 const TOP = interaction.options.getString("top");
