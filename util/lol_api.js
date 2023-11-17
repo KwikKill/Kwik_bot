@@ -419,6 +419,19 @@ class LolApi {
         const url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/" + puuid + "?api_key=" + api_key;
         return this.apiCall(url, client);
     }
+
+    /**
+     * Get account by riot id
+     * @function account_by_riotid
+     * @param {*} api_key   Riot API key
+     * @param {*} gamename  gamename of the player
+     * @param {*} tagline   tagline of the player
+     * @returns {Object}    account data
+     */
+    account_by_riotid(api_key, gamename, tagline, client) {
+        const url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" + gamename + "/" + tagline + "?api_key=" + api_key;
+        return this.apiCall(url, client);
+    }
 }
 
 module.exports = {

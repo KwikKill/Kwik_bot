@@ -37,8 +37,14 @@ module.exports = {
                     type: 'SUB_COMMAND',
                     options: [
                         {
-                            name: 'name',
-                            description: 'Name of the account',
+                            name: 'gamename',
+                            description: 'GameName of the account',
+                            type: 'STRING',
+                            required: true,
+                        },
+                        {
+                            name: 'tagline',
+                            description: 'TagLine of the account',
                             type: 'STRING',
                             required: true,
                         },
@@ -102,11 +108,17 @@ module.exports = {
                     type: 'SUB_COMMAND',
                     options: [
                         {
-                            name: 'name',
-                            description: 'Name of the account',
+                            name: 'gamename',
+                            description: 'GameName of the account',
                             type: 'STRING',
                             required: true,
-                        }
+                        },
+                        {
+                            name: 'tagline',
+                            description: 'TagLine of the account',
+                            type: 'STRING',
+                            required: true,
+                        },
                     ]
                 },
                 {
@@ -903,10 +915,9 @@ module.exports = {
         if (interaction === undefined) {
             return;
         }
-        let summoner_name = interaction.options.getString("name");
-        if (summoner_name) {
-            summoner_name = summoner_name.toLowerCase();
-        }
+        const gamename = interaction.options.getString("gamename");
+        const tagline = interaction.options.getString("tagline");
+
         const region = interaction.options.getString("region");
         const champion = interaction.options.getString("champion");
         const role = interaction.options.getString("lane");
@@ -922,9 +933,9 @@ module.exports = {
         await interaction.deferReply();
         if (interaction.options.getSubcommandGroup() === "account") {
             if (interaction.options.getSubcommand() === "add") {
-                account_add(client, interaction, summoner_name, region);
+                account_add(client, interaction, gamename, tagline, region);
             } else if (interaction.options.getSubcommand() === "remove") {
-                account_remove(client, interaction, summoner_name);
+                account_remove(client, interaction, gamename, tagline);
             } else if (interaction.options.getSubcommand() === "list") {
                 account_list(client, interaction);
             }
@@ -992,8 +1003,8 @@ module.exports = {
  * @param {String} region - summoner's region
  * @returns {Promise<void>}
  */
-async function addSumoner(client, name, interaction, region) {
-    client.lol.queue["summoners"].push({ "username": name, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0, "first": true });
+async function addSumoner(client, gamename, tagline, interaction, region) {
+    client.lol.queue["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0, "first": true });
     await client.lol.main();
 }
 
@@ -1007,8 +1018,8 @@ async function addSumoner(client, name, interaction, region) {
  * @param {Number} priority - summoner's priority
  * @returns {Promise<void>}
  */
-async function add_summoner_manual(client, name, discordid, region, priority = 0) {
-    client.lol.queue["summoners"].push({ "username": name, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority, "first": true });
+async function add_summoner_manual(client, gamename, tagline, discordid, region, priority = 0) {
+    client.lol.queue["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority, "first": true });
     await client.lol.main();
 }
 
@@ -1019,10 +1030,11 @@ async function add_summoner_manual(client, name, discordid, region, priority = 0
  * @function account_add
  * @param {Client} client - bot's client
  * @param {Interaction} interaction - command's interaction
- * @param {String} summoner_name - summoner's username
+ * @param {String} gamename - summoner's username
+ * @param {String} tagline - summoner's tagline
  * @param {String} region - summoner's region
  */
-async function account_add(client, interaction, summoner_name, region) {
+async function account_add(client, interaction, gamename, tagline, region) {
     client.pg.query({
         name: "insert-logs",
         text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
@@ -1031,14 +1043,15 @@ async function account_add(client, interaction, summoner_name, region) {
             interaction.user.id,
             "lol/account/add",
             JSON.stringify({
-                summoner_name: summoner_name,
+                gamename: gamename,
+                tagline: tagline,
                 region: region
             }),
             interaction.guild.id
         ]
     });
-    const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2) AND region=$3;", [interaction.user.id, summoner_name, region]);
-    if (!client.lol.queue["summoners"].includes({ "username": summoner_name, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
+    const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3 AND region=$4;", [interaction.user.id, gamename, tagline, region]);
+    if (!client.lol.queue["summoners"].includes({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
         const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
         let number = response2.rows.length;
         for (let i = 0; i < client.lol.queue["summoners"].length; i++) {
@@ -1050,13 +1063,13 @@ async function account_add(client, interaction, summoner_name, region) {
         if (number === 0 || priority.rows[0].priority === 0) {
             if (number === 0) {
                 await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
-                return await addSumoner(client, summoner_name, interaction, region);
+                return await addSumoner(client, gamename, tagline, interaction, region);
             }
             return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **KwikKill#6123**");
         }
         if (number < 3 || priority.rows[0].priority === 10) {
             await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
-            return await addSumoner(client, summoner_name, interaction, region);
+            return await addSumoner(client, gamename, tagline, interaction, region);
         }
         return await interaction.editReply("You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **KwikKill#6123**");
     }
@@ -1070,7 +1083,7 @@ async function account_add(client, interaction, summoner_name, region) {
  * @param {Interaction} interaction - command's interaction
  * @param {String} summoner_name - summoner's username
  */
-async function account_remove(client, interaction, summoner_name) {
+async function account_remove(client, interaction, gamename, tagline) {
     client.pg.query({
         name: "insert-logs",
         text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
@@ -1079,12 +1092,13 @@ async function account_remove(client, interaction, summoner_name) {
             interaction.user.id,
             "lol/account/remove",
             JSON.stringify({
-                summoner_name: summoner_name
+                gamename: gamename,
+                tagline: tagline
             }),
             interaction.guild.id
         ]
     });
-    const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND LOWER(username)=LOWER($2);", [interaction.user.id, summoner_name]);
+    const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3;", [interaction.user.id, gamename, tagline]);
     if (response.rows.length > 0) {
         await client.pg.query({
             name: "remove_account",
@@ -1092,7 +1106,7 @@ async function account_remove(client, interaction, summoner_name) {
                 "WHERE discordid=$1 " +
                 "AND LOWER(username)=LOWER($2)" +
                 ";",
-            values: [interaction.user.id, summoner_name]
+            values: [interaction.user.id, gamename, tagline]
         });
         return await interaction.editReply("The account has been removed.");
     }

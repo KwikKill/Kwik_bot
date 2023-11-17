@@ -360,7 +360,8 @@ module.exports = {
         }
         const discordid = data.rows[0]["discordid"];
         const region = data.rows[0]["region"];
-        const username = data.rows[0]["username"];
+        const gamename = data.rows[0]["gamename"];
+        const tagline = data.rows[0]["tagline"];
         const id = data.rows[0]["id"];
         const rank = await this.update_rank(id, region);
 
@@ -394,10 +395,10 @@ module.exports = {
                         ) {
                             await this.client.pg.query("UPDATE summoners SET rank_solo = '" + rank["RANKED_SOLO_5x5"]["rank"] + "', tier_solo = '" + rank["RANKED_SOLO_5x5"]["tier"] + "', LP_solo = " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + ", rank_flex = '" + rank["RANKED_FLEX_SR"]["rank"] + "', tier_flex = '" + rank["RANKED_FLEX_SR"]["tier"] + "', LP_flex = " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " WHERE id = '" + id + "'");
                             if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
-                                channel.send("Placement Solo/Duo completed for " + username + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                                channel.send("Placement Solo/Duo completed for " + gamename + "#" + tagline + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
                             }
                             else if (current_rank.rows[0].tier_flex === 'unranked' && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked') {
-                                channel.send("Placement Flex completed for " + username + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                                channel.send("Placement Flex completed for " + gamename + "#" + tagline + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
                             }
                             else if (
                                 (
@@ -409,7 +410,7 @@ module.exports = {
                             ) {
                                 if (last_game !== null) {
                                     channel.send("Rank Solo/Duo update for " +
-                                        username +
+                                        gamename + "#" + tagline +
                                         " : " + rank["RANKED_SOLO_5x5"]["tier"] +
                                         " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                         " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
@@ -417,7 +418,7 @@ module.exports = {
                                         " | " + game);
                                 } else {
                                     channel.send("Rank Solo/Duo update for " +
-                                        username +
+                                        gamename + "#" + tagline +
                                         " : " + rank["RANKED_SOLO_5x5"]["tier"] +
                                         " " + rank["RANKED_SOLO_5x5"]["rank"] +
                                         " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
@@ -434,7 +435,7 @@ module.exports = {
                             ) {
                                 if (last_game !== null) {
                                     channel.send("Rank Flex update for " +
-                                        username +
+                                        gamename + "#" + tagline +
                                         " : " + rank["RANKED_FLEX_SR"]["tier"] +
                                         " " + rank["RANKED_FLEX_SR"]["rank"] +
                                         " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
@@ -442,7 +443,7 @@ module.exports = {
                                         " | " + game);
                                 } else {
                                     channel.send("Rank Flex update for " +
-                                        username +
+                                        gamename + "#" + tagline +
                                         " : " + rank["RANKED_FLEX_SR"]["tier"] +
                                         " " + rank["RANKED_FLEX_SR"]["rank"] +
                                         " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
@@ -491,9 +492,9 @@ module.exports = {
                                 } else {
                                     this.send_tracker_message(summary["summonerpuuid"], summary);
                                 }
-                                if (summary["summonerpuuid"] === puuid) {
+                                /*if (summary["summonerpuuid"] === puuid) {
                                     this.update_pseudo(current, summary["summonerName"]);
-                                }
+                                }*/
                             }
                             try {
                                 this.client.pg.query({
@@ -656,15 +657,30 @@ module.exports = {
      * @param {*} current current summoner
      */
     async update_summoner(current) {
-        const username = current["username"];
+        //const username = current["username"];
+
+        const gamename = current["gamename"];
+        const tagline = current["tagline"];
+
         const interaction = current["interaction"];
         const discordid = current["discordid"];
         const region = current["region"];
         const priority = current["priority"];
-        const summonerObject = await this.lol_api.summonersByName(this.apiKey, region, username, this.client);
+        let puuid = await this.lol_api.account_by_riotid(this.apiKey, region, gamename, tagline, this.client);
+        if (puuid === null) {
+            try {
+                await interaction.editReply("<@" + discordid + ">, Account " + gamename + "#" + tagline + " not found.");
+            } catch {
+
+            }
+        } else {
+            puuid = puuid["puuid"];
+        }
+
+        const summonerObject = await this.lol_api.summonerByPuuid(this.apiKey, region, puuid, this.client);
         if (summonerObject === null) {
             try {
-                await interaction.editReply("<@" + discordid + ">, Account " + username + " not found.");
+                await interaction.editReply("<@" + discordid + ">, Account " + gamename + "#" + tagline + " not found.");
             } catch {
 
             }
@@ -677,7 +693,6 @@ module.exports = {
 
             await this.client.pg.query('INSERT INTO summoners(' +
                 'puuid, ' +
-                'username, ' +
                 'accountid, ' +
                 'id, ' +
                 'discordid, ' +
@@ -688,11 +703,12 @@ module.exports = {
                 'tier_flex, ' +
                 'LP_flex, ' +
                 'region, ' +
-                'priority' +
+                'priority, ' +
+                'gamename, ' +
+                'tagline' +
                 ') ' +
                 'VALUES(\'' +
                 puuid + '\', \'' +
-                username.toLowerCase() + '\', ' + '\'' +
                 accountId + '\', \'' +
                 id + '\', \'' +
                 discordid + '\', \'' +
@@ -703,7 +719,9 @@ module.exports = {
                 rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
                 rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
                 region + '\', ' +
-                priority +
+                priority + ', \'' +
+                gamename + '\', \'' +
+                tagline + '\'' +
                 ')'
             );
 
@@ -742,11 +760,11 @@ module.exports = {
 
 
             try {
-                await interaction.editReply("<@" + discordid + ">, Account " + username + " has been added to the database.");
+                await interaction.editReply("<@" + discordid + ">, Account " + gamename + "#" + tagline + " has been added to the database.");
             } catch {
 
             }
-            this.queue["updates"].push({ "puuid": puuid, "id": id, "username": username, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+            this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
         }
     },
 
@@ -768,7 +786,7 @@ module.exports = {
 
             if (debug) {
                 const timer2 = Date.now();
-                logger.log("lol (summoner) : [" + current["username"] + "] " + (timer2 - timer1) + " ms");
+                logger.log("lol (summoner) : [" + current["gamename"] + "#" + current["tagline"] + "] " + (timer2 - timer1) + " ms");
             }
         }
         const checkpoint1 = Date.now();
