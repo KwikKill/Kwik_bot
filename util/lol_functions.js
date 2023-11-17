@@ -1362,9 +1362,11 @@ module.exports = {
      */
     async full_transition_from_puuid_to_gametag() {
         this.client.pg.query("SELECT * FROM summoners WHERE gameName IS NULL AND tagLine IS NULL").then(response => {
+            logger.log(response.rowCount);
             if (response.rowCount > 0) {
                 for (const summoner of response.rows) {
                     this.lol_api.account_by_puuid(this.apiKey, summoner["puuid"], this.client).then(account => {
+                        logger.log(summoner["puuid"] + ": " + account["gameName"] + "#" + account["tagLine"]);
                         this.client.pg.query("UPDATE summoners SET gameName = '" + account["gameName"] + "', tagLine = '" + account["tagLine"] + "' WHERE puuid = '" + summoner["puuid"] + "'");
                     });
                 }
