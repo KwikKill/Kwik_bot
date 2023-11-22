@@ -12,6 +12,7 @@ const emojis = {
     "SILVER": "<:Silver:519953533315973123>",
     "GOLD": "<:Gold:519953533152526337>",
     "PLATINUM": "<:Platinum:519953533500391445>",
+    "EMERALD": "<:Emerald:1132076133580542022>",
     "DIAMOND": "<:Diamond:519953533769089044>",
     "MASTER": "<:Master:519953533588471828>",
     "GRANDMASTER": "<:Grandmaster:519953533798187028>",
@@ -1081,7 +1082,8 @@ async function account_add(client, interaction, gamename, tagline, region) {
  * @function account_remove
  * @param {Client} client - bot's client
  * @param {Interaction} interaction - command's interaction
- * @param {String} summoner_name - summoner's username
+ * @param {String} gamename - summoner's username
+ * @param {String} tagline - summoner's tagline
  */
 async function account_remove(client, interaction, gamename, tagline) {
     client.pg.query({
@@ -1146,7 +1148,7 @@ async function account_list(client, interaction) {
         .setTimestamp();
     let accounts = "";
     for (let i = 0; i < response.rows.length; i++) {
-        accounts += "-" + response.rows[i].username + "\n";
+        accounts += "-" + response.rows[i].gamename + "#" + response.rows[i].tagline + "\n";
     }
     embed.addFields(
         {
