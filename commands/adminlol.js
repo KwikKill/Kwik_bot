@@ -581,9 +581,12 @@ module.exports = {
                                         region = undefined;
                                         continue;
                                 }
-                                if (username !== undefined && region !== undefined && username.includes("#") && currents.length < limit) {
-                                    summoners.push([username, region]);
-                                    currents.push([username, region]);
+                                if (username !== undefined && username !== null && region !== undefined && region !== null && username.includes("#") && currents.length < limit) {
+                                    const resp = await client.pg.query("SELECT puuid FROM summoners WHERE gamename = $1 AND tagline = $2 AND region = $3", [username.split("#")[0], username.split("#")[1], region]);
+                                    if (resp.rows.length === 0) {
+                                        summoners.push([username, region]);
+                                        currents.push([username, region]);
+                                    }
                                 }
                             }
                             j++;
@@ -591,22 +594,19 @@ module.exports = {
                     }
 
                     for (const summoner of summoners) {
-                        const resp = await client.pg.query("SELECT puuid FROM summoners WHERE gamename = $1 AND tagline = $2 AND region = $3", [summoner[0].split("#")[0], summoner[0].split("#")[1], summoner[1]]);
-                        if (resp.rows.length === 0) {
-                            client.lol.queue["updates"].push({
-                                "type": "population",
-                                "region": summoner[1],
-                                "gamename": summoner[0].split("#")[0],
-                                "tagline": summoner[0].split("#")[1],
-                                "add": account,
-                                "discordid": "503109625772507136"
-                            });
-                        }
+                        client.lol.queue["updates"].push({
+                            "type": "population",
+                            "region": summoner[1],
+                            "gamename": summoner[0].split("#")[0],
+                            "tagline": summoner[0].split("#")[1],
+                            "add": account,
+                            "discordid": "503109625772507136"
+                        });
                     }
 
                     const end = Date.now();
                     const time = (end - start) / 1000;
-                    await interaction.editReply("Done in " + time + "s");
+                    await interaction.editReply(summoners.length + " summoners added to the queue in " + time + "s");
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
                 const TOP = interaction.options.getString("top");
@@ -770,7 +770,7 @@ module.exports = {
 };
 
 async function update(client, debug = false, first = false) {
-    const query = "SELECT DISTINCT puuid, id, username, discordid, region, priority FROM summoners ORDER BY priority DESC;";
+    const query = "SELECT DISTINCT puuid, id, gamename, tagline, discordid, region, priority FROM summoners ORDER BY priority DESC;";
     const result = await client.pg.query(query);
 
     const prio = [];
@@ -785,9 +785,9 @@ async function update(client, debug = false, first = false) {
         }
         if (!found) {
             if (result.rows[i].priority > 0) {
-                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
+                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "gamename": result.rows[i].gamename, "tagline": result.rows[i].tagline, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
             } else {
-                client.lol.queue["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "username": result.rows[i].username, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
+                client.lol.queue["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "gamename": result.rows[i].gamename, "tagline": result.rows[i].tagline, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
             }
         }
     }

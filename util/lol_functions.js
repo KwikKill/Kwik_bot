@@ -963,7 +963,6 @@ module.exports = {
                     }
                 });
             } else if (current["type"] === "population") {
-                console.log("population", current["gamename"]);
                 const gamename = current["gamename"];
                 const tagline = current["tagline"];
 
@@ -975,7 +974,6 @@ module.exports = {
                     puuid = puuid["puuid"];
                     const summonerObject = await this.lol_api.summonerByPuuid(this.apiKey, region, puuid, this.client);
                     if (summonerObject !== null) {
-                        console.log("found", summonerObject["puuid"]);
                         const id = summonerObject['id'];
                         const accountId = summonerObject['accountId'];
                         const puuid = summonerObject['puuid'];
@@ -1018,7 +1016,6 @@ module.exports = {
                             );
                             this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
                         } else {
-                            console.log("pushed", puuid);
                             this.queue["updates"].push({
                                 "type": "sum",
                                 "puuid": puuid,
