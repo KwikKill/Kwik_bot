@@ -527,7 +527,6 @@ module.exports = {
                     for (const champ of Object.values(champs)) {
                         const currents = [];
                         let j = 1;
-                        console.log(champ.toLowerCase());
 
                         while (currents.length < limit) {
                             const url = "https://www.leagueofgraphs.com/rankings/summoners/" + champ.toLowerCase() + "/page-" + j;
@@ -543,7 +542,45 @@ module.exports = {
                                     continue;
                                 }
                                 const username = node2.text;
-                                const region = node3.text;
+                                let region = node3.text;
+                                switch (region) {
+                                    case "EUW":
+                                        region = "EUW1";
+                                        break;
+                                    case "EUNE":
+                                        region = "EUN1";
+                                        break;
+                                    case "NA":
+                                        region = "NA1";
+                                        break;
+                                    case "OCE":
+                                        region = "OC1";
+                                        break;
+                                    case "LAN":
+                                        region = "LA1";
+                                        break;
+                                    case "LAS":
+                                        region = "LA2";
+                                        break;
+                                    case "RU":
+                                        region = "RU";
+                                        break;
+                                    case "BR":
+                                        region = "BR1";
+                                        break;
+                                    case "TR":
+                                        region = "TR1";
+                                        break;
+                                    case "JP":
+                                        region = "JP1";
+                                        break;
+                                    case "KR":
+                                        region = "KR";
+                                        break;
+                                    default:
+                                        region = undefined;
+                                        continue;
+                                }
                                 if (username !== undefined && region !== undefined && username.includes("#") && currents.length < limit) {
                                     summoners.push([username, region]);
                                     currents.push([username, region]);
@@ -553,7 +590,19 @@ module.exports = {
                         }
                     }
 
-                    console.log(summoners.length);
+                    for (const summoner of summoners) {
+                        const resp = await client.pg.query("SELECT puuid FROM summoners WHERE gamename = $1 AND tagline = $2 AND region = $3", [summoner[0].split("#")[0], summoner[0].split("#")[1], summoner[1]]);
+                        if (resp.rows.length === 0) {
+                            client.lol.queue["updates"].push({
+                                "type": "population",
+                                "region": summoner[1],
+                                "gamename": summoner[0].split("#")[0],
+                                "tagline": summoner[0].split("#")[1],
+                                "add": account,
+                                "discordid": "503109625772507136"
+                            });
+                        }
+                    }
 
                     const end = Date.now();
                     const time = (end - start) / 1000;

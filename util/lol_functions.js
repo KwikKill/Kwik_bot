@@ -968,6 +968,62 @@ module.exports = {
                 if (current !== undefined && (current["matchs"].length > 0 || current["rank"] !== false)) {
                     this.save_matchs(current);
                 }
+            } else if (current["type"] === "population") {
+                const gamename = current["gamename"];
+                const tagline = current["tagline"];
+
+                const discordid = current["discordid"];
+                const region = current["region"];
+                const priority = -1;
+                let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client);
+                if (puuid !== null) {
+                    puuid = puuid["puuid"];
+                    const summonerObject = await this.lol_api.summonerByPuuid(this.apiKey, region, puuid, this.client);
+                    if (summonerObject !== null) {
+                        const id = summonerObject['id'];
+                        const accountId = summonerObject['accountId'];
+                        const puuid = summonerObject['puuid'];
+
+                        const rank = await this.update_rank(id, region);
+
+                        if (current["add"] === true) {
+                            await this.client.pg.query('INSERT INTO summoners(' +
+                                'puuid, ' +
+                                'accountid, ' +
+                                'id, ' +
+                                'discordid, ' +
+                                'rank_solo, ' +
+                                'tier_solo, ' +
+                                'LP_solo, ' +
+                                'rank_flex, ' +
+                                'tier_flex, ' +
+                                'LP_flex, ' +
+                                'region, ' +
+                                'priority, ' +
+                                'gamename, ' +
+                                'tagline' +
+                                ') ' +
+                                'VALUES(\'' +
+                                puuid + '\', \'' +
+                                accountId + '\', \'' +
+                                id + '\', \'' +
+                                discordid + '\', \'' +
+                                rank["RANKED_SOLO_5x5"]["rank"] + '\', \'' +
+                                rank["RANKED_SOLO_5x5"]["tier"] + '\', \'' +
+                                rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
+                                rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
+                                rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
+                                rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
+                                region + '\', ' +
+                                priority + ', \'' +
+                                gamename + '\', \'' +
+                                tagline + '\'' +
+                                ')'
+                            );
+                        }
+                        this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+                    }
+                }
             } else {
                 current = await this.set_update(current);//, debug);
                 if (current !== undefined) {
