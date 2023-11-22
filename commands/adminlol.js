@@ -526,11 +526,11 @@ module.exports = {
                     // for values in champs dict
                     for (const champ of Object.values(champs)) {
                         const currents = [];
-                        let i = 1;
+                        let j = 1;
                         console.log(champ.toLowerCase());
 
                         while (currents.length < limit) {
-                            const response = await fetch("https://www.leagueofgraphs.com/rankings/summoners/page-" + i + "/" + champ.toLowerCase());
+                            const response = await fetch("https://www.leagueofgraphs.com/rankings/summoners/" + champ.toLowerCase() + "/page-" + j);
                             const html = await response.text();
                             const node = parse.parse(html);
                             const price_text = node.querySelectorAll(".txt");
@@ -543,12 +543,12 @@ module.exports = {
                                 }
                                 const username = node2.text;
                                 const region = node3.text;
-                                if (username !== undefined && region !== undefined && username.includes("#")) {
+                                if (username !== undefined && region !== undefined && username.includes("#") && currents.length < limit) {
                                     summoners.push([username, region]);
                                     currents.push([username, region]);
                                 }
                             }
-                            i++;
+                            j++;
                         }
                     }
 
