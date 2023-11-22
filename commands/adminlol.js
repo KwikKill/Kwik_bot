@@ -1,4 +1,5 @@
 //const { MessageEmbed } = require('discord.js');
+const parse = require('node-html-parser');
 
 module.exports = {
     name: 'adminlol',
@@ -520,10 +521,31 @@ module.exports = {
 
                     const champs = await client.lol.lol_api.getChampsId("EUW1", client);
 
+                    const summoners = [];
+
                     // for values in champs dict
                     for (const champ of Object.values(champs)) {
-                        console.log(champ.toLowerCase());
+
+                        const response = await fetch("https://www.leagueofgraphs.com/rankings/summoners/" + champ.toLowerCase());
+                        const html = await response.text();
+                        const node = parse.parse(html);
+                        const price_text = node.querySelectorAll(".txt");
+
+                        for (let i = 0; i < price_text.length; i++) {
+                            const node2 = price_text[i].querySelector(".name");
+                            const node3 = price_text[i].querySelector("i");
+                            if (node2 === null || node3 === null) {
+                                continue;
+                            }
+                            const username = node2.text;
+                            const region = node3.text;
+                            if (username !== undefined && region !== undefined && username.includes("#")) {
+                                summoners.push([username, region]);
+                            }
+                        }
                     }
+
+                    console.log(summoners.length);
 
                     const end = Date.now();
                     const time = (end - start) / 1000;
