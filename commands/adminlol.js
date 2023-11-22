@@ -530,7 +530,8 @@ module.exports = {
                         console.log(champ.toLowerCase());
 
                         while (currents.length < limit) {
-                            const response = await fetch("https://www.leagueofgraphs.com/rankings/summoners/" + champ.toLowerCase() + "/page-" + j);
+                            const url = "https://www.leagueofgraphs.com/rankings/summoners/" + champ.toLowerCase() + "/page-" + j;
+                            const response = await fetch(url);
                             const html = await response.text();
                             const node = parse.parse(html);
                             const price_text = node.querySelectorAll(".txt");
