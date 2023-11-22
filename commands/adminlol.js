@@ -40,6 +40,25 @@ module.exports = {
                     name: 'transition',
                     description: 'transition to the new database',
                     type: 'SUB_COMMAND'
+                },
+                {
+                    name: 'populate',
+                    description: 'populate the database',
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'limit',
+                            description: 'limit',
+                            type: 'INTEGER',
+                            required: true
+                        },
+                        {
+                            name: 'account',
+                            description: 'account',
+                            type: 'BOOLEAN',
+                            required: true
+                        }
+                    ]
                 }
             ]
         },
@@ -493,6 +512,18 @@ module.exports = {
                 } else if (interaction.options.getSubcommand() === "transition") {
                     client.lol.full_transition_from_puuid_to_gametag();
                     await interaction.editReply("done");
+                } else if (interaction.options.getSubcommand() === "populate") {
+                    const limit = interaction.options.getInteger("limit");
+                    const account = interaction.options.getBoolean("account");
+                    const start = Date.now();
+                    await interaction.editReply("Populating the database, please wait");
+
+                    const champs = await client.lol.lol_api.getChampsId("EUW1");
+                    console.log(champs);
+
+                    const end = Date.now();
+                    const time = (end - start) / 1000;
+                    await interaction.editReply("Done in " + time + "s");
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
                 const TOP = interaction.options.getString("top");
