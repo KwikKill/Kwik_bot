@@ -525,23 +525,30 @@ module.exports = {
 
                     // for values in champs dict
                     for (const champ of Object.values(champs)) {
+                        const currents = [];
+                        let i = 1;
+                        console.log(champ.toLowerCase());
 
-                        const response = await fetch("https://www.leagueofgraphs.com/rankings/summoners/" + champ.toLowerCase());
-                        const html = await response.text();
-                        const node = parse.parse(html);
-                        const price_text = node.querySelectorAll(".txt");
+                        while (currents.length < limit) {
+                            const response = await fetch("https://www.leagueofgraphs.com/rankings/summoners/page-" + i + "/" + champ.toLowerCase());
+                            const html = await response.text();
+                            const node = parse.parse(html);
+                            const price_text = node.querySelectorAll(".txt");
 
-                        for (let i = 0; i < price_text.length; i++) {
-                            const node2 = price_text[i].querySelector(".name");
-                            const node3 = price_text[i].querySelector("i");
-                            if (node2 === null || node3 === null) {
-                                continue;
+                            for (let i = 0; i < price_text.length; i++) {
+                                const node2 = price_text[i].querySelector(".name");
+                                const node3 = price_text[i].querySelector("i");
+                                if (node2 === null || node3 === null) {
+                                    continue;
+                                }
+                                const username = node2.text;
+                                const region = node3.text;
+                                if (username !== undefined && region !== undefined && username.includes("#")) {
+                                    summoners.push([username, region]);
+                                    currents.push([username, region]);
+                                }
                             }
-                            const username = node2.text;
-                            const region = node3.text;
-                            if (username !== undefined && region !== undefined && username.includes("#")) {
-                                summoners.push([username, region]);
-                            }
+                            i++;
                         }
                     }
 
