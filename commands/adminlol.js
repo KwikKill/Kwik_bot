@@ -518,7 +518,7 @@ module.exports = {
                     const start = Date.now();
                     await interaction.editReply("Populating the database, please wait");
 
-                    const champs = await client.lol.lol_api.getChampsId("EUW1");
+                    const champs = await client.lol.lol_api.getChampsId("EUW1", client);
                     console.log(champs);
 
                     const end = Date.now();
