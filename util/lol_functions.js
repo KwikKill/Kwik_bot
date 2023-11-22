@@ -962,12 +962,6 @@ module.exports = {
                         }
                     }
                 });
-            } else if (current["type"] === "sum") {
-                current = await this.set_update(current);
-
-                if (current !== undefined && (current["matchs"].length > 0 || current["rank"] !== false)) {
-                    this.save_matchs(current);
-                }
             } else if (current["type"] === "population") {
                 const gamename = current["gamename"];
                 const tagline = current["tagline"];
@@ -1020,9 +1014,22 @@ module.exports = {
                                 tagline + '\'' +
                                 ')'
                             );
+                            this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+                        } else {
+                            this.queue["updates"].push({
+                                "type": "sum",
+                                "puuid": puuid,
+                                "region": region,
+                                "matchs": []
+                            });
                         }
-                        this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
                     }
+                }
+            } else if (current["type"] === "sum") {
+                current = await this.set_update(current);
+
+                if (current !== undefined && (current["matchs"].length > 0 || current["rank"] !== false)) {
+                    this.save_matchs(current);
                 }
             } else {
                 current = await this.set_update(current);//, debug);
