@@ -519,7 +519,11 @@ module.exports = {
                     await interaction.editReply("Populating the database, please wait");
 
                     const champs = await client.lol.lol_api.getChampsId("EUW1", client);
-                    console.log(champs);
+
+                    // for values in champs dict
+                    for (const champ of Object.values(champs)) {
+                        console.log(champ.toLowerCase());
+                    }
 
                     const end = Date.now();
                     const time = (end - start) / 1000;
