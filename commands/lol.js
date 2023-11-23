@@ -226,7 +226,7 @@ module.exports = {
                         },
                         {
                             name: 'account',
-                            description: 'account',
+                            description: 'account (gamename#tagline)',
                             type: 'STRING'
                         },
                         {
@@ -413,7 +413,7 @@ module.exports = {
                         },
                         {
                             name: 'account',
-                            description: 'account',
+                            description: 'account (gamename#tagline)',
                             type: 'STRING'
                         },
                         {
@@ -497,7 +497,7 @@ module.exports = {
                         },
                         {
                             name: 'account',
-                            description: 'account',
+                            description: 'account (gamename#tagline)',
                             type: 'STRING'
                         },
                         {
@@ -673,7 +673,7 @@ module.exports = {
                         },
                         {
                             name: 'account',
-                            description: 'account',
+                            description: 'account (gamename#tagline)',
                             type: 'STRING'
                         },
                         {
@@ -925,7 +925,10 @@ module.exports = {
         const gamemode = interaction.options.getString("gamemode");
         let account = interaction.options.getString("account");
         if (account) {
-            account = account.toLowerCase();
+            if (!account.includes("#") || account.split("#").length !== 2) {
+                return await interaction.editReply("Please use the format `gamename#tagline` for the account name.");
+            }
+            account = [account.split("#")];
         }
         //const puuid = interaction.options.getString("id");
         const discordaccount = interaction.options.getUser("discordaccount");
@@ -1268,7 +1271,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
                 discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 season: season,
                 gamemode: gamemode
             }),
@@ -1355,11 +1358,11 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         }
         let test2 = "";
         if (account !== null) {
-            test2 += " AND summoners.username=$" + i;
-            query3 += " AND summoners.username=$" + i;
-            query_values.push(account);
-            query_values2.push(account);
-            i++;
+            test2 += " AND summoners.gamename=$" + i + " AND summoners.tagline=$" + (i + 1);
+            query3 += " AND summoners.gamename=$" + i + " AND summoners.tagline=$" + (i + 1);
+            query_values.push(account[0], account[1]);
+            query_values2.push(account[0], account[1]);
+            i += 2;
         }
         if (season !== null) {
             query += " AND patch LIKE $" + i;
@@ -1486,7 +1489,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             title += " in " + role;
         }
         if (account !== null) {
-            title += " on \"" + account + "\"";
+            title += " on \"" + account[0] + "#" + account[1] + "\"";
         }
         const end = new Date();
 
@@ -1548,7 +1551,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
                 discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 gamemode: gamemode
             };
             const Js = JSON.stringify(params);
@@ -1583,7 +1586,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
                 discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 season: season,
                 gamemode: gamemode
             }),
@@ -1628,9 +1631,9 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
             i++;
         }
         if (account !== null) {
-            query += " AND summoners.username=$" + i;
-            query_values.push(account);
-            i++;
+            query += " AND summoners.gamename=$" + i + " AND summoners.tagline=$" + (i + 1);
+            query_values.push(account[0], account[1]);
+            i += 2;
         }
         if (season !== null) {
             query += " AND m1.patch LIKE $" + i;
@@ -1712,7 +1715,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
             title += " in " + role;
         }
         if (account !== null) {
-            title += " on \"" + account + "\"";
+            title += " on \"" + account[0] + "#" + account[1] + "\"";
         }
 
         const end = new Date();
@@ -1769,7 +1772,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
                 discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 gamemode: gamemode
             };
             const Js = JSON.stringify(params);
@@ -1802,7 +1805,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             JSON.stringify({
                 discordaccount: discordaccount?.id,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 season: season,
                 gamemode: gamemode
             }),
@@ -1849,9 +1852,9 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             i++;
         }
         if (account !== null) {
-            query += " AND summoners.username=$" + i;
-            query_values.push(account);
-            i++;
+            query += " AND summoners.gamename=$" + i + " AND summoners.tagline=$" + (i + 1);
+            query_values.push(account[0], account[1]);
+            i += 2;
         }
         if (season !== null) {
             query += " AND patch LIKE $" + i;
@@ -1922,7 +1925,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             title += " in " + role;
         }
         if (account !== null) {
-            title += " on \"" + account + "\"";
+            title += " on \"" + account[0] + "#" + account[1] + "\"";
         }
 
         const end = new Date();
@@ -1979,7 +1982,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             const params = {
                 discordaccount: discordaccount?.id,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 gamemode: gamemode
             };
             const Js = JSON.stringify(params);
@@ -2161,7 +2164,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
                 discordaccount: discordaccount?.id,
                 champion: champion,
                 role: role,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 season: season,
                 gamemode: gamemode
             }),
@@ -2185,9 +2188,9 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
 
         let queryaccount = "";
         if (account !== null) {
-            queryaccount = " AND summoners.username = $" + i;
-            query_values.push(account);
-            i++;
+            queryaccount = " AND summoners.gamename = $" + i + " AND summoners.tagline = $" + (i + 1);
+            query_values.push(account[0], account[1]);
+            i += 2;
         }
 
         let querygamemode = "";
@@ -2319,7 +2322,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
                 discordaccount: discordaccount?.id,
                 role: role,
                 champion: champion,
-                account: account,
+                account: account ? account[0] + "#" + account[1] : null,
                 gamemode: gamemode
             };
             const Js = JSON.stringify(params);
