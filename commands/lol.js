@@ -1300,7 +1300,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             "SELECT champion, " +
             "count(*), " +
             "(count(*) FILTER (WHERE result = 'Win')*100.0/GREATEST(1, count(*))) as WR, " +
-            "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/GREATEST1,count(*))) as CARRY, " +
+            "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/GREATEST(1,count(*))) as CARRY, " +
             "(avg(kill)+avg(assists))*100.0/avg(total_kills) as KP, " +
             "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
             "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
