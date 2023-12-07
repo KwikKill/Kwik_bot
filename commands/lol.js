@@ -1299,12 +1299,12 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             "FROM (" +
             "SELECT champion, " +
             "count(*), " +
-            "(count(*) FILTER (WHERE result = 'Win')*100.0/GREATEST(1, count(*))) as WR, " +
-            "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/GREATEST(1,count(*))) as CARRY, " +
+            "(count(*) FILTER (WHERE result = 'Win')*100.0/count(*)) as WR, " +
+            "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/count(*)) as CARRY, " +
             "(avg(kill)+avg(assists))*100.0/avg(total_kills) as KP, " +
             "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
             "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
-            "(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100.0/GREATEST(1, count(*))) as hardcarry " +
+            "(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100.0/count(*)) as hardcarry " +
             "FROM matchs " +
             "GROUP BY champion " +
             ") AS t1 " +
@@ -1326,12 +1326,12 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             "AVG(total_kills) as avg_total_kills, " +
             "AVG(time_spent_dead) as avg_time_spent_dead, " +
             "count(*) as games_played, " +
-            "SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END)*100.0 / GREATEST(1, count(*)) as carry, " +
-            "SUM(CASE WHEN first_gold THEN 1 ELSE 0 END)*100.0 / GREATEST(1, count(*)) as carry_gold, " +
-            "SUM(CASE WHEN first_damages THEN 1 ELSE 0 END)*100.0 / GREATEST(2, count(*)) as carry_damage, " +
-            "SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END)*100.0 / GREATEST(1, count(*)) as carry_tanked, " +
-            "SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100.0 / GREATEST(1, count(*)) as hard_carry, " +
-            "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 / GREATEST(1, count(*)) as win_rate, " +
+            "SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as carry, " +
+            "SUM(CASE WHEN first_gold THEN 1 ELSE 0 END)*100.0 / count(*) as carry_gold, " +
+            "SUM(CASE WHEN first_damages THEN 1 ELSE 0 END)*100.0 / count(*) as carry_damage, " +
+            "SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END)*100.0 / count(*) as carry_tanked, " +
+            "SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as hard_carry, " +
+            "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 /  count(*) as win_rate, " +
             "avg(score) as delta " +
             "FROM summoners LEFT JOIN (matchs LEFT JOIN COEF ON COEF.champion = matchs.champion) ON matchs.player = summoners.puuid";
 
