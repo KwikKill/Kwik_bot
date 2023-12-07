@@ -1157,7 +1157,7 @@ module.exports = {
             // "team" is used to loop through the players team
 
             for (let member = 0; member < match["info"]["participants"].length; member++) {
-                if (teamId === match['info']['participants'][member]['teamId']) {
+                if (teamId === match['info']['participants'][member]['subteamPlacement'] ? match['info']['participants'][member]['subteamPlacement'] : ((match['info']['participants'][member]['teamId'] / 100) - 1)) {
                     //teamVisionScore += match['info']['participants'][member]['visionScore'];
                     teamKills += match['info']['participants'][member]['kills'];
                     //teamDeaths += match['info']['participants'][member]['deaths'];
