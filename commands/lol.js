@@ -1545,7 +1545,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
 
         return await interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (e) {
-        logger.log(e);
+        logger.log(e.stack);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id,
