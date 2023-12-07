@@ -581,7 +581,7 @@ module.exports = {
                                         region = undefined;
                                         continue;
                                 }
-                                if (username !== undefined && username !== null && region !== undefined && region !== null && username.includes("#") && currents.length < limit) {
+                                if (username !== undefined && region !== "null" && username !== "null" && username !== null && region !== undefined && region !== null && username.includes("#") && currents.length < limit) {
                                     const resp = await client.pg.query("SELECT puuid FROM summoners WHERE gamename = $1 AND tagline = $2 AND region = $3", [username.split("#")[0], username.split("#")[1], region]);
                                     if (resp.rows.length === 0) {
                                         summoners.push([username, region]);
