@@ -6,20 +6,22 @@
   "author": "Gab_351",
   "license": "GPL v3+",
   "dependencies": {
-    "canvas": "^2.10.1",
+    "axios": "^1.6.2",
+    "canvas": "^2.11.2",
     "chartjs-node-canvas": "^4.1.6",
     "common-tags": "^1.8.2",
     "cookie-parser": "^1.4.6",
-    "discord.js": "^13.15.1",
+    "discord.js": "13.15",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-sse-middleware": "^3.0.3",
     "markov-strings": "^3.0.1",
-    "node-fetch": "^2.6.7",
-    "node-ical": "^0.14.1",
-    "pdfkit": "^0.13.0",
-    "pg": "^8.8.0",
-    "undici": "^5.21.0"
+    "node-fetch": "^3.3.2",
+    "node-html-parser": "^6.1.11",
+    "node-ical": "^0.17.0",
+    "pdfkit": "^0.14.0",
+    "pg": "^8.11.3",
+    "undici": "^6.0.1"
   },
   "scripts": {
     "test": "jest"
