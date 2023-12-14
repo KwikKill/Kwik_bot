@@ -253,9 +253,9 @@ class LolApi {
     * @param {*} summonerId  summoner id
     * @returns {Object}      champion mastery data
     */
-    async championmasteriesBySummoner(apiKey, region, summonerId, client) {
+    async championmasteriesBySummoner(apiKey, region, puuid, client) {
         this.checkRegion(region, client);
-        const url = "https://" + region + ".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/" + summonerId + "?api_key=" + apiKey;
+        const url = "https://" + region + ".api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-puuid/" + puuid + "?api_key=" + apiKey;
         return await this.apiCall(url, client);
     }
 
