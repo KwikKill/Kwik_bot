@@ -202,7 +202,7 @@ module.exports = {
         const current_tagline = number["tagline"];
 
         if (gamename !== current_gamename || tagline !== current_tagline) {
-            console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
+            console.log("Pseudo changed for " + puuid + " : " + current_gamename + "#" + current_tagline + " -> " + gamename + "#" + tagline);
             await this.client.pg.query({
                 name: "update_pseudo",
                 text: "UPDATE summoners SET gamename = $1, tagline = $2 WHERE puuid = $3",
