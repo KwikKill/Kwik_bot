@@ -296,6 +296,7 @@ module.exports = {
         const query = await this.client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
         for (const x of query.rows) {
             const response = await this.lol_api.championmasteriesBySummoner(this.apiKey, region, x.id, this.client);
+            console.log(response);
             for (const y of response) {
                 if (masteries[y.championId] === undefined) {
                     masteries[y.championId] = y;
