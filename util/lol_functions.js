@@ -196,19 +196,20 @@ module.exports = {
     * @function update_pseudo
     * @param {*} number  summoner in client.requests["updates"]
     */
-    async update_pseudo(number, summonerName) {
+    async update_pseudo(number, gamename, tagline) {
         const puuid = number["puuid"];
-        const username = number["username"];
+        const current_gamename = number["gamename"];
+        const current_tagline = number["tagline"];
 
-        const pseudo = summonerName;
-        if (pseudo.toLowerCase() !== username.toLowerCase()) {
-            //console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
+        if (gamename !== current_gamename || tagline !== current_tagline) {
+            console.log("Pseudo changed for " + puuid + " : " + username.toLowerCase() + " -> " + pseudo["name"].toLowerCase());
             await this.client.pg.query({
                 name: "update_pseudo",
-                text: "UPDATE summoners SET username = $1 WHERE puuid = $2",
-                values: [pseudo.toLowerCase(), puuid]
+                text: "UPDATE summoners SET gamename = $1, tagline = $2 WHERE puuid = $3",
+                values: [gamename, tagline, puuid]
             });
-            number["username"] = pseudo.toLowerCase();
+            number["gamename"] = gamename;
+            number["tagline"] = tagline;
         }
     },
 
@@ -492,9 +493,9 @@ module.exports = {
                                 } else {
                                     this.send_tracker_message(summary["summonerpuuid"], summary);
                                 }
-                                /*if (summary["summonerpuuid"] === puuid) {
-                                    this.update_pseudo(current, summary["summonerName"]);
-                                }*/
+                                if (summary["summonerpuuid"] === puuid) {
+                                    this.update_pseudo(current, summary["gamename"], summary["tagline"]);
+                                }
                             }
                             try {
                                 this.client.pg.query({
@@ -1146,8 +1147,6 @@ module.exports = {
                 lanePlayed = "MIDDLE";
             }
 
-            const summonerName = match['info']['participants'][participantId]['summonerName'];
-
             // Players Team Id - 100 for Blue or 200 for Red
             const teamId = match['info']['participants'][participantId]['subteamPlacement'] ? match['info']['participants'][participantId]['subteamPlacement'] : ((match['info']['participants'][participantId]['teamId'] / 100) - 1);
 
@@ -1357,11 +1356,14 @@ module.exports = {
             const rune_0_var2 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var2'];
             const rune_0_var3 = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['var3'];
 
+            const gamename = match['info']['participants'][participantId]['riotIdGameName'];
+            const tagline = match['info']['participants'][participantId]['riotIdTagline'];
 
             // Create Output Array
             exit.push({
                 "matchId": matchId,
-                "summonerName": summonerName,
+                "gamename": gamename,
+                "tagline": tagline,
                 "summonerpuuid": puuid,
                 "queueName": queueName,
                 "champion": champname,
