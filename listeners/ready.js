@@ -40,6 +40,6 @@ module.exports = {
             });
         });
 
-        await client.commands.get("deploy").auto_deploy(client);
+        //await client.commands.get("deploy").auto_deploy(client);
     }
 };
