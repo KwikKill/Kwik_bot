@@ -14,7 +14,7 @@ module.exports = {
             return;
         }
         // if score update hasn't been done since 48h, do it
-        if (client.lol.scoretimestamp + 172800000 < Date.now()) {
+        if (client.lol.score_timestamp + 172800000 < Date.now()) {
             //if (config.verbose) {
             console.log("[Rank Up] updating score...");
             //}
