@@ -1467,7 +1467,7 @@ module.exports = {
      */
     async calculate_champion_score() {
         // run the query to get the score of each champion
-        /*const response = await this.client.pg.query({
+        const response = await this.client.pg.query({
             name: "get_champion_score",
             text: "SELECT champion, " +
                 "200/(carry+wr+kp+vs*25+10*cs) AS score " +
@@ -1483,13 +1483,6 @@ module.exports = {
                 "FROM matchs " +
                 "GROUP BY champion " +
                 ") AS t1"
-        });*/
-        const response = await this.client.pg.query({
-            name: "get_champion_score",
-            text: "SELECT champion, " +
-                "1 " +
-                "FROM matchs " +
-                "GROUP BY champion "
         });
 
         // store the result in a dictionnary
