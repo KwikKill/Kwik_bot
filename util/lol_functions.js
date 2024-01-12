@@ -1459,38 +1459,5 @@ module.exports = {
                 }
             }
         });
-    },
-
-    /**
-     * Calculate the score of each champions
-     * @function calculate_champion_score
-     */
-    async calculate_champion_score() {
-        // run the query to get the score of each champion
-        const response = await this.client.pg.query({
-            name: "get_champion_score",
-            text: "SELECT champion, " +
-                "200/(carry+wr+kp+vs*25+10*cs) AS score " +
-                "FROM (" +
-                "SELECT champion," +
-                "count(*)," +
-                "(count(*) FILTER (WHERE result = 'Win')*100.0/count(*)) as WR, " +
-                "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/count(*)) as CARRY, " +
-                "(avg(kill)+avg(assists))*100.0/avg(total_kills) as KP, " +
-                "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
-                "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
-                "(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100.0/count(*)) as hardcarry " +
-                "FROM matchs " +
-                "GROUP BY champion " +
-                ") AS t1"
-        });
-
-        // store the result in a dictionnary
-        for (const row of response.rows) {
-            this.scores[row["champion"]] = row["score"];
-        }
-        this.scoretimestamp = Date.now();
-
-        return;
     }
 };
