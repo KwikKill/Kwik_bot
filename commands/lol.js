@@ -1293,23 +1293,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         const query_values = [discordaccount];
         const query_values2 = [discordaccount];
 
-        let query = "WITH COEF AS (" +
-            "SELECT champion, " +
-            "200/(carry+wr+kp+vs*25+10*cs) AS score " +
-            "FROM (" +
-            "SELECT champion, " +
-            "count(*), " +
-            "(count(*) FILTER (WHERE result = 'Win')*100.0/count(*)) as WR, " +
-            "(count(*) FILTER (WHERE (first_gold OR first_damages OR first_tanked))*100.0/count(*)) as CARRY, " +
-            "(avg(kill)+avg(assists))*100.0/avg(total_kills) as KP, " +
-            "cast(avg(vision_score) as float)/(avg(length)/60) as VS, " +
-            "cast(avg(cs) as float)/(avg(length)/60) as CS, " +
-            "(count(*) FILTER (WHERE first_gold AND first_damages AND first_tanked)*100.0/count(*)) as hardcarry " +
-            "FROM matchs " +
-            "GROUP BY champion " +
-            ") AS t1 " +
-            ")" +
-            "SELECT " +
+        let query = "SELECT " +
             "AVG(gold) as avg_gold, " +
             "AVG(kill) as avg_kills, " +
             "AVG(deaths) as avg_deaths, " +
@@ -1331,9 +1315,8 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             "SUM(CASE WHEN first_damages THEN 1 ELSE 0 END)*100.0 / count(*) as carry_damage, " +
             "SUM(CASE WHEN first_tanked THEN 1 ELSE 0 END)*100.0 / count(*) as carry_tanked, " +
             "SUM(CASE WHEN (first_gold AND first_damages AND first_tanked) THEN 1 ELSE 0 END)*100.0 / count(*) as hard_carry, " +
-            "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 /  count(*) as win_rate, " +
-            "avg(score) as delta " +
-            "FROM summoners LEFT JOIN (matchs LEFT JOIN COEF ON COEF.champion = matchs.champion) ON matchs.player = summoners.puuid";
+            "SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END)*100.0 /  count(*) as win_rate " +
+            "FROM summoners LEFT JOIN matchs ON matchs.player = summoners.puuid";
 
         let query3 = "SELECT " +
             "gamemode, " +
@@ -1446,7 +1429,6 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         const overall = Number(response.rows[0].carry);
         const hard_carry = Number(response.rows[0].hard_carry);
         const win = Number(response.rows[0].win_rate);
-        const delta = Number(response.rows[0].delta);
 
         // 2) Average stats
 
@@ -1467,6 +1449,19 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         average_gold = (average_gold / (length / 60)).toFixed(decimal);
         average_damages = (average_damages / (length / 60)).toFixed(decimal);
         average_tanked = (average_tanked / (length / 60)).toFixed(decimal);
+
+        // delta calculation
+
+        let delta = 0;
+        const champions_played = await client.pg.query({
+            name: "get-champions-played",
+            text: "SELECT champion FROM matchs, summoners WHERE matchs.player = summoners.puuid AND discordid=$1;",
+            values: [discordaccount]
+        });
+        for (let i = 0; i < champions_played.rows.length; i++) {
+            delta += client.lol.score[champions_played.rows[i].champion];
+        }
+        delta /= champions_played.rows.length;
 
         // KwikScore
 
