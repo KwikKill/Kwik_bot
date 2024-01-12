@@ -1489,8 +1489,7 @@ module.exports = {
             text: "SELECT champion, " +
                 "1 " +
                 "FROM matchs " +
-                "GROUP BY champion " +
-                ") AS t1"
+                "GROUP BY champion "
         });
 
         // store the result in a dictionnary
