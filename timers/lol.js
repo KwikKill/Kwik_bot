@@ -15,15 +15,15 @@ module.exports = {
         }
         // if score update hasn't been done since 48h, do it
         if (client.lol.scoretimestamp + 172800000 < Date.now()) {
-            if (config.verbose) {
-                console.log("[Rank Up] updating score...");
-            }
+            //if (config.verbose) {
+            console.log("[Rank Up] updating score...");
+            //}
             await client.channels.cache.get("1100720550923489280").send("[Rank Up] updating score...");
             await client.lol.calculate_champion_score(client);
             await client.channels.cache.get("1100720550923489280").send("[Rank Up] updating score...");
-            if (config.verbose) {
-                console.log("[Rank Up] score updated");
-            }
+            //if (config.verbose) {
+            console.log("[Rank Up] score updated");
+            //}
         }
         await client.commands.get("adminlol").update(client);
         if (config.verbose) {
