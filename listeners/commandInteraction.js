@@ -6,6 +6,9 @@ module.exports = {
     place: "guild",
     options: undefined,
     async run(client, interaction) {
+        if (client.softbans.includes(interaction.user.id)) {
+            return;
+        }
         if (interaction.isCommand()) {
 
             if (!client.commands.has(interaction.commandName)) { return; }
