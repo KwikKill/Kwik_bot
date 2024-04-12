@@ -70,7 +70,7 @@ describe('summonersByName', () => {
     it('should return a summoner object when given valid input', async () => {
         const lolapi = new LolApi();
         const riot_account = await lolapi.account_by_riotid(api_key, 'KwikKill', 'Swain', client);
-        const summoner = await lolapi.summonersByPuuid(api_key, 'EUW1', riot_account.id, client);
+        const summoner = await lolapi.summonersByPuuid(api_key, 'EUW1', riot_account.puuid, client);
         expect(summoner).toHaveProperty('id');
         expect(summoner).toHaveProperty('accountId');
         expect(summoner).toHaveProperty('puuid');
