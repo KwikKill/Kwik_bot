@@ -445,7 +445,7 @@ describe('championmasteriesBySummoner', () => {
 
     it('should return an array of champion mastery objects when given valid input', async () => {
         const api = new LolApi();
-        const championMasteries = await api.championmasteriesBySummoner(api_key, 'EUW1', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client);
+        const championMasteries = await api.championmasteriesBySummoner(api_key, 'EUW1', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client);
         expect(Array.isArray(championMasteries)).toBe(true);
         expect(championMasteries.length).toBeGreaterThan(0);
         expect(typeof championMasteries[0]).toBe('object');
@@ -456,14 +456,14 @@ describe('championmasteriesBySummoner', () => {
 
     it('should throw an error when given an invalid region', async () => {
         const api = new LolApi();
-        await expect(api.championmasteriesBySummoner(api_key, 'invalid', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client)).rejects.toThrow();
+        await expect(api.championmasteriesBySummoner(api_key, 'invalid', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client)).rejects.toThrow();
     });
 
     it('should throw an error when the API call fails', async () => {
         const api = new LolApi();
         const error = new Error('API call failed');
         api.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(api.championmasteriesBySummoner(api_key, 'EUW1', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client)).rejects.toThrow(error);
+        await expect(api.championmasteriesBySummoner(api_key, 'EUW1', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', client)).rejects.toThrow(error);
     });
 });
 
