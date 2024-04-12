@@ -69,11 +69,11 @@ describe('summonersByName', () => {
 
     it('should return a summoner object when given valid input', async () => {
         const lolapi = new LolApi();
-        const summoner = await lolapi.summonersByName(api_key, 'EUW1', 'KwikKill#Swain', client);
+        const riot_account = await lolapi.account_by_riotid(api_key, 'KwikKill', 'Swain', client);
+        const summoner = await lolapi.summonersByPuuid(api_key, 'EUW1', riot_account.id, client);
         expect(summoner).toHaveProperty('id');
         expect(summoner).toHaveProperty('accountId');
         expect(summoner).toHaveProperty('puuid');
-        expect(summoner).toHaveProperty('name', 'KwikKill');
         expect(summoner).toHaveProperty('profileIconId');
         expect(summoner).toHaveProperty('revisionDate');
         expect(summoner).toHaveProperty('summonerLevel');
@@ -105,7 +105,6 @@ describe('summonerByPuuid', () => {
         expect(summoner).toHaveProperty('id');
         expect(summoner).toHaveProperty('accountId');
         expect(summoner).toHaveProperty('puuid', '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA');
-        expect(summoner).toHaveProperty('name');
         expect(summoner).toHaveProperty('profileIconId');
         expect(summoner).toHaveProperty('revisionDate');
         expect(summoner).toHaveProperty('summonerLevel');
@@ -255,7 +254,6 @@ describe('challengerLeagues', () => {
         expect(Array.isArray(leagues["entries"])).toBe(true);
         expect(leagues["entries"].length).toBeGreaterThan(0);
         expect(leagues["entries"][0]).toHaveProperty('summonerId');
-        expect(leagues["entries"][0]).toHaveProperty('summonerName');
         expect(leagues["entries"][0]).toHaveProperty('leaguePoints');
         expect(leagues["entries"][0]).toHaveProperty('rank');
         expect(leagues["entries"][0]).toHaveProperty('wins');
@@ -293,7 +291,6 @@ describe('grandmasterLeagues', () => {
         expect(Array.isArray(leagues["entries"])).toBe(true);
         expect(leagues["entries"].length).toBeGreaterThan(0);
         expect(leagues["entries"][0]).toHaveProperty('summonerId');
-        expect(leagues["entries"][0]).toHaveProperty('summonerName');
         expect(leagues["entries"][0]).toHaveProperty('leaguePoints');
         expect(leagues["entries"][0]).toHaveProperty('rank');
         expect(leagues["entries"][0]).toHaveProperty('wins');
@@ -331,7 +328,6 @@ describe('masterLeagues', () => {
         expect(Array.isArray(leagues["entries"])).toBe(true);
         expect(leagues["entries"].length).toBeGreaterThan(0);
         expect(leagues["entries"][0]).toHaveProperty('summonerId');
-        expect(leagues["entries"][0]).toHaveProperty('summonerName');
         expect(leagues["entries"][0]).toHaveProperty('leaguePoints');
         expect(leagues["entries"][0]).toHaveProperty('rank');
         expect(leagues["entries"][0]).toHaveProperty('wins');
