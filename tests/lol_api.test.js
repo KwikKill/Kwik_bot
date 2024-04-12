@@ -69,7 +69,7 @@ describe('summonersByName', () => {
 
     it('should return a summoner object when given valid input', async () => {
         const lolapi = new LolApi();
-        const summoner = await lolapi.summonersByName(api_key, 'EUW1', 'KwikKill', client);
+        const summoner = await lolapi.summonersByName(api_key, 'EUW1', 'KwikKill#Swain', client);
         expect(summoner).toHaveProperty('id');
         expect(summoner).toHaveProperty('accountId');
         expect(summoner).toHaveProperty('puuid');
@@ -88,7 +88,7 @@ describe('summonersByName', () => {
         const lolapi = new LolApi();
         const error = new Error('API call failed');
         lolapi.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(lolapi.summonersByName(api_key, 'EUW1', 'KwikKill', client)).rejects.toThrow(error);
+        await expect(lolapi.summonersByName(api_key, 'EUW1', 'KwikKill#Swain', client)).rejects.toThrow(error);
     });
 });
 
