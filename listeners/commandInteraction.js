@@ -1,3 +1,4 @@
+const logger = require('../util/logger');
 module.exports = {
     name: 'commandInteraction',
     group: 'core',
@@ -7,6 +8,7 @@ module.exports = {
     options: undefined,
     async run(client, interaction) {
         if (client.softbans.includes(interaction.user.id)) {
+            logger.info(`softban ${interaction.user.id} on command ${interaction.commandName}`);
             return;
         }
         if (interaction.isCommand()) {

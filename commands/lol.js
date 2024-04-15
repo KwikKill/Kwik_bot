@@ -1051,7 +1051,7 @@ async function account_add(client, interaction, gamename, tagline, region) {
                 tagline: tagline,
                 region: region
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3 AND region=$4;", [interaction.user.id, gamename, tagline, region]);
@@ -1100,7 +1100,7 @@ async function account_remove(client, interaction, gamename, tagline) {
                 gamename: gamename,
                 tagline: tagline
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3;", [interaction.user.id, gamename, tagline]);
@@ -1134,7 +1134,7 @@ async function account_list(client, interaction) {
             interaction.user.id,
             "lol/account/list",
             JSON.stringify({}),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ],
     });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
@@ -1180,7 +1180,7 @@ async function queue(client, interaction) {
             interaction.user.id,
             "lol/queue",
             JSON.stringify({}),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     const embed = new MessageEmbed()
@@ -1275,7 +1275,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
                 season: season,
                 gamemode: gamemode
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
@@ -1574,7 +1574,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
                 season: season,
                 gamemode: gamemode
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
@@ -1793,7 +1793,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
                 season: season,
                 gamemode: gamemode
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
@@ -2152,7 +2152,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
                 season: season,
                 gamemode: gamemode
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
@@ -2335,7 +2335,7 @@ async function stats_profile(client, interaction, discordaccount) {
             JSON.stringify({
                 discordaccount: discordaccount?.id
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
@@ -2515,7 +2515,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
                 season: season,
                 gamemode: gamemode
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
@@ -2963,10 +2963,13 @@ async function top_carry(client, interaction, champion, role, season) {
                 role: role,
                 season: season
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
+        if (!interaction.guild) {
+            return await interaction.editReply("This command can only be used on a server.");
+        }
 
         const start = new Date();
 
@@ -3205,10 +3208,14 @@ async function top_kwikscore(client, interaction, champion, role, season) {
                 role: role,
                 season: season
             }),
-            interaction.guild.id
+            interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
     try {
+        if (!interaction.guild) {
+            return await interaction.editReply("This command can only be used on a server.");
+        }
+
         const start = Date.now();
 
         let i = 1;
@@ -3363,7 +3370,7 @@ async function tracker_add(client, interaction) {
                     channel: channel?.id,
                     guild: channel?.guild?.id
                 }),
-                interaction.guild.id
+                interaction.guild ? interaction.guild.id : interaction.user.id
             ]
         });
         const response = await client.pg.query("SELECT * FROM trackers WHERE guildid=$1;", [channel.guild.id]);
@@ -3407,7 +3414,7 @@ async function tracker_remove(client, interaction) {
                     channel: channel?.id,
                     guild: channel?.guild?.id
                 }),
-                interaction.guild.id
+                interaction.guild ? interaction.guild.id : interaction.user.id
             ]
         });
         const response = await client.pg.query("SELECT * FROM trackers WHERE channelid=$1;", [channel.id]);
