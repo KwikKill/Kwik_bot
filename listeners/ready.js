@@ -17,12 +17,13 @@ module.exports = {
         client.user.setActivity("with your lol stats", { type: 'PLAYING' });
 
         const pgclient = new pg.Client({
-            user: 'postgres',
-            host: 'localhost',
-            database: 'lol_database',
-            password: process.env.PSQL,
+            user: process.env.POSTGRES_USER,
+            host: 'db',
+            database: process.env.DATABASE,
+            password: process.env.POSTGRES_PASSWORD,
             port: 5432,
         });
+        //await client.commands.get("deploy").auto_deploy(client);
         pgclient.connect(function (err) {
             if (err) { throw err; }
             client.pg = pgclient;
@@ -39,7 +40,5 @@ module.exports = {
                 });
             });
         });
-
-        //await client.commands.get("deploy").auto_deploy(client);
     }
 };

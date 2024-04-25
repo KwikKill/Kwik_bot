@@ -1,9 +1,9 @@
 {
-  "name": "Gab_bot",
+  "name": "KwiKBot",
   "version": "1.0.0",
-  "description": "Gab_351 discord bot",
+  "description": "KwikKill discord bot",
   "main": "index.js",
-  "author": "Gab_351",
+  "author": "KwikKill",
   "license": "GPL v3+",
   "dependencies": {
     "axios": "^1.6.2",
@@ -24,7 +24,8 @@
     "undici": "^6.0.1"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node index.js"
   },
   "devDependencies": {
     "eslint": "^8.26.0",
