@@ -275,6 +275,9 @@ module.exports = {
     * @param {*} number  summoner in client.requests["updates"]
     */
     async update_pseudo(number, gamename, tagline) {
+        if(gamename === undefined || tagline === undefined) {
+            return;
+        }
         const puuid = number["puuid"];
         const current_gamename = number["gamename"];
         const current_tagline = number["tagline"];
