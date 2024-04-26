@@ -112,6 +112,32 @@ module.exports = {
             }
 
         }
+
+        //deploy mastery emojis to guild "513776796211085342"
+        for (let i = 1; i <= 7; i++) {
+            const name = "mastery" + i;
+
+            const emoji = guild.emojis.cache.find(emoji => emoji.name === name);
+            if (!emoji) {
+                const imageUrl = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-postgame/global/default/mastery-" + i + ".png";
+
+                // Download the image
+                const response = await axios.get(imageUrl, {
+                    responseType: 'arraybuffer'
+                });
+
+                // Create the emoji using the image file
+                guild.emojis.create(
+                    response.data,
+                    name
+                ).then(createdEmoji => {
+                    this.emojis[name] = "<:" + createdEmoji.name + ":" + createdEmoji.id + ">";
+                }).catch(console.error);
+
+            } else {
+                this.emojis[name] = "<:" + emoji.name + ":" + emoji.id + ">";
+            }
+        }
     },
 
     /**

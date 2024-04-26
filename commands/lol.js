@@ -1056,13 +1056,13 @@ async function account_add(client, interaction, gamename, tagline, region) {
                 await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
                 return await addSumoner(client, gamename, tagline, interaction, region);
             }
-            return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **KwikKill#6123**");
+            return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **kwikkill**");
         }
         if (number < 3 || priority.rows[0].priority === 10) {
             await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
             return await addSumoner(client, gamename, tagline, interaction, region);
         }
-        return await interaction.editReply("You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **KwikKill#6123**");
+        return await interaction.editReply("You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **kwikkill**");
     }
     return await interaction.editReply("This account is already in the database or requested.");
 }
@@ -2345,7 +2345,7 @@ async function stats_profile(client, interaction, discordaccount) {
         let best_solo = ["unranked", "", 0];
         let best_flex = ["unranked", "", 0];
         for (const row of response.rows) {
-            accounts += row.region + " - " + row.username + "\n";
+            accounts += row.region + " - " + row.gamename + "#" + row.tagline + "\n";
 
             if (tiers.indexOf(row.tier_solo) > tiers.indexOf(best_solo[0])) {
                 best_solo = [row.tier_solo, row.rank_solo, row.lp_solo];
@@ -2416,9 +2416,9 @@ async function stats_profile(client, interaction, discordaccount) {
             "\n- **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
 
         // Mastery statistics
-        const Mastery_statistics = mastery.rows[0].mastery7 + "x<:Level_7:411977489707958282> " +
-            mastery.rows[0].mastery6 + "x<:Level_6:411977489351704587> " +
-            mastery.rows[0].mastery5 + "x<:Level_5:411977803144364032> \n" +
+        const Mastery_statistics = mastery.rows[0].mastery7 + "x" + client.lol.emojis["mastery7"] + " " +
+            mastery.rows[0].mastery6 + "x" + client.lol.emojis["mastery6"] + " " +
+            mastery.rows[0].mastery5 + "x" + client.lol.emojis["mastery5"] + " \n" +
             mastery.rows[0].total_point + " **Total Points**";
 
         // Champion statistics
