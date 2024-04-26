@@ -1,4 +1,3 @@
-const config = require('../config.json');
 const logger = require('./logger.js');
 const axios = require('axios');
 
@@ -267,7 +266,7 @@ class LolApi {
      */
     async apiCall(url, client) {
         try {
-            if (config.verbose) {
+            if (process.env.VERBOSE === "true") {
                 logger.log("API CALL: " + url);
             }
             // Fetch Data from provided URL & Options
@@ -279,7 +278,7 @@ class LolApi {
             if (error.response?.status === 429) {
                 // Special Handling here - 429 is Rate Limit Reached.
                 // Alert the User
-                if (config.verbose) {
+                if (process.env.VERBOSE === "true") {
                     logger.error("Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.", "429");
                 }
                 client.lol.api_limit = true;

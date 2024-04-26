@@ -1,5 +1,3 @@
-const config = require('../config.json');
-
 module.exports = {
     name: 'deploy',
     group: 'moderation',
@@ -40,7 +38,7 @@ module.exports = {
 async function auto_deploy(client) {
     for (const guild of client.guilds.cache.values()) {
         const number = await deploy(client, guild);
-        if (config.verbose) {
+        if (process.env.VERBOSE === "true") {
             console.log("- auto-deploy for guild " + guild.id + " : " + number);
         }
     }

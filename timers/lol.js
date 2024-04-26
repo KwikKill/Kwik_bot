@@ -1,5 +1,3 @@
-const config = require('../config.json');
-
 module.exports = {
     name: 'lol',
     group: 'lol',
@@ -14,7 +12,7 @@ module.exports = {
             return;
         }
         await client.commands.get("adminlol").update(client);
-        if (config.verbose) {
+        if (process.env.VERBOSE === "true") {
             console.log("lol timer done");
         }
     }

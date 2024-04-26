@@ -1,5 +1,3 @@
-const config = require('../config.json');
-
 module.exports = {
     name: 'lol_cleaner',
     group: 'lol',
@@ -14,7 +12,7 @@ module.exports = {
         await client.pg.query("DELETE FROM matchs WHERE timestamp < $1", [timestamp1]);
         // clean summoners without matchs since 6 months
         await client.pg.query("DELETE FROM summoners WHERE discordid in (SELECT DISTINCT discordid FROM summoners EXCEPT SELECT discordid FROM matchs, summoners WHERE matchs.player = summoners.puuid AND timestamp > $1 GROUP BY summoners.discordid)", [timestamp2]);
-        if (config.verbose) {
+        if (process.env.VERBOSE === "true") {
             console.log("lol cleaner done");
         }
     }
