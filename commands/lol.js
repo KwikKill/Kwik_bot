@@ -5,19 +5,6 @@ const logger = require('../util/logger');
 const decimal = 2;
 const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
 const rank = ["IV", "III", "II", "I"];
-const emojis = {
-    "unranked": "",
-    "IRON": "<:Iron:519953534356160532>",
-    "BRONZE": "<:Bronze:519953533517299722>",
-    "SILVER": "<:Silver:519953533315973123>",
-    "GOLD": "<:Gold:519953533152526337>",
-    "PLATINUM": "<:Platinum:519953533500391445>",
-    "EMERALD": "<:Emerald:1132076133580542022>",
-    "DIAMOND": "<:Diamond:519953533769089044>",
-    "MASTER": "<:Master:519953533588471828>",
-    "GRANDMASTER": "<:Grandmaster:519953533798187028>",
-    "CHALLENGER": "<:Challenger:518405038671134720>"
-};
 
 module.exports = {
     name: 'lol',
@@ -2392,12 +2379,12 @@ async function stats_profile(client, interaction, discordaccount) {
         if (best_solo[0] === "unranked") {
             best_solo_str = "Unranked";
         } else {
-            best_solo_str = emojis[best_solo[0]] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+            best_solo_str = client.lol.emojis[best_solo[0].toLowerCase()] + " " + best_solo[1] + " " + best_solo[2] + "LP";
         }
         if (best_flex[0] === "unranked") {
             best_flex_str = "Unranked";
         } else {
-            best_flex_str = emojis[best_solo[0]] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+            best_flex_str = client.lol.emojis[best_solo[0].toLowerCase()] + " " + best_solo[1] + " " + best_solo[2] + "LP";
         }
 
         // mastery

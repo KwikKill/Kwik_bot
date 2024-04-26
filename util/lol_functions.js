@@ -1,6 +1,7 @@
 const logger = require("./logger.js");
 const { LolApi } = require("./lol_api.js");
-
+const axios = require('axios');
+const sharp = require('sharp');
 
 module.exports = {
     lol_api: new LolApi(),
@@ -45,6 +46,9 @@ module.exports = {
 
     trackers: [],
     rank_list: ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"],
+    emojis: {
+        "unranked": "unranked",
+    },
 
     /**
      * setup champion list
@@ -64,6 +68,50 @@ module.exports = {
             }
             this.client.champions.sort();
         });
+
+        // deploy rank emojis to guild "513776796211085342"
+        const guild = await client.guilds.fetch("513776796211085342");
+        for (let i = 0; i < client.lol.rank_list.length; i++) {
+            const name = client.lol.rank_list[i].toLowerCase();
+
+            const emoji = guild.emojis.cache.find(emoji => emoji.name === name);
+            if (!emoji) {
+                const imageUrl = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/emblem-" + name + ".png";
+
+                // Download the image
+                const response = await axios.get(imageUrl, {
+                    responseType: 'arraybuffer'
+                });
+
+                // Zoom in the middle of the image to get the 256x256 version
+                const imageBuffer = response.data;
+                const imageMetadata = await sharp(imageBuffer).metadata();
+                const imageWidth = imageMetadata.width;
+                const imageHeight = imageMetadata.height;
+                const zoomedImage = await sharp(imageBuffer)
+                    .extract({
+                        left: imageWidth / 2 - imageWidth/10,
+                        top: imageHeight / 2 - imageWidth/10,
+                        width: imageWidth/5,
+                        height: imageWidth/5
+                    })
+                    .toBuffer();
+
+                // reduce image size to 256x256
+                const resizedImage = await sharp(zoomedImage).resize(256, 256).toBuffer();
+
+                // Create the emoji using the zoomed image file
+                guild.emojis.create(
+                    resizedImage,
+                    name
+                ).then(createdEmoji => {
+                    this.emojis[name] = "<:" + createdEmoji.name + ":" + createdEmoji.id + ">";
+                }).catch(console.error);
+            } else {
+                this.emojis[name] = "<:" + emoji.name + ":" + emoji.id + ">";
+            }
+
+        }
     },
 
     /**
