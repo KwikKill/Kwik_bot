@@ -44,6 +44,7 @@ module.exports = {
     score_timestamp: 0,
 
     trackers: [],
+    rank_list: ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"],
 
     /**
      * setup champion list
@@ -1433,10 +1434,10 @@ module.exports = {
      * @returns {Number} The LP change
      */
     LP_change(old_rank, old_tier, old_LP, rank, tier, LP) {
-        const value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(tier) * 400
+        const value = this.rank_list.indexOf(tier) * 400
             + ["IV", "III", "II", "I"].indexOf(rank) * 100
             + LP;
-        const old_value = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"].indexOf(old_tier) * 400
+        const old_value = this.rank_list.indexOf(old_tier) * 400
             + ["IV", "III", "II", "I"].indexOf(old_rank) * 100
             + old_LP;
 

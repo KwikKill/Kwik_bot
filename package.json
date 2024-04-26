@@ -21,7 +21,8 @@
     "node-ical": "^0.17.0",
     "pdfkit": "^0.14.0",
     "pg": "^8.11.3",
-    "undici": "^6.0.1"
+    "undici": "^6.0.1",
+    "sharp": "0.33.3"
   },
   "scripts": {
     "test": "jest",
