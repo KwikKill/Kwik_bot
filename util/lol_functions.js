@@ -501,7 +501,6 @@ module.exports = {
                             ]);
                             if (x === "1036963873422589972") {
                                 const embed = this.build_tracker(data, current_rank, last_game, rank);
-                                console.log(embed);
                                 if (embed !== undefined) {
                                     channel.send({ embeds: [embed] });
                                     continue;
@@ -572,12 +571,8 @@ module.exports = {
      * @param {object} last_game last game data
      * @param {*} rank rank data
      */
-    async build_tracker(data, current_rank, last_game, rank) {
-        console.log("b");
-
+    build_tracker(data, current_rank, last_game, rank) {
         const embed = new MessageEmbed();
-
-        console.log(embed);
 
         const discordid = data.rows[0]["discordid"];
         const gamename = data.rows[0]["gamename"];
@@ -694,7 +689,6 @@ module.exports = {
                         inline: true,
                     }
                 );
-                console.log(embed);
                 return embed;
             }
             // If the user just finished a game in flex
