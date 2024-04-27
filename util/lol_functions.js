@@ -504,6 +504,7 @@ module.exports = {
                                 if (embed !== undefined) {
                                     channel.send({ embeds: [embed] });
                                 }
+                                continue;
                             }
                             // If the user just finished his placement games in solo/duo
                             if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
@@ -571,7 +572,11 @@ module.exports = {
      * @param {*} rank rank data
      */
     async build_tracker(data, current_rank, last_game, rank) {
+        console.log("b");
+
         const embed = new MessageEmbed();
+
+        console.log("a");
 
         const discordid = data.rows[0]["discordid"];
         const gamename = data.rows[0]["gamename"];
