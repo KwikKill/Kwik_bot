@@ -1747,7 +1747,7 @@ module.exports = {
      * @param {String} game_id - ID of the game
      */
     get_league_of_graph(game_id) {
-        const base_url = "https://www.leagueofgraphs.com/fr/summoner/";
+        const base_url = "https://www.leagueofgraphs.com/match/";
 
         // convert game_id to leagueofgraphs url (EUW1_1234567890 -> EUW/1234567890)
         const region = game_id.split("_")[0];
