@@ -501,6 +501,7 @@ module.exports = {
                             ]);
                             if (x === "1036963873422589972") {
                                 const embed = this.build_tracker(data, current_rank, last_game, rank);
+                                console.log(embed);
                                 if (embed !== undefined) {
                                     channel.send({ embeds: [embed] });
                                     continue;
