@@ -503,8 +503,8 @@ module.exports = {
                                 const embed = this.build_tracker(data, current_rank, last_game, rank);
                                 if (embed !== undefined) {
                                     channel.send({ embeds: [embed] });
+                                    continue;
                                 }
-                                continue;
                             }
                             // If the user just finished his placement games in solo/duo
                             if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
@@ -576,7 +576,7 @@ module.exports = {
 
         const embed = new MessageEmbed();
 
-        console.log("a");
+        console.log(embed);
 
         const discordid = data.rows[0]["discordid"];
         const gamename = data.rows[0]["gamename"];
@@ -693,6 +693,7 @@ module.exports = {
                         inline: true,
                     }
                 );
+                console.log(embed);
                 return embed;
             }
             // If the user just finished a game in flex
