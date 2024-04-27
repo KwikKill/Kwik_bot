@@ -499,7 +499,7 @@ module.exports = {
                                 rank["RANKED_FLEX_SR"]["leaguePoints"],
                                 id
                             ]);
-                            if (x === "1036963873422589972") {
+                            if (x === "1036963873422589972" || x==="1035574298087280712") {
                                 const embed = this.build_tracker(data, current_rank, last_game, rank);
                                 if (embed !== undefined) {
                                     channel.send({ embeds: [embed] });
