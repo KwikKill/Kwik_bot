@@ -1752,7 +1752,7 @@ module.exports = {
      * @function get_league_of_graph
      * @param {String} game_id - ID of the game
      */
-    async get_league_of_graph(game_id) {
+    get_league_of_graph(game_id) {
         const base_url = "https://www.leagueofgraphs.com/fr/summoner/";
 
         // convert game_id to leagueofgraphs url (EUW1_1234567890 -> EUW/1234567890)
