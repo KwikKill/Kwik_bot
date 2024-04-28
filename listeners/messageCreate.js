@@ -24,9 +24,9 @@ module.exports = {
                 if (client.canRunCommande(message, commande)) {
                     await commande.run(message, client).catch(err => {
                         console.log(err);
-                        message.channel.send("Une erreur inattendue s'est produite lors de l'exécution de la commande.\nCette erreur a été transmise et sera réglée au plus vite.");
+                        message.channel.send("An unexpected error occurred while executing the command.\nThis error has been reported and will be resolved as soon as possible.");
                         const owner = client.users.cache.get(client.owners[0]);
-                        owner.send("Une erreur inattendue s'est produite lors de l'exécution de la commande `" + message.content.toString() + "` par <@" + message.author.id.toString() + "> :\n```" + err.stack.toString() + "```");
+                        owner.send("An unexpected error occurred while executing the command `" + message.content.toString() + "` by <@" + message.author.id.toString() + ">:\n```" + err.stack.toString() + "```");
                     });
                     return;
                 }

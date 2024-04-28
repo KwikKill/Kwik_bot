@@ -277,31 +277,28 @@ class LolApi {
         } catch (error) {
             if (error.response?.status === 429) {
                 // Special Handling here - 429 is Rate Limit Reached.
-                // Alert the User
                 if (process.env.VERBOSE === "true") {
-                    logger.error("Limite d'appel de l'API atteinte.  Mise pause du script et reprise dans 10 secondes.", "429");
+                    logger.error("API call limit reached. Pausing the script and resuming in 10 seconds.", "429");
                 }
                 client.lol.api_limit = true;
-                // Wait the time specified by the reponse header
-                //await client.
                 await delay(delay_time);
                 // Retry
                 return await this.apiCall(url, client);
             } else if (error.response?.status === 404) {
-                logger.error("La ressource demandée n'existe pas. " + url, "404");
+                logger.error("Ressource not found. " + url, "404");
                 return null;
             } else if (error.response?.status === 400) {
-                logger.error("La requête est invalide." + url, "400");
+                logger.error("The request is invalid." + url, "400");
                 return null;
             } else if (error.response?.status === 403) {
-                logger.error("La clé API n'est pas valide." + url, "403");
+                logger.error("Invalid API key." + url, "403");
                 return null;
             } else if (error.response?.status === 503) {
-                logger.error("Le service est temporairement indisponible. Mise en pause. " + url, "503");
+                logger.error("The service is temporarily unavailable. Pausing. " + url, "503");
                 await delay(60000);
                 return await this.apiCall(url, client);
             } else if (error.response?.status !== undefined) {
-                logger.error("Erreur inconnue: " + error.response.statut + " " + url);
+                logger.error("Unknown error: " + error.response.statut + " " + url);
                 return null;
             }
             // catch Invalid JSON

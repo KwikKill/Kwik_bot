@@ -462,16 +462,29 @@ module.exports = {
         const id = data.rows[0]["id"];
         const rank = await this.update_rank(id, region);
 
-        let game;
-        if (last_game === "none" || last_game === null) {
-            game = "1+ games";
-        } else {
-            game = last_game["champion"] + " (" + last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"] + ")";
-        }
-
         // read current rank and send message if rank changed
         const current_rank = await this.client.pg.query("SELECT * FROM summoners WHERE id = '" + id + "'");
-        if (current_rank.rows[0] !== undefined) {
+        if (
+            current_rank.rows[0] !== undefined &&
+            (
+                current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
+                current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
+                current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] ||
+                current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
+                current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
+                current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
+            )
+        ) {
+            await this.client.pg.query("UPDATE summoners SET rank_solo = $1, tier_solo = $2, LP_solo = $3, rank_flex = $4, tier_flex = $5, LP_flex = $6 WHERE id = $7", [
+                rank["RANKED_SOLO_5x5"]["rank"],
+                rank["RANKED_SOLO_5x5"]["tier"],
+                rank["RANKED_SOLO_5x5"]["leaguePoints"],
+                rank["RANKED_FLEX_SR"]["rank"],
+                rank["RANKED_FLEX_SR"]["tier"],
+                rank["RANKED_FLEX_SR"]["leaguePoints"],
+                id
+            ]);
+            const embed = this.build_tracker(data, current_rank, last_game, rank);
             for (const x of this.trackers) {
                 try {
                     const channel = await this.client.channels.fetch(x);
@@ -482,71 +495,10 @@ module.exports = {
                         user = false;
                     }
                     if (user || x === "1036963873422589972") {
-                        if (
-                            current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                            current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                            current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"] ||
-                            current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
-                            current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
-                            current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-                        ) {
-                            await this.client.pg.query("UPDATE summoners SET rank_solo = $1, tier_solo = $2, LP_solo = $3, rank_flex = $4, tier_flex = $5, LP_flex = $6 WHERE id = $7", [
-                                rank["RANKED_SOLO_5x5"]["rank"],
-                                rank["RANKED_SOLO_5x5"]["tier"],
-                                rank["RANKED_SOLO_5x5"]["leaguePoints"],
-                                rank["RANKED_FLEX_SR"]["rank"],
-                                rank["RANKED_FLEX_SR"]["tier"],
-                                rank["RANKED_FLEX_SR"]["leaguePoints"],
-                                id
-                            ]);
-                            if (x === "1036963873422589972" || x==="1035574298087280712") {
-                                const embed = this.build_tracker(data, current_rank, last_game, rank);
-                                if (embed !== undefined) {
-                                    channel.send({ embeds: [embed] });
-                                    continue;
-                                }
-                            }
-                            // If the user just finished his placement games in solo/duo
-                            if (current_rank.rows[0].tier_solo === 'unranked' && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked') {
-                                channel.send("Placement Solo/Duo completed for " + gamename + "#" + tagline + " : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
-                            }
-                            // If the user just finished his placement games in flex
-                            else if (current_rank.rows[0].tier_flex === 'unranked' && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked') {
-                                channel.send("Placement Flex completed for " + gamename + "#" + tagline + " : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
-                            }
-                            // If the user just finished a game in solo/duo
-                            else if (
-                                (
-                                    current_rank.rows[0].rank_solo !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                                    current_rank.rows[0].tier_solo !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                                    current_rank.rows[0].lp_solo !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
-                                )
-                                && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
-                            ) {
-                                channel.send("Rank Solo/Duo update for " +
-                                    gamename + "#" + tagline +
-                                    " : " + rank["RANKED_SOLO_5x5"]["tier"] +
-                                    " " + rank["RANKED_SOLO_5x5"]["rank"] +
-                                    " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] +
-                                    " LP (" + this.LP_change(current_rank.rows[0].rank_solo, current_rank.rows[0].tier_solo, current_rank.rows[0].lp_solo, rank["RANKED_SOLO_5x5"]["rank"], rank["RANKED_SOLO_5x5"]["tier"], rank["RANKED_SOLO_5x5"]["leaguePoints"]) + "LP)" +
-                                    " | " + game);
-                            // If the user just finished a game in flex
-                            } else if (
-                                (
-                                    current_rank.rows[0].rank_flex !== rank["RANKED_FLEX_SR"]["rank"] ||
-                                    current_rank.rows[0].tier_flex !== rank["RANKED_FLEX_SR"]["tier"] ||
-                                    current_rank.rows[0].lp_flex !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-                                )
-                                && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
-                            ) {
-                                channel.send("Rank Flex update for " +
-                                    gamename + "#" + tagline +
-                                    " : " + rank["RANKED_FLEX_SR"]["tier"] +
-                                    " " + rank["RANKED_FLEX_SR"]["rank"] +
-                                    " " + rank["RANKED_FLEX_SR"]["leaguePoints"] +
-                                    " LP (" + this.LP_change(current_rank.rows[0].rank_flex, current_rank.rows[0].tier_flex, current_rank.rows[0].lp_flex, rank["RANKED_FLEX_SR"]["rank"], rank["RANKED_FLEX_SR"]["tier"], rank["RANKED_FLEX_SR"]["leaguePoints"]) + "LP)" +
-                                    " | " + game);
-                            }
+                        if (embed !== undefined) {
+                            channel.send({ embeds: [embed] });
+                        } else {
+                            logger.error("Error while building tracker embed for " + gamename + "#" + tagline);
                         }
                     }
                 } catch (e) {
