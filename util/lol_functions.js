@@ -581,7 +581,7 @@ module.exports = {
                 embed.addFields(
                     // KDA
                     {
-                        name: ((last_game["kills"] + last_game["assists"]) / last_game["deaths"]).toFixed(2) + " KDA",
+                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
                         value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
                         inline: true,
                     },
@@ -602,7 +602,7 @@ module.exports = {
                 embed.addFields(
                     // KDA
                     {
-                        name: ((last_game["kills"] + last_game["assists"]) / last_game["deaths"]).toFixed(2) + " KDA",
+                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
                         value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
                         inline: true,
                     },
@@ -632,7 +632,7 @@ module.exports = {
                 embed.addFields(
                     // KDA
                     {
-                        name: ((last_game["kills"] + last_game["assists"]) / last_game["deaths"]).toFixed(2) + " KDA",
+                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
                         value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
                         inline: true,
                     },
@@ -662,7 +662,7 @@ module.exports = {
                 embed.addFields(
                     // KDA
                     {
-                        name: ((last_game["kills"] + last_game["assists"]) / last_game["deaths"]).toFixed(2) + " KDA",
+                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
                         value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
                         inline: true,
                     },
