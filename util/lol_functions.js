@@ -588,6 +588,7 @@ module.exports = {
                     // Rank
                     {
                         name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
+                        value: "placement",
                         inline: true,
                     }
                 );
@@ -608,6 +609,7 @@ module.exports = {
                     // Rank
                     {
                         name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
+                        value: "placement",
                         inline: true,
                     }
                 );
