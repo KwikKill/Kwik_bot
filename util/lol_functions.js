@@ -499,6 +499,10 @@ module.exports = {
                             channel.send({ embeds: [embed] });
                         } else {
                             logger.error("Error while building tracker embed for " + gamename + "#" + tagline);
+                            logger.error("Current SOLO rank : " + current_rank.rows[0].tier_solo + " " + current_rank.rows[0].rank_solo + " " + current_rank.rows[0].lp_solo + " LP");
+                            logger.error("New SOLO rank : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                            logger.error("Current FLEX rank : " + current_rank.rows[0].tier_flex + " " + current_rank.rows[0].rank_flex + " " + current_rank.rows[0].lp_flex + " LP");
+                            logger.error("New FLEX rank : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
                         }
                     }
                 } catch (e) {
