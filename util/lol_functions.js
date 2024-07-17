@@ -73,16 +73,15 @@ module.exports = {
     async setup(client) {
         this.client = client;
         this.champions = [];
-        this.lol_api.championList(this.apiKey, "EUW1", this.language, client).then(list => {
-            this.champions = list;
-            this.client.champions = [];
-            for (let i = 0; i < list.length; i++) {
-                if (list[i] !== undefined) {
-                    this.client.champions.push(list[i]);
-                }
+        const list = await this.lol_api.championList(this.apiKey, "EUW1", this.language, client);
+        this.champions = list;
+        this.client.champions = [];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i] !== undefined) {
+                this.client.champions.push(list[i]);
             }
-            this.client.champions.sort();
-        });
+        }
+        this.client.champions.sort();
 
         // deploy rank emojis to guild "513776796211085342"
         const guild = await client.guilds.fetch("513776796211085342");
@@ -1584,12 +1583,15 @@ module.exports = {
             const champname = this.champions[championId];
             if (champname === undefined || champname === null) {
                 logger.error("Champion ID: " + championId + " is not in the champion list. Fetching new champion list.");
-                this.champions = this.lol_api.championList(this.apiKey, "EUW1", this.language, this.client);
-                const champname = this.champions[championId];
-                if (champname === undefined || champname === null) {
-                    logger.error("Champion ID: " + championId + " is still not in the champion list. Skipping match " + matchId + ".");
-                    return null;
-                }
+                /*this.lol_api.championList(this.apiKey, "EUW1", this.language, this.client).then(list => {
+                    this.champions = list;
+                    const champname = this.champions[championId];
+                    if (champname === undefined || champname === null) {
+                        logger.error("Champion ID: " + championId + " is still not in the champion list. Skipping match " + matchId + ".");
+                        return null;
+                    }
+                });*/
+                return null;
             }
 
             const rune_0_perk = match['info']['participants'][participantId]['perks']['styles'][0]['selections'][0]['perk'];
