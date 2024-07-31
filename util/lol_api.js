@@ -330,7 +330,7 @@ class LolApi {
 
         try {
             const url = "https://ddragon.leagueoflegends.com/cdn/" + patch + "/data/" + language + "/champion.json" + "?api_key=" + apiKey;
-            //Logger.log(url)
+            logger.log(url);
             return this.apiCall(url, client);
         } catch (error) {
             logger.error(error);
@@ -345,26 +345,26 @@ class LolApi {
     }
 
     /**
-    * get champion list
+    * get champion list from https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json
     * @function championList
     * @param {*} region    region of the server
     * @param {*} language  language of the data
     * @returns {Object}    champion list
     */
-    async championList(api_key, region, language, client) {
+    async championList() {
 
         // Get New Champion List from Data Dragon
-        const patch = await this.getCurrentPatch(region, client);
-        const championList = await this.championStaticData(api_key, language, patch['v'], client);
-
-        //Logger.log(championList['data'])
+        const championList = await axios.get("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
 
         // Champions Array
         const champions = [];
 
         // Add Champion Names & IDs to the array
-        for (const champion in championList['data']) {
-            champions[championList['data'][champion]['key']] = championList['data'][champion]['name'];
+        for (const champion in championList["data"]) {
+            if (championList["data"][champion]['id'] === -1) {
+                continue;
+            }
+            champions[championList["data"][champion]['id']] = championList["data"][champion]['name'];
         }
 
         return champions;

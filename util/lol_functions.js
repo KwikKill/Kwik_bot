@@ -73,7 +73,7 @@ module.exports = {
     async setup(client) {
         this.client = client;
         this.champions = [];
-        const list = await this.lol_api.championList(this.apiKey, "EUW1", this.language, client);
+        const list = await this.lol_api.championList();
         this.champions = list;
         this.client.champions = [];
         for (let i = 0; i < list.length; i++) {
@@ -1015,6 +1015,24 @@ module.exports = {
      * @param {*} debug debug mode
      */
     async main(debug = false) {
+        // Start by updating the champion list
+        this.champions = [];
+        const list = await this.lol_api.championList();
+        this.champions = list;
+        this.client.champions = [];
+        for (let i = 0; i < list.length; i++) {
+            if (list[i] !== undefined) {
+                this.client.champions.push(list[i]);
+            }
+        }
+        this.client.champions.sort();
+
+        // Fail if the champions list is empty
+        if (this.champions.length === 0) {
+            logger.error("Error while fetching champions list");
+            return;
+        }
+
         //logger.log(client.running, client.requests)
         if (this.running === true) { return; }
         this.running = true;
@@ -1555,15 +1573,6 @@ module.exports = {
 
             const totalTimeSpentDead = match['info']['participants'][participantId]['totalTimeSpentDead'];
 
-            // Remake Check
-            // if the match was less than 6 minutes and the player was active, then set the result to remake
-            const ff_duration = 360;
-            if (duration < ff_duration) {
-                result = "Remake";
-                // If the match was less than 6 minutes and the player was AFK, then set the result to LEAVE
-            }
-            //}
-
             const item0 = match['info']['participants'][participantId]['item0'];
             const item1 = match['info']['participants'][participantId]['item1'];
             const item2 = match['info']['participants'][participantId]['item2'];
@@ -1579,6 +1588,15 @@ module.exports = {
             } else if (match["info"]["queueId"] === this.RANKED_SOLO) {
                 queueName = "RANKED_SOLO";
             }
+
+            // Remake Check
+            // if the match was less than 6 minutes and the player was active, then set the result to remake
+            const ff_duration = 360;
+            if (duration < ff_duration && queueName !== "STRAWBERRY") {
+                result = "Remake";
+                // If the match was less than 6 minutes and the player was AFK, then set the result to LEAVE
+            }
+            //}
 
             const champname = this.champions[championId];
             if (champname === undefined || champname === null) {

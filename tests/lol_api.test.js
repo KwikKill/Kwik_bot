@@ -468,28 +468,12 @@ describe('championmasteriesBySummoner', () => {
 });
 
 describe('championList', () => {
-    let client;
-
-    beforeEach(() => {
-        client = client_preset; // mock client object
-    });
 
     it('should return an array of champion names indexed by ID when given valid input', async () => {
         const api = new LolApi();
-        const championList = await api.championList(api_key, 'EUW1', 'en_US', client);
+        const championList = await api.championList();
         expect(Array.isArray(championList)).toBe(true);
         expect(championList.length).toBeGreaterThan(0);
     });
 
-    it('should throw an error when given an invalid region', async () => {
-        const api = new LolApi();
-        await expect(api.championList(api_key, 'invalid', 'en_US', client)).rejects.toThrow();
-    });
-
-    it('should throw an error when the API call fails', async () => {
-        const api = new LolApi();
-        const error = new Error('API call failed');
-        api.getCurrentPatch = jest.fn().mockRejectedValue(error);
-        await expect(api.championList(api_key, 'EUW1', 'en_US', client)).rejects.toThrow(error);
-    });
 });
