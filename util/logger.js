@@ -27,19 +27,33 @@ module.exports = {
     BgWhite: "\x1b[47m",
     BgGray: "\x1b[100m",
 
+    getTimestamp() {
+        const now = new Date();
+        const options = {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        };
+        return now.toLocaleString('en-GB', options).replace(',', ' -');
+    },
+
     log(message) {
-        console.log(`${this.FgCyan}[RANKUP] ${this.FgGreen}${message}${this.Reset}`);
+        console.log(`${this.FgMagenta}${this.getTimestamp()} ${this.FgCyan}[RANKUP] ${this.FgGreen}${message}${this.Reset}`);
     },
 
     warn(message) {
-        console.log(`${this.FgCyan}[RANKUP] ${this.FgYellow}${message}${this.Reset}`);
+        console.log(`${this.FgMagenta}${this.getTimestamp()} ${this.FgCyan}[RANKUP] ${this.FgYellow}${message}${this.Reset}`);
     },
 
     error(message, code = undefined) {
         if (code) {
-            console.log(`${this.FgCyan}[RANKUP](${code}) ${this.FgRed}${message}${this.Reset}`);
+            console.log(`${this.FgMagenta}${this.getTimestamp()} ${this.FgCyan}[RANKUP](${code}) ${this.FgRed}${message}${this.Reset}`);
         } else {
-            console.log(`${this.FgCyan}[RANKUP] ${this.FgRed}${message}${this.Reset}`);
+            console.log(`${this.FgMagenta}${this.getTimestamp()} ${this.FgCyan}[RANKUP] ${this.FgRed}${message}${this.Reset}`);
         }
     },
 };
