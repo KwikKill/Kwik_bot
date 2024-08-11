@@ -500,13 +500,17 @@ module.exports = {
                 } else if (interaction.options.getSubcommand() === "add") {
                     await interaction.editReply("loading summoners...");
                     const resp = await client.pg.query("SELECT player, SPLIT_PART(puuid, '_', 1) AS region FROM matchs WHERE player IN (SELECT player FROM matchs GROUP BY player ORDER BY count(*) ASC, RANDOM() LIMIT 30)");
+
                     for (const summoner of resp.rows) {
-                        client.lol.queue["updates"].push({
-                            "type": "sum",
-                            "puuid": summoner.player,
-                            "region": summoner.region,
-                            "matchs": []
-                        });
+                        const route = client.lol.reverse_routes[summoner.region];
+                        if (route !== undefined && client.lol.services[route] !== undefined) {
+                            client.lol.services[route]["queue"]["updates"].push({
+                                "type": "sum",
+                                "puuid": summoner.player,
+                                "region": summoner.region,
+                                "matchs": []
+                            });
+                        }
                     }
                     interaction.editReply("Adding " + resp.rows.length + " summoners to the queue, please wait");
                     await client.lol.main();
@@ -584,6 +588,17 @@ module.exports = {
                                 if (username !== undefined && region !== "null" && username !== "null" && username !== null && region !== undefined && region !== null && username.includes("#") && currents.length < limit) {
                                     const resp = await client.pg.query("SELECT puuid FROM summoners WHERE gamename = $1 AND tagline = $2 AND region = $3", [username.split("#")[0], username.split("#")[1], region]);
                                     if (resp.rows.length === 0) {
+                                        // If not already in the two arrays
+                                        for (const current of currents) {
+                                            if (current[0] === username && current[1] === region) {
+                                                continue;
+                                            }
+                                        }
+                                        for (const summoner of summoners) {
+                                            if (summoner[0] === username && summoner[1] === region) {
+                                                continue;
+                                            }
+                                        }
                                         summoners.push([username, region]);
                                         currents.push([username, region]);
                                     }
@@ -594,19 +609,24 @@ module.exports = {
                     }
 
                     for (const summoner of summoners) {
-                        client.lol.queue["updates"].push({
-                            "type": "population",
-                            "region": summoner[1],
-                            "gamename": summoner[0].split("#")[0],
-                            "tagline": summoner[0].split("#")[1],
-                            "add": account,
-                            "discordid": "503109625772507136"
-                        });
+                        const route = client.lol.reverse_routes[summoner[1]];
+                        if (route !== undefined && client.lol.services[route] !== undefined) {
+                            client.lol.services[route]["queue"]["updates"].push({
+                                "type": "population",
+                                "region": summoner[1],
+                                "gamename": summoner[0].split("#")[0],
+                                "tagline": summoner[0].split("#")[1],
+                                "add": account,
+                                "discordid": "503109625772507136"
+                            });
+                        }
                     }
 
                     const end = Date.now();
                     const time = (end - start) / 1000;
                     await interaction.editReply(summoners.length + " summoners added to the queue in " + time + "s");
+
+                    await client.lol.main(true);
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
                 const TOP = interaction.options.getString("top");
@@ -704,14 +724,17 @@ module.exports = {
 
                     const debug = interaction.options.getBoolean("debug");
 
-                    client.lol.queue["updates"].push({
-                        "type": "match",
-                        "matchid": matchid,
-                        "region": region,
-                        "puuid": "noone",
-                        "first": true,
-                        "debug": debug
-                    });
+                    const route = client.lol.reverse_routes[region];
+                    if (route !== undefined && client.lol.services[route] !== undefined) {
+                        client.lol.services[route]["queue"]["updates"].push({
+                            "type": "match",
+                            "matchid": matchid,
+                            "region": region,
+                            "puuid": "noone",
+                            "first": true,
+                            "debug": debug
+                        });
+                    }
 
                     await interaction.editReply({ content: "Match added!", ephemeral: true });
                     client.lol.main();
@@ -773,26 +796,30 @@ async function update(client, debug = false, first = false) {
     const query = "SELECT DISTINCT puuid, id, gamename, tagline, discordid, region, priority FROM summoners ORDER BY priority DESC;";
     const result = await client.pg.query(query);
 
-    const prio = [];
+    const prio = {};
 
     for (let i = 0; i < result.rows.length; i++) {
-        let found = false;
-        for (let j = 0; j < client.lol.queue["updates"].length; j++) {
-            if (client.lol.queue["updates"][j].puuid === result.rows[i].puuid) {
-                found = true;
-                break;
+        const route = client.lol.reverse_routes[result.rows[i].region];
+        if (client.lol.services[route]["running"] === true) {
+            continue;
+        }
+
+        if (!prio[route]) {
+            prio[route] = [];
+        }
+
+        if (route !== undefined && client.lol.services[route] !== undefined) {
+            let found = false;
+            for (let j = 0; j < client.lol.services[route]["queue"]["updates"].length; j++) {
+                if (client.lol.services[route]["queue"]["updates"][j].puuid === result.rows[i].puuid) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                client.lol.services[route]["queue"]["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "gamename": result.rows[i].gamename, "tagline": result.rows[i].tagline, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
             }
         }
-        if (!found) {
-            if (result.rows[i].priority > 0) {
-                prio.push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "gamename": result.rows[i].gamename, "tagline": result.rows[i].tagline, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
-            } else {
-                client.lol.queue["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "gamename": result.rows[i].gamename, "tagline": result.rows[i].tagline, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
-            }
-        }
-    }
-    for (let i = prio.length - 1; i >= 0; i--) {
-        client.lol.queue["updates"].splice(1, 0, prio[i]);
     }
     await client.lol.main(debug);
 }

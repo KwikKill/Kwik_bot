@@ -995,7 +995,9 @@ module.exports = {
  * @returns {Promise<void>}
  */
 async function addSumoner(client, gamename, tagline, interaction, region) {
-    client.lol.queue["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0, "first": true });
+    const route = client.lol.reverse_routes[region];
+
+    client.lol.services[route]["queue"]["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0, "first": true });
     await client.lol.main();
 }
 
@@ -1010,7 +1012,9 @@ async function addSumoner(client, gamename, tagline, interaction, region) {
  * @returns {Promise<void>}
  */
 async function add_summoner_manual(client, gamename, tagline, discordid, region, priority = 0) {
-    client.lol.queue["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority, "first": true });
+    const route = client.lol.reverse_routes[region];
+
+    client.lol.services[route]["queue"]["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority, "first": true });
     await client.lol.main();
 }
 
@@ -1041,12 +1045,14 @@ async function account_add(client, interaction, gamename, tagline, region) {
             interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
+    const route = client.lol.reverse_routes[region];
+
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3 AND region=$4;", [interaction.user.id, gamename, tagline, region]);
-    if (!client.lol.queue["summoners"].includes({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
+    if (!client.lol.services[route]["queue"]["summoners"].includes({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
         const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
         let number = response2.rows.length;
-        for (let i = 0; i < client.lol.queue["summoners"].length; i++) {
-            if (client.lol.queue["summoners"][i].discordid === interaction.user.id) {
+        for (let i = 0; i < client.lol.services[route]["queue"]["summoners"].length; i++) {
+            if (client.lol.services[route]["queue"]["summoners"][i].discordid === interaction.user.id) {
                 number++;
             }
         }
@@ -1179,31 +1185,51 @@ async function queue(client, interaction) {
         })
         .setTimestamp();
     let step = "";
-    if (client.lol.queue["updates"].length > 0) {
-        if (client.lol.queue["updates"][0]["count"] === 0) {
+
+    const queue = {
+        "summoners": [],
+        "updates": [],
+        "add": []
+    };
+
+    for(const route in client.lol.services) {
+        for (let i = 0; i < client.lol.services[route]["queue"]["summoners"].length; i++) {
+            queue["summoners"].push(client.lol.services[route]["queue"]["summoners"][i]);
+        }
+        for (let i = 0; i < client.lol.services[route]["queue"]["updates"].length; i++) {
+            queue["updates"].push(client.lol.services[route]["queue"]["updates"][i]);
+        }
+        for (let i = 0; i < client.lol.services[route]["queue"]["add"].length; i++) {
+            queue["add"].push(client.lol.services[route]["queue"]["add"][i]);
+        }
+    }
+
+
+    if (queue["updates"].length > 0) {
+        if (queue["updates"][0]["count"] === 0) {
             step = //"- Step : 1/2 (Fetching game list)" +
-                "- Current : <@" + client.lol.queue["updates"][0]["discordid"] + "> (" + client.lol.queue["updates"][0]["gamename"] + "#" + client.lol.queue["updates"][0]["tagline"] + ") : Fetching match list";
+                "- Current : <@" + queue["updates"][0]["discordid"] + "> (" + queue["updates"][0]["gamename"] + "#" + queue["updates"][0]["tagline"] + ") : Fetching match list";
         } else {
             step = //"- Step : 2/2 (Fetching matchs details)\n" +
-                "- Current : <@" + client.lol.queue["updates"][0]["discordid"] + "> (" + client.lol.queue["updates"][0]["gamename"] + "#" + client.lol.queue["updates"][0]["tagline"] + ") : " + client.lol.queue["updates"][0]["count"] + "/" + client.lol.queue["updates"][0]["total"] + " matchs";
+                "- Current : <@" + queue["updates"][0]["discordid"] + "> (" + queue["updates"][0]["gamename"] + "#" + queue["updates"][0]["tagline"] + ") : " + queue["updates"][0]["count"] + "/" + queue["updates"][0]["total"] + " matchs";
         }
         embed.addFields(
             {
                 name: "Queued updates :",
-                value: "- size : " + client.lol.queue["updates"].length + " Summoners\n" +
+                value: "- size : " + queue["updates"].length + " Summoners\n" +
                     step + "\n"
             }
         );
         const pos = [];
-        for (let i = 1; i < client.lol.queue["updates"].length; i++) {
-            if (client.lol.queue["updates"][i]["discordid"] === interaction.user.id) {
-                pos.push([i, client.lol.queue["updates"][i]["gamename"] + "#" + client.lol.queue["updates"][i]["tagline"]]);
+        for (let i = 1; i < queue["updates"].length; i++) {
+            if (queue["updates"][i]["discordid"] === interaction.user.id) {
+                pos.push([i, queue["updates"][i]["gamename"] + "#" + queue["updates"][i]["tagline"]]);
                 break;
             }
         }
         let text = "";
         for (let i = 0; i < pos.length; i++) {
-            text += "- " + pos[i][1] + " : " + pos[i][0] + "/" + client.lol.queue["updates"].length + "\n";
+            text += "- " + pos[i][1] + " : " + pos[i][0] + "/" + queue["updates"].length + "\n";
         }
         if (text !== "") {
             embed.addFields(
@@ -1221,14 +1247,14 @@ async function queue(client, interaction) {
             }
         );
     }
-    if (interaction.user.id === "297409548703105035") {
+    /*if (interaction.user.id === "297409548703105035") {
         embed.addFields(
             {
                 name: "Api limit reached :",
                 value: "" + client.lol.api_limit
             }
         );
-    }
+    }*/
     return await interaction.editReply({ embeds: [embed] });
 }
 

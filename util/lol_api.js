@@ -12,34 +12,35 @@ class LolApi {
      * @returns {Boolean}  return the current patch version
      */
     async getCurrentPatch(region, client) {
+        let region_short = region;
         // Region Correction
         switch (region) {
             // These regions just need thier numbers removed
             case "NA1": case "EUW1": case "TR1": case "BR1": case "JP1":
-                region = region.slice(0, -1).toLowerCase();
+                region_short = region.slice(0, -1).toLowerCase();
                 break;
             case "RU":
-                region = "ru";
+                region_short = "ru";
                 break;
             case "KR":
-                region = "kr";
+                region_short = "kr";
                 break;
             case "EUN1":
-                region = "eune";
+                region_short = "eune";
                 break;
             case "OC1":
-                region = "oce";
+                region_short = "oce";
                 break;
             case "LA1":
-                region = "lan";
+                region_short = "lan";
                 break;
             case "LA2":
-                region = "las";
+                region_short = "las";
                 break;
         }
 
-        const url = "https://ddragon.leagueoflegends.com/realms/" + region + ".json";
-        return await this.apiCall(url, client);
+        const url = "https://ddragon.leagueoflegends.com/realms/" + region_short + ".json";
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -71,7 +72,7 @@ class LolApi {
     async summonersByName(apiKey, region, summonerName, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-name/" + summonerName + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -85,7 +86,7 @@ class LolApi {
     async summonerByPuuid(apiKey, region, summonerPuuid, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/summoner/v4/summoners/by-puuid/" + summonerPuuid + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -98,7 +99,7 @@ class LolApi {
     async challenge(apiKey, region, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/challenges/percentiles?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -111,7 +112,7 @@ class LolApi {
     async challengeconfig(apiKey, region, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/challenges/config?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -125,7 +126,7 @@ class LolApi {
     async challengebypuuid(apiKey, region, puuid, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/challenges/v1/player-data/" + puuid + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -139,7 +140,7 @@ class LolApi {
     async leaguesBySummoner(apiKey, region, summonerId, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-summoner/" + summonerId + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -153,7 +154,7 @@ class LolApi {
     async challengerLeagues(apiKey, region, queue, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/challengerleagues/by-queue/" + queue + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -167,7 +168,7 @@ class LolApi {
     async grandmasterLeagues(apiKey, region, queue, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/grandmasterleagues/by-queue/" + queue + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -181,7 +182,7 @@ class LolApi {
     async masterLeagues(apiKey, region, queue, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/masterleagues/by-queue/" + queue + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -195,7 +196,7 @@ class LolApi {
     async leaguesByLeagueId(apiKey, region, leagueId, client) {
         this.checkRegion(region, client);
         const url = "https://" + region + ".api.riotgames.com/lol/league/v4/leagues/" + leagueId + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
     }
 
     /**
@@ -209,7 +210,7 @@ class LolApi {
     async matchesById(apiKey, route, matchId, client) {
         this.checkRoute(route, client);
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "?api_key=" + apiKey;
-        const result = await this.apiCall(url, client);
+        const result = await this.apiCall(url, client, route);
         if (result === null) {
             logger.error("error while fetching match " + matchId);
         }
@@ -227,7 +228,7 @@ class LolApi {
     async matchlistsByAccount(apiKey, route, puuid, options, client) {
         this.checkRoute(route, client);
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/by-puuid/" + puuid + "/ids" + options + "&api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, route);
     }
 
     /**
@@ -241,7 +242,7 @@ class LolApi {
     async timelinesByMatchId(apiKey, route, matchId, client) {
         this.checkRoute(route, client);
         const url = "https://" + route + ".api.riotgames.com/lol/match/v5/matches/" + matchId + "/timeline" + "?api_key=" + apiKey;
-        return await this.apiCall(url, client);
+        return await this.apiCall(url, client, route);
     }
 
     /**
@@ -264,7 +265,7 @@ class LolApi {
      * @param {*} url     url to fetch
      * @returns {Object}  data from the API
      */
-    async apiCall(url, client) {
+    async apiCall(url, client, route=undefined) {
         try {
             if (process.env.VERBOSE === "true") {
                 logger.log("API CALL: " + url);
@@ -272,7 +273,9 @@ class LolApi {
             // Fetch Data from provided URL & Options
             const responsefetch = await axios.get(url);
             const data = responsefetch.data;
-            client.lol.api_limit = false;
+            if (route && client.lol.services[route] !== undefined) {
+                client.lol.services[route].api_limit = false;
+            }
             return data;
         } catch (error) {
             if (error.response?.status === 429) {
@@ -280,10 +283,12 @@ class LolApi {
                 if (process.env.VERBOSE === "true") {
                     logger.error("API call limit reached. Pausing the script and resuming in 10 seconds.", "429");
                 }
-                client.lol.api_limit = true;
+                if (route && client.lol.services[route] !== undefined) {
+                    client.lol.services[route].api_limit = true;
+                }
                 await delay(delay_time);
                 // Retry
-                return await this.apiCall(url, client);
+                return await this.apiCall(url, client, route);
             } else if (error.response?.status === 404) {
                 logger.error("Ressource not found. " + url, "404");
                 return null;
@@ -380,7 +385,7 @@ class LolApi {
     */
     checkRegion(region, client) {
         // Check if region is valid
-        if (client.lol.route[region] !== undefined) {
+        if (client.lol.reverse_routes[region] !== undefined) {
             return true;
         }
         throw new Error("Invalid Region");
@@ -397,7 +402,7 @@ class LolApi {
     */
     checkRoute(route, client) {
         // Check if region is valid
-        if (client.lol.routes.includes(route)) {
+        if (client.lol.routes[route] !== undefined) {
             return true;
         }
         throw new Error("Invalid Route");
@@ -413,7 +418,7 @@ class LolApi {
      */
     account_by_puuid(api_key, puuid, client) {
         const url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-puuid/" + puuid + "?api_key=" + api_key;
-        return this.apiCall(url, client);
+        return this.apiCall(url, client, "europe");
     }
 
     /**
@@ -424,9 +429,9 @@ class LolApi {
      * @param {*} tagline   tagline of the player
      * @returns {Object}    account data
      */
-    account_by_riotid(api_key, gamename, tagline, client) {
-        const url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" + gamename + "/" + tagline + "?api_key=" + api_key;
-        return this.apiCall(url, client);
+    account_by_riotid(api_key, gamename, tagline, client, route) {
+        const url = "https://" + route + ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/" + gamename + "/" + tagline + "?api_key=" + api_key;
+        return this.apiCall(url, client, route);
     }
 }
 

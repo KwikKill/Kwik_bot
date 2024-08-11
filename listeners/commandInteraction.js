@@ -8,8 +8,12 @@ module.exports = {
     options: undefined,
     async run(client, interaction) {
         if (client.softbans.includes(interaction.user.id)) {
-            logger.info(`softban ${interaction.user.id} on command ${interaction.commandName}`);
-            return;
+            // softban mean 4/5 commands are blocked
+            const random = Math.floor(Math.random() * 5);
+            if (random !== 0) {
+                logger.info(`softban ${interaction.user.id} on command ${interaction.commandName}`);
+                return;
+            }
         }
         if (interaction.isCommand()) {
 

@@ -5,26 +5,51 @@ const { describe, it, expect, beforeEach } = require('@jest/globals');
 const api_key = process.env.RIOT_API_KEY;
 const client_preset = {
     'lol': {
-        "api_limit": false,
-        "route": {
+        routes: {
+            "EUROPE": ["EUW1", "EUN1", "TR1", "RU"],
+            "AMERICAS": ["NA1", "BR1", "LA1", "LA2"],
+            "ASIA": ["KR", "JP1"],
+            "SEA": ["OC1"]
+        },
+        reverse_routes: {
             "EUW1": "EUROPE",
-            "NA1": "AMERICAS",
-            "KR": "ASIA",
             "EUN1": "EUROPE",
+            "TR1": "EUROPE",
+            "RU": "EUROPE",
+            "NA1": "AMERICAS",
             "BR1": "AMERICAS",
-            "JP1": "ASIA",
             "LA1": "AMERICAS",
             "LA2": "AMERICAS",
-            "OC1": "SEA",
-            "TR1": "EUROPE",
-            "RU": "EUROPE"
+            "KR": "ASIA",
+            "JP1": "ASIA",
+            "OC1": "SEA"
         },
-        "routes": [
-            "EUROPE",
-            "AMERICAS",
-            "ASIA",
-            "SEA"
-        ],
+        services: {
+            "EUROPE": {
+                queue: { "summoners": [], "updates": [], "add": [] },
+                queue_length: 0,
+                api_limit: false,
+                last: null,
+            },
+            "AMERICAS": {
+                queue: { "summoners": [], "updates": [], "add": [] },
+                queue_length: 0,
+                api_limit: false,
+                last: null,
+            },
+            "ASIA": {
+                queue: { "summoners": [], "updates": [], "add": [] },
+                queue_length: 0,
+                api_limit: false,
+                last: null,
+            },
+            "SEA": {
+                queue: { "summoners": [], "updates": [], "add": [] },
+                queue_length: 0,
+                api_limit: false,
+                last: null,
+            }
+        }
     }
 };
 let matchId = null;
@@ -69,7 +94,7 @@ describe('summonersByName', () => {
 
     it('should return a summoner object when given valid input', async () => {
         const lolapi = new LolApi();
-        const riot_account = await lolapi.account_by_riotid(api_key, 'KwikKill', 'Swain', client);
+        const riot_account = await lolapi.account_by_riotid(api_key, 'KwikKill', 'Swain', client, "europe");
         const summoner = await lolapi.summonerByPuuid(api_key, 'EUW1', riot_account.puuid, client);
         expect(summoner).toHaveProperty('id');
         expect(summoner).toHaveProperty('accountId');
@@ -360,7 +385,7 @@ describe('matchlistsByAccount', () => {
 
     it('should return an array of match IDs when given valid input', async () => {
         const api = new LolApi();
-        const matchIds = await api.matchlistsByAccount(api_key, client.lol.route['EUW1'], '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client);
+        const matchIds = await api.matchlistsByAccount(api_key, client.lol.reverse_routes['EUW1'], '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client);
         expect(Array.isArray(matchIds)).toBe(true);
         expect(matchIds.length).toBeGreaterThan(0);
         expect(typeof matchIds[0]).toBe('string');
@@ -376,7 +401,7 @@ describe('matchlistsByAccount', () => {
         const api = new LolApi();
         const error = new Error('API call failed');
         api.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(api.matchlistsByAccount(api_key, client.lol.route['EUW1'], '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client)).rejects.toThrow(error);
+        await expect(api.matchlistsByAccount(api_key, client.lol.reverse_routes['EUW1'], '4NrXpmBZPs961u7WfD2_BJ922QBAn8eTgtKKIbpcG1W_wbGIeEwTQfdkAzGb6dBp11JNHhCgWcEaRA', '?start=0&count=10', client)).rejects.toThrow(error);
     });
 });
 
@@ -389,7 +414,7 @@ describe('matchesById', () => {
 
     it('should return a match object when given valid input', async () => {
         const api = new LolApi();
-        const match = await api.matchesById(api_key, client.lol.route['EUW1'], matchId, client);
+        const match = await api.matchesById(api_key, client.lol.reverse_routes['EUW1'], matchId, client);
         expect(typeof match).toBe('object');
         expect(match).toHaveProperty('metadata');
         expect(match).toHaveProperty('info');
@@ -404,7 +429,7 @@ describe('matchesById', () => {
         const api = new LolApi();
         const error = new Error('API call failed');
         api.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(api.matchesById(api_key, client.lol.route['EUW1'], matchId, client)).rejects.toThrow(error);
+        await expect(api.matchesById(api_key, client.lol.reverse_routes['EUW1'], matchId, client)).rejects.toThrow(error);
     });
 });
 
@@ -417,7 +442,7 @@ describe('timelinesByMatchId', () => {
 
     it('should return a timeline object when given valid input', async () => {
         const api = new LolApi();
-        const timeline = await api.timelinesByMatchId(api_key, client.lol.route['EUW1'], matchId, client);
+        const timeline = await api.timelinesByMatchId(api_key, client.lol.reverse_routes['EUW1'], matchId, client);
         expect(typeof timeline).toBe('object');
         expect(timeline).toHaveProperty('metadata');
         expect(timeline).toHaveProperty('info');
@@ -432,7 +457,7 @@ describe('timelinesByMatchId', () => {
         const api = new LolApi();
         const error = new Error('API call failed');
         api.apiCall = jest.fn().mockRejectedValue(error);
-        await expect(api.timelinesByMatchId(api_key, client.lol.route['EUW1'], matchId, client)).rejects.toThrow(error);
+        await expect(api.timelinesByMatchId(api_key, client.lol.reverse_routes['EUW1'], matchId, client)).rejects.toThrow(error);
     });
 });
 

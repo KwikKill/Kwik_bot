@@ -10,19 +10,6 @@ module.exports = {
 
     RANKED_FLEX: 440,
     RANKED_SOLO: 420,
-    route: {
-        "EUW1": "EUROPE",
-        "NA1": "AMERICAS",
-        "KR": "ASIA",
-        "EUN1": "EUROPE",
-        "BR1": "AMERICAS",
-        "JP1": "ASIA",
-        "LA1": "AMERICAS",
-        "LA2": "AMERICAS",
-        "OC1": "SEA",
-        "TR1": "EUROPE",
-        "RU": "EUROPE"
-    },
     region_to_name: {
         "EUW1": "euw",
         "NA1": "na",
@@ -36,12 +23,26 @@ module.exports = {
         "TR1": "tr",
         "RU": "ru"
     },
-    routes: [
-        "EUROPE",
-        "AMERICAS",
-        "ASIA",
-        "SEA"
-    ],
+    routes: {
+        "EUROPE": ["EUW1", "EUN1", "TR1", "RU"],
+        "AMERICAS": ["NA1", "BR1", "LA1", "LA2"],
+        "ASIA": ["KR", "JP1"],
+        "SEA": ["OC1"]
+    },
+    reverse_routes: {
+        "EUW1": "EUROPE",
+        "EUN1": "EUROPE",
+        "TR1": "EUROPE",
+        "RU": "EUROPE",
+        "NA1": "AMERICAS",
+        "BR1": "AMERICAS",
+        "LA1": "AMERICAS",
+        "LA2": "AMERICAS",
+        "KR": "ASIA",
+        "JP1": "ASIA",
+        "OC1": "SEA"
+    },
+
     max_games: 100,
     champions: [],
     language: "en_US", // Players Language - Only Used for Champion Names
@@ -49,12 +50,7 @@ module.exports = {
     apiKey: process.env.RIOT_API_KEY,
     client: {},
 
-    last: null,
-
-    queue: { "summoners": [], "updates": [], "add": [] },
-    running: false,
-    queue_length: 0,
-    api_limit: false,
+    services: {},
 
     scores: {},
     score_timestamp: 0,
@@ -152,6 +148,18 @@ module.exports = {
                 this.emojis[name] = "<:" + emoji.name + ":" + emoji.id + ">";
             }
         }
+
+        // Create each services
+        for (const x in this.routes) {
+            if (this.services[x] === undefined) {
+                this.services[x] = {};
+                this.services[x]["running"] = false;
+                this.services[x]["queue"] = { "summoners": [], "updates": [], "add": [] };
+                this.services[x]["queue_length"] = 0;
+                this.services[x]["api_limit"] = false;
+                this.services[x]["last"] = null;
+            }
+        }
     },
 
     /**
@@ -203,7 +211,7 @@ module.exports = {
         do {
             const options = "?startTime=" + start + "&start=" + indexed + "&count=100";
             listOfMatches = { 'matches': [] };
-            const list = await this.lol_api.matchlistsByAccount(this.apiKey, this.route[region], puuid, options, this.client);
+            const list = await this.lol_api.matchlistsByAccount(this.apiKey, this.reverse_routes[region], puuid, options, this.client);
             if (list === null || (list["status_code"] !== undefined && list["status_code"] !== 200)) {
                 if (list !== null) {
                     logger.error("Error while fetching match list for " + puuid + " in " + region, list["status_code"]);
@@ -315,7 +323,7 @@ module.exports = {
      * @param {Boolean} debug  if true, print debug log
      * @returns {Object} summoner data with list of match ids
      */
-    async set_update(current, debug = false) {
+    async set_update(route, current, debug = false) {
         const timer1 = Date.now();
 
         const start = await this.update_step_1(current);
@@ -329,7 +337,7 @@ module.exports = {
         const matchs = await this.update_step_3(current, matchIds);
         if (matchs !== null) {
             current["matchs"] = current["matchs"].concat(matchs);
-            this.queue_length += matchs.length;
+            this.services[route]["queue_length"] += matchs.length;
             current["total"] = current["matchs"].length;
             current["last_id"] = current["matchs"][current["matchs"].length - 1];
         }
@@ -712,13 +720,13 @@ module.exports = {
      * @function save_matchs
      * @param {object} current Current match
      */
-    async save_matchs(current) {
+    async save_matchs(route, current) {
         const puuid = current["puuid"];
 
         while (current["matchs"].length > 0) {
             const matchId = current["matchs"].shift();
-            this.queue_length -= 1;
-            this.lol_api.matchesById(this.apiKey, this.route[current["region"]], matchId, this.client).then(match => {
+            this.services[route]["queue_length"] -= 1;
+            this.lol_api.matchesById(this.apiKey, this.reverse_routes[current["region"]], matchId, this.client).then(match => {
                 if (match === null) {
                     logger.log("Match " + matchId + " not found for " + puuid);
                 }
@@ -897,7 +905,7 @@ module.exports = {
      * @function update_summoner
      * @param {*} current current summoner
      */
-    async update_summoner(current) {
+    async update_summoner(route, current) {
         //const username = current["username"];
 
         const gamename = current["gamename"];
@@ -1005,7 +1013,7 @@ module.exports = {
             } catch {
 
             }
-            this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+            this.services[route]["queue"]["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
         }
     },
 
@@ -1016,16 +1024,17 @@ module.exports = {
      */
     async main(debug = false) {
         // Start by updating the champion list
-        this.champions = [];
         const list = await this.lol_api.championList();
         this.champions = list;
-        this.client.champions = [];
+        const temp_champion = [];
         for (let i = 0; i < list.length; i++) {
             if (list[i] !== undefined) {
-                this.client.champions.push(list[i]);
+                temp_champion.push(list[i]);
             }
         }
-        this.client.champions.sort();
+        temp_champion.sort();
+
+        this.client.champions = temp_champion;
 
         // Fail if the champions list is empty
         if (this.champions.length === 0) {
@@ -1033,37 +1042,54 @@ module.exports = {
             return;
         }
 
-        //logger.log(client.running, client.requests)
-        if (this.running === true) { return; }
-        this.running = true;
+        const promises = [];
+
+        // start every services
+        for (const x in this.routes) {
+            if (this.services[x]["running"] === false) {
+                promises.push(this.start_services(x, debug));
+            }
+        }
+
+        await Promise.all(promises);
+    },
+
+    async start_services(route, debug = false) {
+        logger.log("lol (update)[" + route + "] : starting service with " + this.services[route]["queue"]["updates"].length + " updates in queue");
+
+        if (this.services[route]["running"] === true) {
+            return;
+        }
+        this.services[route]["running"] = true;
+
         const start = Date.now();
-        while (this.queue["summoners"].length > 0) {
+        while (this.services[route]["queue"]["summoners"].length > 0) {
             const timer1 = Date.now();
 
-            const current = this.queue["summoners"].shift();
-            await this.update_summoner(current);
+            const current = this.services[route]["queue"]["summoners"].shift();
+            await this.update_summoner(route, current);
 
             if (debug) {
                 const timer2 = Date.now();
-                logger.log("lol (summoner) : [" + current["gamename"] + "#" + current["tagline"] + "] " + (timer2 - timer1) + " ms");
+                logger.log("lol (summoner)[" + route + "] : [" + current["gamename"] + "#" + current["tagline"] + "] " + (timer2 - timer1) + " ms");
             }
         }
         const checkpoint1 = Date.now();
         if (debug) {
-            logger.log("lol (summoner) : total took " + (checkpoint1 - start) + " ms");
+            logger.log("lol (summoner)[" + route + "] : total took " + (checkpoint1 - start) + " ms");
         }
-        while (this.queue["updates"].length > 0) {
+        while ( this.services[route]["queue"]["updates"].length > 0) {
             const timer1 = Date.now();
-            if (this.queue["summoners"].length > 0) {
-                this.running = false;
+            if (this.services[route]["queue"]["summoners"].length > 0) {
+                this.services[route]["running"] = false;
                 return this.main();
             }
-            let current = this.queue["updates"].shift();
+            let current = this.services[route]["queue"]["updates"].shift();
             if (current["type"] === "match") {
                 const region = current["region"];
                 const matchId = current["matchid"];
 
-                this.lol_api.matchesById(this.apiKey, this.route[region], matchId, this.client).then(match => {
+                this.lol_api.matchesById(this.apiKey, this.reverse_routes[region], matchId, this.client).then(match => {
 
                     if (match?.status?.status_code !== 404) {
                         const exit = this.matchHistoryOutput(match, current["debug"]);
@@ -1228,7 +1254,11 @@ module.exports = {
                 const discordid = current["discordid"];
                 const region = current["region"];
                 const priority = -1;
-                let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client);
+                let by_riotid = route;
+                if (by_riotid === "OCE" || by_riotid === "SEA") {
+                    by_riotid = "ASIA";
+                }
+                let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client, by_riotid);
                 if (puuid !== null) {
                     puuid = puuid["puuid"];
                     const summonerObject = await this.lol_api.summonerByPuuid(this.apiKey, region, puuid, this.client);
@@ -1240,42 +1270,58 @@ module.exports = {
                         const rank = await this.update_rank(id, region);
 
                         if (current["add"] === true) {
-                            await this.client.pg.query('INSERT INTO summoners(' +
-                                'puuid, ' +
-                                'accountid, ' +
-                                'id, ' +
-                                'discordid, ' +
-                                'rank_solo, ' +
-                                'tier_solo, ' +
-                                'LP_solo, ' +
-                                'rank_flex, ' +
-                                'tier_flex, ' +
-                                'LP_flex, ' +
-                                'region, ' +
-                                'priority, ' +
-                                'gamename, ' +
-                                'tagline' +
-                                ') ' +
-                                'VALUES(\'' +
-                                puuid + '\', \'' +
-                                accountId + '\', \'' +
-                                id + '\', \'' +
-                                discordid + '\', \'' +
-                                rank["RANKED_SOLO_5x5"]["rank"] + '\', \'' +
-                                rank["RANKED_SOLO_5x5"]["tier"] + '\', \'' +
-                                rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
-                                rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
-                                rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
-                                rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
-                                region + '\', ' +
-                                priority + ', \'' +
-                                gamename + '\', \'' +
-                                tagline + '\'' +
-                                ')'
-                            );
-                            this.queue["updates"].push({ "puuid": puuid, "id": id, "gamename": gamename, "tagline": tagline, "discordid": discordid, "matchs": [], "total": 0, "count": 0, "region": region, "first": true, "rank": false });
+                            try {
+                                await this.client.pg.query('INSERT INTO summoners(' +
+                                    'puuid, ' +
+                                    'accountid, ' +
+                                    'id, ' +
+                                    'discordid, ' +
+                                    'rank_solo, ' +
+                                    'tier_solo, ' +
+                                    'LP_solo, ' +
+                                    'rank_flex, ' +
+                                    'tier_flex, ' +
+                                    'LP_flex, ' +
+                                    'region, ' +
+                                    'priority, ' +
+                                    'gamename, ' +
+                                    'tagline' +
+                                    ') ' +
+                                    'VALUES(\'' +
+                                    puuid + '\', \'' +
+                                    accountId + '\', \'' +
+                                    id + '\', \'' +
+                                    discordid + '\', \'' +
+                                    rank["RANKED_SOLO_5x5"]["rank"] + '\', \'' +
+                                    rank["RANKED_SOLO_5x5"]["tier"] + '\', \'' +
+                                    rank["RANKED_SOLO_5x5"]["leaguePoints"] + '\', \'' +
+                                    rank["RANKED_FLEX_SR"]["rank"] + '\', \'' +
+                                    rank["RANKED_FLEX_SR"]["tier"] + '\', \'' +
+                                    rank["RANKED_FLEX_SR"]["leaguePoints"] + '\', \'' +
+                                    region + '\', ' +
+                                    priority + ', \'' +
+                                    gamename + '\', \'' +
+                                    tagline + '\'' +
+                                    ')'
+                                );
+                            } catch (e) {
+                                logger.error("Summoner " + gamename + "#" + tagline + " already in the database.");
+                            }
+                            this.services[route]["queue"]["updates"].push({
+                                "puuid": puuid,
+                                "id": id,
+                                "gamename": gamename,
+                                "tagline": tagline,
+                                "discordid": discordid,
+                                "matchs": [],
+                                "total": 0,
+                                "count": 0,
+                                "region": region,
+                                "first": true,
+                                "rank": false
+                            });
                         } else {
-                            this.queue["updates"].push({
+                            this.services[route]["queue"]["updates"].push({
                                 "type": "sum",
                                 "puuid": puuid,
                                 "region": region,
@@ -1285,13 +1331,13 @@ module.exports = {
                     }
                 }
             } else if (current["type"] === "sum") {
-                current = await this.set_update(current);
+                current = await this.set_update(route, current);
 
                 if (current !== undefined && (current["matchs"].length > 0 || current["rank"] !== false)) {
-                    this.save_matchs(current);
+                    this.save_matchs(route, current);
                 }
             } else {
-                current = await this.set_update(current);//, debug);
+                current = await this.set_update(route, current);//, debug);
                 if (current !== undefined) {
                     const timer2 = Date.now();
 
@@ -1304,7 +1350,7 @@ module.exports = {
 
                     if (current["matchs"].length > 0 || current["rank"] !== false) {
                         //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
-                        this.save_matchs(current);
+                        this.save_matchs(route, current);
                         const timer4 = Date.now();
 
                         if (discordid !== "503109625772507136") {
@@ -1328,24 +1374,25 @@ module.exports = {
                         const timer7 = new Date();
 
                         if (debug) {
-                            logger.log("- lol (update 4): " + (timer7 - timer4) + "ms");
-                            logger.log("- lol (update 7): " + (timer4 - timer2) + "ms");
+                            logger.log("- lol (update 4)[" + route + "]: " + (timer7 - timer4) + "ms");
+                            logger.log("- lol (update 7)[" + route + "]: " + (timer4 - timer2) + "ms");
                         }
                         //logger.log("- lol (done): " + puuid);
                     }
                     if (debug) {
                         const timer3 = new Date();
-                        logger.log("lol (update) : [" + current["puuid"] + "] " + (timer3 - timer1) + "ms for " + nb + " games. " + (timer2 - timer1) + "ms for update.");
+                        logger.log("lol (update)[" + route + "] : [" + current["puuid"] + "] " + (timer3 - timer1) + "ms for " + nb + " games. " + (timer2 - timer1) + "ms for update.");
                     }
                 }
             }
         }
         const end = new Date();
         if (debug) {
-            logger.log("lol (total) : " + (end - start) + "ms");
+            logger.log("lol (total)[" + route + "] : " + (end - start) + "ms");
         }
-        this.running = false;
-        if (this.queue["summoners"].length > 0 || this.queue["updates"].length > 0) {
+        logger.log("lol (update)[" + route + "] : stoping service for " + route);
+        this.services[route]["running"] = false;
+        if (this.services[route]["queue"]["summoners"].length > 0 || this.services[route]["queue"]["updates"].length > 0) {
             return await this.main();
         }
         //await client.channels.cache.get("991052056657793124").send("Finished updating");
