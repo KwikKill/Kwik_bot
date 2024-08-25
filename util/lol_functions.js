@@ -305,7 +305,7 @@ module.exports = {
         const current_tagline = number["tagline"];
 
         if (gamename !== current_gamename || tagline !== current_tagline) {
-            console.log("Pseudo changed for " + puuid + " : " + current_gamename + "#" + current_tagline + " -> " + gamename + "#" + tagline);
+            logger.warn("Pseudo changed for " + puuid + " : " + current_gamename + "#" + current_tagline + " -> " + gamename + "#" + tagline);
             await this.client.pg.query({
                 name: "update_pseudo",
                 text: "UPDATE summoners SET gamename = $1, tagline = $2 WHERE puuid = $3",
@@ -339,7 +339,7 @@ module.exports = {
             current["matchs"] = current["matchs"].concat(matchs);
             this.services[route]["queue_length"] += matchs.length;
             current["total"] = current["matchs"].length;
-            current["last_id"] = current["matchs"][current["matchs"].length - 1];
+            current["last_id"] = current["matchs"][0];
         }
         const timer4 = Date.now();
         if (debug) {
@@ -741,6 +741,7 @@ module.exports = {
                                 } else {
                                     this.send_tracker_message(summary["summonerpuuid"], summary);
                                 }
+                                // If needed, rename the summoner in the database
                                 if (summary["summonerpuuid"] === puuid) {
                                     this.update_pseudo(current, summary["gamename"], summary["tagline"]);
                                 }
@@ -915,7 +916,7 @@ module.exports = {
         const discordid = current["discordid"];
         const region = current["region"];
         const priority = current["priority"];
-        let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client);
+        let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client, route);
         if (puuid === null) {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + gamename + "#" + tagline + " not found.");
