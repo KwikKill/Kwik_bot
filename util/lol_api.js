@@ -285,6 +285,7 @@ class LolApi {
                 }
                 if (route && client.lol.services[route] !== undefined) {
                     client.lol.services[route].api_limit = true;
+                    client.lol.services[route].nb_rate_limit += 1;
                 }
                 await delay(delay_time);
                 // Retry

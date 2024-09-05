@@ -161,6 +161,7 @@ module.exports = {
                 this.services[x]["queue_length"] = 0;
                 this.services[x]["api_limit"] = false;
                 this.services[x]["last"] = null;
+                this.services[x]["nb_rate_limit"] = 0;
             }
         }
     },
@@ -1069,6 +1070,7 @@ module.exports = {
             return;
         }
         this.services[route]["running"] = true;
+        this.services[route]["nb_rate_limit"] = 0;
 
         const start = Date.now();
         while (this.services[route]["queue"]["summoners"].length > 0) {
@@ -1403,7 +1405,7 @@ module.exports = {
         if (this.services[route]["queue"]["summoners"].length > 0 || this.services[route]["queue"]["updates"].length > 0) {
             return await this.main();
         }
-        //await client.channels.cache.get("991052056657793124").send("Finished updating");
+        await this.client.channels.cache.get("991052056657793124").send("Finished updating " + route + " in " + (end - start) + "ms with " + this.services[route]["nb_rate_limit"] + " rate limits.");
     },
 
     /**
