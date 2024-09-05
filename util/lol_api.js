@@ -1,10 +1,11 @@
 const logger = require('./logger.js');
 const axios = require('axios');
 
-const delay_time = 10000;
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 class LolApi {
+    rate_limits = {};
+
     /**
      * Get the current patch version
      * @function getCurrentPatch
@@ -266,6 +267,15 @@ class LolApi {
      * @returns {Object}  data from the API
      */
     async apiCall(url, client, route=undefined) {
+        if (route !== undefined) {
+            // If there is a rate limit, wait for the delay
+            if (this.rate_limits[route] !== undefined && this.rate_limits[route] > 0) {
+                if (process.env.VERBOSE === "true") {
+                    logger.log("DELAYING (ratelimit): " + url);
+                }
+                await delay(this.rate_limits[route]);
+            }
+        }
         try {
             if (process.env.VERBOSE === "true") {
                 logger.log("API CALL: " + url);
@@ -279,6 +289,10 @@ class LolApi {
             return data;
         } catch (error) {
             if (error.response?.status === 429) {
+                const delay_time = error.response.headers['Retry-After'] * 1000;
+                // Save the rate limit
+                this.rate_limits[route] = delay_time;
+
                 // Special Handling here - 429 is Rate Limit Reached.
                 if (process.env.VERBOSE === "true") {
                     logger.error("API call limit reached. Pausing the script and resuming in 10 seconds.", "429");
@@ -288,6 +302,7 @@ class LolApi {
                     client.lol.services[route].nb_rate_limit += 1;
                 }
                 await delay(delay_time);
+                this.rate_limits[route] = 0;
                 // Retry
                 return await this.apiCall(url, client, route);
             } else if (error.response?.status === 404) {

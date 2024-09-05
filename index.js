@@ -3,9 +3,12 @@ const config = require('./config.json');
 const fs = require("fs");
 const lol = require("./util/lol_functions.js");
 const index2 = require('./index2.js');
+const logger = require('./util/logger');
 
 const dns = require('node:dns');
 dns.setDefaultResultOrder('ipv4first');
+
+logger.log("Starting...");
 
 const client = new Client(
     {
