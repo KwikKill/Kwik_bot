@@ -1400,12 +1400,12 @@ module.exports = {
         if (debug) {
             logger.log("lol (total)[" + route + "] : " + (end - start) + "ms");
         }
-        logger.log("lol (update)[" + route + "] : stoping service for " + route);
+        logger.log("lol (update)[" + route + "] : stoping service for " + route + " (" + (end - start) + "ms) with " + this.services[route]["nb_rate_limit"] + " rate limits");
         this.services[route]["running"] = false;
         if (this.services[route]["queue"]["summoners"].length > 0 || this.services[route]["queue"]["updates"].length > 0) {
             return await this.main();
         }
-        await this.client.channels.cache.get("991052056657793124").send("Finished updating " + route + " in " + (end - start) + "ms with " + this.services[route]["nb_rate_limit"] + " rate limits.");
+        //await this.client.channels.cache.get("1100720550923489280").send("Finished updating " + route + " in " + (end - start) + "ms with " + this.services[route]["nb_rate_limit"] + " rate limits.");
     },
 
     /**
