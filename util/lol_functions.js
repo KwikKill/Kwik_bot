@@ -70,6 +70,9 @@ module.exports = {
         this.client = client;
         this.champions = [];
         const list = await this.lol_api.championList();
+        if (list.length === 0) {
+            throw new Error("Error while fetching champion list");
+        }
         this.champions = list;
         this.client.champions = [];
         for (let i = 0; i < list.length; i++) {
@@ -100,10 +103,10 @@ module.exports = {
                 const imageHeight = imageMetadata.height;
                 const zoomedImage = await sharp(imageBuffer)
                     .extract({
-                        left: imageWidth / 2 - imageWidth/10,
-                        top: imageHeight / 2 - imageWidth/10,
-                        width: imageWidth/5,
-                        height: imageWidth/5
+                        left: imageWidth / 2 - imageWidth / 10,
+                        top: imageHeight / 2 - imageWidth / 10,
+                        width: imageWidth / 5,
+                        height: imageWidth / 5
                     })
                     .toBuffer();
 
@@ -297,7 +300,7 @@ module.exports = {
     * @param {*} number  summoner in client.requests["updates"]
     */
     async update_pseudo(number, gamename, tagline) {
-        if(gamename === undefined || tagline === undefined) {
+        if (gamename === undefined || tagline === undefined) {
             return;
         }
         const puuid = number["puuid"];
@@ -1026,20 +1029,24 @@ module.exports = {
     async main(debug = false) {
         // Start by updating the champion list
         const list = await this.lol_api.championList();
-        this.champions = list;
-        const temp_champion = [];
-        for (let i = 0; i < list.length; i++) {
-            if (list[i] !== undefined) {
-                temp_champion.push(list[i]);
+        if (list.length === 0) {
+            logger.error("Error while fetching champions list, fallback to previous list");
+        } else {
+            this.champions = list;
+            const temp_champion = [];
+            for (let i = 0; i < list.length; i++) {
+                if (list[i] !== undefined) {
+                    temp_champion.push(list[i]);
+                }
             }
-        }
-        temp_champion.sort();
+            temp_champion.sort();
 
-        this.client.champions = temp_champion;
+            this.client.champions = temp_champion;
+        }
 
         // Fail if the champions list is empty
         if (this.champions.length === 0) {
-            logger.error("Error while fetching champions list");
+            logger.error("Champions list is empty, cancelling update");
             return;
         }
 
@@ -1079,7 +1086,7 @@ module.exports = {
         if (debug) {
             logger.log("lol (summoner)[" + route + "] : total took " + (checkpoint1 - start) + " ms");
         }
-        while ( this.services[route]["queue"]["updates"].length > 0) {
+        while (this.services[route]["queue"]["updates"].length > 0) {
             const timer1 = Date.now();
             if (this.services[route]["queue"]["summoners"].length > 0) {
                 this.services[route]["running"] = false;

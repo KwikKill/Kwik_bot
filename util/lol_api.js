@@ -357,22 +357,26 @@ class LolApi {
     * @returns {Object}    champion list
     */
     async championList() {
+        try {
+            // Get New Champion List from Data Dragon
+            const championList = await axios.get("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
 
-        // Get New Champion List from Data Dragon
-        const championList = await axios.get("https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json");
+            // Champions Array
+            const champions = [];
 
-        // Champions Array
-        const champions = [];
-
-        // Add Champion Names & IDs to the array
-        for (const champion in championList["data"]) {
-            if (championList["data"][champion]['id'] === -1) {
-                continue;
+            // Add Champion Names & IDs to the array
+            for (const champion in championList["data"]) {
+                if (championList["data"][champion]['id'] === -1) {
+                    continue;
+                }
+                champions[championList["data"][champion]['id']] = championList["data"][champion]['name'];
             }
-            champions[championList["data"][champion]['id']] = championList["data"][champion]['name'];
-        }
 
-        return champions;
+            return champions;
+        } catch (error) {
+            logger.error(error);
+            return [];
+        }
     }
 
     /**
