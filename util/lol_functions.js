@@ -1063,6 +1063,49 @@ module.exports = {
         await Promise.all(promises);
     },
 
+
+    async basicUpdate(route, current, start_time, debug = false) {
+        current = await this.set_update(route, current);//, debug);
+        if (current !== undefined) {
+            const timer2 = Date.now();
+
+            const discordid = current["discordid"];
+            const nb = current["matchs"].length;
+
+            if (current["rank"] !== false && current["matchs"].length === 0) {
+                this.send_tracker_message(current["puuid"], current["rank"]);
+            }
+
+            if (current["matchs"].length > 0 || current["rank"] !== false) {
+                //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
+                this.save_matchs(route, current);
+
+                if (discordid !== "503109625772507136") {
+                    //logger.log("- lol (update 3): mastery");
+                    this.update_mastery(current["discordid"], current["region"]).then(mastery => {
+                        this.client.pg.query("UPDATE mastery " +
+                            "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
+                            "first_mastery = " + mastery["first_mastery"] + ", " +
+                            "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
+                            "second_mastery = " + mastery["second_mastery"] + ", " +
+                            "third_mastery_champ = '" + mastery["third_mastery_champ"] + "', " +
+                            "third_mastery = " + mastery["third_mastery"] + ", " +
+                            "mastery7 = " + mastery["mastery7"] + ", " +
+                            "mastery6 = " + mastery["mastery6"] + ", " +
+                            "mastery5 = " + mastery["mastery5"] + ", " +
+                            "total_point = " + mastery["total_point"] + " " +
+                            "WHERE discordid = '" + current["discordid"] + "'"
+                        );
+                    });
+                }
+            }
+            if (debug) {
+                const timer3 = new Date();
+                logger.log("lol (update)[" + route + "] : [" + current["puuid"] + "] " + (timer3 - start_time) + "ms for " + nb + " games. " + (timer2 - start_time) + "ms for update.");
+            }
+        }
+    },
+
     async start_services(route, debug = false) {
         logger.log("lol (update)[" + route + "] : starting service with " + this.services[route]["queue"]["updates"].length + " updates in queue");
 
@@ -1347,53 +1390,7 @@ module.exports = {
                     this.save_matchs(route, current);
                 }
             } else {
-                current = await this.set_update(route, current);//, debug);
-                if (current !== undefined) {
-                    const timer2 = Date.now();
-
-                    const discordid = current["discordid"];
-                    const nb = current["matchs"].length;
-
-                    if (current["rank"] !== false && current["matchs"].length === 0) {
-                        this.send_tracker_message(current["puuid"], current["rank"]);
-                    }
-
-                    if (current["matchs"].length > 0 || current["rank"] !== false) {
-                        //logger.log("- lol (update 1) : " + puuid, client.requests["updates"][0]["matchs"].length);
-                        this.save_matchs(route, current);
-                        const timer4 = Date.now();
-
-                        if (discordid !== "503109625772507136") {
-                            //logger.log("- lol (update 3): mastery");
-                            this.update_mastery(current["discordid"], current["region"]).then(mastery => {
-                                this.client.pg.query("UPDATE mastery " +
-                                    "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
-                                    "first_mastery = " + mastery["first_mastery"] + ", " +
-                                    "second_mastery_champ = '" + mastery["second_mastery_champ"] + "', " +
-                                    "second_mastery = " + mastery["second_mastery"] + ", " +
-                                    "third_mastery_champ = '" + mastery["third_mastery_champ"] + "', " +
-                                    "third_mastery = " + mastery["third_mastery"] + ", " +
-                                    "mastery7 = " + mastery["mastery7"] + ", " +
-                                    "mastery6 = " + mastery["mastery6"] + ", " +
-                                    "mastery5 = " + mastery["mastery5"] + ", " +
-                                    "total_point = " + mastery["total_point"] + " " +
-                                    "WHERE discordid = '" + current["discordid"] + "'"
-                                );
-                            });
-                        }
-                        const timer7 = new Date();
-
-                        if (debug) {
-                            logger.log("- lol (update 4)[" + route + "]: " + (timer7 - timer4) + "ms");
-                            logger.log("- lol (update 7)[" + route + "]: " + (timer4 - timer2) + "ms");
-                        }
-                        //logger.log("- lol (done): " + puuid);
-                    }
-                    if (debug) {
-                        const timer3 = new Date();
-                        logger.log("lol (update)[" + route + "] : [" + current["puuid"] + "] " + (timer3 - timer1) + "ms for " + nb + " games. " + (timer2 - timer1) + "ms for update.");
-                    }
-                }
+                await this.basicUpdate(route, current, timer1, debug);
             }
         }
         const end = new Date();
