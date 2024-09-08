@@ -24,10 +24,11 @@ module.exports = {
             port: 5432,
         });
         //await client.commands.get("deploy").auto_deploy(client);
-        pgclient.connect(function (err) {
+        pgclient.connect(async function (err) {
             if (err) { throw err; }
             client.pg = pgclient;
             logger.log("Database Connected!");
+            await client.lol.lol_rank_manager.setup(client);
             client.timers.forEach(timer => {
                 if (timer.onsetup) {
                     timer.run(client);
@@ -36,7 +37,7 @@ module.exports = {
             });
             client.pg.query("SELECT * FROM trackers").then(trackers => {
                 trackers.rows.forEach(tracker => {
-                    client.lol.trackers.push(tracker.channelid);
+                    client.lol.lol_rank_manager.trackers.push(tracker.channelid);
                 });
             });
         });

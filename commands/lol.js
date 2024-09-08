@@ -1542,7 +1542,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
 
         return await interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (e) {
-        logger.log(e.stack);
+        logger.error(e.stack);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id,
@@ -1763,7 +1763,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
 
         return await interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id,
@@ -1974,7 +1974,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
         }
         return await interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id,
@@ -2313,7 +2313,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
 
         interaction.editReply({ embeds: [embed], files: [attachment] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id,
@@ -2405,12 +2405,12 @@ async function stats_profile(client, interaction, discordaccount) {
         if (best_solo[0] === "unranked") {
             best_solo_str = "Unranked";
         } else {
-            best_solo_str = client.lol.emojis[best_solo[0].toLowerCase()] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+            best_solo_str = client.lol.lol_rank_manager.emojis[best_solo[0].toLowerCase()] + " " + best_solo[1] + " " + best_solo[2] + "LP";
         }
         if (best_flex[0] === "unranked") {
             best_flex_str = "Unranked";
         } else {
-            best_flex_str = client.lol.emojis[best_solo[0].toLowerCase()] + " " + best_solo[1] + " " + best_solo[2] + "LP";
+            best_flex_str = client.lol.lol_rank_manager.emojis[best_solo[0].toLowerCase()] + " " + best_solo[1] + " " + best_solo[2] + "LP";
         }
 
         // mastery
@@ -2442,9 +2442,9 @@ async function stats_profile(client, interaction, discordaccount) {
             "\n- **" + mastery.rows[0].third_mastery_champ + "** - " + third_mastery;
 
         // Mastery statistics
-        const Mastery_statistics = mastery.rows[0].mastery7 + "x" + client.lol.emojis["mastery7"] + " " +
-            mastery.rows[0].mastery6 + "x" + client.lol.emojis["mastery6"] + " " +
-            mastery.rows[0].mastery5 + "x" + client.lol.emojis["mastery5"] + " \n" +
+        const Mastery_statistics = mastery.rows[0].mastery7 + "x" + client.lol.lol_rank_manager.emojis["mastery7"] + " " +
+            mastery.rows[0].mastery6 + "x" + client.lol.lol_rank_manager.emojis["mastery6"] + " " +
+            mastery.rows[0].mastery5 + "x" + client.lol.lol_rank_manager.emojis["mastery5"] + " \n" +
             mastery.rows[0].total_point + " **Total Points**";
 
         // Champion statistics
@@ -2489,7 +2489,7 @@ async function stats_profile(client, interaction, discordaccount) {
         //.setURL(url);
         return await interaction.editReply({ embeds: [embed] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id
@@ -2587,7 +2587,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         }
         if (season !== null) {
             query += " AND patch LIKE $" + i;
-            query3 += " AND patch LIKE $" + i;
+            query2 += " AND patch LIKE $" + i;
             query_values.push(season + "%");
             i++;
         }
@@ -2936,7 +2936,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
 
         await interaction.editReply({ embeds: [embed] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 discordaccount: discordaccount?.id,
@@ -3185,7 +3185,7 @@ async function top_carry(client, interaction, champion, role, season) {
         );
         return await interaction.editReply({ embeds: [embed] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 role: role,
@@ -3347,7 +3347,7 @@ async function top_kwikscore(client, interaction, champion, role, season) {
 
         return await interaction.editReply({ embeds: [embed] });
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 role: role,
@@ -3395,7 +3395,7 @@ async function tracker_add(client, interaction) {
         await client.pg.query(query, [channel.id, channel.guild.id]);
         return await interaction.editReply("tracker channel added !");
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 channel: channel
@@ -3439,7 +3439,7 @@ async function tracker_remove(client, interaction) {
         await client.pg.query(query, [channel.id]);
         return await interaction.editReply("tracker channel removed !");
     } catch (e) {
-        logger.log(e);
+        logger.error(e);
         client.users.fetch(client.owners[0]).then((user) => {
             const params = {
                 channel: channel
