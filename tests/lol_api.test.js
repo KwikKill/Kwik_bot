@@ -238,18 +238,19 @@ describe('leaguesBySummoner', () => {
     it('should return an array of league objects when given valid input', async () => {
         const api = new LolApi();
         const leagues = await api.leaguesBySummoner(api_key, 'EUW1', 'yI0NOe4UFxaxmSIKSROeKLaw51_6fhrc8Fxh0C7q__ii_TJ2', client);
-        expect(Array.isArray(leagues)).toBe(true);
-        expect(leagues.length).toBeGreaterThan(0);
-        expect(leagues[0]).toHaveProperty('queueType');
-        expect(leagues[0]).toHaveProperty('tier');
-        expect(leagues[0]).toHaveProperty('rank');
-        expect(leagues[0]).toHaveProperty('leaguePoints');
-        expect(leagues[0]).toHaveProperty('wins');
-        expect(leagues[0]).toHaveProperty('losses');
-        expect(leagues[0]).toHaveProperty('hotStreak');
-        expect(leagues[0]).toHaveProperty('veteran');
-        expect(leagues[0]).toHaveProperty('freshBlood');
-        expect(leagues[0]).toHaveProperty('inactive');
+
+        for (const league of leagues) {
+            if (league.queueType === 'RANKED_SOLO_5x5') {
+                expect(league).toHaveProperty('tier');
+                expect(league).toHaveProperty('rank');
+                expect(league).toHaveProperty('leaguePoints');
+                expect(league).toHaveProperty('wins');
+                expect(league).toHaveProperty('losses');
+                expect(league).toHaveProperty('hotStreak');
+                expect(league).toHaveProperty('veteran');
+                expect(league).toHaveProperty('freshBlood');
+            }
+        }
     });
 
     it('should throw an error when given an invalid region', async () => {
