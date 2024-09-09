@@ -22,7 +22,7 @@ module.exports = {
             const embed1 = new MessageEmbed()
                 .setColor("0xffe402")
                 .setTitle("1️⃣Commands :")
-                .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
+                .setAuthor("RankUp LoL", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                 .setDescription(
                     "To get more information about a command, use the `help` command followed by the desired command.\n" +
                     '__Example__ : `/help [command]`\n'
@@ -32,7 +32,7 @@ module.exports = {
             const embed2 = new MessageEmbed()
                 .setColor("0xffe402")
                 .setTitle("2️⃣ Owner Commands :")
-                .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
+                .setAuthor("RankUp LoL", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                 .setTimestamp();
 
 
@@ -87,7 +87,7 @@ module.exports = {
                     .setColor("0xffe402")
                     .setTitle(cmd.name + " :")
                     .setDescription("`[]` : optional parameter\n`<>` : required parameter\n`<thing1 | thing2>` : select one of these options")
-                    .setAuthor("KwikBot", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
+                    .setAuthor("RankUp LoL", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                     //.addFields(cmd.help)
                     .setTimestamp();
                 if (cmd.options !== undefined) {
