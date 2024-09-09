@@ -1,4 +1,4 @@
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, GatewayIntentBits,PermissionsBitField, Partials, ChannelType } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol = require("./util/lol_functions.js");
@@ -10,23 +10,20 @@ dns.setDefaultResultOrder('ipv4first');
 
 logger.log("Starting...");
 
-const client = new Client(
-    {
-        intents: [
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MESSAGES,
-            Intents.FLAGS.DIRECT_MESSAGES,
-            Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-            Intents.FLAGS.GUILD_MEMBERS
-        ],
-        partials: [
-            'MESSAGE',
-            'CHANNEL',
-            'REACTION'
-        ]
-    }
-);
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildMembers
+    ],
+    partials: [
+        Partials.Message,
+        Partials.Channel,
+        Partials.Reaction
+    ]
+});
 
 // -------------- LOL -----------------
 client.lol = lol;
@@ -123,8 +120,8 @@ client.canRunCommande = function (message, commande, interaction = undefined) {
     if (interaction === undefined) {
         //if(commande.commande_channel === true && !message.channel.name.toLowerCase().includes("commande")) return false
         if (!checkpermission(message, commande.permission)) { return "perm"; }
-        if (commande.place === "dm" && message.channel.type !== "DM") { return false; }
-        if (commande.place === "guild" && message.channel.type !== "GUILD_TEXT") { return false; }
+        if (commande.place === "dm" && message.channel.type !== ChannelType.DM) { return false; }
+        if (commande.place === "guild" && message.channel.type !== ChannelType.GuildText) { return false; }
         return true;
     }
     //if(commande.commande_channel === true && !interaction.channel.name.toLowerCase().includes("commande")) return false;
@@ -148,7 +145,7 @@ function checkpermission(message, perm) {
     if (perm === "none") {
         return true;
     } if (perm === "modo") {
-        if (message.member.permissions.any("MANAGE_MESSAGES")) {
+        if (message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
             return true;
         }
     }

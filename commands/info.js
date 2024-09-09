@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     name: 'info',
@@ -23,10 +23,10 @@ module.exports = {
         if (interaction !== undefined) {
             await interaction.deferReply();
 
-            const embed = new MessageEmbed()
-                .setColor("0xffe402")
+            const embed = new EmbedBuilder()
+                .setColor(0xffe402)
+                .setAuthor({ name: "RankUpLoL", iconURL: client.user.avatarURL() })
                 .setTitle("Information about the Bot")
-                .setAuthor("RankUpLoL", client.user.avatarURL())//, '
                 .addFields(
                     {
                         name: " - Description",

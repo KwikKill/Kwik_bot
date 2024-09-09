@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder, PermissionsBitField } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const logger = require('../util/logger');
 
@@ -116,7 +116,7 @@ module.exports = {
                 },
             ]
         },
-        {
+        /*{
             name: 'queue',
             description: 'Get information about summoner\'s queue',
             type: 'SUB_COMMAND_GROUP',
@@ -127,7 +127,7 @@ module.exports = {
                     type: 'SUB_COMMAND',
                 }
             ]
-        },
+        },*/
         {
             name: 'stats',
             description: 'lol stat commands',
@@ -931,9 +931,11 @@ module.exports = {
                 account_list(client, interaction);
             }
         } else if (interaction.options.getSubcommandGroup() === "queue") {
-            if (interaction.options.getSubcommand() === "status") {
+            // Deprecated warning
+            return await interaction.editReply("Due to recent improvements, this command is deprecated and will be removed in the next update.");
+            /*if (interaction.options.getSubcommand() === "status") {
                 queue(client, interaction);
-            }
+            }*/
         } else if (interaction.options.getSubcommandGroup() === "stats") {
             if (interaction.options.getSubcommand() === "summarized") {
                 stats_summarized(client, interaction, discordaccount, champion, role, account, season, gamemode);
@@ -955,7 +957,8 @@ module.exports = {
                 top_kwikscore(client, interaction, champion, role, account, season, gamemode);
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
-            if (!interaction.member.permissions.has("ADMINISTRATOR")) {
+            // If the user has Manage channel permission or administrator permission
+            if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels) && !interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
                 return await interaction.editReply("You don't have the permission to use this command !");
             }
             if (interaction.options.getSubcommand() === "add") {
@@ -1134,7 +1137,7 @@ async function account_list(client, interaction) {
     if (response.rows.length === 0) {
         return await interaction.editReply("You don't have any account linked. Please use the command `/lol account add <name>` to add an account.");
     }
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle("Your accounts")
         .setColor("#00FF00")
         .setFooter({
@@ -1176,7 +1179,7 @@ async function queue(client, interaction) {
             interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle("Queue status")
         .setColor("#00FF00")
         .setFooter({
@@ -1433,7 +1436,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
             }, // See https://www.chartjs.org/docs/latest/configuration
         };
         const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-        const attachment = new MessageAttachment(image, 'stats.png');
+        const attachment = new AttachmentBuilder(image, { name: 'stats.png' });
 
         // 1) Carry stats
 
@@ -1473,7 +1476,10 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         score += (Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) / average_total_kills * 100;
         score += 5 * (((Number.parseFloat(average_vision_score)) / (length / 60)) / 0.2);
         score += 10 * average_cs;
-        score *= delta;
+        // If there is no delta, fallback on normal score
+        if (delta > 0) {
+            score *= delta;
+        }
         if (100 - response.rows[0].games_played > 0) {
             score = score * 0.99 ** (100 - Number(response.rows[0].games_played));
         }
@@ -1491,7 +1497,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
         const end = new Date();
 
         // send embed
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
@@ -1702,7 +1708,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
             }, // See https://www.chartjs.org/docs/latest/configuration
         };
         const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-        const attachment = new MessageAttachment(image, 'matchup.png');
+        const attachment = new AttachmentBuilder(image, { name: 'matchup.png' });
 
         let title = "" + discordusername + "'s matchups";
         if (champion !== null) {
@@ -1718,7 +1724,7 @@ async function stats_matchups(client, interaction, discordaccount, champion, rol
         const end = new Date();
 
         // send embed
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
@@ -1914,7 +1920,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
             }, // See https://www.chartjs.org/docs/latest/configuration
         };
         const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-        const attachment = new MessageAttachment(image, 'champion.png');
+        const attachment = new AttachmentBuilder(image, { name: 'champion.png' });
 
 
         let title = "" + discordusername + "'s champions";
@@ -1928,7 +1934,7 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
         const end = new Date();
 
         // send embed
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
@@ -2290,12 +2296,12 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
             }, // See https://www.chartjs.org/docs/latest/configuration
         };
         const image = await chartJSNodeCanvas.renderToBuffer(configuration);
-        const attachment = new MessageAttachment(image, 'ks.png');
+        const attachment = new AttachmentBuilder(image, { name: 'ks.png' });
 
         const end = Date.now();
 
         // create embed
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("" + discordusername + "'s ks")
             .setColor("#00FF00")
             .setFooter({
@@ -2450,7 +2456,7 @@ async function stats_profile(client, interaction, discordaccount) {
         // Champion statistics
         //const response2 = await client.pg.query("SELECT * FROM matchs,summoners WHERE matchs.player = summoners.puuid AND discordid = '" + discordaccount + "' ORDER BY timestamp DESC LIMIT 3;");
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("" + discordusername + "'s Profile :")
             .setColor("#00FF00")
             .setFooter({
@@ -2919,7 +2925,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
 
         const end = new Date();
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle(title)
             .setColor("#00FF00")
             .setFooter({
@@ -3152,7 +3158,7 @@ async function top_carry(client, interaction, champion, role, season) {
         const end = Date.now();
 
         // send embed
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("Top carry :")
             .setColor("#00FF00")
             .setFooter({
@@ -3326,7 +3332,7 @@ async function top_kwikscore(client, interaction, champion, role, season) {
 
         const end = Date.now();
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setTitle("Top KS :")
             .setColor("#00FF00")
             .setFooter({
@@ -3391,7 +3397,7 @@ async function tracker_add(client, interaction) {
             return await interaction.editReply("A tracker channel already exists in this guild !");
         }
         const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
-        client.lol.trackers.push(channel.id);
+        client.lol.lol_rank_manager.trackers.push(channel.id);
         await client.pg.query(query, [channel.id, channel.guild.id]);
         return await interaction.editReply("tracker channel added !");
     } catch (e) {
@@ -3435,7 +3441,7 @@ async function tracker_remove(client, interaction) {
             return await interaction.editReply("This channel is currently not a tracker channel !");
         }
         const query = "DELETE FROM trackers WHERE channelid=$1;";
-        client.lol.trackers.splice(client.lol.trackers.indexOf(channel.id), 1);
+        client.lol.lol_rank_manager.trackers.splice(client.lol.lol_rank_manager.trackers.indexOf(channel.id), 1);
         await client.pg.query(query, [channel.id]);
         return await interaction.editReply("tracker channel removed !");
     } catch (e) {

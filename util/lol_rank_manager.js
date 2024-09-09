@@ -2,7 +2,7 @@ const logger = require('./logger.js');
 const sharp = require('sharp');
 const axios = require('axios');
 
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 class LolRankManager {
     rank_cache = {};
@@ -186,7 +186,7 @@ class LolRankManager {
                     }
                 } catch (e) {
                     // if bot can't fetch the discord channel
-                    if (e.code === 50001) {
+                    if (e.code === 10003) {
                         // delete the channel from the database
                         logger.error("Channel " + x + " not found, deleting from database");
                         await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);
@@ -229,7 +229,7 @@ class LolRankManager {
      * @param {*} rank rank data
      */
     build_tracker(data, rank, last_game) {
-        const embed = new MessageEmbed();
+        const embed = new EmbedBuilder();
 
         // If the last game is not in the database or was skipped
         if (last_game === "none" || last_game === null) {

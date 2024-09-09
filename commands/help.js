@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
     name: 'help',
@@ -19,20 +19,20 @@ module.exports = {
     async run(message, client, interaction = undefined) {
         if ((interaction === undefined && message.args[1] === undefined) || (interaction === undefined && message.args[1] === "help") || (interaction.options.getString('commande') === null) || (interaction.options.getString('commande') === "help")) {
 
-            const embed1 = new MessageEmbed()
-                .setColor("0xffe402")
-                .setTitle("1️⃣Commands :")
-                .setAuthor("RankUp LoL", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
+            const embed1 = new EmbedBuilder()
+                .setColor(0xffe402)
+                .setAuthor({ name: "RankUpLoL", iconURL: client.user.avatarURL() })
+                .setTitle("1️⃣ Commands :")
                 .setDescription(
                     "To get more information about a command, use the `help` command followed by the desired command.\n" +
                     '__Example__ : `/help [command]`\n'
                 )
                 .setTimestamp();
 
-            const embed2 = new MessageEmbed()
-                .setColor("0xffe402")
+            const embed2 = new EmbedBuilder()
+                .setColor(0xffe402)
+                .setAuthor({ name: "RankUpLoL", iconURL: client.user.avatarURL() })
                 .setTitle("2️⃣ Owner Commands :")
-                .setAuthor("RankUp LoL", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                 .setTimestamp();
 
 
@@ -83,11 +83,11 @@ module.exports = {
                 /*if(await checkpermission(this.client, message, message.author, this.cmd.name) === true || (message.member !== undefined && message.member.hasPermission("ADMINISTRATOR"))) {
                     message.author.send("__" + this.cmd.name + "__ :\n" + premessages[this.cmd.name]["help"])
                 }*/
-                const embed = new MessageEmbed()
-                    .setColor("0xffe402")
+                const embed = new EmbedBuilder()
+                    .setColor(0xffe402)
+                    .setAuthor({ name: "RankUpLoL", iconURL: client.user.avatarURL() })
                     .setTitle(cmd.name + " :")
                     .setDescription("`[]` : optional parameter\n`<>` : required parameter\n`<thing1 | thing2>` : select one of these options")
-                    .setAuthor("RankUp LoL", client.user.avatarURL())//, 'https://github.com/KwikKill/Kwik_bot')
                     //.addFields(cmd.help)
                     .setTimestamp();
                 if (cmd.options !== undefined) {

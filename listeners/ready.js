@@ -1,6 +1,7 @@
 const pg = require('pg');
-const packageJSON = require("../package.json");
+//const packageJSON = require("../package.json");
 const logger = require('../util/logger');
+const { ActivityType } = require('discord.js');
 
 module.exports = {
     name: 'ready',
@@ -11,10 +12,10 @@ module.exports = {
     options: undefined,
     async run(client) {
 
-        const discordJSVersion = packageJSON.dependencies["discord.js"];
+        //const discordJSVersion = packageJSON.dependencies["discord.js"];
 
-        logger.log(`Logged in as ${client.user.tag}! Discord.js version: ${discordJSVersion}`);
-        client.user.setActivity("with your lol stats", { type: 'PLAYING' });
+        logger.log(`Logged in as ${client.user.tag}! Discord.js version: ${require('discord.js').version}`);
+        client.user.setActivity("with your lol stats", { type: ActivityType.Playing });
 
         const pgclient = new pg.Client({
             user: process.env.POSTGRES_USER,

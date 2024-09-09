@@ -1,4 +1,4 @@
-//const { MessageEmbed } = require('discord.js');
+//const { EmbedBuilder } = require('discord.js');
 const parse = require('node-html-parser');
 
 module.exports = {
@@ -767,7 +767,7 @@ module.exports = {
 
                     await interaction.editReply({ content: "There are " + count + " real users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size. The bot is on " + servers + " servers.", ephemeral: false });
                 } else if (interaction.options.getSubcommand() === "maintenance") {
-                    client.lol.trackers.forEach(ch => {
+                    client.lol.lol_rank_manager.trackers.forEach(ch => {
                         client.channels.fetch(ch).then(chs => {
                             chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations");
                         });

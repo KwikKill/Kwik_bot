@@ -69,7 +69,7 @@ async function deploy(client, guild) {
                     name: item.name,
                     description: item.description,
                     options: item.options,
-                    defaultPermission: item.permission === "none",
+                    defaultMemberPermissions: item.permission === "none",
                 });
             } else {
                 if (item.options !== undefined) {
@@ -77,13 +77,13 @@ async function deploy(client, guild) {
                         name: item.name,
                         description: item.description,
                         options: item.options,
-                        defaultPermission: item.permission === "none",
+                        defaultMemberPermissions: item.permission === "none",
                     });
                 } else {
                     commands.push({
                         name: item.name,
                         description: item.description,
-                        defaultPermission: item.permission === "none",
+                        defaultMemberPermissions: item.permission === "none",
                     });
                 }
             }
@@ -95,7 +95,7 @@ async function deploy(client, guild) {
             commands.push({
                 name: item.name,
                 type: item.type,
-                defaultPermission: item.permission === "none",
+                defaultMemberPermissions: item.permission === "none",
             });
         }
     });
@@ -210,7 +210,7 @@ async function deploy_global(client) {
                     name: item.name,
                     description: item.description,
                     options: item.options,
-                    defaultPermission: item.permission === "none",
+                    defaultMemberPermissions: item.permission === "none",
                 });
             } else {
                 if (item.options !== undefined) {
@@ -218,13 +218,13 @@ async function deploy_global(client) {
                         name: item.name,
                         description: item.description,
                         options: item.options,
-                        defaultPermission: item.permission === "none",
+                        defaultMemberPermissions: item.permission === "none",
                     });
                 } else {
                     commands.push({
                         name: item.name,
                         description: item.description,
-                        defaultPermission: item.permission === "none",
+                        defaultMemberPermissions: item.permission === "none",
                     });
                 }
             }
@@ -236,7 +236,7 @@ async function deploy_global(client) {
             commands.push({
                 name: item.name,
                 type: item.type,
-                defaultPermission: item.permission === "none",
+                defaultMemberPermissions: item.permission === "none",
             });
         }
     });
