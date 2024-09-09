@@ -4,47 +4,61 @@ This is my discord bot.
 
 ## 1 - Install and Run
 
-* Clone this repo
+* **Clone this repo**
 
-```
+```bash
 git clone https://github.com/KwikKill/Kwik_bot.git
 ```
 
-* Create a database
+* **Create a database**
 
-follow the instructions from this [tutoriel](https://www.microfocus.com/documentation/idol/IDOL_12_0/MediaServer/Guides/html/English/Content/Getting_Started/Configure/_TRN_Set_up_PostgreSQL_Linux.htm) and setup a local database with user `postgres` and password `.` Theses values can be change in the [ready](listeners/ready.js) listener file.
+Follow the instructions from this [tutoriel](https://www.microfocus.com/documentation/idol/IDOL_12_0/MediaServer/Guides/html/English/Content/Getting_Started/Configure/_TRN_Set_up_PostgreSQL_Linux.htm) and setup a local database with user and password. These values need to be set as environment variables.
 
-* Install dependencies
+The database schema can be found [bellow](#25-database)
 
-```
-yarn Install
-```
+* **Install dependencies**
 
-* Configure your env file
-
-```
-cp environnement-example.sh environnement.sh
-# Edit to add you personnal token, Apex API key, Google API key and Riot Games API token
+```bash
+npm install
 ```
 
-* Load environnement variables containing your token and key
-* Launch the bot
-* Enjoy !
+* **Configure your env file**
 
+Setup the env file to add you personnal token, database credentials and Riot Games API token.
+```yml
+DISCORD_TOKEN=''
+RIOT_API_KEY=''
+DISCORD_CLIENT_ID=''
+DISCORD_CLIENT_SECRET=''
+POSTGRES_USER=''
+POSTGRES_PASSWORD=''
+DB_NAME=''
+VERBOSE=''
 ```
-. ./environnement.sh
+
+* **Load environnement variables containing your token and key**
+
+```bash
+source .env
+```
+
+* **Launch the bot**
+
+```bash
 node index.js
 ```
 
+* **Enjoy !**
+
 ## 2 - Organisation
 
-This repository is a discord bot using slash commands, listeners, componenents and using a local database.
+This repository is a discord bot using slash commands, listeners, timers, components and using a local database.
 
 ### 2.1 - Slash commands
 
-Every slash commands are in the `commands` folder. Each command is in a `command.js` file that contains the command code and the command description and usage.
+Every slash commands are in the `commands` folder. Each command is in a `command.js` file that contains the command code, the command description and usage and the command options.
 
-Theses files are formated as bellow :
+Theses files are formatted as bellow :
 
 ```javascript
 module.exports = {
@@ -97,9 +111,9 @@ module.exports = {
 
 ### 2.3 - Components
 
-Every components are separated in two folders. the `context-menu` folder and the `buttons` folder. Each component is in a `component.js` file that contains the component code and description.
+Every components are separated in two folders. the `conTEXT-menu` folder and the `buttons` folder. Each component is in a `component.js` file that contains the component code and description.
 
-Theses files are formated as bellow (for context-menu) :
+Theses files are formated as bellow (for conTEXT-menu) :
 
 ```javascript
 module.exports = {
@@ -160,19 +174,21 @@ CREATE TABLE summoners (
  accountid TEXT NOT NULL,
  id TEXT NOT NULL,
  discordid TEXT NOT NULL,
- 
+
  rank_solo TEXT NOT NULL,
  tier_solo TEXT NOT NULL,
- LP_solo INT NOT NULL,
+ lp_solo INT NOT NULL,
 
  rank_flex TEXT NOT NULL,
  tier_flex TEXT NOT NULL,
- LP_flex INT NOT NULL,
+ lp_flex INT NOT NULL,
 
  region TEXT NOT NULL,
  priority INT NOT NULL,
+ gamename TEXT NOT NULL,
+ tagline TEXT NOT NULL,
 
- PRIMARY KEY (puuid)
+ PRIMARY KEY (puuid, discordid)
 );
 ```
 
@@ -183,9 +199,6 @@ CREATE TABLE matchs (
  gamemode TEXT NOT NULL,
 
  champion TEXT NOT NULL,
- matchup TEXT NOT NULL,
- support TEXT NOT NULL,
-
  gold INT NOT NULL,
  lane TEXT NOT NULL,
  kill INT NOT NULL,
@@ -193,14 +206,14 @@ CREATE TABLE matchs (
  assists INT NOT NULL,
  result TEXT NOT NULL,
  total_damage INT NOT NULL,
- tanked_damage INT NOT NULL,
- heal INT NOT NULL,
+ tanked_damage integer NOT NULL,
+ heal integer NOT NULL,
  neutral_objectives INT NOT NULL,
  wards INT NOT NULL,
  pinks INT NOT NULL,
  vision_score INT NOT NULL,
  cs INT NOT NULL,
- length DECIMAL NOT NULL,
+ length NUMERIC NOT NULL,
  total_kills INT NOT NULL,
 
  first_gold BOOLEAN NOT NULL,
@@ -213,28 +226,28 @@ CREATE TABLE matchs (
  penta INT NOT NULL,
 
  time_spent_dead INT NOT NULL,
- timestamp BIGINT NOT NULL,
+ "timestamp" BIGINT NOT NULL,
 
- player2 TEXT NOT NULL,
- player3 TEXT NOT NULL,
- player4 TEXT NOT NULL,
- player5 TEXT NOT NULL,
+ summoner1id INT,
+ summoner2id INT,
 
- summoner1id INT NOT NULL,
- summoner2id INT NOT NULL,
+ item0 INT,
+ item1 INT,
+ item2 INT,
+ item3 INT,
+ item4 INT,
+ item5 INT,
+ item6 INT,
 
- item0 INT NOT NULL,
- item1 INT NOT NULL,
- item2 INT NOT NULL,
- item3 INT NOT NULL,
- item4 INT NOT NULL,
- item5 INT NOT NULL,
- item6 INT NOT NULL,
+ patch TEXT,
 
- rune_0_perk INT NOT NULL,
- rune_0_var1 INT NOT NULL,
- rune_0_var2 INT NOT NULL,
- rune_0_var3 INT NOT NULL,
+ rune_0_var1 INT,
+ rune_0_var2 INT,
+ rune_0_var3 INT,
+ rune_0_perk INT,
+
+ team_id INT,
+ placement INT,
 
  PRIMARY KEY (puuid, player),
  FOREIGN KEY (player) REFERENCES summoners (puuid)
@@ -261,4 +274,4 @@ CREATE TABLE mastery (
 
 This implementation is not perfect and can/will be improved. If you have any idea to improve this database, feel free to contact me.
 
-The LoL fetching game code's frequency was tested with a 200 summoners DB over a long period. 
+The LoL fetching game code's frequency was tested with a 1500 summoners DB over a long period. 
