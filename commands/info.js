@@ -17,7 +17,7 @@ module.exports = {
                 "info",
                 JSON.stringify({
                 }),
-                interaction.guild.id
+                interaction.guild ? interaction.guild.id : interaction.user.id
             ]
         });
         if (interaction !== undefined) {

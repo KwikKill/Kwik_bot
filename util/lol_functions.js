@@ -583,8 +583,10 @@ module.exports = {
             const id = summonerObject['id'];
             const accountId = summonerObject['accountId'];
             const puuid = summonerObject['puuid'];
+            current["puuid"] = puuid;
+            current["id"] = id;
 
-            const rank = await this.lol_rank_manager.update_rank(id, region);
+            const rank = await this.lol_rank_manager.add_summoner(current);
 
             await this.client.pg.query('INSERT INTO summoners(' +
                 'puuid, ' +
