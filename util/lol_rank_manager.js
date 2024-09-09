@@ -192,6 +192,8 @@ class LolRankManager {
                         await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);
                         const index = this.trackers.indexOf(x);
                         this.trackers.splice(index, 1);
+                    } else {
+                        logger.error("Unknown error while sending tracker message : " + e);
                     }
                 }
             }
