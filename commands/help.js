@@ -158,7 +158,7 @@ module.exports = {
         let cmds = [];
         // if the interaction is not in a guild, we return only the global commands
         if (interaction.guild === null) {
-            client.commands.filter(cmd => cmd.name.startsWith(focusedValue) && (cmd.place === "dm" || cmd.place === "both")).forEach(cmd => {
+            client.commands.filter(cmd => cmd.name.startsWith(focusedValue) && (cmd.place === "dm" || cmd.place === "both") && (!cmd.serverid)).forEach(cmd => {
                 cmds.push({ name: cmd.name, value: cmd.name });
             });
         } else {

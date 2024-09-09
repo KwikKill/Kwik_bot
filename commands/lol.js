@@ -12,7 +12,7 @@ module.exports = {
     description: "league of legends related commands",
     permission: "none",
     hidden: false,
-    place: "guild",
+    place: "both",
     options: [
         {
             name: 'account',
