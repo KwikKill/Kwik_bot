@@ -156,9 +156,16 @@ module.exports = {
     async autocomplete(client, interaction) {
         const focusedValue = interaction.options.getFocused();
         let cmds = [];
-        client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue) && (cmd.place === "guild" || cmd.place === "both") && (cmd.serverid === undefined || cmd.serverid?.includes(interaction.guild.id))).forEach(cmd => {
-            cmds.push({ name: cmd.name, value: cmd.name });
-        });
+        // if the interaction is not in a guild, we return only the global commands
+        if (interaction.guild === null) {
+            client.commands.filter(cmd => cmd.name.startsWith(focusedValue) && (cmd.place === "dm" || cmd.place === "both")).forEach(cmd => {
+                cmds.push({ name: cmd.name, value: cmd.name });
+            });
+        } else {
+            client.commands.filter(cmd => client.canRunCommande(undefined, cmd, interaction) && cmd.name.startsWith(focusedValue) && (cmd.place === "guild" || cmd.place === "both") && (cmd.serverid === undefined || cmd.serverid?.includes(interaction.guild.id))).forEach(cmd => {
+                cmds.push({ name: cmd.name, value: cmd.name });
+            });
+        }
         if (cmds.length > 15) {
             cmds = cmds.slice(0, 15);
         }
