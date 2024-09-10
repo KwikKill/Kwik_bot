@@ -16,11 +16,12 @@ class LolRankManager {
         this.client = client;
 
         // deploy rank emojis to guild "513776796211085342"
-        const guild = await this.client.guilds.fetch("513776796211085342");
         for (let i = 0; i < this.rank_list.length; i++) {
             const name = this.rank_list[i].toLowerCase();
 
-            const emoji = guild.emojis.cache.find(emoji => emoji.name === name);
+            await client.application.emojis.fetch();
+
+            const emoji = client.application.emojis.cache.find(emoji => emoji.name === name);
             if (!emoji) {
                 const imageUrl = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-static-assets/global/default/images/ranked-emblem/emblem-" + name + ".png";
 
@@ -47,23 +48,21 @@ class LolRankManager {
                 const resizedImage = await sharp(zoomedImage).resize(256, 256).toBuffer();
 
                 // Create the emoji using the zoomed image file
-                guild.emojis.create(
-                    resizedImage,
-                    name
+                client.application.emojis.create(
+                    { attachment: resizedImage, name: name }
                 ).then(createdEmoji => {
                     this.emojis[name] = "<:" + createdEmoji.name + ":" + createdEmoji.id + ">";
                 }).catch(console.error);
             } else {
                 this.emojis[name] = "<:" + emoji.name + ":" + emoji.id + ">";
             }
-
         }
 
         //deploy mastery emojis to guild "513776796211085342"
         for (let i = 1; i <= 7; i++) {
             const name = "mastery" + i;
 
-            const emoji = guild.emojis.cache.find(emoji => emoji.name === name);
+            const emoji = client.application.emojis.cache.find(emoji => emoji.name === name);
             if (!emoji) {
                 const imageUrl = "https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-postgame/global/default/mastery-" + i + ".png";
 
@@ -73,9 +72,33 @@ class LolRankManager {
                 });
 
                 // Create the emoji using the image file
-                guild.emojis.create(
-                    response.data,
-                    name
+                client.application.emojis.create(
+                    { attachment: response.data, name: name }
+                ).then(createdEmoji => {
+                    this.emojis[name] = "<:" + createdEmoji.name + ":" + createdEmoji.id + ">";
+                }).catch(console.error);
+
+            } else {
+                this.emojis[name] = "<:" + emoji.name + ":" + emoji.id + ">";
+            }
+        }
+
+        // Upload every champion icon as emoji
+        for (const x in client.lol.champions) {
+            const name = client.lol.champions[x].toLowerCase().replaceAll(" ", "").replaceAll("'", "").replaceAll(".", "").replaceAll(":", "").replaceAll("!", "").replaceAll("?", "").replaceAll("-", "").replaceAll("(", "").replaceAll(")", "").replaceAll("/", "").replaceAll("\\", "").replaceAll("’", "").replaceAll("é", "e").replaceAll("ö", "o").replaceAll("ü", "u").replaceAll("ç", "c").replaceAll("à", "a").replaceAll("è", "e").replaceAll("ê", "e").replaceAll("â", "a").replaceAll("ô", "o").replaceAll("î", "i").replaceAll("û", "u").replaceAll("ë", "e").replaceAll("ï", "i").replaceAll("ü", "u").replaceAll("ö", "o").replaceAll("ä", "a").replaceAll(" ", "").replaceAll("'", "").replaceAll(".", "").replaceAll(":", "").replaceAll("!", "").replaceAll("?", "").replaceAll("&", "");
+
+            const emoji = client.application.emojis.cache.find(emoji => emoji.name === name);
+            if (!emoji) {
+                const imageUrl = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/" + x + ".png";
+
+                // Download the image
+                const response = await axios.get(imageUrl, {
+                    responseType: 'arraybuffer'
+                });
+
+                // Create the emoji using the image file
+                client.application.emojis.create(
+                    { attachment: response.data, name: name }
                 ).then(createdEmoji => {
                     this.emojis[name] = "<:" + createdEmoji.name + ":" + createdEmoji.id + ">";
                 }).catch(console.error);
