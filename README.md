@@ -1,6 +1,11 @@
-# Kwik_bot
+# Rankup LoL Bot
 
-This is my discord bot.
+This repo contains a discord bot that allows you to track your league of legends stats, your friends stats and your last games stats.
+This is a personal project that I made to learn more about discord.js and the Riot Games API. I then upgraded it to a more complete bot with more features over the years.
+
+You can learn more about this project on the [website](https://rankup.somi.blaisot.org). Don't hesitate to contact me if you have any questions.
+
+If you want to clone this repo and use it for your own server, feel free to do so but i'd prefer if you contact me, maybe I can add the features you need :wink:. Otherwise, you can use the bot as provided by the license (Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)).
 
 ## 1 - Install and Run
 
