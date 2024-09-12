@@ -4,9 +4,9 @@ module.exports = {
     name: 'info',
     group: 'help',
     description: "Gives information about the bot",
-    permission: "none",
     hidden: false,
     place: "both",
+    integration_types: [0, 1],
     async run(message, client, interaction = undefined) {
         client.pg.query({
             name: "insert-logs",

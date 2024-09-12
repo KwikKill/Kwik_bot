@@ -1,21 +1,38 @@
+const { PermissionsBitField, ApplicationCommandOptionType } = require("discord.js");
+
 module.exports = {
     name: 'deploy',
     group: 'moderation',
     description: "Allow to redeploy commands and context menus.",
-    permission: "owner",
+    permission: PermissionsBitField.Flags.Administrator,
+    owner: true,
     hidden: false,
     place: "guild",
-    options: undefined,
+    options: [
+        {
+            name: "global",
+            description: "Deploy global commands",
+            type: ApplicationCommandOptionType.Boolean,
+            required: false
+        }
+    ],
     commande_channel: true,
     serverid: ["513776796211085342", "890915473363980308", "962329252550807592"],
     async run(message, client, interaction = undefined, mssg = true) {
 
         let number;
 
-        if (interaction === undefined) {
-            number = await deploy(client, message.guild);
+        if (interaction !== undefined && interaction.options.getBoolean("global") === true) {
+
+            number = await deploy_global(client);
+
         } else {
-            number = await deploy(client, interaction.guild);
+
+            if (interaction === undefined) {
+                number += await deploy(client, message.guild);
+            } else {
+                number += await deploy(client, interaction.guild);
+            }
         }
 
         if (interaction === undefined) {
@@ -42,7 +59,7 @@ async function auto_deploy(client) {
             console.log("- auto-deploy for guild " + guild.id + " : " + number);
         }
     }
-    deploy_global(client);
+    return deploy_global(client);
 }
 
 async function deploy(client, guild) {
@@ -69,7 +86,7 @@ async function deploy(client, guild) {
                     name: item.name,
                     description: item.description,
                     options: item.options,
-                    defaultMemberPermissions: item.permission === "none",
+                    defaultMemberPermissions: item.permission,
                 });
             } else {
                 if (item.options !== undefined) {
@@ -77,13 +94,13 @@ async function deploy(client, guild) {
                         name: item.name,
                         description: item.description,
                         options: item.options,
-                        defaultMemberPermissions: item.permission === "none",
+                        defaultMemberPermissions: item.permission,
                     });
                 } else {
                     commands.push({
                         name: item.name,
                         description: item.description,
-                        defaultMemberPermissions: item.permission === "none",
+                        defaultMemberPermissions: item.permission,
                     });
                 }
             }
@@ -95,13 +112,13 @@ async function deploy(client, guild) {
             commands.push({
                 name: item.name,
                 type: item.type,
-                defaultMemberPermissions: item.permission === "none",
+                defaultMemberPermissions: item.permission,
             });
         }
     });
 
     await guild.commands.set(commands);
-    return commands.length.toString();
+    return commands.length;
 
     /*
     command.forEach((commande) => {
@@ -210,7 +227,8 @@ async function deploy_global(client) {
                     name: item.name,
                     description: item.description,
                     options: item.options,
-                    defaultMemberPermissions: item.permission === "none",
+                    defaultMemberPermissions: item.permission,
+                    integration_types: item.integration_types || [0],
                 });
             } else {
                 if (item.options !== undefined) {
@@ -218,13 +236,15 @@ async function deploy_global(client) {
                         name: item.name,
                         description: item.description,
                         options: item.options,
-                        defaultMemberPermissions: item.permission === "none",
+                        defaultMemberPermissions: item.permission,
+                        integration_types: item.integration_types || [0],
                     });
                 } else {
                     commands.push({
                         name: item.name,
                         description: item.description,
-                        defaultMemberPermissions: item.permission === "none",
+                        defaultMemberPermissions: item.permission,
+                        integration_types: item.integration_types || [0],
                     });
                 }
             }
@@ -236,11 +256,11 @@ async function deploy_global(client) {
             commands.push({
                 name: item.name,
                 type: item.type,
-                defaultMemberPermissions: item.permission === "none",
+                defaultMemberPermissions: item.permission,
             });
         }
     });
 
     await client.application.commands.set(commands);
-    return commands.length.toString();
+    return commands.length;
 }

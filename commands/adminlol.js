@@ -1,28 +1,29 @@
-//const { EmbedBuilder } = require('discord.js');
+const { PermissionsBitField, ApplicationCommandOptionType } = require('discord.js');
 const parse = require('node-html-parser');
 
 module.exports = {
     name: 'adminlol',
     group: 'lol',
     description: "admin league of legends related commands",
-    permission: "none",
+    permission: PermissionsBitField.Flags.ManageMessages,
+    owner: true,
     serverid: ["513776796211085342"],
     hidden: false,
     options: [
         {
             name: 'update',
             description: 'update all lol accounts',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'all',
                     description: 'update all lol accounts',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'first',
                             description: 'first',
-                            type: 'BOOLEAN',
+                            type: ApplicationCommandOptionType.Boolean,
                             required: true
                         }
                     ]
@@ -30,33 +31,33 @@ module.exports = {
                 {
                     name: 'swain',
                     description: 'add swain main summoners to the database',
-                    type: 'SUB_COMMAND'
+                    type: ApplicationCommandOptionType.Subcommand,
                 },
                 {
                     name: 'add',
                     description: 'add more summoners to the database',
-                    type: 'SUB_COMMAND'
+                    type: ApplicationCommandOptionType.Subcommand,
                 },
                 {
                     name: 'transition',
                     description: 'transition to the new database',
-                    type: 'SUB_COMMAND'
+                    type: ApplicationCommandOptionType.Subcommand,
                 },
                 {
                     name: 'populate',
                     description: 'populate the database',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'limit',
                             description: 'limit',
-                            type: 'INTEGER',
+                            type: ApplicationCommandOptionType.Integer,
                             required: true
                         },
                         {
                             name: 'account',
                             description: 'account',
-                            type: 'BOOLEAN',
+                            type: ApplicationCommandOptionType.Boolean,
                             required: true
                         }
                     ]
@@ -66,71 +67,71 @@ module.exports = {
         {
             name: 'analyze',
             description: 'analyze a game comp post launch',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'test',
                     description: 'update all lol accounts',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'top',
                             description: 'allied TOP laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'jungle',
                             description: 'allied JUNGLE laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'mid',
                             description: 'allied MID laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'adc',
                             description: 'allied ADC laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'supp',
                             description: 'allied SUPPORT laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'entop',
                             description: 'enemy TOP laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'enjungle',
                             description: 'enemy JUNGLE laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'enmid',
                             description: 'enemy MID laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'enadc',
                             description: 'enemy ADC laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'ensupp',
                             description: 'enemy SUPPORT laner',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         }
                     ]
@@ -140,23 +141,23 @@ module.exports = {
         {
             name: 'add',
             description: 'add a summoner to the database',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'summoner',
                     description: 'add a summoner to the database',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'summonerid',
                             description: 'summoner id',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                         {
                             name: 'region',
                             description: 'region',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             choices: [
                                 {
@@ -208,13 +209,13 @@ module.exports = {
                         {
                             name: 'discordid',
                             description: 'discord id',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                         {
                             name: 'priority',
                             description: 'priority',
-                            type: 'INTEGER',
+                            type: ApplicationCommandOptionType.Integer,
                             required: true,
                         }
                     ]
@@ -222,18 +223,18 @@ module.exports = {
                 {
                     name: 'game',
                     description: 'add a game to the database',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'gameid',
                             description: 'game id',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                         {
                             name: 'region',
                             description: 'region',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             choices: [
                                 {
@@ -285,7 +286,7 @@ module.exports = {
                         {
                             name: 'debug',
                             description: 'debug',
-                            type: 'BOOLEAN',
+                            type: ApplicationCommandOptionType.Boolean,
                             required: true
                         }
                     ]
@@ -295,17 +296,17 @@ module.exports = {
         {
             name: 'status',
             description: 'check the status of the bot',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'summarized',
                     description: 'summarized status',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                 },
                 {
                     name: 'maintenance',
                     description: 'send a maintenance message',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                 },
             ]
         }

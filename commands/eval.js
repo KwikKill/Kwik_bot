@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require('path');
-const { Util } = require('discord.js');
+const { Util, PermissionsBitField } = require('discord.js');
 const util = require('util');
 const tags = require('common-tags');
 const { escapeRegex, splitMessage } = require('../util/util');
@@ -14,7 +14,8 @@ module.exports = {
     name: 'eval',
     group: 'moderation',
     description: "Permet d'éxecuter du code js.",
-    permission: "owner",
+    permission: PermissionsBitField.Flags.ManageMessages,
+    owner: true,
     hidden: false,
     deploy: false,
     place: "dm",

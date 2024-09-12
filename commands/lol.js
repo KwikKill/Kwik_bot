@@ -1,4 +1,4 @@
-const { EmbedBuilder, AttachmentBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder, PermissionsBitField, ApplicationCommandOptionType, ChannelType } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const logger = require('../util/logger');
 
@@ -10,36 +10,35 @@ module.exports = {
     name: 'lol',
     group: 'lol',
     description: "league of legends related commands",
-    permission: "none",
     hidden: false,
     place: "both",
     options: [
         {
             name: 'account',
             description: 'Manage your lol accounts',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'add',
                     description: 'link a lol pseudo to your discord account',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'gamename',
                             description: 'GameName of the account',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                         {
                             name: 'tagline',
                             description: 'TagLine of the account',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                         {
                             name: 'region',
                             description: 'Region of the account',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                             choices: [
                                 {
@@ -93,18 +92,18 @@ module.exports = {
                 {
                     name: 'remove',
                     description: 'Remove a lol account',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'gamename',
                             description: 'GameName of the account',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                         {
                             name: 'tagline',
                             description: 'TagLine of the account',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             required: true,
                         },
                     ]
@@ -112,7 +111,7 @@ module.exports = {
                 {
                     name: 'list',
                     description: 'List lol accounts',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                 },
             ]
         },
@@ -131,28 +130,28 @@ module.exports = {
         {
             name: 'stats',
             description: 'lol stat commands',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'summarized',
                     description: 'See summarized stats',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                         },
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -179,7 +178,7 @@ module.exports = {
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -214,47 +213,47 @@ module.exports = {
                         {
                             name: 'account',
                             description: 'account (gamename#tagline)',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 },
                 {
                     name: 'profile',
                     description: 'See profile stats',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                         }
                     ]
                 },
                 /*{
                     name: 'friends',
                     description: 'See friends stats',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                         },
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -281,7 +280,7 @@ module.exports = {
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -316,30 +315,30 @@ module.exports = {
                         {
                             name: 'account',
                             description: 'account',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                     ]
                 },*/
                 {
                     name: 'matchups',
                     description: 'See matchups stats',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                         },
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -366,7 +365,7 @@ module.exports = {
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -401,29 +400,29 @@ module.exports = {
                         {
                             name: 'account',
                             description: 'account (gamename#tagline)',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 },
                 {
                     name: 'champions',
                     description: 'See champions stats',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -450,7 +449,7 @@ module.exports = {
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -485,36 +484,36 @@ module.exports = {
                         {
                             name: 'account',
                             description: 'account (gamename#tagline)',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 },
                 {
                     name: 'compare',
                     description: 'compare your stats to another player',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                             required: true
                         },
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -541,7 +540,7 @@ module.exports = {
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -576,30 +575,30 @@ module.exports = {
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 },
                 {
                     name: 'evolution',
                     description: 'See evolution graphs',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'discordaccount',
                             description: 'Discord account',
-                            type: 'USER',
+                            type: ApplicationCommandOptionType.User,
                         },
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -626,7 +625,7 @@ module.exports = {
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -661,34 +660,34 @@ module.exports = {
                         {
                             name: 'account',
                             description: 'account (gamename#tagline)',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 },
                 /*{
                     name: 'match',
                     description: 'See matchs stats',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'id',
                             description: 'Game\'s ID',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                         {
                             name: 'account',
                             description: 'account',
-                            type: 'STRING'
+                            type: ApplicationCommandOptionType.String
                         },
                         {
                             name: 'gamemode',
                             description: 'GameMode',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'normal',
@@ -723,13 +722,13 @@ module.exports = {
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -760,23 +759,23 @@ module.exports = {
         {
             name: 'top',
             description: 'ranking commands',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'carry',
                     description: 'ranking carry commands',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -803,30 +802,30 @@ module.exports = {
                         {
                             name: 'all',
                             description: 'All',
-                            type: 'BOOLEAN'
+                            type: ApplicationCommandOptionType.Boolean
                         },
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 },
                 {
                     name: 'kwikscore',
                     description: 'ranking kwikscore commands',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'champion',
                             description: 'Champion',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             autocomplete: true,
                         },
                         {
                             name: 'lane',
                             description: 'Lane',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                             choices: [
                                 {
                                     name: 'Top',
@@ -853,12 +852,12 @@ module.exports = {
                         {
                             name: 'all',
                             description: 'All',
-                            type: 'BOOLEAN'
+                            type: ApplicationCommandOptionType.Boolean
                         },
                         {
                             name: 'season',
                             description: 'Season',
-                            type: 'STRING',
+                            type: ApplicationCommandOptionType.String,
                         }
                     ]
                 }
@@ -867,17 +866,17 @@ module.exports = {
         {
             name: 'tracker',
             description: 'tracker command',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
                 {
                     name: 'add',
                     description: 'add a tracker channel',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'channel',
                             description: 'Channel',
-                            type: 'CHANNEL',
+                            type: ApplicationCommandOptionType.Channel,
                             required: true
                         }
                     ]
@@ -885,12 +884,12 @@ module.exports = {
                 {
                     name: 'remove',
                     description: 'add a tracker channel',
-                    type: 'SUB_COMMAND',
+                    type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
                             name: 'channel',
                             description: 'Channel',
-                            type: 'CHANNEL',
+                            type: ApplicationCommandOptionType.Channel,
                             required: true
                         }
                     ]
@@ -898,6 +897,7 @@ module.exports = {
             ]
         }
     ],
+    integration_types: [0, 1],
     commande_channel: true,
     async run(message, client, interaction = undefined) {
         if (interaction === undefined) {
@@ -957,9 +957,21 @@ module.exports = {
                 top_kwikscore(client, interaction, champion, role, account, season, gamemode);
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
+            // If the interaction is a user installed command
+            if (!interaction.guild) {
+                return await interaction.editReply("This command can only be used in a server.\n If you use it in a DM or with the user installed command, please install the app in a server.");
+            }
             // If the user has Manage channel permission or administrator permission
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels) && !interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
                 return await interaction.editReply("You don't have the permission to use this command !");
+            }
+            // If the channel provided is not a text channel
+            if (interaction.options.getChannel("channel").type !== ChannelType.GuildText) {
+                return await interaction.editReply("Please provide a valid text channel !");
+            }
+            // If the channel does not belong to the server
+            if (interaction.options.getChannel("channel").guild.id !== interaction.guild.id) {
+                return await interaction.editReply("Please provide a valid text channel in this server !");
             }
             if (interaction.options.getSubcommand() === "add") {
                 tracker_add(client, interaction);

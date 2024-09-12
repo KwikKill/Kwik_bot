@@ -1,21 +1,21 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ApplicationCommandOptionType, PermissionsBitField } = require('discord.js');
 
 module.exports = {
     name: 'help',
     group: 'help',
     description: "Provides list of commands and corresponding help",
-    permission: "none",
     hidden: false,
     place: "both",
     options: [
         {
             name: 'commande',
             description: 'Provides list of commands and corresponding help',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             required: false,
             autocomplete: true
         },
     ],
+    integration_types: [0, 1],
     async run(message, client, interaction = undefined) {
         if ((interaction === undefined && message.args[1] === undefined) || (interaction === undefined && message.args[1] === "help") || (interaction.options.getString('commande') === null) || (interaction.options.getString('commande') === "help")) {
 
@@ -40,7 +40,7 @@ module.exports = {
                 let commands = "";
                 //if(group.guarded === false) {
                 group.commands.each(cmd => {
-                    if (cmd.permission !== "owner") {
+                    if (cmd.owner !== true) {
                         if (client.canRunCommande(undefined, cmd, interaction) && (cmd.serverid === undefined || (interaction.guild && cmd.serverid?.includes(interaction.guild.id)))) {
                             if (commands !== "") {
                                 commands = commands + ", ";
@@ -158,7 +158,7 @@ module.exports = {
         let cmds = [];
         // if the interaction is not in a guild, we return only the global commands
         if (interaction.guild === null) {
-            client.commands.filter(cmd => cmd.name.startsWith(focusedValue) && (cmd.place === "dm" || cmd.place === "both") && (!cmd.serverid) && cmd.permission === "none").forEach(cmd => {
+            client.commands.filter(cmd => cmd.name.startsWith(focusedValue) && (cmd.place === "dm" || cmd.place === "both") && (!cmd.serverid) && cmd.permission === PermissionsBitField.Flags.SendMessages).forEach(cmd => {
                 cmds.push({ name: cmd.name, value: cmd.name });
             });
         } else {

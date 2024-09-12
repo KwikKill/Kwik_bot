@@ -1,11 +1,13 @@
 const child_process = require('child_process');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports = {
     name: 'restart',
     group: 'moderation',
     deploy: false,
     description: "Commande de restart du bot",
-    permission: "owner",
+    permission: PermissionsBitField.Flags.Administrator,
+    owner: true,
     hidden: false,
     place: "dm",
     options: undefined,

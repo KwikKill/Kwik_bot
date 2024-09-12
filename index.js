@@ -119,13 +119,13 @@ client.listeners.forEach((item) => {
 client.canRunCommande = function (message, commande, interaction = undefined) {
     if (interaction === undefined) {
         //if(commande.commande_channel === true && !message.channel.name.toLowerCase().includes("commande")) return false
-        if (!checkpermission(message, commande.permission)) { return "perm"; }
+        if (!checkpermission(message, commande.owner, commande.permission)) { return "perm"; }
         if (commande.place === "dm" && message.channel.type !== ChannelType.DM) { return false; }
         if (commande.place === "guild" && message.channel.type !== ChannelType.GuildText) { return false; }
         return true;
     }
     //if(commande.commande_channel === true && !interaction.channel.name.toLowerCase().includes("commande")) return false;
-    if (!checkpermission(interaction, commande.permission)) { return "perm"; }
+    if (!checkpermission(interaction, commande.owner, commande.permission)) { return "perm"; }
     return true;
 
 };
@@ -137,20 +137,15 @@ client.canRunCommande = function (message, commande, interaction = undefined) {
  * @param {*} perm       permission to check
  * @returns {Boolean}    return true if the user has the permission
  */
-function checkpermission(message, perm) {
+function checkpermission(message, owner, perm) {
     const id = message.author !== undefined ? message.author.id : message.user.id;
     if (client.owners.includes(id)) {
         return true;
     }
-    if (perm === "none") {
-        return true;
-    } if (perm === "modo") {
-        if (message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-            return true;
-        }
+    if (owner === true) {
+        return false;
     }
-    return false;
-
+    return message.member.permissions.has(perm);
 }
 
 // -------------- Index2 -----------------
