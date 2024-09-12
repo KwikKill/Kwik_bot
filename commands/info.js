@@ -37,7 +37,7 @@ module.exports = {
                             "RankUpLoL is still in development, so there may be bugs.\n" +
                             "If you find a bug, please report it on the [support server](https://discord.gg/bGmbQPMpVj)\n" +
                             "If you have any suggestions, I will be happy to hear them on the [support server](https://discord.gg/bGmbQPMpVj)\n" +
-                            "If you want to support the bot, please vote for it on [top.gg](https://top.gg/bot/559371363035381777)\n"
+                            "If you want to support the bot, you can install it with [this link](https://discord.com/oauth2/authorize?client_id=559371363035381777)\n"
                     },
                     {
                         name: " - Commands",
