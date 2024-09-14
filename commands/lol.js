@@ -915,7 +915,7 @@ module.exports = {
             if (!account.includes("#") || account.split("#").length !== 2) {
                 return await interaction.editReply("Please use the format `gamename#tagline` for the account name.");
             }
-            account = [account.split("#")];
+            account = account.split("#");
         }
         //const puuid = interaction.options.getString("id");
         const discordaccount = interaction.options.getUser("discordaccount");
@@ -2186,6 +2186,7 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
             interaction.guild ? interaction.guild.id : interaction.user.id
         ]
     });
+
     try {
         const start = Date.now();
         let i = 1;
@@ -2244,13 +2245,14 @@ async function stats_evolution(client, interaction, discordaccount, champion, ro
             "CAST(SUM(CASE WHEN result = 'Win' THEN 1 ELSE 0 END) AS FLOAT)/ Count(*) AS win_rate, " +
             "CAST(SUM(CASE WHEN (first_gold OR first_damages OR first_tanked) THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_or_damages_or_tanked, " +
             "CAST(SUM(CASE WHEN first_gold AND first_damages AND first_tanked THEN 1 ELSE 0 END) AS FLOAT) / Count(*) AS first_gold_and_damages_and_tanked, " +
-            "(CAST(SUM(kill + assists) AS FLOAT) / AVG(total_kills))/ Count(*) AS kill_participation, " +
+            "(CAST(SUM(kill + assists) AS FLOAT) / CASE WHEN AVG(total_kills) = 0 THEN 1 ELSE AVG(total_kills) END)/ Count(*) AS kill_participation, " +
             "SUM(vision_score) / (SUM(length / 60) * 20) AS vision_score_per_minute, " +
             "SUM(cs) / (SUM(length / 60)) AS cs_per_minute " +
             "FROM matchs, summoners " +
             "WHERE discordid = $1" +
             " AND matchs.player = summoners.puuid" +
             " AND (result = 'Win' OR result = 'Lose')" +
+            " AND matchs.gamemode != 'STRAWBERRY'" +
             queryaccount +
             querygamemode +
             queryrole +
