@@ -1,4 +1,4 @@
-const { Client, Collection, GatewayIntentBits,PermissionsBitField, Partials, ChannelType } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, Partials, ChannelType } = require('discord.js');
 const config = require('./config.json');
 const fs = require("fs");
 const lol = require("./util/lol_functions.js");

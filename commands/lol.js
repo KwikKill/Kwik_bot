@@ -906,6 +906,11 @@ module.exports = {
         const gamename = interaction.options.getString("gamename");
         const tagline = interaction.options.getString("tagline");
 
+        // Check if the gamename and tagline are valid
+        if ((gamename && gamename.includes("#")) || (tagline && tagline.includes("#"))) {
+            return await interaction.editReply("Gamename and tagline should not contain '#', please use the format `gamename#tagline` without providing the #");
+        }
+
         const region = interaction.options.getString("region");
         const champion = interaction.options.getString("champion");
         const role = interaction.options.getString("lane");
