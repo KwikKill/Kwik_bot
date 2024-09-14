@@ -319,7 +319,7 @@ class LolApi {
                 await delay(60000);
                 return await this.apiCall(url, client);
             } else if (error.response?.status !== undefined) {
-                logger.error("Unknown error: " + error.response.statut + " " + url);
+                logger.error("Unknown error: " + error.response?.status + " " + url);
                 return null;
             }
             // catch Invalid JSON
