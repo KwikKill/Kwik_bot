@@ -145,7 +145,10 @@ function checkpermission(message, owner, perm) {
     if (owner === true) {
         return false;
     }
-    return message.member.permissions.has(perm);
+    if (perm === undefined) {
+        return true;
+    }
+    return message?.member?.permissions?.has(perm) ?? false;
 }
 
 // -------------- Index2 -----------------
