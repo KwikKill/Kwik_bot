@@ -216,7 +216,7 @@ class LolRankManager {
                         const index = this.trackers.indexOf(x);
                         this.trackers.splice(index, 1);
                     } else {
-                        logger.error("Unknown error while sending tracker message : " + e);
+                        logger.error("Unknown error while sending tracker message (" + x + "): " + e);
                     }
                 }
             }

@@ -3415,6 +3415,11 @@ async function tracker_add(client, interaction) {
         if (response.rowCount !== 0) {
             return await interaction.editReply("A tracker channel already exists in this guild !");
         }
+        // check if the bot has send message permission
+        if (!channel.permissionsFor(channel.guild.me).has(PermissionsBitField.Flags.SendMessages)) {
+            return await interaction.editReply("The bot doesn't have the permission to send messages in this channel !");
+        }
+
         const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
         client.lol.lol_rank_manager.trackers.push(channel.id);
         await client.pg.query(query, [channel.id, channel.guild.id]);
