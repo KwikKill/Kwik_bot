@@ -903,6 +903,7 @@ module.exports = {
         if (interaction === undefined) {
             return;
         }
+        await interaction.deferReply();
         const gamename = interaction.options.getString("gamename");
         const tagline = interaction.options.getString("tagline");
 
@@ -926,7 +927,6 @@ module.exports = {
         const discordaccount = interaction.options.getUser("discordaccount");
         const season = interaction.options.getString("season");
 
-        await interaction.deferReply();
         if (interaction.options.getSubcommandGroup() === "account") {
             if (interaction.options.getSubcommand() === "add") {
                 account_add(client, interaction, gamename, tagline, region);
