@@ -3416,7 +3416,7 @@ async function tracker_add(client, interaction) {
             return await interaction.editReply("A tracker channel already exists in this guild !");
         }
         // check if the bot has send message permission
-        if (!channel.permissionsFor(channel.guild.me).has(PermissionsBitField.Flags.SendMessages)) {
+        if (!channel.permissionsFor(client.user)?.has(PermissionsBitField.Flags.SendMessages)) {
             return await interaction.editReply("The bot doesn't have the permission to send messages in this channel !");
         }
 
