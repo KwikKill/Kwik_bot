@@ -2561,6 +2561,9 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         const start = Date.now();
 
         const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
+        if (priority.rows.length === 0) {
+            return await interaction.editReply("You need to add an account to use stats commands. You can add one with `/lol account add`");
+        }
         if (priority.rows[0].priority === 0) {
             return await interaction.editReply("This feature is not available for the moment. If you want to support me, you can contact me on discord : **KwikKill#6123**");
         }
