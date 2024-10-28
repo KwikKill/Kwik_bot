@@ -143,12 +143,10 @@ class LolRankManager {
         if (!(puuid in this.rank_cache)) {
             return;
         }
-        const data = this.rank_cache[puuid];
-        const rank = await this.update_rank(data.id, data.region);
-        // If the new rank is the same as the old rank, return
+        const rank = await this.update_rank(this.rank_cache[puuid].id, this.rank_cache[puuid].region);
 
-        // update rank cache
-        this.rank_cache[puuid] = {
+        const data = this.rank_cache[puuid];
+        const new_rank = {
             "RANKED_SOLO_5x5": {
                 "tier": rank["RANKED_SOLO_5x5"]["tier"],
                 "rank": rank["RANKED_SOLO_5x5"]["rank"],
@@ -165,6 +163,14 @@ class LolRankManager {
             "tagline": data.tagline,
             "id": data.id,
         };
+
+        // If the new rank is the same as the old rank, return
+        if (JSON.stringify(this.rank_cache[puuid]) === JSON.stringify(new_rank)) {
+            return;
+        }
+
+        // update rank cache
+        this.rank_cache[puuid] = new_rank;
 
         // read current rank and send message if rank changed
         if (
