@@ -964,7 +964,7 @@ module.exports = {
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
             // If the interaction is a user installed command
             if (!interaction.guild) {
-                return await interaction.editReply("This command can only be used in a server.\n If you use it in a DM or with the user installed command, please install the app in a server.");
+                return await interaction.editReply("This command can only be used in a server. If you use it in a DM or with the user installed command, please install the app in a server.");
             }
             // If the user has Manage channel permission or administrator permission
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels) && !interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
