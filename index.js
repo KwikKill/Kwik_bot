@@ -13,10 +13,6 @@ logger.log("Starting...");
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.DirectMessages,
-        GatewayIntentBits.GuildMessageReactions,
-        GatewayIntentBits.GuildMembers
     ],
     partials: [
         Partials.Message,

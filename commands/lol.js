@@ -3041,9 +3041,12 @@ async function top_carry(client, interaction, champion, role, season) {
 
         const all = interaction.options.getBoolean("all") === true;
         let queryall = "";
-        if (!all) {
-            let members = await interaction.guild.members.fetch();
-            members = members.filter(member => !member.user.bot);
+        let limit = 10;
+        const memberCount = interaction.guild.memberCount;
+
+        if (!all && memberCount <= 100) {
+            // Use cache for small guilds
+            const members = interaction.guild.members.cache.filter(member => !member.user.bot);
             let list = "(";
             members.forEach(member => {
                 list += "'" + member.user.id + "',";
@@ -3051,6 +3054,8 @@ async function top_carry(client, interaction, champion, role, season) {
             list = list.slice(0, -1);
             list += ")";
             queryall = " AND summoners.discordid IN " + list;
+        } else if (!all) {
+            limit = 100;
         }
 
         let query =
@@ -3066,15 +3071,32 @@ async function top_carry(client, interaction, champion, role, season) {
             queryrole +
             queryall +
             queryseason +
-            " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT 10;";
+            " GROUP BY summoners.discordid ORDER BY carry DESC LIMIT " +
+            limit +
+            ";";
         let response = await client.pg.query(query, query_values);
 
         let general = "";
         if (response.rows.length === 0) {
             general = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
-            for (const x of response.rows) {
-                general += "- <@" + x.discordid + "> : " + Number.parseFloat(x.carry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+            if(!all && memberCount > 100) {
+                let nb = 0;
+                for (const x of response.rows) {
+                    // fetch the user and add it to the string if it exists
+                    const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                    if(user && nb < 10) {
+                        general += "- <@" + x.discordid + "> : " + Number.parseFloat(x.carry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        nb++;
+                    }
+                    if(nb >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                for (const x of response.rows) {
+                    general += "- <@" + x.discordid + "> : " + Number.parseFloat(x.carry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                }
             }
         }
 
@@ -3091,15 +3113,32 @@ async function top_carry(client, interaction, champion, role, season) {
             query2 +
             queryrole +
             queryall +
-            " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT 10;";
+            " GROUP BY summoners.discordid ORDER BY damage DESC LIMIT " +
+            limit +
+            ";";
         response = await client.pg.query(query, query_values);
 
         let damages = "";
         if (response.rows.length === 0) {
             damages = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
-            for (const x of response.rows) {
-                damages += "- <@" + x.discordid + "> : " + Number.parseFloat(x.damage).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+            if(!all && memberCount > 100) {
+                let nb = 0;
+                for (const x of response.rows) {
+                    // fetch the user and add it to the string if it exists
+                    const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                    if(user && nb < 10) {
+                        damages += "- <@" + x.discordid + "> : " + Number.parseFloat(x.damage).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        nb++;
+                    }
+                    if(nb >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                for (const x of response.rows) {
+                    damages += "- <@" + x.discordid + "> : " + Number.parseFloat(x.damage).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                }
             }
         }
 
@@ -3116,15 +3155,32 @@ async function top_carry(client, interaction, champion, role, season) {
             query2 +
             queryrole +
             queryall +
-            " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT 10;";
+            " GROUP BY summoners.discordid ORDER BY tanked DESC LIMIT " +
+            limit +
+            ";";
         response = await client.pg.query(query, query_values);
 
         let tanked = "";
         if (response.rows.length === 0) {
             tanked = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
-            for (const x of response.rows) {
-                tanked += "- <@" + x.discordid + "> : " + Number.parseFloat(x.tanked).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+            if(!all && memberCount > 100) {
+                let nb = 0;
+                for (const x of response.rows) {
+                    // fetch the user and add it to the string if it exists
+                    const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                    if(user && nb < 10) {
+                        tanked += "- <@" + x.discordid + "> : " + Number.parseFloat(x.tanked).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        nb++;
+                    }
+                    if(nb >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                for (const x of response.rows) {
+                    tanked += "- <@" + x.discordid + "> : " + Number.parseFloat(x.tanked).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                }
             }
         }
 
@@ -3141,15 +3197,32 @@ async function top_carry(client, interaction, champion, role, season) {
             query2 +
             queryrole +
             queryall +
-            " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT 10;";
+            " GROUP BY summoners.discordid ORDER BY gold DESC LIMIT " +
+            limit +
+            ";";
         response = await client.pg.query(query, query_values);
 
         let gold = "";
         if (response.rows.length === 0) {
             gold = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
-            for (const x of response.rows) {
-                gold += "- <@" + x.discordid + "> : " + Number.parseFloat(x.gold).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+            if(!all && memberCount > 100) {
+                let nb = 0;
+                for (const x of response.rows) {
+                    // fetch the user and add it to the string if it exists
+                    const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                    if(user && nb < 10) {
+                        gold += "- <@" + x.discordid + "> : " + Number.parseFloat(x.gold).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        nb++;
+                    }
+                    if(nb >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                for (const x of response.rows) {
+                    gold += "- <@" + x.discordid + "> : " + Number.parseFloat(x.gold).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                }
             }
         }
 
@@ -3166,14 +3239,31 @@ async function top_carry(client, interaction, champion, role, season) {
             query2 +
             queryrole +
             queryall +
-            " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT 10;";
+            " GROUP BY summoners.discordid ORDER BY hardcarry DESC LIMIT " +
+            limit +
+            ";";
         response = await client.pg.query(query, query_values);
         let hard = "";
         if (response.rows.length === 0) {
             hard = "There are not enought summoners in the database or the filters are too restrictings.";
         } else {
-            for (const x of response.rows) {
-                hard += "- <@" + x.discordid + "> : " + Number.parseFloat(x.hardcarry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+            if (!all && memberCount > 100) {
+                let nb = 0;
+                for (const x of response.rows) {
+                    // fetch the user and add it to the string if it exists
+                    const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                    if(user && nb < 10) {
+                        hard += "- <@" + x.discordid + "> : " + Number.parseFloat(x.hardcarry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                        nb++;
+                    }
+                    if(nb >= 10) {
+                        break;
+                    }
+                }
+            } else {
+                for (const x of response.rows) {
+                    hard += "- <@" + x.discordid + "> : " + Number.parseFloat(x.hardcarry).toFixed(decimal) + " % (" + x.count + " matchs)\n";
+                }
             }
         }
 
@@ -3264,9 +3354,11 @@ async function top_kwikscore(client, interaction, champion, role, season) {
 
         const all = interaction.options.getBoolean("all") === true;
         let queryall = "";
-        if (!all) {
-            let members = await interaction.guild.members.fetch();
-            members = members.filter(member => !member.user.bot);
+        let limit = 10;
+        const memberCount = interaction.guild.memberCount;
+
+        if (!all && memberCount <= 100) {
+            const members = interaction.guild.members.cache.filter(member => !member.user.bot);
             let list = "(VALUES ";
             members.forEach(member => {
                 list += "('" + member.user.id + "'),";
@@ -3274,6 +3366,8 @@ async function top_kwikscore(client, interaction, champion, role, season) {
             list = list.slice(0, -1);
             list += ")";
             queryall = " AND summoners.discordid = ANY" + list;
+        } else if (!all) {
+            limit = 100;
         }
         let query2 = "";
         if (champion !== null) {
@@ -3345,7 +3439,9 @@ async function top_kwikscore(client, interaction, champion, role, season) {
             "END)*delta AS KS " +
             "FROM (" + query + ") AS t1 " +
             "ORDER BY KS DESC " +
-            "LIMIT 10;";
+            "LIMIT " +
+            limit +
+            ";";
         const response = await client.pg.query(query4, query_values);
 
         if (response.rowCount === 0) {
@@ -3364,8 +3460,23 @@ async function top_kwikscore(client, interaction, champion, role, season) {
             .setTimestamp();
 
         let text = "";
-        for (let i = 0; i < response.rowCount; i++) {
-            text += "- <@" + response.rows[i].discordid + "> : " + response.rows[i].ks.toFixed(0) + " (" + response.rows[i].count + " Games)\n";
+        if (!all && memberCount > 100) {
+            let nb = 0;
+            for (const x of response.rows) {
+                // fetch the user and add it to the string if it exists
+                const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                if(user && nb < 10) {
+                    text += "- <@" + x.discordid + "> : " + x.ks.toFixed(0) + " (" + x.count + " Games)\n";
+                    nb++;
+                }
+                if(nb >= 10) {
+                    break;
+                }
+            }
+        } else {
+            for (const x of response.rows) {
+                text += "- <@" + x.discordid + "> : " + x.ks.toFixed(0) + " (" + x.count + " Games)\n";
+            }
         }
 
         embed.addFields({
