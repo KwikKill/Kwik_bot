@@ -964,7 +964,7 @@ module.exports = {
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
             // If the interaction is a user installed command
             if (!interaction.guild) {
-                return await interaction.editReply("This command can only be used in a server. If you use it in a DM or with the user installed command, please install the app in a server.");
+                return await interaction.editReply("This command can only be used in a guild.\n If you use it in a DM or with the user installed command, please install the app in a guild.");
             }
             // If the user has Manage channel permission or administrator permission
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels) && !interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
@@ -974,9 +974,9 @@ module.exports = {
             if (interaction.options.getChannel("channel").type !== ChannelType.GuildText) {
                 return await interaction.editReply("Please provide a valid text channel !");
             }
-            // If the channel does not belong to the server
+            // If the channel does not belong to the guild
             if (interaction.options.getChannel("channel").guild.id !== interaction.guild.id) {
-                return await interaction.editReply("Please provide a valid text channel in this server !");
+                return await interaction.editReply("Please provide a valid text channel in this guild !");
             }
             if (interaction.options.getSubcommand() === "add") {
                 tracker_add(client, interaction);
@@ -3009,7 +3009,7 @@ async function top_carry(client, interaction, champion, role, season) {
     });
     try {
         if (!interaction.guild) {
-            return await interaction.editReply("This command can only be used on a server.");
+            return await interaction.editReply("This command can only be used in a guild.\n If you use it in a DM or with the user installed command, please install the app in a guild.");
         }
 
         const start = new Date();
@@ -3344,7 +3344,7 @@ async function top_kwikscore(client, interaction, champion, role, season) {
     });
     try {
         if (!interaction.guild) {
-            return await interaction.editReply("This command can only be used on a server.");
+            return await interaction.editReply("This command can only be used in a guild.\n If you use it in a DM or with the user installed command, please install the app in a guild.");
         }
 
         const start = Date.now();
