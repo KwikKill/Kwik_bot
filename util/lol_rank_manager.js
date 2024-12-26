@@ -215,7 +215,7 @@ class LolRankManager {
                     }
                 } catch (e) {
                     // if bot can't fetch the discord channel
-                    if (e.code === 10003) {
+                    if (e.code === 10003 || e.code === 50001) {
                         // delete the channel from the database
                         logger.error("Channel " + x + " not found, deleting from database");
                         await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);

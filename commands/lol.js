@@ -1069,25 +1069,31 @@ async function account_add(client, interaction, gamename, tagline, region) {
 
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3 AND region=$4;", [interaction.user.id, gamename, tagline, region]);
     if (!client.lol.services[route]["queue"]["summoners"].includes({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
+
         const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
-        let number = response2.rows.length;
+        let nb_account = response2.rows.length;
         for (let i = 0; i < client.lol.services[route]["queue"]["summoners"].length; i++) {
             if (client.lol.services[route]["queue"]["summoners"][i].discordid === interaction.user.id) {
-                number++;
+                nb_account++;
             }
         }
+
+        //if the user is not a premium user
         const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
-        if (number === 0 || priority.rows[0].priority === 0) {
-            if (number === 0) {
+        if (nb_account === 0 || priority.rows.length === 0 || priority.rows?.[0].priority === 0) {
+            if (nb_account === 0) {
                 await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
                 return await addSumoner(client, gamename, tagline, interaction, region);
             }
             return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **kwikkill**");
         }
-        if (number < 3 || priority.rows[0].priority === 10) {
+
+        // If the user is a premium user or has less than 3 accounts linked
+        if (nb_account < 3 || priority.rows?.[0].priority === 10) {
             await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
             return await addSumoner(client, gamename, tagline, interaction, region);
         }
+
         return await interaction.editReply("You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **kwikkill**");
     }
     return await interaction.editReply("This account is already in the database or requested.");
