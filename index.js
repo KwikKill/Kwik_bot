@@ -29,6 +29,7 @@ client.lol.setup(client);
 client.commands = new Collection();
 client.context_menu = new Collection();
 client.buttons = new Collection();
+client.modals = new Collection();
 client.groups = new Collection();
 
 client.timers = new Collection();
@@ -61,6 +62,12 @@ const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.j
 for (const file of buttonFiles) {
     const button = require(`./buttons/${file}`);
     client.buttons.set(button.name, button);
+}
+
+const modalsFiles = fs.readdirSync('./modals').filter(file => file.endsWith('.js'));
+for (const file of modalsFiles) {
+    const modal = require(`./modals/${file}`);
+    client.modals.set(modal.name, modal);
 }
 
 const TimersFiles = fs.readdirSync('./timers').filter(file => file.endsWith('.js'));

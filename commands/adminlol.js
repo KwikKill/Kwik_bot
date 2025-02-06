@@ -1,4 +1,4 @@
-const { PermissionsBitField, ApplicationCommandOptionType } = require('discord.js');
+const { PermissionsBitField, ApplicationCommandOptionType, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const parse = require('node-html-parser');
 
 module.exports = {
@@ -312,22 +312,14 @@ module.exports = {
                     name: 'announce',
                     description: 'send an announcement message',
                     type: ApplicationCommandOptionType.Subcommand,
-                    options: [
-                        {
-                            name: 'message',
-                            description: 'message',
-                            type: ApplicationCommandOptionType.String,
-                            required: true
-                        }
-                    ]
                 }
             ]
         }
     ],
     async run(message, client, interaction = undefined) {
-        if (interaction !== undefined) {
-            await interaction.deferReply();
+        if (interaction !== undefined) { 
             if (interaction.options.getSubcommandGroup() === "update") {
+                await interaction.deferReply();
                 if (interaction.options.getSubcommand() === "all") {
                     await interaction.editReply("Processing.");
                     const start = Date.now();
@@ -643,6 +635,7 @@ module.exports = {
                     await client.lol.main(true);
                 }
             } else if (interaction.options.getSubcommandGroup() === "analyze") {
+                await interaction.deferReply();
                 const TOP = interaction.options.getString("top");
                 const JUNGLE = interaction.options.getString("jungle");
                 const MID = interaction.options.getString("mid");
@@ -725,6 +718,7 @@ module.exports = {
 
                 await interaction.editReply({ content: "Confidence: " + confidence / 10, ephemeral: true });
             } else if (interaction.options.getSubcommandGroup() === "add") {
+                await interaction.deferReply();
                 if (interaction.options.getSubcommand() === "summoner") {
                     const summoner = interaction.options.getString("summoner");
                     const region = interaction.options.getString("region");
@@ -755,6 +749,7 @@ module.exports = {
                 }
             } else if (interaction.options.getSubcommandGroup() === "status") {
                 if (interaction.options.getSubcommand() === "summarized") {
+                    await interaction.deferReply();
                     const responses = await client.pg.query("SELECT count(*) FROM summoners WHERE priority = 0 AND discordid <> '503109625772507136';");
                     const count = responses.rows[0].count;
 
@@ -781,18 +776,63 @@ module.exports = {
 
                     await interaction.editReply({ content: "There are " + count + " real users in the database out of " + count2 + " total summoners. There are " + number + " matchs in the database. The database is " + size + " in size. The bot is on " + servers + " servers.", ephemeral: false });
                 } else if (interaction.options.getSubcommand() === "maintenance") {
+                    await interaction.deferReply();
                     client.lol.lol_rank_manager.trackers.forEach(ch => {
                         client.channels.fetch(ch.channel).then(chs => {
                             chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations");
                         });
                     });
+                    return await interaction.editReply({ content: "Maintenance message sent!", ephemeral: true });
                 } else if (interaction.options.getSubcommand() === "announce") {
-                    const message = interaction.options.getString("message");
-                    client.lol.lol_rank_manager.trackers.forEach(ch => {
+
+                    // open a modal to build the announcement embed
+                    const modal = new ModalBuilder()
+                        .setCustomId('announcement')
+                        .setTitle('Announcement')
+
+                    const title = new TextInputBuilder()
+                        .setCustomId('title')
+                        .setLabel("Title")
+                        .setStyle(TextInputStyle.Short);
+
+                    const description = new TextInputBuilder()
+                        .setCustomId('description')
+                        .setLabel("Description")
+                        .setStyle(TextInputStyle.Paragraph);
+
+                    const color = new TextInputBuilder()
+                        .setCustomId('color')
+                        .setLabel("Color")
+                        .setStyle(TextInputStyle.Short);
+
+                    const footer = new TextInputBuilder()
+                        .setCustomId('footer')
+                        .setLabel("Footer")
+                        .setStyle(TextInputStyle.Short)
+                        .setRequired(false);
+
+                    const thumbnail = new TextInputBuilder()
+                        .setCustomId('thumbnail')
+                        .setLabel("Thumbnail")
+                        .setStyle(TextInputStyle.Short)
+                        .setRequired(false);
+                    
+                    modal.addComponents(
+                        new ActionRowBuilder().addComponents(title),
+                        new ActionRowBuilder().addComponents(description),
+                        new ActionRowBuilder().addComponents(color),
+                        new ActionRowBuilder().addComponents(footer),
+                        new ActionRowBuilder().addComponents(thumbnail)
+                    );
+
+                    await interaction.showModal(modal);
+
+                    /*client.lol.lol_rank_manager.trackers.forEach(ch => {
                         client.channels.fetch(ch.channel).then(chs => {
                             chs.send(message);
                         });
                     });
+                    return await interaction.editReply({ content: "Message sent!", ephemeral: true });*/
                 }
             }
         }

@@ -70,6 +70,24 @@ module.exports = {
                 console.error(error);
                 await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
             }
+        } else if (interaction.isModalSubmit()) {
+            if (!client.modals.has(interaction.customId)) { return; }
+
+            try {
+                const can_run = client.canRunCommande(undefined, client.modals.get(interaction.customId), interaction);
+                if (can_run) {
+                    await client.modals.get(interaction.customId).run(interaction, client);
+                    return;
+                }
+                if (can_run === "perm") {
+                    await interaction.reply({ content: "Vous n'avez pas la permission d'utiliser cette commande", ephemeral: true });
+                } else {
+                    await interaction.reply({ content: "Vous ne pouvez pas utiliser cette commande dans ce salon", ephemeral: true });
+                }
+            } catch (error) {
+                console.error(error);
+                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+            }  
         } else {
             //console.log(interaction)
             if (!client.context_menu.has(interaction.commandName)) { return; }
