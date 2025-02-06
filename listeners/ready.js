@@ -30,6 +30,7 @@ module.exports = {
             client.pg = pgclient;
             logger.log("Database Connected!");
             await client.lol.lol_rank_manager.setup(client);
+            await client.lol.update_data();
             client.timers.forEach(timer => {
                 if (timer.onsetup) {
                     timer.run(client);
@@ -38,7 +39,10 @@ module.exports = {
             });
             client.pg.query("SELECT * FROM trackers").then(trackers => {
                 trackers.rows.forEach(tracker => {
-                    client.lol.lol_rank_manager.trackers.push(tracker.channelid);
+                    client.lol.lol_rank_manager.trackers.push({
+                        channel: tracker.channelid,
+                        guild: tracker.guildid
+                    });
                 });
             });
         });

@@ -1,4 +1,4 @@
-const { EmbedBuilder, AttachmentBuilder, PermissionsBitField, ApplicationCommandOptionType, ChannelType } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder, PermissionsBitField, ApplicationCommandOptionType, ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const logger = require('../util/logger');
 
@@ -895,6 +895,126 @@ module.exports = {
                     ]
                 }
             ]
+        },
+        {
+            name: 'guild',
+            description: 'guild command',
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+                {
+                    name: 'request',
+                    description: 'request a player to link his account',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'discordaccount',
+                            description: 'Discord account',
+                            type: ApplicationCommandOptionType.User,
+                            required: true
+                        },
+                        {
+                            name: 'gamename',
+                            description: 'GameName of the account',
+                            type: ApplicationCommandOptionType.String,
+                            required: true
+                        },
+                        {
+                            name: 'tagline',
+                            description: 'TagLine of the account',
+                            type: ApplicationCommandOptionType.String,
+                            required: true
+                        },
+                        {
+                            name: 'region',
+                            description: 'Region of the account',
+                            type: ApplicationCommandOptionType.String,
+                            required: true,
+                            choices: [
+                                {
+                                    name: 'EUW',
+                                    value: 'EUW1',
+                                },
+                                {
+                                    name: 'EUNE',
+                                    value: 'EUN1',
+                                },
+                                {
+                                    name: 'NA',
+                                    value: 'NA1',
+                                },
+                                {
+                                    name: 'OCE',
+                                    value: 'OC1',
+                                },
+                                {
+                                    name: 'LAN',
+                                    value: 'LA1',
+                                },
+                                {
+                                    name: 'LAS',
+                                    value: 'LA2',
+                                },
+                                {
+                                    name: 'RU',
+                                    value: 'RU',
+                                },
+                                {
+                                    name: 'TR',
+                                    value: 'TR1',
+                                },
+                                {
+                                    name: 'JP',
+                                    value: 'JP1',
+                                },
+                                {
+                                    name: 'KR',
+                                    value: 'KR',
+                                },
+                                {
+                                    name: 'BR',
+                                    value: 'BR1',
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: 'mute',
+                    description: 'mute a player in the guild',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'discordaccount',
+                            description: 'Discord account',
+                            type: ApplicationCommandOptionType.User,
+                            required: true
+                        }
+                    ]
+                },
+                {
+                    name: 'unmute',
+                    description: 'unmute a player in the guild',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'discordaccount',
+                            description: 'Discord account',
+                            type: ApplicationCommandOptionType.User,
+                            required: true
+                        }
+                    ]
+                },
+                {
+                    name:'silence',
+                    description: 'silence the guild',
+                    type: ApplicationCommandOptionType.Subcommand
+                },
+                {
+                    name:'unsilence',
+                    description: 'unsilence the guild',
+                    type: ApplicationCommandOptionType.Subcommand
+                }
+            ]
         }
     ],
     integration_types: [0, 1],
@@ -983,6 +1103,38 @@ module.exports = {
             } else if (interaction.options.getSubcommand() === "remove") {
                 tracker_remove(client, interaction);
             }
+        } else if (interaction.options.getSubcommandGroup() === "guild") {
+            // If the interaction is a user installed command
+            if (!interaction.guild) {
+                return await interaction.editReply("This command can only be used in a guild.\n If you use it in a DM or with the user installed command, please install the app in a guild.");
+            }
+            
+            if (interaction.options.getSubcommand() === "request") {
+                // user has to be an admin
+                if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+                    return await interaction.editReply("You don't have the permission to use this command !");
+                }
+
+                guild_add_account(client, interaction, discordaccount, gamename, tagline, region);
+            } else if (interaction.options.getSubcommand() === "mute") {
+                // user has to be an admin
+                if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+                    return await interaction.editReply("You don't have the permission to use this command !");
+                }
+
+                guild_mute_account(client, interaction, discordaccount);
+            } else if (interaction.options.getSubcommand() === "unmute") {
+                // user has to be an admin
+                if (!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+                    return await interaction.editReply("You don't have the permission to use this command !");
+                }
+
+                guild_unmute_account(client, interaction, discordaccount)
+            } else if (interaction.options.getSubcommand() === "silence") {
+                account_silence_guild(client, interaction, interaction.guild.id);
+            } else if (interaction.options.getSubcommand() === "unsilence") {
+                account_unsilence_guild(client, interaction, interaction.guild.id);
+            }
         }
     },
     async autocomplete(client, interaction) {
@@ -998,8 +1150,10 @@ module.exports = {
         }
         return await interaction.respond(champs);
     },
+    account_add,
     addSumoner,
-    add_summoner_manual
+    add_summoner_manual,
+    account_silence_guild,
 
 };
 
@@ -1078,25 +1232,40 @@ async function account_add(client, interaction, gamename, tagline, region) {
             }
         }
 
-        //if the user is not a premium user
+        // If the user is not a premium user
         const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
         if (nb_account === 0 || priority.rows.length === 0 || priority.rows?.[0].priority === 0) {
             if (nb_account === 0) {
-                await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
+                await interaction.editReply({
+                    content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.",
+                    embeds: []
+                });
                 return await addSumoner(client, gamename, tagline, interaction, region);
             }
-            return await interaction.editReply("You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **kwikkill**");
+            return await interaction.editReply({
+                content: "You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **kwikkill**",
+                embeds: []
+            });
         }
 
         // If the user is a premium user or has less than 3 accounts linked
         if (nb_account < 3 || priority.rows?.[0].priority === 10) {
-            await interaction.editReply("The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.");
+            await interaction.editReply({
+                content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.",
+                embeds: []
+            });
             return await addSumoner(client, gamename, tagline, interaction, region);
         }
 
-        return await interaction.editReply("You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **kwikkill**");
+        return await interaction.editReply({
+            content: "You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **kwikkill**",
+            embeds: []
+        });
     }
-    return await interaction.editReply("This account is already in the database or requested.");
+    return await interaction.editReply({
+        content: "This account is already in the database or requested.",
+        embeds: []
+    });
 }
 
 /**
@@ -3541,7 +3710,10 @@ async function tracker_add(client, interaction) {
         }
 
         const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
-        client.lol.lol_rank_manager.trackers.push(channel.id);
+        client.lol.lol_rank_manager.trackers.push({
+            channel: channel.id,
+            guild: channel.guild.id
+        });
         await client.pg.query(query, [channel.id, channel.guild.id]);
         return await interaction.editReply("tracker channel added !");
     } catch (e) {
@@ -3584,9 +3756,11 @@ async function tracker_remove(client, interaction) {
         if (response.rowCount === 0) {
             return await interaction.editReply("This channel is currently not a tracker channel !");
         }
-        const query = "DELETE FROM trackers WHERE channelid=$1;";
-        client.lol.lol_rank_manager.trackers.splice(client.lol.lol_rank_manager.trackers.indexOf(channel.id), 1);
-        await client.pg.query(query, [channel.id]);
+        client.lol.lol_rank_manager.trackers.splice(client.lol.lol_rank_manager.trackers.indexOf({
+            channel: channel.id,
+            guild: channel.guild.id
+        }), 1);
+        await client.pg.query("DELETE FROM trackers WHERE channelid=$1;", [channel.id]);
         return await interaction.editReply("tracker channel removed !");
     } catch (e) {
         logger.error(e);
@@ -3599,4 +3773,253 @@ async function tracker_remove(client, interaction) {
         });
         return await interaction.editReply("Error while removing tracker channel, this error has been reported to the bot owner and will be fixed as soon as possible.");
     }
+}
+
+// ---------------------------- GUILDS FUNCTIONS ----------------------------
+
+/**
+ * Send an account linking request to a guild member
+ * @param {Client} client
+ * @param {Interaction} interaction
+ * @param {User} discordaccount
+ * @param {String} gamename
+ * @param {String} tagline
+ * @param {String} region
+ */
+async function guild_add_account(client, interaction, discordaccount, gamename, tagline, region) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/guild/account/add",
+            JSON.stringify({
+                guild: interaction.guild?.id,
+                discordaccount: discordaccount?.id,
+                gamename: gamename,
+                tagline: tagline,
+                region: region
+            }),
+            interaction.guild ? interaction.guild.id : interaction.user.id
+        ]
+    });
+
+    if (client.lol.guild_mute_for_player[discordaccount.id] && client.lol.guild_mute_for_player[discordaccount.id].includes(interaction.guild.id)) {
+        return await interaction.editReply("This user has silence the guild, no further requests will be sent to this user.");
+    }
+
+    const embed = new EmbedBuilder()
+        .setTitle("Account Link Request")
+        .setDescription(`👋,\n\nYou are receiving this message because a moderator from the guild "**${interaction.guild.name}**" has requested you to link your League of Legends account to your Discord profile using the Rankup bot.\n\nPlease review the account details below and choose to either accept or deny the request. If you wish to prevent future requests from this guild, you can silence the guild.`)
+        .setColor("#00FF00")
+        .addFields(
+            {
+                name: "Game Name",
+                value: gamename,
+                inline: true
+            },
+            {
+                name: "Tagline",
+                value: tagline,
+                inline: true
+            },
+            {
+                name: "Region",
+                value: region,
+                inline: true
+            },
+            {
+                name: "Guild Id",
+                value: interaction.guild.id,
+                inline: false
+            }
+        );
+
+    const row = new ActionRowBuilder()
+        .addComponents(
+            new ButtonBuilder()
+                .setCustomId('accept_guild_request')
+                .setLabel('Accept')
+                .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+                .setCustomId('silence_guild')
+                .setLabel('Silence')
+                .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+                .setCustomId('deny_guild_request')
+                .setLabel('Deny')
+                .setStyle(ButtonStyle.Danger)
+        );
+
+    await discordaccount.send({ embeds: [embed], components: [row] });
+    await interaction.editReply("The request has been sent to the user !");
+}
+
+/**
+ * Mute a given user in this guild
+ * @param {Client} client 
+ * @param {Interaction} interaction 
+ * @param {User} discordaccount 
+ */
+async function guild_mute_account(client, interaction, discordaccount) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/guild/mute",
+            JSON.stringify({
+                guild: interaction.guild?.id,
+                discordaccount: discordaccount?.id,
+            }),
+            interaction.guild ? interaction.guild.id : interaction.user.id
+        ]
+    });
+
+    const userId = discordaccount.id;
+    const guildId = interaction.guild.id;
+
+    if (client.lol.player_mute_for_guild[guildId] === undefined) {
+        client.lol.player_mute_for_guild[guildId] = [];
+    }
+    if (!client.lol.player_mute_for_guild[guildId].includes(userId)) {
+        client.lol.player_mute_for_guild[guildId].push(userId);
+        client.pg.query("INSERT INTO player_muted (guildid, discordid) VALUES ($1, $2)", [guildId, userId]);
+    } else {
+        return interaction.editReply("You already muted this user.");
+    }
+
+    // Send a message to the user
+    const embed = new EmbedBuilder()
+        .setTitle("Guild mute")
+        .setDescription(`The user has been muted and you will not receive further rank update from him. \nYou can always unmute the user later with the command \`/lol guild unmute\` in a guild channel.`)
+        .setColor("#00FF00");
+
+    await interaction.editReply({ embeds: [embed], ephemeral: true });
+}
+
+/**
+ * Unmute a given user in this guild
+ * @param {Client} client 
+ * @param {Interaction} interaction 
+ * @param {User} discordaccount 
+ */
+async function guild_unmute_account(client, interaction, discordaccount) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/guild/unmute",
+            JSON.stringify({
+                guild: interaction.guild?.id,
+                discordaccount: discordaccount?.id,
+            }),
+            interaction.guild ? interaction.guild.id : interaction.user.id
+        ]
+    });
+
+    const userId = discordaccount.id;
+    const guildId = interaction.guild.id;
+
+    if (client.lol.player_mute_for_guild[guildId] !== undefined && client.lol.player_mute_for_guild[guildId].includes(userId)) {
+        client.lol.player_mute_for_guild[guildId].splice(client.lol.player_mute_for_guild[guildId].indexOf(userId), 1);
+        client.pg.query("DELETE FROM player_muted WHERE discordid=$1 AND guildid=$2", [userId, guildId]);
+    } else {
+        return interaction.editReply("This user is not currently muted.");
+    }
+
+    // Send a message to the user
+    const embed = new EmbedBuilder()
+        .setTitle("Guild unmute")
+        .setDescription(`The user has been unmuted. \nYou can always mute the user again with the command \`/lol guild mute\` in a guild channel.`)
+        .setColor("#00FF00");
+
+    await interaction.editReply({ embeds: [embed], ephemeral: true });
+}
+
+/**
+ * Silence linking request sent from a given guild
+ * @param {Client} client 
+ * @param {Interaction} interaction 
+ * @param {String} guild 
+ */
+async function account_silence_guild(client, interaction, guild) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/account/silence",
+            JSON.stringify({
+                guild: guild,
+                discordaccount: interaction.user.id,
+            }),
+            interaction.user.id
+        ]
+    });
+
+    const userId = interaction.user.id;
+
+    if (client.lol.guild_mute_for_player[userId] === undefined) {
+        client.lol.guild_mute_for_player[userId] = [];
+    }
+    if (!client.lol.guild_mute_for_player[userId].includes(guild)) {
+        client.lol.guild_mute_for_player[userId].push(guild);
+        client.pg.query("INSERT INTO guild_muted (discordid, guildid) VALUES ($1, $2)", [userId, guild]);
+    } else {
+        return interaction.editReply("You already silenced this guild.");
+    }
+
+    // Send a message to the user
+    const embed = new EmbedBuilder()
+        .setTitle("Guild silenced")
+        .setDescription(`The guild has been silenced and you will not receive further account link request. \nYou can always unsilence the guild later with the command \`/lol guild unsilence\` in a guild channel.`)
+        .setColor("#FF0000");
+
+    await interaction.editReply({ embeds: [embed], ephemeral: true });
+}
+
+/**
+ * Unsilence linking request sent from a given guild
+ * @param {Client} client 
+ * @param {Interaction} interaction 
+ * @param {String} guild 
+ */
+async function account_unsilence_guild(client, interaction, guild) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/account/unsilence",
+            JSON.stringify({
+                guild: guild,
+                discordaccount: interaction.user.id,
+            }),
+            interaction.user.id
+        ]
+    });
+
+    const userId = interaction.user.id;
+
+    if (client.lol.guild_mute_for_player[userId] !== undefined && client.lol.guild_mute_for_player[userId].includes(guild)) {
+        client.lol.guild_mute_for_player[userId].splice(client.lol.guild_mute_for_player[userId].indexOf(guild), 1);
+        client.pg.query("DELETE FROM guild_muted WHERE discordid=$1 AND guildid=$2", [userId, guild]);
+    } else {
+        return interaction.editReply("This guild is not currently silenced.");
+    }
+
+    // Send a message to the user
+    const embed = new EmbedBuilder()
+        .setTitle("Guild unsilenced")
+        .setDescription(`The guild has been unsilenced. \nYou can always silence the guild again with the command \`/lol guild silence\` in a guild channel.`)
+        .setColor("#FF0000");
+
+    await interaction.editReply({ embeds: [embed], ephemeral: true });
 }

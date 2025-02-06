@@ -53,6 +53,9 @@ module.exports = {
     scores: {},
     score_timestamp: 0,
 
+    guild_mute_for_player: {},
+    player_mute_for_guild: {},
+
     /**
      * setup champion list
      * @function setup
@@ -85,6 +88,31 @@ module.exports = {
                 this.services[x]["last"] = null;
                 this.services[x]["nb_rate_limit"] = 0;
             }
+        }
+    },
+
+    async update_data() {
+        // load mute lists
+        const response = await this.client.pg.query("SELECT * FROM guild_muted;");
+        for (const x of response.rows) {
+            const player = x.discordid;
+            const guildid = x.guildid;
+            
+            if (this.guild_mute_for_player[player] === undefined) {
+                this.guild_mute_for_player[player] = [];
+            }
+            this.guild_mute_for_player[player].push(guildid);
+        }
+
+        const response2 = await this.client.pg.query("SELECT * FROM player_muted;");
+        for (const x of response2.rows) {
+            const guild = x.guildid;
+            const player = x.discordid;
+
+            if (this.player_mute_for_guild[guild] === undefined) {
+                this.player_mute_for_guild[guild] = [];
+            }
+            this.player_mute_for_guild[guild].push(player);
         }
     },
 
@@ -1035,19 +1063,20 @@ module.exports = {
                     }
                 }
                 continue;
-            }
-            const currents = [];
-            // Get the 10 next basic updates
-            while (currents.length < 10 && this.services[route]["queue"]["updates"].length > 0) {
-                if (this.services[route]["queue"]["updates"]["type"] === "match" || this.services[route]["queue"]["updates"]["type"] === "population" || this.services[route]["queue"]["updates"]["type"] === "sum") {
-                    break;
+            } else {
+                const currents = [];
+                // Get the 10 next basic updates
+                while (currents.length < 10 && this.services[route]["queue"]["updates"].length > 0) {
+                    if (this.services[route]["queue"]["updates"]["type"] === "match" || this.services[route]["queue"]["updates"]["type"] === "population" || this.services[route]["queue"]["updates"]["type"] === "sum") {
+                        break;
+                    }
+                    currents.push(this.services[route]["queue"]["updates"].shift());
                 }
-                currents.push(this.services[route]["queue"]["updates"].shift());
+                // Batch update
+                await Promise.all(currents.map(current => this.basicUpdate(route, current, timer1, debug)));
+                //const current = this.services[route]["queue"]["updates"].shift();
+                //await this.basicUpdate(route, current, timer1, debug);
             }
-            // Batch update
-            await Promise.all(currents.map(current => this.basicUpdate(route, current, timer1, debug)));
-            //const current = this.services[route]["queue"]["updates"].shift();
-            //await this.basicUpdate(route, current, timer1, debug);
         }
         const end = new Date();
         if (debug) {

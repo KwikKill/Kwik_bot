@@ -194,15 +194,22 @@ class LolRankManager {
             ]);
             const embed = this.build_tracker(data, rank, last_game);
             for (const x of this.trackers) {
+                const channelid = x.channel;
+
+                // check if the user is muted
+                if (this.client.lol.player_mute_for_guild[x.guild] !== undefined && this.client.lol.player_mute_for_guild[x.guild].includes(data.discordid)) {
+                    continue;
+                }
+
                 try {
-                    const channel = await this.client.channels.fetch(x);
+                    const channel = await this.client.channels.fetch(channelid);
                     let user = false;
                     try {
                         user = await channel.guild.members.fetch(data.discordid);
                     } catch (e) {
                         user = false;
                     }
-                    if (user || x === "1036963873422589972" || x === "991052056657793124") {
+                    if (user || channelid === "1036963873422589972" || channelid === "991052056657793124") {
                         if (embed !== undefined) {
                             channel.send({ embeds: [embed] });
                         } else {
@@ -218,11 +225,11 @@ class LolRankManager {
                     if (e.code === 10003 || e.code === 50001) {
                         // delete the channel from the database
                         logger.error("Channel " + x + " not found, deleting from database");
-                        await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [x]);
+                        await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
                         const index = this.trackers.indexOf(x);
                         this.trackers.splice(index, 1);
                     } else {
-                        logger.error("Unknown error while sending tracker message (" + x + "): " + e);
+                        logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
                     }
                 }
             }

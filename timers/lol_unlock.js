@@ -2,7 +2,7 @@ module.exports = {
     name: 'lol_unlock',
     group: 'lol',
     onsetup: true,
-    timer: 180000,
+    timer: 180000, // 3 minutes
     description: "vérification du bon fonctionnement du bot lol",
     async run(client) {
         for (const route in client.lol.services) {
