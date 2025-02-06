@@ -308,6 +308,19 @@ module.exports = {
                     description: 'send a maintenance message',
                     type: ApplicationCommandOptionType.Subcommand,
                 },
+                {
+                    name: 'announce',
+                    description: 'send an announcement message',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'message',
+                            description: 'message',
+                            type: ApplicationCommandOptionType.String,
+                            required: true
+                        }
+                    ]
+                }
             ]
         }
     ],
@@ -771,6 +784,13 @@ module.exports = {
                     client.lol.lol_rank_manager.trackers.forEach(ch => {
                         client.channels.fetch(ch.channel).then(chs => {
                             chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations");
+                        });
+                    });
+                } else if (interaction.options.getSubcommand() === "announce") {
+                    const message = interaction.options.getString("message");
+                    client.lol.lol_rank_manager.trackers.forEach(ch => {
+                        client.channels.fetch(ch.channel).then(chs => {
+                            chs.send(message);
                         });
                     });
                 }
