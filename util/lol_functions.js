@@ -1088,7 +1088,7 @@ module.exports = {
         this.services[route]["running"] = false;
 
         // save the run time in the db
-        this.client.pg.query("INSERT INTO time_log (region, time, length) VALUES ($1, $2, $3)", [route, end - start, nb_total]);
+        this.client.pg.query("INSERT INTO time_log (region, time, length, rate_limit) VALUES ($1, $2, $3, $4)", [route, end - start, nb_total, this.services[route]["nb_rate_limit"]]);
 
         if (this.services[route]["queue"]["summoners"].length > 0 || this.services[route]["queue"]["updates"].length > 0) {
             return await this.main();
