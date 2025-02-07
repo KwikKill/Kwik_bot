@@ -58,6 +58,7 @@ module.exports = {
 
     /**
      * setup champion list
+     * /!\ client.pg is not set up yet, database interaction should be written in @update_data function
      * @function setup
      * @param {*} client discord client
      */
@@ -779,6 +780,7 @@ module.exports = {
 
     async start_services(route, debug = false) {
         logger.log("lol (update)[" + route + "] : starting service with " + this.services[route]["queue"]["updates"].length + " updates in queue");
+        const nb_total = this.services[route]["queue"]["updates"].length;
 
         if (this.services[route]["running"] === true) {
             return;
@@ -1084,6 +1086,10 @@ module.exports = {
         }
         logger.log("lol (update)[" + route + "] : stoping service for " + route + " (" + (end - start) + "ms) with " + this.services[route]["nb_rate_limit"] + " rate limits");
         this.services[route]["running"] = false;
+
+        // save the run time in the db
+        this.client.pg.query("INSERT INTO time_log (region, time, length) VALUES ($1, $2, $3)", [route, end - start, nb_total]);
+
         if (this.services[route]["queue"]["summoners"].length > 0 || this.services[route]["queue"]["updates"].length > 0) {
             return await this.main();
         }
