@@ -450,7 +450,7 @@ class LolApi {
      * @returns {Object}    account data
      */
     account_by_riotid(api_key, gamename, tagline, client, route) {
-        const url = "https://" + route + ".api.riotgames.com/riot/account/v1/accounts/by-riot-id/" + gamename + "/" + tagline + "?api_key=" + api_key;
+        const url = "https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/" + gamename + "/" + tagline + "?api_key=" + api_key;
         return this.apiCall(url, client, route);
     }
 }
