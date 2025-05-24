@@ -211,6 +211,14 @@ class LolRankManager {
                     }
                     if (user || channelid === "1036963873422589972" || channelid === "991052056657793124") {
                         if (embed !== undefined) {
+                            // check if the bot has permission to send messages in the channel
+                            if (!channel.permissionsFor(this.client.user).has("SendMessages")) {
+                                logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
+                                await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
+                                const index = this.trackers.indexOf(x);
+                                this.trackers.splice(index, 1);
+                                continue;
+                            }
                             channel.send({ embeds: [embed] });
                         } else {
                             logger.error("Error while building tracker embed for " + data.gamename + "#" + data.tagline);
@@ -224,7 +232,7 @@ class LolRankManager {
                     // if bot can't fetch the discord channel
                     if (e.code === 10003 || e.code === 50001) {
                         // delete the channel from the database
-                        logger.error("Channel " + x + " not found, deleting from database");
+                        logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
                         await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
                         const index = this.trackers.indexOf(x);
                         this.trackers.splice(index, 1);

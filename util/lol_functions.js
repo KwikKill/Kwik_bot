@@ -322,6 +322,10 @@ module.exports = {
         const query = await this.client.pg.query("SELECT * FROM summoners WHERE discordid = '" + discordid + "'");
         for (const x of query.rows) {
             const response = await this.lol_api.championmasteriesBySummoner(this.apiKey, region, x.puuid, this.client);
+            if (!Array.isArray(response)) {
+                logger.error("Error while fetching champion masteries for " + x.puuid + " in " + region, response);
+                return null;
+            }
             for (const y of response) {
                 if (masteries[y.championId] === undefined) {
                     masteries[y.championId] = y;
@@ -341,7 +345,7 @@ module.exports = {
         const data = { "first_mastery_champ": "", "first_mastery": 0, "second_mastery_champ": "", "second_mastery": 0, "third_mastery_champ": "", "third_mastery": 0, "total_point": 0, "mastery7": 0, "mastery6": 0, "mastery5": 0 };
         for (const x in masteries) {
             data["total_point"] += masteries[x].championPoints;
-            if (masteries[x].championLevel === 7) {
+            if (masteries[x].championLevel >= 7) {
                 data["mastery7"]++;
             }
             if (masteries[x].championLevel === 6) {
@@ -591,7 +595,7 @@ module.exports = {
         const region = current["region"];
         const priority = current["priority"];
         let puuid = await this.lol_api.account_by_riotid(this.apiKey, gamename, tagline, this.client, route);
-        if (puuid === null) {
+        if (puuid === null || !puuid?.["puuid"]) {
             try {
                 await interaction.editReply("<@" + discordid + ">, Account " + gamename + "#" + tagline + " not found.");
             } catch {
