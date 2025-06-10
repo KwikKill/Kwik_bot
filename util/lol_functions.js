@@ -998,7 +998,7 @@ module.exports = {
                             const accountId = summonerObject['accountId'];
                             const puuid = summonerObject['puuid'];
 
-                            const rank = await this.lol_rank_manager.update_rank(id, region);
+                            const rank = await this.lol_rank_manager.update_rank(puuid, region);
 
                             if (current["add"] === true) {
                                 try {
