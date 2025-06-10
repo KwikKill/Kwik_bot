@@ -143,7 +143,7 @@ class LolRankManager {
         if (!(puuid in this.rank_cache)) {
             return;
         }
-        const rank = await this.update_rank(this.rank_cache[puuid].id, this.rank_cache[puuid].region);
+        const rank = await this.update_rank(puuid, this.rank_cache[puuid].region);
 
         const data = this.rank_cache[puuid];
         const new_rank = {
