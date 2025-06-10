@@ -549,8 +549,8 @@ class LolRankManager {
      * @param {*} region region of the summoner
      * @returns {Object} rank data
      */
-    async update_rank(summoner_id, region) {
-        const response = await this.client.lol.lol_api.leaguesBySummoner(this.client.lol.apiKey, region, summoner_id, this.client);
+    async update_rank(puuid, region) {
+        const response = await this.client.lol.lol_api.leaguesByPuuid(this.client.lol.apiKey, region, puuid, this.client);
 
         const data = {
             "RANKED_SOLO_5x5": {
@@ -579,7 +579,7 @@ class LolRankManager {
     }
 
     async add_summoner(current) {
-        const rank = await this.update_rank(current["id"], current["region"]);
+        const rank = await this.update_rank(current["puuid"], current["region"]);
 
         this.rank_cache[current["puuid"]] = {
             "RANKED_SOLO_5x5": {

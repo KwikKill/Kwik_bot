@@ -145,6 +145,20 @@ class LolApi {
     }
 
     /**
+     * get the leagues of a summoner by summoner id
+     * @function leaguesByPuuid
+     * @param {*} apiKey      Riot API key
+     * @param {*} region      region of the player
+     * @param {*} puuid       puuid of the player
+     * @returns {Object}      leagues of the player
+     */
+    async leaguesByPuuid(apiKey, region, puuid, client) {
+        this.checkRegion(region, client);
+        const url = "https://" + region + ".api.riotgames.com/lol/league/v4/entries/by-puuid/" + puuid + "?api_key=" + apiKey;
+        return await this.apiCall(url, client, client.lol.reverse_routes[region]);
+    }
+
+    /**
      * get challenger league
      * @function challengerLeagues
      * @param {*} apiKey      Riot API key
@@ -266,7 +280,7 @@ class LolApi {
      * @param {*} url     url to fetch
      * @returns {Object}  data from the API
      */
-    async apiCall(url, client, route=undefined) {
+    async apiCall(url, client, route = undefined) {
         if (route !== undefined) {
             // If there is a rate limit, wait for the delay
             if (this.rate_limits[route] !== undefined && this.rate_limits[route] > 0) {
