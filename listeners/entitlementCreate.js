@@ -6,9 +6,8 @@ module.exports = {
     description: "New entitlement interaction listener",
     type: "entitlementCreate",
     async run(client, entitlement) {
-        console.log(entitlement);
         // Log the new entitlement
-        logger.log(`-Entitlement created: ${entitlement?.id}`);
+        logger.log(`Entitlement created: ${entitlement?.id}`);
 
         // Check if the entitlement is valid
         if (!entitlement
@@ -23,9 +22,6 @@ module.exports = {
             logger.log(`Entitlement ${entitlement.id} has been deleted, skipping processing.`);
             return;
         }
-
-        logger.log("entitlement are currently disabled, skipping processing.");
-        return;
 
         // Check if the user has an account in DB
         client.pg.query({

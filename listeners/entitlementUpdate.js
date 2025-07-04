@@ -7,10 +7,8 @@ module.exports = {
     description: "Delete entitlement interaction listener",
     type: "entitlementCreate",
     async run(client, oldEntitlement, newEntitlement) {
-        console.log(oldEntitlement);
-        console.log(newEntitlement);
         // Log the updated entitlement
-        logger.log(`-Entitlement updated: ${oldEntitlement?.id} -> ${newEntitlement?.id}`);
+        logger.log(`Entitlement updated: ${oldEntitlement?.id} -> ${newEntitlement?.id}`);
 
         // Check if the entitlement is valid
         if (!newEntitlement
@@ -19,9 +17,6 @@ module.exports = {
             logger.error(`Invalid entitlement data received: ${JSON.stringify(newEntitlement)}`);
             return;
         }
-
-        logger.log("entitlement are currently disabled, skipping processing.");
-        return;
 
         // Check if the user has an account in DB
         client.pg.query({
@@ -50,7 +45,8 @@ module.exports = {
                         logger.log(`entitlement ${entitlement.id} for user ${entitlement.userId} has been processed successfully.`);
                     }
                 });
-            } else {
+            // Check endsTimestamp to determine if the entitlement is still valid
+            } else if (newEntitlement.endsTimestamp && newEntitlement.endsTimestamp > Date.now()) {
                 // Update the user's priority to 1, indicating entitlement creation
                 client.pg.query({
                     text: 'UPDATE summoners SET priority = 1 WHERE discordid = $1',

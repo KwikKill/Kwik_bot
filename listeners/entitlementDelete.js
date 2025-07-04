@@ -7,10 +7,8 @@ module.exports = {
     description: "Delete entitlement interaction listener",
     type: "entitlementCreate",
     async run(client, entitlement) {
-        console.log(entitlement);
-        console.log(entitlement.status);
         // Log the deleted entitlement
-        logger.log(`- Entitlement deleted: ${entitlement?.id}`);
+        logger.log(`Entitlement deleted: ${entitlement?.id}`);
 
         // Check if the entitlement is valid
         if (!entitlement
@@ -24,9 +22,6 @@ module.exports = {
             logger.log(`Entitlement ${entitlement.id} has not been deleted, skipping processing.`);
             return;
         }
-
-        logger.log("entitlement are currently disabled, skipping processing.");
-        return;
 
         // Check if the user has an account in DB
         client.pg.query({
