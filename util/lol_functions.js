@@ -759,6 +759,10 @@ module.exports = {
                 if (discordid !== "503109625772507136") {
                     //logger.log("- lol (update 3): mastery");
                     this.update_mastery(current["discordid"], current["region"]).then(mastery => {
+                        if (mastery === null) {
+                            logger.error("Error while updating mastery for " + current["puuid"] + " in " + current["region"]);
+                            return;
+                        }
                         this.client.pg.query("UPDATE mastery " +
                             "SET first_mastery_champ = '" + mastery["first_mastery_champ"] + "', " +
                             "first_mastery = " + mastery["first_mastery"] + ", " +
