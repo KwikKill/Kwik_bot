@@ -7,6 +7,7 @@ module.exports = {
     description: "New entitlement interaction listener",
     type: "entitlementCreate",
     async run(client, entitlement) {
+        console.log(entitlement);
         // Log the new entitlement
         logger.log(`New entitlement created: ${entitlement}`);
 

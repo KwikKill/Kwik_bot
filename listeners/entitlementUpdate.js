@@ -7,6 +7,8 @@ module.exports = {
     description: "Delete entitlement interaction listener",
     type: "entitlementCreate",
     async run(client, oldEntitlement, newEntitlement) {
+        console.log(oldEntitlement);
+        console.log(newEntitlement);
         // Log the updated entitlement
         logger.log(`Entitlement updated: ${newEntitlement}`);
 

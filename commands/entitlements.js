@@ -63,7 +63,7 @@ module.exports = {
                 const user = interaction.options.getUser('user');
                 // If a user is specified, check their entitlement status, otherwise check the bot's entitlements
                 if (user) {
-                    
+
                 } else {
 
                 }
@@ -110,10 +110,9 @@ module.exports = {
                 }
             } else if (interaction.options.getSubcommand() === 'remove') {
                 // Remove an entitlement from a user
-                const user = interaction.options.getUser('user');
                 const entitlementId = interaction.options.getString('entitlement_id');
 
-                if (!user || !entitlementId) {
+                if (!entitlementId) {
                     await interaction.reply({
                         content: "Invalid user or entitlement ID.",
                         ephemeral: true
