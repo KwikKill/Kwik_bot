@@ -129,6 +129,7 @@ module.exports = {
                     entitlement = await client.application.entitlements.fetch({
                         entitlement: entitlementId
                     });
+                    entitlement = entitlement.first();
                 } catch (error) {
                     logger.error(`Failed to fetch entitlement: ${error.message}`);
                     await interaction.reply({
