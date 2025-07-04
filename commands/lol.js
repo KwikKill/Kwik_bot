@@ -1251,9 +1251,6 @@ async function account_add(client, interaction, gamename, tagline, region) {
                 new ButtonBuilder()
                 .setStyle(ButtonStyle.Premium)
                 .setSKUId("1388250955447009281"),
-                new ButtonBuilder()
-                .setStyle(ButtonStyle.Premium)
-                .setSKUId("1388253970673434774"),
             );
 
 
@@ -2766,9 +2763,6 @@ async function stats_compare(client, interaction, discordaccount, champion, role
                 new ButtonBuilder()
                 .setStyle(ButtonStyle.Premium)
                 .setSKUId("1388250955447009281"),
-                new ButtonBuilder()
-                .setStyle(ButtonStyle.Premium)
-                .setSKUId("1388253970673434774"),
             );
 
             return await interaction.editReply({
