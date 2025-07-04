@@ -25,7 +25,7 @@ module.exports = {
 
         // Check if the user has an account in DB
         client.pg.query({
-            text: 'SELECT * FROM summoners WHERE discordid = $1',
+            text: 'SELECT * FROM summoners WHERE discordid = $1 ORDER BY priority DESC',
             values: [entitlement.userId]
         }, (err, res) => {
             if (err) {
@@ -38,6 +38,11 @@ module.exports = {
                 return;
             }
 
+            if (res.rows[0].priority === 0) {
+                logger.log(`User ${entitlement.userId} already has no entitlements, skipping processing.`);
+                return;
+            }
+
             // Update the user's priority to 0, indicating entitlement deletion
             client.pg.query({
                 text: 'UPDATE summoners SET priority = 0 WHERE discordid = $1',
@@ -47,6 +52,18 @@ module.exports = {
                     logger.error(`Database error while inserting entitlement: ${err.message}`);
                 } else {
                     logger.log(`entitlement ${entitlement.id} for user ${entitlement.userId} has been processed successfully.`);
+
+                    // Send a message to the user about their new entitlement
+                    client.users.fetch(entitlement.userId).then(user => {
+                        user.send({
+                            content: `Your subscription has been successfully cancelled. I'll miss you!`,
+                            embeds: []
+                        }).catch(error => {
+                            logger.error(`Failed to send entitlement message to user ${entitlement.userId}: ${error.message}`);
+                        });
+                    }).catch(error => {
+                        logger.error(`Failed to fetch user ${entitlement.userId} for entitlement notification: ${error.message}`);
+                    });
                 }
             });
         });

@@ -1233,18 +1233,24 @@ async function account_add(client, interaction, gamename, tagline, region) {
         }
 
         // If the user is not a premium user
-        const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
+        let priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
         if (nb_account === 0 || priority.rows.length === 0 || priority.rows?.[0].priority === 0) {
             if (nb_account === 0) {
-                // TODO: if user subscribe and then add an account, priority will be 0 instead of 1
-                // Does the same if user is subscribed, remove all accounts and add them back.
-                // FIX: check entitlement status.
-                
+                // TODO: user status need to be exported in another database table
+                const entitlements = await client.application.entitlements.fetch();
+
+                const entitlement = entitlements.find(ent => ent.userId === interaction.user.id && !ent.deleted);
+                if (entitlement) {
+                    priority = 1;
+                } else {
+                    priority = 0;
+                }
+
                 await interaction.editReply({
-                    content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.",
+                    content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take a long time.",
                     embeds: []
                 });
-                return await addSumoner(client, gamename, tagline, interaction, region);
+                return await addSumoner(client, gamename, tagline, interaction, region, priority);
             }
 
             let row = new ActionRowBuilder().addComponents(
