@@ -8,8 +8,9 @@ module.exports = {
     type: "entitlementCreate",
     async run(client, entitlement) {
         console.log(entitlement);
+        console.log(entitlement.status);
         // Log the new entitlement
-        logger.log(`New entitlement created: ${entitlement}`);
+        logger.log(`-Entitlement created: ${entitlement?.id}`);
 
         logger.log("entitlement are currently disabled, skipping processing.");
         return;

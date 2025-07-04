@@ -123,25 +123,9 @@ module.exports = {
                 // Log the entitlement removal
                 logger.log(`Removing entitlement ${entitlementId}`);
 
-                // Get the entitlement to ensure it exists
-                let entitlement;
-                try {
-                    entitlement = await client.application.entitlements.fetch({
-                        entitlement: entitlementId
-                    });
-                    entitlement = entitlement.first();
-                } catch (error) {
-                    logger.error(`Failed to fetch entitlement: ${error.message}`);
-                    await interaction.reply({
-                        content: `Entitlement ${entitlementId} does not exist.`,
-                        ephemeral: true
-                    });
-                    return;
-                }
-
                 // Remove the entitlement
                 try {
-                    await client.application.entitlements.deleteTest(entitlement);
+                    await client.application.entitlements.deleteTest(entitlementId);
                     await interaction.reply({
                         content: `Entitlement ${entitlementId} has been removed.`,
                         ephemeral: true

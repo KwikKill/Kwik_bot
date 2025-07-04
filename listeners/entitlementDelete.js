@@ -8,8 +8,9 @@ module.exports = {
     type: "entitlementCreate",
     async run(client, entitlement) {
         console.log(entitlement);
+        console.log(entitlement.status);
         // Log the deleted entitlement
-        logger.log(`Entitlement deleted: ${entitlement}`);
+        logger.log(`- Entitlement deleted: ${entitlement?.id}`);
 
         logger.log("entitlement are currently disabled, skipping processing.");
         return;

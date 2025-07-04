@@ -10,7 +10,7 @@ module.exports = {
         console.log(oldEntitlement);
         console.log(newEntitlement);
         // Log the updated entitlement
-        logger.log(`Entitlement updated: ${newEntitlement}`);
+        logger.log(`-Entitlement updated: ${oldEntitlement?.id} -> ${newEntitlement?.id}`);
 
         logger.log("entitlement are currently disabled, skipping processing.");
         return;
