@@ -12,9 +12,6 @@ module.exports = {
         // Log the updated entitlement
         logger.log(`-Entitlement updated: ${oldEntitlement?.id} -> ${newEntitlement?.id}`);
 
-        logger.log("entitlement are currently disabled, skipping processing.");
-        return;
-
         // Check if the entitlement is valid
         if (!newEntitlement
             || !newEntitlement.userId
@@ -22,6 +19,9 @@ module.exports = {
             logger.error(`Invalid entitlement data received: ${JSON.stringify(entitlement)}`);
             return;
         }
+
+        logger.log("entitlement are currently disabled, skipping processing.");
+        return;
 
         // Check if the user has an account in DB
         client.pg.query({
@@ -38,7 +38,7 @@ module.exports = {
                 return;
             }
 
-            if (newEntitlement.status === entitlementStatus.Inactive) {
+            if (newEntitlement.deleted) {
                 // Update the user's priority to 0, indicating entitlement deletion
                 client.pg.query({
                     text: 'UPDATE summoners SET priority = 0 WHERE discordid = $1',

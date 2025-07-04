@@ -12,9 +12,6 @@ module.exports = {
         // Log the deleted entitlement
         logger.log(`- Entitlement deleted: ${entitlement?.id}`);
 
-        logger.log("entitlement are currently disabled, skipping processing.");
-        return;
-
         // Check if the entitlement is valid
         if (!entitlement
             || !entitlement.userId
@@ -22,6 +19,14 @@ module.exports = {
             logger.error(`Invalid entitlement data received: ${JSON.stringify(entitlement)}`);
             return;
         }
+
+        if (!entitlement.deleted) {
+            logger.log(`Entitlement ${entitlement.id} has not been deleted, skipping processing.`);
+            return;
+        }
+
+        logger.log("entitlement are currently disabled, skipping processing.");
+        return;
 
         // Check if the user has an account in DB
         client.pg.query({

@@ -1,5 +1,4 @@
 const logger = require('../util/logger');
-const { entitlementStatus } = require('discord.js');
 
 module.exports = {
     name: 'entitlementCreate',
@@ -8,21 +7,25 @@ module.exports = {
     type: "entitlementCreate",
     async run(client, entitlement) {
         console.log(entitlement);
-        console.log(entitlement.status);
         // Log the new entitlement
         logger.log(`-Entitlement created: ${entitlement?.id}`);
-
-        logger.log("entitlement are currently disabled, skipping processing.");
-        return;
 
         // Check if the entitlement is valid
         if (!entitlement
             || !entitlement.userId
-            || entitlement.status === entitlementStatus.Inactive
         ) {
             logger.error(`Invalid entitlement data received: ${JSON.stringify(entitlement)}`);
             return;
         }
+
+        // Check if the entitlement has been deleted
+        if (entitlement.deleted) {
+            logger.log(`Entitlement ${entitlement.id} has been deleted, skipping processing.`);
+            return;
+        }
+
+        logger.log("entitlement are currently disabled, skipping processing.");
+        return;
 
         // Check if the user has an account in DB
         client.pg.query({
