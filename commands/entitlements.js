@@ -138,6 +138,8 @@ module.exports = {
                     return;
                 }
 
+                console.log(entitlement);
+
                 // Remove the entitlement
                 try {
                     await client.application.entitlements.deleteTest({
