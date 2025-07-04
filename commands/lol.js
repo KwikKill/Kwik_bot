@@ -1168,10 +1168,10 @@ module.exports = {
  * @param {String} region - summoner's region
  * @returns {Promise<void>}
  */
-async function addSumoner(client, gamename, tagline, interaction, region) {
+async function addSumoner(client, gamename, tagline, interaction, region, priority = 0) {
     const route = client.lol.reverse_routes[region];
 
-    client.lol.services[route]["queue"]["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": 0, "first": true });
+    client.lol.services[route]["queue"]["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": priority, "first": true });
     await client.lol.main();
 }
 
@@ -1236,15 +1236,32 @@ async function account_add(client, interaction, gamename, tagline, region) {
         const priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
         if (nb_account === 0 || priority.rows.length === 0 || priority.rows?.[0].priority === 0) {
             if (nb_account === 0) {
+                // TODO: if user subscribe and then add an account, priority will be 0 instead of 1
+                // Does the same if user is subscribed, remove all accounts and add them back.
+                // FIX: check entitlement status.
+                
                 await interaction.editReply({
                     content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.",
                     embeds: []
                 });
                 return await addSumoner(client, gamename, tagline, interaction, region);
             }
+
+            let row = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                .setStyle(ButtonStyle.Premium)
+                .setSKUId("1388250955447009281"),
+                new ButtonBuilder()
+                .setStyle(ButtonStyle.Premium)
+                .setSKUId("1388253970673434774"),
+            );
+
+
             return await interaction.editReply({
-                content: "You have reached your maximum number of linked accounts. If you want to unlock more accounts slots by supporting me, you can contact me on discord : **kwikkill**",
-                embeds: []
+                content: "You have reached your maximum number of linked accounts. You can unlo, you can contact me on discord : **kwikkill**ck more accounts slots by supporting me.",
+                components: [
+                    row
+                ]
             });
         }
 
@@ -1254,7 +1271,7 @@ async function account_add(client, interaction, gamename, tagline, region) {
                 content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.",
                 embeds: []
             });
-            return await addSumoner(client, gamename, tagline, interaction, region);
+            return await addSumoner(client, gamename, tagline, interaction, region, priority.rows?.[0].priority);
         }
 
         return await interaction.editReply({
@@ -2744,7 +2761,22 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         }
         // if user is not a premium user
         if (priority.rows[0].priority === 0) {
-            return await interaction.editReply("This feature is not available for the moment. If you want to support me, you can contact me on discord : **KwikKill#6123**");
+
+            let row = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                .setStyle(ButtonStyle.Premium)
+                .setSKUId("1388250955447009281"),
+                new ButtonBuilder()
+                .setStyle(ButtonStyle.Premium)
+                .setSKUId("1388253970673434774"),
+            );
+
+            return await interaction.editReply({
+                content: "This feature is only available for premium user.",
+                components: [
+                    row
+                ]
+            });
         }
 
         let i = 1;
