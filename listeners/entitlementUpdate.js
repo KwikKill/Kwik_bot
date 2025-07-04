@@ -16,7 +16,7 @@ module.exports = {
         if (!newEntitlement
             || !newEntitlement.userId
         ) {
-            logger.error(`Invalid entitlement data received: ${JSON.stringify(entitlement)}`);
+            logger.error(`Invalid entitlement data received: ${JSON.stringify(newEntitlement)}`);
             return;
         }
 
