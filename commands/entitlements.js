@@ -138,13 +138,9 @@ module.exports = {
                     return;
                 }
 
-                console.log(entitlement);
-
                 // Remove the entitlement
                 try {
-                    await client.application.entitlements.deleteTest({
-                        entitlement: entitlement
-                    });
+                    await client.application.entitlements.deleteTest(entitlement);
                     await interaction.reply({
                         content: `Entitlement ${entitlementId} has been removed.`,
                         ephemeral: true
