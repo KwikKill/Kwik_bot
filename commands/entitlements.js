@@ -109,19 +109,19 @@ module.exports = {
                     return;
                 }
             } else if (interaction.options.getSubcommand() === 'remove') {
-                // Remove an entitlement from a user
+                // Remove an entitlement
                 const entitlementId = interaction.options.getString('entitlement_id');
 
                 if (!entitlementId) {
                     await interaction.reply({
-                        content: "Invalid user or entitlement ID.",
+                        content: "Invalid entitlement ID.",
                         ephemeral: true
                     });
                     return;
                 }
 
                 // Log the entitlement removal
-                logger.log(`Removing entitlement ${entitlementId} for user ${user.id}`);
+                logger.log(`Removing entitlement ${entitlementId}`);
 
                 // Remove the entitlement from the user
                 try {
@@ -129,7 +129,7 @@ module.exports = {
                         entitlement: entitlementId
                     });
                     await interaction.reply({
-                        content: `Entitlement ${entitlementId} has been removed from user <@${user.id}>.`,
+                        content: `Entitlement ${entitlementId} has been removed.`,
                         ephemeral: true
                     });
                 } catch (error) {
