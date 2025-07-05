@@ -812,8 +812,8 @@ module.exports = {
                     ]
                 },
                 {
-                    name: 'kwikscore',
-                    description: 'ranking kwikscore commands',
+                    name: 'score',
+                    description: 'ranking score commands',
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
@@ -1078,7 +1078,7 @@ module.exports = {
         } else if (interaction.options.getSubcommandGroup() === "top") {
             if (interaction.options.getSubcommand() === "carry") {
                 top_carry(client, interaction, champion, role, account, season, gamemode);
-            } else if (interaction.options.getSubcommand() === "kwikscore") {
+            } else if (interaction.options.getSubcommand() === "score") {
                 top_kwikscore(client, interaction, champion, role, account, season, gamemode);
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
@@ -1739,7 +1739,7 @@ async function stats_summarized(client, interaction, discordaccount, champion, r
                 inline: true
             },
             {
-                name: "KS (KwikScore) :",
+                name: "Score :",
                 value: "" + score.toFixed(0) + " / 500",
                 inline: true
             },
@@ -3112,7 +3112,7 @@ async function stats_compare(client, interaction, discordaccount, champion, role
         text += (Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills) >= Number.parseFloat((Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills)) ? "+" : "";
         text += Number.parseFloat((Number.parseFloat(average_kills) + Number.parseFloat(average_assists)) * 100 / average_total_kills - (Number.parseFloat(oponent_average_kills) + Number.parseFloat(oponent_average_assists)) * 100 / oponent_average_total_kills).toFixed(2) + ")\n";
 
-        text += "KwikScore            │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
+        text += "Score                │ " + Number.parseFloat(score).toFixed(2) + " ".repeat(8 - Number.parseFloat(score).toFixed(2).length);
         text += (Number.parseFloat(score) >= Number.parseFloat(oponent_score)) ? " ▲ " : " ▼ ";
         text += Number.parseFloat(oponent_score).toFixed(2) + " ".repeat(7 - Number.parseFloat(oponent_score).toFixed(2).length);
         text += " (";
@@ -3691,7 +3691,7 @@ async function top_kwikscore(client, interaction, champion, role, season) {
         }
 
         embed.addFields({
-            name: "Top 10 KwikScore : ",
+            name: "Top 10 Score : ",
             value: "" + text,
         });
 
