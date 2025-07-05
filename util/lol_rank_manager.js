@@ -111,24 +111,28 @@ class LolRankManager {
         // Get every summoner rank from the database
         const data = await this.client.pg.query("SELECT * FROM summoners");
         for (const x of data.rows) {
-            const rank = {
-                "RANKED_SOLO_5x5": {
-                    "tier": x.tier_solo,
-                    "rank": x.rank_solo,
-                    "leaguePoints": x.lp_solo,
-                },
-                "RANKED_FLEX_SR": {
-                    "tier": x.tier_flex,
-                    "rank": x.rank_flex,
-                    "leaguePoints": x.lp_flex,
-                },
-                "discordid": x.discordid,
-                "region": x.region,
-                "gamename": x.gamename,
-                "tagline": x.tagline,
-                "id": x.id,
-            };
-            this.rank_cache[x.puuid] = rank;
+            if (!(x.puuid in this.rank_cache)) {
+                const rank = {
+                    "RANKED_SOLO_5x5": {
+                        "tier": x.tier_solo,
+                        "rank": x.rank_solo,
+                        "leaguePoints": x.lp_solo,
+                    },
+                    "RANKED_FLEX_SR": {
+                        "tier": x.tier_flex,
+                        "rank": x.rank_flex,
+                        "leaguePoints": x.lp_flex,
+                    },
+                    "discordid": [x.discordid],
+                    "region": x.region,
+                    "gamename": x.gamename,
+                    "tagline": x.tagline,
+                    "id": x.id,
+                };
+                this.rank_cache[x.puuid] = rank;
+            } else {
+                this.rank_cache[x.puuid]["discordid"].push(x.discordid);
+            }
         }
     }
 
@@ -192,52 +196,60 @@ class LolRankManager {
                 rank["RANKED_FLEX_SR"]["leaguePoints"],
                 data.id,
             ]);
-            const embed = this.build_tracker(data, rank, last_game);
+            const embeds = this.build_trackers(data, rank, last_game);
+
             for (const x of this.trackers) {
                 const channelid = x.channel;
 
-                // check if the user is muted
-                if (this.client.lol.player_mute_for_guild[x.guild] !== undefined && this.client.lol.player_mute_for_guild[x.guild].includes(data.discordid)) {
-                    continue;
-                }
+                for (const discordid of data.discordid) {
+                    const embed = embeds[discordid];
 
-                try {
-                    const channel = await this.client.channels.fetch(channelid);
-                    let user = false;
+                    // check if the user is muted
+                    if (
+                        this.client.lol.player_mute_for_guild[x.guild] !== undefined
+                        && this.client.lol.player_mute_for_guild[x.guild].includes(discordid)
+                    ) {
+                        continue;
+                    }
+
                     try {
-                        user = await channel.guild.members.fetch(data.discordid);
-                    } catch (e) {
-                        user = false;
-                    }
-                    if (user || channelid === "1036963873422589972" || channelid === "991052056657793124") {
-                        if (embed !== undefined) {
-                            // check if the bot has permission to send messages in the channel
-                            if (!channel.permissionsFor(this.client.user).has("SendMessages")) {
-                                logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
-                                await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
-                                const index = this.trackers.indexOf(x);
-                                this.trackers.splice(index, 1);
-                                continue;
-                            }
-                            channel.send({ embeds: [embed] });
-                        } else {
-                            logger.error("Error while building tracker embed for " + data.gamename + "#" + data.tagline);
-                            logger.error("Current SOLO rank : " + data["RANKED_SOLO_5x5"]["tier"] + " " + data["RANKED_SOLO_5x5"]["rank"] + " " + data["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
-                            logger.error("New SOLO rank : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
-                            logger.error("Current FLEX rank : " + data["RANKED_FLEX_SR"]["tier"] + " " + data["RANKED_FLEX_SR"]["rank"] + " " + data["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
-                            logger.error("New FLEX rank : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                        const channel = await this.client.channels.fetch(channelid);
+                        let user = false;
+                        try {
+                            user = await channel.guild.members.fetch(discordid);
+                        } catch (e) {
+                            user = false;
                         }
-                    }
-                } catch (e) {
-                    // if bot can't fetch the discord channel
-                    if (e.code === 10003 || e.code === 50001) {
-                        // delete the channel from the database
-                        logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
-                        await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
-                        const index = this.trackers.indexOf(x);
-                        this.trackers.splice(index, 1);
-                    } else {
-                        logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
+                        if (user || channelid === "1036963873422589972" || channelid === "991052056657793124") {
+                            if (embed !== undefined) {
+                                // check if the bot has permission to send messages in the channel
+                                if (!channel.permissionsFor(this.client.user).has("SendMessages")) {
+                                    logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
+                                    await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
+                                    const index = this.trackers.indexOf(x);
+                                    this.trackers.splice(index, 1);
+                                    continue;
+                                }
+                                channel.send({ embeds: [embed] });
+                            } else {
+                                logger.error("Error while building tracker embed for " + data.gamename + "#" + data.tagline);
+                                logger.error("Current SOLO rank : " + data["RANKED_SOLO_5x5"]["tier"] + " " + data["RANKED_SOLO_5x5"]["rank"] + " " + data["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                                logger.error("New SOLO rank : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                                logger.error("Current FLEX rank : " + data["RANKED_FLEX_SR"]["tier"] + " " + data["RANKED_FLEX_SR"]["rank"] + " " + data["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                                logger.error("New FLEX rank : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                            }
+                        }
+                    } catch (e) {
+                        // if bot can't fetch the discord channel
+                        if (e.code === 10003 || e.code === 50001) {
+                            // delete the channel from the database
+                            logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
+                            await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
+                            const index = this.trackers.indexOf(x);
+                            this.trackers.splice(index, 1);
+                        } else {
+                            logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
+                        }
                     }
                 }
             }
@@ -268,222 +280,225 @@ class LolRankManager {
 
     /**
      * Build tracker embed
-     * @function build_tracker
+     * @function build_trackers
      * @param {string} data user data
      * @param {object} current_rank current summoner rank data
      * @param {object} last_game last game data
      * @param {*} rank rank data
      */
-    build_tracker(data, rank, last_game) {
-        const embed = new EmbedBuilder();
+    build_trackers(data, rank, last_game) {
+        const embeds = {};
+        for (const discordid of data.discordid) {
+            const embed = new EmbedBuilder();
 
-        // If the last game is not in the database or was skipped
-        if (last_game === "none" || last_game === null) {
-            // If the user just finished a games in solo/duo
-            if ((
-                data["RANKED_SOLO_5x5"]["rank"] !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                data["RANKED_SOLO_5x5"]["tier"] !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                data["RANKED_SOLO_5x5"]["leaguePoints"] !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
-            ) && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked") {
-                const LP_change = this.LP_change(
-                    data["RANKED_SOLO_5x5"]["rank"],
-                    data["RANKED_SOLO_5x5"]["tier"],
-                    data["RANKED_SOLO_5x5"]["leaguePoints"],
-                    rank["RANKED_SOLO_5x5"]["rank"],
-                    rank["RANKED_SOLO_5x5"]["tier"],
-                    rank["RANKED_SOLO_5x5"]["leaguePoints"]
-                );
-                embed.setTitle(
-                    "Rank Solo/Duo update for " + data.gamename + "#" + data.tagline
-                );
-                embed.setDescription(
-                    "<@" + data.discordid + "> just played some games in Solo/Duo queue."
-                );
-                embed.setColor(
-                    "#77767b"
-                );
-                embed.addFields(
-                    {
-                        name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
-                        value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
-                    }
-                );
-                return embed;
-            }
-            // If the user just finished a games in flex
-            else if ((
-                data["RANKED_FLEX_SR"]["rank"] !== rank["RANKED_FLEX_SR"]["rank"] ||
-                data["RANKED_FLEX_SR"]["tier"] !== rank["RANKED_FLEX_SR"]["tier"] ||
-                data["RANKED_FLEX_SR"]["leaguePoints"] !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-            ) && rank["RANKED_FLEX_SR"]["tier"] !== "unranked") {
-                const LP_change = this.LP_change(
-                    data["RANKED_FLEX_SR"]["rank"],
-                    data["RANKED_FLEX_SR"]["tier"],
-                    data["RANKED_FLEX_SR"]["leaguePoints"],
-                    rank["RANKED_FLEX_SR"]["rank"],
-                    rank["RANKED_FLEX_SR"]["tier"],
-                    rank["RANKED_FLEX_SR"]["leaguePoints"]
-                );
-                embed.setTitle(
-                    "Rank Flex update for " + data.gamename + "#" + data.tagline
-                );
-                embed.setDescription(
-                    "<@" + data.discordid + "> just played some games in Flex queue."
-                );
-                embed.setColor("#77767b");
-                embed.addFields(
-                    {
-                        name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
-                        value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
-                    }
-                );
-                return embed;
-            }
-        } else {
-            // set embed URL and thumbnail
-            embed.setURL(this.get_league_of_graph(last_game["matchId"]));
-            embed.setThumbnail(this.get_champion_url(last_game["champion"]));
-
-            // If the user just finished his placement games in solo/duo
-            if (
-                data["RANKED_SOLO_5x5"]["tier"] === 'unranked'
-                && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked'
-            ) {
-                embed.setTitle(
-                    "Placement Solo/Duo completed for " + data.gamename + "#" + data.tagline
-                );
-                embed.setDescription(
-                    "<@" + data.discordid + "> just finished his placement games in Solo/Duo queue."
-                );
-                embed.setColor("#ff7800");
-                embed.addFields(
-                    // KDA
-                    {
-                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
-                        value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
-                        inline: true,
-                    },
-                    // Rank
-                    {
-                        name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
-                        value: "placement",
-                        inline: true,
-                    }
-                );
-                return embed;
-            }
-            // If the user just finished his placement games in flex
-            else if (
-                data["RANKED_FLEX_SR"]["tier"] === 'unranked'
-                && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked'
-            ) {
-                embed.setTitle(
-                    "Placement Flex completed for " + data.gamename + "#" + data.tagline
-                );
-                embed.setDescription(
-                    "<@" + data.discordid + "> just finished his placement games in Flex queue."
-                );
-                embed.setColor("#ff7800");
-                embed.addFields(
-                    // KDA
-                    {
-                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
-                        value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
-                        inline: true,
-                    },
-                    // Rank
-                    {
-                        name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
-                        value: "placement",
-                        inline: true,
-                    }
-                );
-                return embed;
-            }
-            // If the user just finished a game in solo/duo
-            if (
-                (
+            // If the last game is not in the database or was skipped
+            if (last_game === "none" || last_game === null) {
+                // If the user just finished a games in solo/duo
+                if ((
                     data["RANKED_SOLO_5x5"]["rank"] !== rank["RANKED_SOLO_5x5"]["rank"] ||
                     data["RANKED_SOLO_5x5"]["tier"] !== rank["RANKED_SOLO_5x5"]["tier"] ||
                     data["RANKED_SOLO_5x5"]["leaguePoints"] !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
-                )
-                && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
-            ) {
-                const LP_change = this.LP_change(
-                    data["RANKED_SOLO_5x5"]["rank"],
-                    data["RANKED_SOLO_5x5"]["tier"],
-                    data["RANKED_SOLO_5x5"]["leaguePoints"],
-                    rank["RANKED_SOLO_5x5"]["rank"],
-                    rank["RANKED_SOLO_5x5"]["tier"],
-                    rank["RANKED_SOLO_5x5"]["leaguePoints"]
-                );
-
-                embed.setTitle(
-                    "Rank Solo/Duo update for " + data.gamename + "#" + data.tagline
-                );
-                embed.setDescription(
-                    "<@" + data.discordid + "> just " + (LP_change > 0 ? "won" : "lost") + " a game in Solo/Duo queue."
-                );
-                embed.setColor(LP_change > 0 ? "#33d17a" : "#c01c28");
-                embed.addFields(
-                    // KDA
-                    {
-                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
-                        value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
-                        inline: true,
-                    },
-                    // Rank
-                    {
-                        name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
-                        value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
-                        inline: true,
-                    }
-                );
-                return embed;
-            }
-            // If the user just finished a game in flex
-            if (
-                (
+                ) && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked") {
+                    const LP_change = this.LP_change(
+                        data["RANKED_SOLO_5x5"]["rank"],
+                        data["RANKED_SOLO_5x5"]["tier"],
+                        data["RANKED_SOLO_5x5"]["leaguePoints"],
+                        rank["RANKED_SOLO_5x5"]["rank"],
+                        rank["RANKED_SOLO_5x5"]["tier"],
+                        rank["RANKED_SOLO_5x5"]["leaguePoints"]
+                    );
+                    embed.setTitle(
+                        "Rank Solo/Duo update for " + data.gamename + "#" + data.tagline
+                    );
+                    embed.setDescription(
+                        "<@" + discordid + "> just played some games in Solo/Duo queue."
+                    );
+                    embed.setColor(
+                        "#77767b"
+                    );
+                    embed.addFields(
+                        {
+                            name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
+                            value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
+                        }
+                    );
+                    embeds[discordid] = embed;
+                }
+                // If the user just finished a games in flex
+                else if ((
                     data["RANKED_FLEX_SR"]["rank"] !== rank["RANKED_FLEX_SR"]["rank"] ||
                     data["RANKED_FLEX_SR"]["tier"] !== rank["RANKED_FLEX_SR"]["tier"] ||
                     data["RANKED_FLEX_SR"]["leaguePoints"] !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-                )
-                && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
-            ) {
-                const LP_change = this.LP_change(
-                    data["RANKED_FLEX_SR"]["rank"],
-                    data["RANKED_FLEX_SR"]["tier"],
-                    data["RANKED_FLEX_SR"]["leaguePoints"],
-                    rank["RANKED_FLEX_SR"]["rank"],
-                    rank["RANKED_FLEX_SR"]["tier"],
-                    rank["RANKED_FLEX_SR"]["leaguePoints"]
-                );
+                ) && rank["RANKED_FLEX_SR"]["tier"] !== "unranked") {
+                    const LP_change = this.LP_change(
+                        data["RANKED_FLEX_SR"]["rank"],
+                        data["RANKED_FLEX_SR"]["tier"],
+                        data["RANKED_FLEX_SR"]["leaguePoints"],
+                        rank["RANKED_FLEX_SR"]["rank"],
+                        rank["RANKED_FLEX_SR"]["tier"],
+                        rank["RANKED_FLEX_SR"]["leaguePoints"]
+                    );
+                    embed.setTitle(
+                        "Rank Flex update for " + data.gamename + "#" + data.tagline
+                    );
+                    embed.setDescription(
+                        "<@" + discordid + "> just played some games in Flex queue."
+                    );
+                    embed.setColor("#77767b");
+                    embed.addFields(
+                        {
+                            name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
+                            value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
+                        }
+                    );
+                    embeds[discordid] = embed;
+                }
+            } else {
+                // set embed URL and thumbnail
+                embed.setURL(this.get_league_of_graph(last_game["matchId"]));
+                embed.setThumbnail(this.get_champion_url(last_game["champion"]));
 
-                embed.setTitle(
-                    "Rank Flex update for " + data.gamename + "#" + data.tagline
-                );
-                embed.setDescription(
-                    "<@" + data.discordid + "> just " + (LP_change > 0 ? "won" : "lost") + " a game in Flex queue."
-                );
-                embed.setColor(LP_change > 0 ? "#33d17a" : "#c01c28");
-                embed.addFields(
-                    // KDA
-                    {
-                        name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
-                        value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
-                        inline: true,
-                    },
-                    // Rank
-                    {
-                        name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
-                        value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
-                        inline: true,
-                    }
-                );
-                return embed;
+                // If the user just finished his placement games in solo/duo
+                if (
+                    data["RANKED_SOLO_5x5"]["tier"] === 'unranked'
+                    && rank["RANKED_SOLO_5x5"]["tier"] !== 'unranked'
+                ) {
+                    embed.setTitle(
+                        "Placement Solo/Duo completed for " + data.gamename + "#" + data.tagline
+                    );
+                    embed.setDescription(
+                        "<@" + discordid + "> just finished his placement games in Solo/Duo queue."
+                    );
+                    embed.setColor("#ff7800");
+                    embed.addFields(
+                        // KDA
+                        {
+                            name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
+                            value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
+                            inline: true,
+                        },
+                        // Rank
+                        {
+                            name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
+                            value: "placement",
+                            inline: true,
+                        }
+                    );
+                    embeds[discordid] = embed;
+                }
+                // If the user just finished his placement games in flex
+                else if (
+                    data["RANKED_FLEX_SR"]["tier"] === 'unranked'
+                    && rank["RANKED_FLEX_SR"]["tier"] !== 'unranked'
+                ) {
+                    embed.setTitle(
+                        "Placement Flex completed for " + data.gamename + "#" + data.tagline
+                    );
+                    embed.setDescription(
+                        "<@" + discordid + "> just finished his placement games in Flex queue."
+                    );
+                    embed.setColor("#ff7800");
+                    embed.addFields(
+                        // KDA
+                        {
+                            name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
+                            value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
+                            inline: true,
+                        },
+                        // Rank
+                        {
+                            name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
+                            value: "placement",
+                            inline: true,
+                        }
+                    );
+                    embeds[discordid] = embed;
+                }
+                // If the user just finished a game in solo/duo
+                if (
+                    (
+                        data["RANKED_SOLO_5x5"]["rank"] !== rank["RANKED_SOLO_5x5"]["rank"] ||
+                        data["RANKED_SOLO_5x5"]["tier"] !== rank["RANKED_SOLO_5x5"]["tier"] ||
+                        data["RANKED_SOLO_5x5"]["leaguePoints"] !== rank["RANKED_SOLO_5x5"]["leaguePoints"]
+                    )
+                    && rank["RANKED_SOLO_5x5"]["tier"] !== "unranked"
+                ) {
+                    const LP_change = this.LP_change(
+                        data["RANKED_SOLO_5x5"]["rank"],
+                        data["RANKED_SOLO_5x5"]["tier"],
+                        data["RANKED_SOLO_5x5"]["leaguePoints"],
+                        rank["RANKED_SOLO_5x5"]["rank"],
+                        rank["RANKED_SOLO_5x5"]["tier"],
+                        rank["RANKED_SOLO_5x5"]["leaguePoints"]
+                    );
+
+                    embed.setTitle(
+                        "Rank Solo/Duo update for " + data.gamename + "#" + data.tagline
+                    );
+                    embed.setDescription(
+                        "<@" + discordid + "> just " + (LP_change > 0 ? "won" : "lost") + " a game in Solo/Duo queue."
+                    );
+                    embed.setColor(LP_change > 0 ? "#33d17a" : "#c01c28");
+                    embed.addFields(
+                        // KDA
+                        {
+                            name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
+                            value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
+                            inline: true,
+                        },
+                        // Rank
+                        {
+                            name: rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP",
+                            value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
+                            inline: true,
+                        }
+                    );
+                    embeds[discordid] = embed;
+                }
+                // If the user just finished a game in flex
+                if (
+                    (
+                        data["RANKED_FLEX_SR"]["rank"] !== rank["RANKED_FLEX_SR"]["rank"] ||
+                        data["RANKED_FLEX_SR"]["tier"] !== rank["RANKED_FLEX_SR"]["tier"] ||
+                        data["RANKED_FLEX_SR"]["leaguePoints"] !== rank["RANKED_FLEX_SR"]["leaguePoints"]
+                    )
+                    && rank["RANKED_FLEX_SR"]["tier"] !== "unranked"
+                ) {
+                    const LP_change = this.LP_change(
+                        data["RANKED_FLEX_SR"]["rank"],
+                        data["RANKED_FLEX_SR"]["tier"],
+                        data["RANKED_FLEX_SR"]["leaguePoints"],
+                        rank["RANKED_FLEX_SR"]["rank"],
+                        rank["RANKED_FLEX_SR"]["tier"],
+                        rank["RANKED_FLEX_SR"]["leaguePoints"]
+                    );
+
+                    embed.setTitle(
+                        "Rank Flex update for " + data.gamename + "#" + data.tagline
+                    );
+                    embed.setDescription(
+                        "<@" + discordid + "> just " + (LP_change > 0 ? "won" : "lost") + " a game in Flex queue."
+                    );
+                    embed.setColor(LP_change > 0 ? "#33d17a" : "#c01c28");
+                    embed.addFields(
+                        // KDA
+                        {
+                            name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
+                            value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
+                            inline: true,
+                        },
+                        // Rank
+                        {
+                            name: rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP",
+                            value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
+                            inline: true,
+                        }
+                    );
+                    embeds[discordid] = embed;
+                }
             }
         }
-        return undefined;
+        return embeds;
     }
 
     /**
