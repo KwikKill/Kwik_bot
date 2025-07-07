@@ -3,7 +3,7 @@ const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 const logger = require('../util/logger');
 
 const decimal = 2;
-const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
+const tiers = ["unranked", "IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
 const rank = ["IV", "III", "II", "I"];
 
 module.exports = {
