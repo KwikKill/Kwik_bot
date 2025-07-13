@@ -414,6 +414,18 @@ class LolRankManager {
                     );
                     embeds[discordid] = embed;
                 }
+
+                const KDA = (last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)
+                const emoji = KDA < 1 ?
+                    "🗑️"
+                    : KDA < 2 ?
+                        "🎮"
+                        : KDA < 5 ?
+                            "📸"
+                            : KDA < 10 ?
+                                "⚡"
+                                : "🔥";
+
                 // If the user just finished a game in solo/duo
                 if (
                     (
@@ -442,7 +454,7 @@ class LolRankManager {
                     embed.addFields(
                         // KDA
                         {
-                            name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
+                            name: emoji + " " + KDA.toFixed(2) + " KDA",
                             value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
                             inline: true,
                         },
@@ -483,7 +495,7 @@ class LolRankManager {
                     embed.addFields(
                         // KDA
                         {
-                            name: ((last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)).toFixed(2) + " KDA",
+                            name: emoji + " " + KDA.toFixed(2) + " KDA",
                             value: last_game["kills"] + "/" + last_game["deaths"] + "/" + last_game["assists"],
                             inline: true,
                         },
