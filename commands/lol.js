@@ -3772,8 +3772,20 @@ async function top_otp(client, interaction) {
             limit = 1000;
         }
 
-        const query = "SELECT discordid, first_mastery_champ, first_mastery FROM mastery WHERE discordid <> '503109625772507136'" + queryall + " ORDER BY first_mastery DESC LIMIT " + limit + ";";
-
+        const query = "SELECT discordid, champ, points " +
+            "FROM (" +
+            "SELECT discordid, first_mastery_champ AS champ, first_mastery AS points FROM mastery " +
+            "WHERE discordid <> '503109625772507136' " +
+            "UNION ALL " +
+            "SELECT discordid, second_mastery_champ AS champ, second_mastery AS points FROM mastery " +
+            "WHERE discordid <> '503109625772507136' " +
+            "UNION ALL " +
+            "SELECT discordid, third_mastery_champ AS champ, third_mastery AS points FROM mastery "+
+            "WHERE discordid <> '503109625772507136' " +
+            queryall +
+            ") AS all_champs " +
+            "ORDER BY points DESC " +
+            "LIMIT " + limit + ";";
         const response = await client.pg.query(query);
 
         if (response.rowCount === 0) {
@@ -3798,7 +3810,7 @@ async function top_otp(client, interaction) {
                 // fetch the user and add it to the string if it exists
                 const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
                 if(user && nb < 10) {
-                    text += "- <@" + x.discordid + "> : " + x.first_mastery_champ + " (" + x.first_mastery + ")\n";
+                    text += "- <@" + x.discordid + "> : " + x.champ + " (" + x.points + ")\n";
                     nb++;
                 }
                 if(nb >= 10) {
@@ -3807,7 +3819,7 @@ async function top_otp(client, interaction) {
             }
         } else {
             for (const x of response.rows) {
-                text += "- <@" + x.discordid + "> : " + x.first_mastery_champ + " (" + x.first_mastery + ")\n";
+                text += "- <@" + x.discordid + "> : " + x.champ + " (" + x.points + ")\n";
             }
         }
 
