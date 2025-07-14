@@ -669,15 +669,15 @@ module.exports = {
                         }
                     ]
                 },
-                /*{
-                    name: 'match',
+                {
+                    name: 'matchs',
                     description: 'See matchs stats',
                     type: ApplicationCommandOptionType.Subcommand,
                     options: [
                         {
-                            name: 'id',
-                            description: 'Game\'s ID',
-                            type: ApplicationCommandOptionType.String
+                            name: 'discordaccount',
+                            description: 'Discord account',
+                            type: ApplicationCommandOptionType.User,
                         },
                         {
                             name: 'account',
@@ -753,7 +753,7 @@ module.exports = {
                             ]
                         }
                     ]
-                }*/
+                }
             ]
         },
         {
@@ -1086,6 +1086,8 @@ module.exports = {
                 stats_profile(client, interaction, discordaccount);
             } else if (interaction.options.getSubcommand() === "compare") {
                 stats_compare(client, interaction, discordaccount, champion, role, season, gamemode);
+            } else if (interaction.options.getSubcommand() === "matchs") {
+                stats_matchs(client, interaction, discordaccount, gamemode, champion, role, account);
             }
         } else if (interaction.options.getSubcommandGroup() === "top") {
             if (interaction.options.getSubcommand() === "carry") {
@@ -2223,34 +2225,183 @@ async function stats_champions(client, interaction, discordaccount, role, accoun
 }
 
 /**
- * send match stats
- * @function stats_match
- * @param {Client} client - bot's client
- * @param {Interaction} interaction - command's interaction
- * @param {User} discordaccount - discord account to get stats from
- * @param {String} champion - champion to get stats from
- * @param {String} role - role to get stats from
- * @param {String} account - account to get stats from
- * @param {String} season - season to get stats from
- * @param {String} gamemode - gamemode to get stats from
- *
-async function stats_match(client, interaction, discordaccount, champion, role, account, season, gamemode) {
-    if (puuid !== null) {
-        const query = "SELECT * FROM matchs WHERE puuid=$1;";
-        const response = await client.pg.query(query, [puuid]);
-        if (response.rows.length === 0) {
-            return await interaction.editReply("This match doesn't exist.");
+ * send matchs stats
+ * @function stats_matchs
+ * @param {Client} client 
+ * @param {Interaction} interaction 
+ * @param {User} discordaccount 
+ * @param {String} champion 
+ * @param {String} role 
+ * @param {String} account 
+ * @param {String} season 
+ * @param {String} gamemode 
+ */
+async function stats_matchs(client, interaction, discordaccount, gamemode, champion, role, account) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/stats/matchs",
+            JSON.stringify({
+                discordaccount: discordaccount?.id,
+                champion: champion,
+                role: role,
+                account: account ? account[0] + "#" + account[1] : null,
+                gamemode: gamemode
+            }),
+            interaction.guild ? interaction.guild.id : interaction.user.id
+        ]
+    });
+    try {
+        const start = Date.now();
+        let i = 1;
+
+        let discordusername = "";
+        if (discordaccount === null) {
+            discordaccount = interaction.user.id;
+            discordusername = interaction.user.username;
+        } else {
+            discordusername = discordaccount.username;
+            discordaccount = discordaccount.id;
         }
-        const match = response.rows[0];
-        logger.log(match);
-    } else {
-        //let queryaccount = ""
+        const query_values = [discordaccount];
+        
+        let query = "SELECT * " +
+            "FROM summoners LEFT JOIN matchs ON matchs.player = summoners.puuid " +
+            "WHERE summoners.discordid=$1";
+
+        
+        i++;
+        if (champion !== null) {
+            query += " AND lower(matchs.champion)=$" + i;
+            query_values.push(champion.toLowerCase());
+            i++;
+        }
+        if (role !== null) {
+            query += " AND matchs.lane=$" + i;
+            query_values.push(role);
+            i++;
+        }
         if (account !== null) {
-            //queryaccount = " AND summoners.account = '" + account + "' ";
+            query += " AND summoners.gamename=$" + i + " AND summoners.tagline=$" + (i + 1);
+            query_values.push(account[0], account[1]);
+            i += 2;
+        }
+        if (gamemode !== null) {
+            query += " AND matchs.gamemode=$" + i;
+            query_values.push(gamemode);
+            i++;
+        }
+        query += " ORDER BY matchs.timestamp DESC LIMIT 10;";
+
+        const response = await client.pg.query({
+            text: query,
+            values: query_values
+        });
+
+        // calculate KDA, Winrate, Overall carry :
+        let KDA = 0;
+        let winrate = 0;
+        let overall_carry = 0;
+
+        let text = "";
+        for (let i = 0; i < response.rows.length; i++) {
+            const row = response.rows[i];
+            if (row.result === "Win") {
+                winrate++;
+            }
+            KDA += (row.kill + row.assists) / (row.deaths || 1);
+            
+            // Emoji for win/loss
+            text += row.result === "Win" ? "🟢" : "🔴";
+            text += " ";
+
+            // Game mode
+            text += `${row.gamemode} | `;
+
+            // Champion and lane
+            text += `**${row.champion}**`;
+            if (row.lane !== "Invalid") {
+                text += ` (${row.lane})`;
+            }
+
+            // KDA
+            text += ` | ${row.kill}/${row.deaths}/${row.assists}`;
+
+            // CS
+            text += ` | ${row.cs}cs`;
+
+            // Duration
+            text += ` | ${(row.length / 60).toFixed(0)}m`;
+
+            // Carry stats
+            const nb_carry = (row.first_gold ? 1 : 0) + (row.first_damages ? 1 : 0) + (row.first_tanked ? 1 : 0);
+
+            overall_carry += nb_carry > 0 ? 1 : 0
+            if (row.first_gold && row.first_damages && row.first_tanked) {
+                text += " | **🔥Hard Carry**";
+            } else if (nb_carry > 0) {
+                text += " | **Carry: "
+                if (row.first_gold) {
+                    text += "💰";
+                }
+                if (row.first_damages) {
+                    text += "⚔️";
+                }
+                if (row.first_tanked) {
+                    text += "🛡️";
+                }
+                text += "**";
+            }
+
+            text += "\n";
         }
 
+        if (response.rows.length > 0) {
+            winrate = (winrate / response.rows.length * 100).toFixed(1);
+            KDA = (KDA / response.rows.length).toFixed(2);
+            overall_carry = (overall_carry / response.rows.length * 100).toFixed(1);
+        }
+
+        const end = new Date()
+        
+        // send embed
+        const embed = new EmbedBuilder()
+            .setTitle("Last 10 games - " + discordusername + "'s matchs")
+            .setDescription("KDA : " + KDA + " | Winrate : " + winrate + "% | Overall Carry : " + overall_carry + "%")
+            .setColor("#00FF00")
+            .setFooter({
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
+                //iconURL: interaction.user.displayAvatarURL()
+            })
+            .setTimestamp();
+        embed.addFields(
+            {
+                name: "Matchs :",
+                value: text || "No matchs found.",
+            }
+        );
+
+        return await interaction.editReply({ embeds: [embed] });
+    } catch (e) {
+        logger.error(e.stack);
+        client.users.fetch(client.owners[0]).then((user) => {
+            const params = {
+                discordaccount: discordaccount?.id,
+                champion: champion,
+                role: role,
+                account: account ? account[0] + "#" + account[1] : null,
+                gamemode: gamemode
+            };
+            const Js = JSON.stringify(params);
+            user.send("Error with command /lol stats matchs " + Js + " from user " + interaction.user.id);
+
+        });
+        return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
     }
-}*/
+}
 
 /**
  * send friend stats
