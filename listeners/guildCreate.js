@@ -7,5 +7,7 @@ module.exports = {
     options: undefined,
     async run(client, guild) {
         await client.commands.get("deploy").deploy(client, guild);
+
+        // TODO: send a welcome message to the guild
     }
 };

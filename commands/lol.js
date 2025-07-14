@@ -860,6 +860,18 @@ module.exports = {
                             type: ApplicationCommandOptionType.String,
                         }
                     ]
+                },
+                {
+                    name: 'otp',
+                    description: 'ranking otp commands',
+                    type: ApplicationCommandOptionType.Subcommand,
+                    options: [
+                        {
+                            name: 'all',
+                            description: 'All',
+                            type: ApplicationCommandOptionType.Boolean
+                        }
+                    ]
                 }
             ]
         },
@@ -1080,6 +1092,8 @@ module.exports = {
                 top_carry(client, interaction, champion, role, account, season, gamemode);
             } else if (interaction.options.getSubcommand() === "score") {
                 top_kwikscore(client, interaction, champion, role, account, season, gamemode);
+            } else if (interaction.options.getSubcommand() === "otp") {
+                top_otp(client, interaction);
             }
         } else if (interaction.options.getSubcommandGroup() === "tracker") {
             // If the interaction is a user installed command
@@ -3705,6 +3719,111 @@ async function top_kwikscore(client, interaction, champion, role, season) {
             };
             const Js = JSON.stringify(params);
             user.send("Error with command /lol top KwikScore " + Js + " from user " + interaction.user.id);
+
+        });
+        return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
+    }
+}
+
+/**
+ * Get OTP's ranking
+ * @function top_otp
+ * @param {Client} client - bot's client
+ * @param {Interaction} interaction - command's interaction
+ * @param {String} champion - champion to get stats from
+ * @param {String} role - role to get stats from
+ * @param {String} season - season to get stats from
+ */
+async function top_otp(client, interaction) {
+    client.pg.query({
+        name: "insert-logs",
+        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
+        values: [
+            new Date(),
+            interaction.user.id,
+            "lol/top/otp",
+            JSON.stringify({
+            }),
+            interaction.guild ? interaction.guild.id : interaction.user.id
+        ]
+    });
+    try {
+        if (!interaction.guild) {
+            return await interaction.editReply("This command can only be used in a guild.\n If you use it in a DM or with the user installed command, please install the app in a guild.");
+        }
+
+        const start = Date.now();
+
+        const all = interaction.options.getBoolean("all") === true;
+        let queryall = "";
+        let limit = 10;
+        const memberCount = interaction.guild.memberCount;
+
+        if (!all && memberCount <= 100) {
+            const members = interaction.guild.members.cache.filter(member => !member.user.bot);
+            let list = "(VALUES ";
+            members.forEach(member => {
+                list += "('" + member.user.id + "'),";
+            });
+            list = list.slice(0, -1);
+            list += ")";
+            queryall = " AND discordid = ANY" + list;
+        } else if (!all) {
+            limit = 1000;
+        }
+
+        const query = "SELECT discordid, first_mastery_champ, first_mastery FROM mastery WHERE discordid <> '503109625772507136'" + queryall + " ORDER BY first_mastery DESC LIMIT " + limit + ";";
+
+        const response = await client.pg.query(query);
+
+        if (response.rowCount === 0) {
+            return interaction.editReply("There are not enought summoners in the database or the filters are too restrictings.");
+        }
+
+        const end = Date.now();
+
+        const embed = new EmbedBuilder()
+            .setTitle("Top OTPs :")
+            .setColor("#00FF00")
+            .setFooter({
+                text: "Requested by " + interaction.user.username + " | took " + (end - start) + "ms",
+                //iconURL: interaction.user.displayAvatarURL()
+            })
+            .setTimestamp();
+
+        let text = "";
+        if (!all && memberCount > 100) {
+            let nb = 0;
+            for (const x of response.rows) {
+                // fetch the user and add it to the string if it exists
+                const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
+                if(user && nb < 10) {
+                    text += "- <@" + x.discordid + "> : " + x.first_mastery_champ + " (" + x.first_mastery + ")\n";
+                    nb++;
+                }
+                if(nb >= 10) {
+                    break;
+                }
+            }
+        } else {
+            for (const x of response.rows) {
+                text += "- <@" + x.discordid + "> : " + x.first_mastery_champ + " (" + x.first_mastery + ")\n";
+            }
+        }
+
+        embed.addFields({
+            name: "mastery points ranking : ",
+            value: "" + text,
+        });
+
+        return await interaction.editReply({ embeds: [embed] });
+    } catch (e) {
+        logger.error(e);
+        client.users.fetch(client.owners[0]).then((user) => {
+            const params = {
+            };
+            const Js = JSON.stringify(params);
+            user.send("Error with command /lol top otp " + Js + " from user " + interaction.user.id);
 
         });
         return await interaction.editReply("Error while getting stats, this error has been reported to the bot owner and will be fixed as soon as possible.");
