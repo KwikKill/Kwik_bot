@@ -2269,8 +2269,8 @@ async function stats_matchs(client, interaction, discordaccount, gamemode, champ
         const query_values = [discordaccount];
         
         let query = "SELECT * " +
-            "FROM summoners LEFT JOIN matchs ON matchs.player = summoners.puuid " +
-            "WHERE summoners.discordid=$1";
+            "FROM matchs, summoners WHERE matchs.player = summoners.puuid " +
+            "AND summoners.discordid=$1";
 
         
         i++;
