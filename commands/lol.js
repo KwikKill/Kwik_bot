@@ -3813,7 +3813,7 @@ async function top_otp(client, interaction) {
                 const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
                 if(user && nb < 10) {
                     const pointsStr = x.points >= 1000000
-                        ? (x.points / 1000000).toFixed(1) + "M"
+                        ? (x.points / 1000000).toFixed(2) + "M"
                         : x.points >= 1000
                             ? Math.floor(x.points / 1000) + "k"
                             : x.points;
@@ -3827,7 +3827,7 @@ async function top_otp(client, interaction) {
         } else {
             for (const x of response.rows) {
                 const pointsStr = x.points >= 1000000
-                        ? (x.points / 1000000).toFixed(1) + "M"
+                        ? (x.points / 1000000).toFixed(2) + "M"
                         : x.points >= 1000
                             ? Math.floor(x.points / 1000) + "k"
                             : x.points;
