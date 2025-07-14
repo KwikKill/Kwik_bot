@@ -3776,9 +3776,11 @@ async function top_otp(client, interaction) {
             "FROM (" +
             "SELECT discordid, first_mastery_champ AS champ, first_mastery AS points FROM mastery " +
             "WHERE discordid <> '503109625772507136' " +
+            queryall + " " +
             "UNION ALL " +
             "SELECT discordid, second_mastery_champ AS champ, second_mastery AS points FROM mastery " +
             "WHERE discordid <> '503109625772507136' " +
+            queryall + " " +
             "UNION ALL " +
             "SELECT discordid, third_mastery_champ AS champ, third_mastery AS points FROM mastery "+
             "WHERE discordid <> '503109625772507136' " +
@@ -3810,7 +3812,12 @@ async function top_otp(client, interaction) {
                 // fetch the user and add it to the string if it exists
                 const user = await interaction.guild.members.fetch(x.discordid).catch(() => null);
                 if(user && nb < 10) {
-                    text += "- <@" + x.discordid + "> : " + x.champ + " (" + x.points + ")\n";
+                    const pointsStr = x.points >= 1000000
+                        ? (x.points / 1000000).toFixed(1) + "M"
+                        : x.points >= 1000
+                            ? Math.floor(x.points / 1000) + "k"
+                            : x.points;
+                    text += `- <@${x.discordid}> : ${x.champ} (${pointsStr})\n`;
                     nb++;
                 }
                 if(nb >= 10) {
@@ -3819,7 +3826,12 @@ async function top_otp(client, interaction) {
             }
         } else {
             for (const x of response.rows) {
-                text += "- <@" + x.discordid + "> : " + x.champ + " (" + x.points + ")\n";
+                const pointsStr = x.points >= 1000000
+                        ? (x.points / 1000000).toFixed(1) + "M"
+                        : x.points >= 1000
+                            ? Math.floor(x.points / 1000) + "k"
+                            : x.points;
+                text += `- <@${x.discordid}> : ${x.champ} (${pointsStr})\n`;
             }
         }
 
