@@ -82,26 +82,35 @@ async function deploy(client, guild) {
     client.commands.forEach((item) => {
         if (item.deploy !== false && (item.serverid !== undefined && item.serverid.includes(guild.id))) {
             if (item.name === "help") {
-                commands.push({
+                const command = {
                     name: item.name,
                     description: item.description,
                     options: item.options,
-                    defaultMemberPermissions: item.permission,
-                });
+                }
+                if (item.permission) {
+                    command.defaultMemberPermissions = item.permission;
+                }
+                commands.push(command);
             } else {
                 if (item.options !== undefined) {
-                    commands.push({
+                    const command = {
                         name: item.name,
                         description: item.description,
                         options: item.options,
-                        defaultMemberPermissions: item.permission,
-                    });
+                    }
+                    if (item.permission) {
+                        command.defaultMemberPermissions = item.permission;
+                    }
+                    commands.push(command);
                 } else {
-                    commands.push({
+                    const command = {
                         name: item.name,
                         description: item.description,
-                        defaultMemberPermissions: item.permission,
-                    });
+                    }
+                    if (item.permission) {
+                        command.defaultMemberPermissions = item.permission;
+                    }
+                    commands.push(command);
                 }
             }
         }
@@ -223,29 +232,38 @@ async function deploy_global(client) {
     client.commands.forEach((item) => {
         if (item.deploy !== false && (item.serverid === undefined)) {
             if (item.name === "help") {
-                commands.push({
+                const command = {
                     name: item.name,
                     description: item.description,
                     options: item.options,
-                    defaultMemberPermissions: item.permission,
                     integration_types: item.integration_types || [0],
-                });
+                }
+                if (item.permission) {
+                    command.defaultMemberPermissions = item.permission;
+                }
+                commands.push(command);
             } else {
                 if (item.options !== undefined) {
-                    commands.push({
+                    const command = {
                         name: item.name,
                         description: item.description,
                         options: item.options,
-                        defaultMemberPermissions: item.permission,
                         integration_types: item.integration_types || [0],
-                    });
+                    }
+                    if (item.permission) {
+                        command.defaultMemberPermissions = item.permission;
+                    }
+                    commands.push(command);
                 } else {
-                    commands.push({
+                    const command = {
                         name: item.name,
                         description: item.description,
-                        defaultMemberPermissions: item.permission,
                         integration_types: item.integration_types || [0],
-                    });
+                    }
+                    if (item.permission) {
+                        command.defaultMemberPermissions = item.permission;
+                    }
+                    commands.push(command);
                 }
             }
         }
