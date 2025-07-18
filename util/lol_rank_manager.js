@@ -608,23 +608,29 @@ class LolRankManager {
     async add_summoner(current) {
         const rank = await this.update_rank(current["puuid"], current["region"]);
 
-        this.rank_cache[current["puuid"]] = {
-            "RANKED_SOLO_5x5": {
-                "tier": rank["RANKED_SOLO_5x5"]["tier"],
-                "rank": rank["RANKED_SOLO_5x5"]["rank"],
-                "leaguePoints": rank["RANKED_SOLO_5x5"]["leaguePoints"],
-            },
-            "RANKED_FLEX_SR": {
-                "tier": rank["RANKED_FLEX_SR"]["tier"],
-                "rank": rank["RANKED_FLEX_SR"]["rank"],
-                "leaguePoints": rank["RANKED_FLEX_SR"]["leaguePoints"],
-            },
-            "discordid": current["discordid"],
-            "region": current["region"],
-            "gamename": current["gamename"],
-            "tagline": current["tagline"],
-            "id": current["id"],
-        };
+        if (this.rank_cache[current["puuid"]] !== undefined) {
+            // If the summoner is already in the cache, update the discordid
+            this.rank_cache[current["puuid"]]["discordid"].push(current["discordid"]);
+        } else {
+            // If the summoner is not in the cache, add it
+            this.rank_cache[current["puuid"]] = {
+                "RANKED_SOLO_5x5": {
+                    "tier": rank["RANKED_SOLO_5x5"]["tier"],
+                    "rank": rank["RANKED_SOLO_5x5"]["rank"],
+                    "leaguePoints": rank["RANKED_SOLO_5x5"]["leaguePoints"],
+                },
+                "RANKED_FLEX_SR": {
+                    "tier": rank["RANKED_FLEX_SR"]["tier"],
+                    "rank": rank["RANKED_FLEX_SR"]["rank"],
+                    "leaguePoints": rank["RANKED_FLEX_SR"]["leaguePoints"],
+                },
+                "discordid": [current["discordid"]],
+                "region": current["region"],
+                "gamename": current["gamename"],
+                "tagline": current["tagline"],
+                "id": current["id"],
+            };
+        }
 
         return rank;
     }
