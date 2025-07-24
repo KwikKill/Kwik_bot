@@ -187,14 +187,14 @@ class LolRankManager {
                 data["RANKED_FLEX_SR"]["leaguePoints"] !== rank["RANKED_FLEX_SR"]["leaguePoints"]
             )
         ) {
-            await this.client.pg.query("UPDATE summoners SET rank_solo = $1, tier_solo = $2, LP_solo = $3, rank_flex = $4, tier_flex = $5, LP_flex = $6 WHERE id = $7", [
+            await this.client.pg.query("UPDATE summoners SET rank_solo = $1, tier_solo = $2, LP_solo = $3, rank_flex = $4, tier_flex = $5, LP_flex = $6 WHERE puuid = $7", [
                 rank["RANKED_SOLO_5x5"]["rank"],
                 rank["RANKED_SOLO_5x5"]["tier"],
                 rank["RANKED_SOLO_5x5"]["leaguePoints"],
                 rank["RANKED_FLEX_SR"]["rank"],
                 rank["RANKED_FLEX_SR"]["tier"],
                 rank["RANKED_FLEX_SR"]["leaguePoints"],
-                data.id,
+                puuid,
             ]);
             const embeds = this.build_trackers(data, rank, last_game);
 
