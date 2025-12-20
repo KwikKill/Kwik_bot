@@ -1238,7 +1238,7 @@ async function account_add(client, interaction, gamename, tagline, region) {
     }
 
     // If allowed, publish event to updater
-    await client.redis.pub.publish('bot:commands', JSON.stringify({
+    await client.redisPubClient.publish('bot:commands', JSON.stringify({
         type: 'ADD_SUMMONER',
         gamename,
         tagline,
