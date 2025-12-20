@@ -5,7 +5,8 @@ module.exports = {
     timer: 180000, // 3 minutes
     description: "vérification du bon fonctionnement du bot lol",
     async run(client) {
-        for (const route in client.lol.services) {
+        // TODO: move to updater
+        /*for (const route in client.lol.services) {
             if (client.lol.services[route].last?.length === 0) {
                 client.lol.last = client.lol.services[route]["queue"][0];
             } else {
@@ -15,6 +16,6 @@ module.exports = {
                     client.lol.last = client.lol.services[route]["queue"][0];
                 }
             }
-        }
+        }*/
     }
 };

@@ -31,12 +31,14 @@ module.exports = {
             logger.log("Database Connected!");
             await client.lol.lol_rank_manager.setup(client);
             await client.lol.update_data();
+
             client.timers.forEach(timer => {
                 if (timer.onsetup) {
                     timer.run(client);
                 }
                 setInterval(timer.run, timer.timer, client);
             });
+
             client.pg.query("SELECT * FROM trackers").then(trackers => {
                 trackers.rows.forEach(tracker => {
                     client.lol.lol_rank_manager.trackers.push({

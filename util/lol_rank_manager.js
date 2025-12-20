@@ -5,7 +5,6 @@ const axios = require('axios');
 const { EmbedBuilder } = require('discord.js');
 
 class LolRankManager {
-    rank_cache = {};
     rank_list = ["IRON", "BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD", "DIAMOND", "MASTER", "GRANDMASTER", "CHALLENGER"];
     emojis = {
         "unranked": "unranked",
@@ -108,32 +107,6 @@ class LolRankManager {
             }
         }
 
-        // Get every summoner rank from the database
-        const data = await this.client.pg.query("SELECT * FROM summoners");
-        for (const x of data.rows) {
-            if (!(x.puuid in this.rank_cache)) {
-                const rank = {
-                    "RANKED_SOLO_5x5": {
-                        "tier": x.tier_solo,
-                        "rank": x.rank_solo,
-                        "leaguePoints": x.lp_solo,
-                    },
-                    "RANKED_FLEX_SR": {
-                        "tier": x.tier_flex,
-                        "rank": x.rank_flex,
-                        "leaguePoints": x.lp_flex,
-                    },
-                    "discordid": [x.discordid],
-                    "region": x.region,
-                    "gamename": x.gamename,
-                    "tagline": x.tagline,
-                    "id": x.id,
-                };
-                this.rank_cache[x.puuid] = rank;
-            } else {
-                this.rank_cache[x.puuid]["discordid"].push(x.discordid);
-            }
-        }
     }
 
     /**
@@ -142,114 +115,67 @@ class LolRankManager {
      * @param {object} current current summoner data
      * @param {object} last_game last game data
      */
-    async send_tracker_message(puuid, last_game) {
-
-        if (!(puuid in this.rank_cache)) {
-            return;
-        }
-        const rank = await this.update_rank(puuid, this.rank_cache[puuid].region);
-
-        const data = this.rank_cache[puuid];
-        const new_rank = {
-            "RANKED_SOLO_5x5": {
-                "tier": rank["RANKED_SOLO_5x5"]["tier"],
-                "rank": rank["RANKED_SOLO_5x5"]["rank"],
-                "leaguePoints": rank["RANKED_SOLO_5x5"]["leaguePoints"],
-            },
-            "RANKED_FLEX_SR": {
-                "tier": rank["RANKED_FLEX_SR"]["tier"],
-                "rank": rank["RANKED_FLEX_SR"]["rank"],
-                "leaguePoints": rank["RANKED_FLEX_SR"]["leaguePoints"],
-            },
-            "discordid": data.discordid,
-            "region": data.region,
-            "gamename": data.gamename,
-            "tagline": data.tagline,
-            "id": data.id,
-        };
+    async send_tracker_message(puuid, old_rank, new_rank, last_game) {
 
         // If the new rank is the same as the old rank, return
-        if (JSON.stringify(this.rank_cache[puuid]) === JSON.stringify(new_rank)) {
+        if (JSON.stringify(old_rank) === JSON.stringify(new_rank)) {
             return;
         }
 
-        // update rank cache
-        this.rank_cache[puuid] = new_rank;
-
         // read current rank and send message if rank changed
-        if (
-            (
-                data["RANKED_SOLO_5x5"]["rank"] !== rank["RANKED_SOLO_5x5"]["rank"] ||
-                data["RANKED_SOLO_5x5"]["tier"] !== rank["RANKED_SOLO_5x5"]["tier"] ||
-                data["RANKED_SOLO_5x5"]["leaguePoints"] !== rank["RANKED_SOLO_5x5"]["leaguePoints"] ||
-                data["RANKED_FLEX_SR"]["rank"] !== rank["RANKED_FLEX_SR"]["rank"] ||
-                data["RANKED_FLEX_SR"]["tier"] !== rank["RANKED_FLEX_SR"]["tier"] ||
-                data["RANKED_FLEX_SR"]["leaguePoints"] !== rank["RANKED_FLEX_SR"]["leaguePoints"]
-            )
-        ) {
-            await this.client.pg.query("UPDATE summoners SET rank_solo = $1, tier_solo = $2, LP_solo = $3, rank_flex = $4, tier_flex = $5, LP_flex = $6 WHERE puuid = $7", [
-                rank["RANKED_SOLO_5x5"]["rank"],
-                rank["RANKED_SOLO_5x5"]["tier"],
-                rank["RANKED_SOLO_5x5"]["leaguePoints"],
-                rank["RANKED_FLEX_SR"]["rank"],
-                rank["RANKED_FLEX_SR"]["tier"],
-                rank["RANKED_FLEX_SR"]["leaguePoints"],
-                puuid,
-            ]);
-            const embeds = this.build_trackers(data, rank, last_game);
+        const embeds = this.build_trackers(old_rank, new_rank, last_game);
 
-            for (const x of this.trackers) {
-                const channelid = x.channel;
+        for (const x of this.trackers) {
+            const channelid = x.channel;
 
-                for (const discordid of data.discordid) {
-                    const embed = embeds[discordid];
+            for (const discordid of new_rank.discordid) {
+                const embed = embeds[discordid];
 
-                    // check if the user is muted
-                    if (
-                        this.client.lol.player_mute_for_guild[x.guild] !== undefined
-                        && this.client.lol.player_mute_for_guild[x.guild].includes(discordid)
-                    ) {
-                        continue;
-                    }
+                // check if the user is muted
+                if (
+                    this.client.lol.player_mute_for_guild[x.guild] !== undefined
+                    && this.client.lol.player_mute_for_guild[x.guild].includes(discordid)
+                ) {
+                    continue;
+                }
 
+                try {
+                    const channel = await this.client.channels.fetch(channelid);
+                    let user = false;
                     try {
-                        const channel = await this.client.channels.fetch(channelid);
-                        let user = false;
-                        try {
-                            user = await channel.guild.members.fetch(discordid);
-                        } catch (e) {
-                            user = false;
-                        }
-                        if (user || channelid === "1036963873422589972" || channelid === "991052056657793124") {
-                            if (embed !== undefined) {
-                                // check if the bot has permission to send messages in the channel
-                                if (!channel.permissionsFor(this.client.user).has("SendMessages")) {
-                                    logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
-                                    await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
-                                    const index = this.trackers.indexOf(x);
-                                    this.trackers.splice(index, 1);
-                                    continue;
-                                }
-                                channel.send({ embeds: [embed] });
-                            } else {
-                                logger.error("Error while building tracker embed for " + data.gamename + "#" + data.tagline);
-                                logger.error("Current SOLO rank : " + data["RANKED_SOLO_5x5"]["tier"] + " " + data["RANKED_SOLO_5x5"]["rank"] + " " + data["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
-                                logger.error("New SOLO rank : " + rank["RANKED_SOLO_5x5"]["tier"] + " " + rank["RANKED_SOLO_5x5"]["rank"] + " " + rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
-                                logger.error("Current FLEX rank : " + data["RANKED_FLEX_SR"]["tier"] + " " + data["RANKED_FLEX_SR"]["rank"] + " " + data["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
-                                logger.error("New FLEX rank : " + rank["RANKED_FLEX_SR"]["tier"] + " " + rank["RANKED_FLEX_SR"]["rank"] + " " + rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
-                            }
-                        }
+                        user = await channel.guild.members.fetch(discordid);
                     } catch (e) {
-                        // if bot can't fetch the discord channel
-                        if (e.code === 10003 || e.code === 50001) {
-                            // delete the channel from the database
-                            logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
-                            await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
-                            const index = this.trackers.indexOf(x);
-                            this.trackers.splice(index, 1);
+                        user = false;
+                    }
+                    if (user || channelid === "1036963873422589972" || channelid === "991052056657793124") {
+                        if (embed !== undefined) {
+                            // check if the bot has permission to send messages in the channel
+                            if (!channel.permissionsFor(this.client.user).has("SendMessages")) {
+                                logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
+                                await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
+                                const index = this.trackers.indexOf(x);
+                                this.trackers.splice(index, 1);
+                                continue;
+                            }
+                            channel.send({ embeds: [embed] });
                         } else {
-                            logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
+                            logger.error("Error while building tracker embed for " + new_rank.gamename + "#" + new_rank.tagline);
+                            logger.error("Current SOLO rank : " + old_rank["RANKED_SOLO_5x5"]["tier"] + " " + old_rank["RANKED_SOLO_5x5"]["rank"] + " " + old_rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                            logger.error("New SOLO rank : " + new_rank["RANKED_SOLO_5x5"]["tier"] + " " + new_rank["RANKED_SOLO_5x5"]["rank"] + " " + new_rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
+                            logger.error("Current FLEX rank : " + old_rank["RANKED_FLEX_SR"]["tier"] + " " + old_rank["RANKED_FLEX_SR"]["rank"] + " " + old_rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
+                            logger.error("New FLEX rank : " + new_rank["RANKED_FLEX_SR"]["tier"] + " " + new_rank["RANKED_FLEX_SR"]["rank"] + " " + new_rank["RANKED_FLEX_SR"]["leaguePoints"] + " LP");
                         }
+                    }
+                } catch (e) {
+                    // if bot can't fetch the discord channel
+                    if (e.code === 10003 || e.code === 50001) {
+                        // delete the channel from the database
+                        logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
+                        await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
+                        const index = this.trackers.indexOf(x);
+                        this.trackers.splice(index, 1);
+                    } else {
+                        logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
                     }
                 }
             }
@@ -539,21 +465,6 @@ class LolRankManager {
     }
 
     /**
-     * Update rank of user in the database
-     * @function update_rank_pseudo
-     * @param {string} puuid puuid of the user
-     * @param {string} gamename gamename of the user
-     * @param {string} tagline tagline of the user
-     */
-    update_rank_pseudo(puuid, gamename, tagline) {
-        if (!(puuid in this.rank_cache)) {
-            return;
-        }
-        this.rank_cache[puuid]["gamename"] = gamename;
-        this.rank_cache[puuid]["tagline"] = tagline;
-    }
-
-    /**
      * Get the league of graph url from a game ID
      * @function get_league_of_graph
      * @param {String} game_id - ID of the game
@@ -567,42 +478,6 @@ class LolRankManager {
         const url = base_url + this.client.lol.region_to_name[region] + "/" + id;
 
         return url;
-    }
-
-    /**
-     * Update rank of user in the database
-     * @function update_rank
-     * @param {*} summoner_id summoner id
-     * @param {*} region region of the summoner
-     * @returns {Object} rank data
-     */
-    async update_rank(puuid, region) {
-        const response = await this.client.lol.lol_api.leaguesByPuuid(this.client.lol.apiKey, region, puuid, this.client);
-
-        const data = {
-            "RANKED_SOLO_5x5": {
-                "tier": "unranked",
-                "rank": "",
-                "leaguePoints": 0,
-            },
-            "RANKED_FLEX_SR": {
-                "tier": "unranked",
-                "rank": "",
-                "leaguePoints": 0,
-            }
-        };
-        if (response === undefined) {
-            return undefined;
-        }
-        for (const x of response) {
-            data[x.queueType] = {
-                "tier": x.tier,
-                "rank": x.rank,
-                "leaguePoints": x.leaguePoints,
-            };
-        }
-
-        return data;
     }
 
     async add_summoner(current) {

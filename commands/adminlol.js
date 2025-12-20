@@ -854,33 +854,9 @@ module.exports = {
 };
 
 async function update(client, debug = false, first = false) {
-    const query = "SELECT DISTINCT puuid, id, gamename, tagline, discordid, region, priority FROM summoners ORDER BY priority DESC;";
-    const result = await client.pg.query(query);
-
-    const prio = {};
-
-    for (let i = 0; i < result.rows.length; i++) {
-        const route = client.lol.reverse_routes[result.rows[i].region];
-        if (client.lol.services[route]["running"] === true) {
-            continue;
-        }
-
-        if (!prio[route]) {
-            prio[route] = [];
-        }
-
-        if (route !== undefined && client.lol.services[route] !== undefined) {
-            let found = false;
-            for (let j = 0; j < client.lol.services[route]["queue"]["updates"].length; j++) {
-                if (client.lol.services[route]["queue"]["updates"][j].puuid === result.rows[i].puuid) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                client.lol.services[route]["queue"]["updates"].push({ "puuid": result.rows[i].puuid, "discordid": result.rows[i].discordid, "id": result.rows[i].id, "gamename": result.rows[i].gamename, "tagline": result.rows[i].tagline, "matchs": [], "total": 0, "count": 0, "region": result.rows[i].region, "first": first, "rank": false });
-            }
-        }
-    }
-    await client.lol.main(debug);
+    await client.redisPubClient.publish('bot:commands', JSON.stringify({
+        type: 'UPDATE_ALL',
+        debug: debug,
+        first: first
+    }));
 }

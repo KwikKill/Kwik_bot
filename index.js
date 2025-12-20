@@ -4,6 +4,7 @@ const fs = require("fs");
 const lol = require("./util/lol_functions.js");
 const index2 = require('./index2.js');
 const logger = require('./util/logger');
+const Redis = require('ioredis');
 
 const dns = require('node:dns');
 dns.setDefaultResultOrder('ipv4first');
@@ -24,6 +25,45 @@ const client = new Client({
 // -------------- LOL -----------------
 client.lol = lol;
 client.lol.setup(client);
+
+// -------------- Redis -----------------
+const redisSubClient = new Redis(process.env.REDIS_URL || 'redis://redis:6379', {
+    maxRetriesPerRequest: null
+});
+
+redisSubClient.on('connect', () => logger.log('Redis Subscriber connected'));
+redisSubClient.on('error', err => logger.error(err, 'Redis Subscriber error'));
+
+redisSubClient.subscribe('updater:events', (err, count) => {
+    if (err) logger.error(err, 'Failed to subscribe to updater:events');
+    else logger.log('Subscribed to updater:events');
+});
+redisSubClient.on('message', async (channel, message) => {
+    if (channel !== 'updater:events') return;
+    
+    const data = JSON.parse(message);
+    switch (data.type) {
+        case 'RANK_UPDATE':
+            client.lol.lol_rank_manager.send_tracker_message(
+                data.puuid,
+                data.old_rank,
+                data.new_rank,
+                data.last_game
+            );
+            break;
+    }
+});
+
+client.redisSubClient = redisSubClient;
+
+const redisPubClient = new Redis(process.env.REDIS_URL || 'redis://redis:6379', {
+    maxRetriesPerRequest: null
+});
+
+redisPubClient.on('connect', () => logger.log('Redis Publisher connected'));
+redisPubClient.on('error', err => logger.error(err, 'Redis Publisher error'));
+
+client.redisPubClient = redisPubClient;
 
 // -------------- Commandes -----------------
 client.commands = new Collection();

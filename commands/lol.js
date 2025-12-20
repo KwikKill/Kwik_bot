@@ -1067,12 +1067,6 @@ module.exports = {
             } else if (interaction.options.getSubcommand() === "list") {
                 account_list(client, interaction);
             }
-        } else if (interaction.options.getSubcommandGroup() === "queue") {
-            // Deprecated warning
-            return await interaction.editReply("Due to recent improvements, this command is deprecated and will be removed in the next update.");
-            /*if (interaction.options.getSubcommand() === "status") {
-                queue(client, interaction);
-            }*/
         } else if (interaction.options.getSubcommandGroup() === "stats") {
             if (interaction.options.getSubcommand() === "summarized") {
                 stats_summarized(client, interaction, discordaccount, champion, role, account, season, gamemode);
@@ -1167,46 +1161,9 @@ module.exports = {
         return await interaction.respond(champs);
     },
     account_add,
-    addSumoner,
-    add_summoner_manual,
     account_silence_guild,
 
 };
-
-// ---------------------------- SUMMONER FUNCTIONS ----------------------------
-
-/**
- * Add a summoner to the database
- * @function addSumoner
- * @param {Client} client - bot's client
- * @param {String} name - summoner's username
- * @param {Interaction} interaction - command's interaction
- * @param {String} region - summoner's region
- * @returns {Promise<void>}
- */
-async function addSumoner(client, gamename, tagline, interaction, region, priority = 0) {
-    const route = client.lol.reverse_routes[region];
-
-    client.lol.services[route]["queue"]["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "interaction": interaction, "region": region, "priority": priority, "first": true });
-    await client.lol.main();
-}
-
-/**
- * Add a summoner to the database
- * @function add_summoner_manual
- * @param {Client} client - bot's client
- * @param {String} name - summoner's username
- * @param {String} discordid - summoner's discord id
- * @param {String} region - summoner's region
- * @param {Number} priority - summoner's priority
- * @returns {Promise<void>}
- */
-async function add_summoner_manual(client, gamename, tagline, discordid, region, priority = 0) {
-    const route = client.lol.reverse_routes[region];
-
-    client.lol.services[route]["queue"]["summoners"].push({ "gamename": gamename, "tagline": tagline, "discordid": discordid, "interaction": undefined, "region": region, "priority": priority, "first": true });
-    await client.lol.main();
-}
 
 // ---------------------------- ACCOUNT FUNCTIONS ----------------------------
 
@@ -1237,69 +1194,63 @@ async function account_add(client, interaction, gamename, tagline, region) {
     });
     const route = client.lol.reverse_routes[region];
 
-    const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3 AND region=$4;", [interaction.user.id, gamename, tagline, region]);
-    if (!client.lol.services[route]["queue"]["summoners"].includes({ "gamename": gamename, "tagline": tagline, "discordid": interaction.user.id, "region": region }) && response.rows.length === 0) {
+    // Check if account already exists in DB
+    const response = await client.pg.query(
+        "SELECT * FROM summoners WHERE discordid=$1 AND gamename=$2 AND tagline=$3 AND region=$4;",
+        [interaction.user.id, gamename, tagline, region]
+    );
 
-        const response2 = await client.pg.query("SELECT * FROM summoners where discordid=$1;", [interaction.user.id]);
-        let nb_account = response2.rows.length;
-        for (let i = 0; i < client.lol.services[route]["queue"]["summoners"].length; i++) {
-            if (client.lol.services[route]["queue"]["summoners"][i].discordid === interaction.user.id) {
-                nb_account++;
-            }
-        }
-
-        // If the user is not a premium user
-        let priority = await client.pg.query("SELECT priority FROM summoners WHERE discordid = $1;", [interaction.user.id]);
-        if (nb_account === 0 || priority.rows.length === 0 || priority.rows?.[0].priority === 0) {
-            if (nb_account === 0) {
-                // TODO: user status need to be exported in another database table
-                const entitlements = await client.application.entitlements.fetch();
-
-                const entitlement = entitlements.find(ent => ent.userId === interaction.user.id && !ent.deleted);
-                if (entitlement) {
-                    priority = 1;
-                } else {
-                    priority = 0;
-                }
-
-                await interaction.editReply({
-                    content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take a long time.",
-                    embeds: []
-                });
-                return await addSumoner(client, gamename, tagline, interaction, region, priority);
-            }
-
-            let row = new ActionRowBuilder().addComponents(
-                new ButtonBuilder()
-                .setStyle(ButtonStyle.Premium)
-                .setSKUId("1388250955447009281"),
-            );
-
-
-            return await interaction.editReply({
-                content: "You have reached your maximum number of linked accounts. You can unlo, you can contact me on discord : **kwikkill**ck more accounts slots by supporting me.",
-                components: [
-                    row
-                ]
-            });
-        }
-
-        // If the user is a premium user or has less than 3 accounts linked
-        if (nb_account < 3 || priority.rows?.[0].priority === 10) {
-            await interaction.editReply({
-                content: "The request was added to the queue, this can take several minutes. Once your account is in the database, please wait while the matchs are added. This can take several hours.",
-                embeds: []
-            });
-            return await addSumoner(client, gamename, tagline, interaction, region, priority.rows?.[0].priority);
-        }
-
+    if (response.rows.length > 0) {
         return await interaction.editReply({
-            content: "You have reached your maximum number of linked accounts for a premium user. If you want to unlock even more accounts slots, you can contact me on discord : **kwikkill**",
+            content: "This account is already in the database.",
             embeds: []
         });
     }
-    return await interaction.editReply({
-        content: "This account is already in the database or requested.",
+
+    // Count how many accounts the user already has in DB
+    const response2 = await client.pg.query("SELECT * FROM summoners WHERE discordid=$1;", [interaction.user.id]);
+    let nb_account = response2.rows.length;
+
+    // Check user priority from DB
+    const priorityQuery = await client.pg.query("SELECT priority FROM summoners WHERE discordid=$1 LIMIT 1;", [interaction.user.id]);
+    let priority = priorityQuery.rows?.[0]?.priority ?? 0;
+
+    // First account special check for entitlement
+    if (nb_account === 0 && priority === 0) {
+        const entitlements = await client.application.entitlements.fetch();
+        const entitlement = entitlements.find(ent => ent.userId === interaction.user.id && !ent.deleted);
+        if (entitlement) priority = 1;
+    }
+
+    // Max account limits
+    const maxAccounts = priority === 0 ? 1 : 3;
+    if (nb_account >= maxAccounts && (priority !== 10)) {
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Premium)
+                .setSKUId("1388250955447009281"),
+        );
+
+        return await interaction.editReply({
+            content: "You have reached your maximum number of linked accounts. You can unlock more accounts slots by supporting me.",
+            components: [row]
+        });
+    }
+
+    // If allowed, publish event to updater
+    await client.redis.pub.publish('bot:commands', JSON.stringify({
+        type: 'ADD_SUMMONER',
+        gamename,
+        tagline,
+        discordid: interaction.user.id,
+        region,
+        priority,
+        first: true
+    }));
+
+    // Notify user
+    await interaction.editReply({
+        content: "The request was added to the queue. This can take several minutes.",
         embeds: []
     });
 }
@@ -1384,108 +1335,6 @@ async function account_list(client, interaction) {
         }
     );
 
-    return await interaction.editReply({ embeds: [embed] });
-}
-
-// ---------------------------- QUEUE FUNCTIONS ----------------------------
-
-/**
- * send queue status
- * @function queue
- * @param {Client} client - bot's client
- * @param {Interaction} interaction - command's interaction
- */
-async function queue(client, interaction) {
-    client.pg.query({
-        name: "insert-logs",
-        text: "INSERT INTO logs (date, discordid, command, args, serverid) VALUES ($1, $2, $3, $4, $5)",
-        values: [
-            new Date(),
-            interaction.user.id,
-            "lol/queue",
-            JSON.stringify({}),
-            interaction.guild ? interaction.guild.id : interaction.user.id
-        ]
-    });
-    const embed = new EmbedBuilder()
-        .setTitle("Queue status")
-        .setColor("#00FF00")
-        .setFooter({
-            text: "Requested by " + interaction.user.username,
-            //iconURL: interaction.user.displayAvatarURL()
-        })
-        .setTimestamp();
-    let step = "";
-
-    const queue = {
-        "summoners": [],
-        "updates": [],
-        "add": []
-    };
-
-    for(const route in client.lol.services) {
-        for (let i = 0; i < client.lol.services[route]["queue"]["summoners"].length; i++) {
-            queue["summoners"].push(client.lol.services[route]["queue"]["summoners"][i]);
-        }
-        for (let i = 0; i < client.lol.services[route]["queue"]["updates"].length; i++) {
-            queue["updates"].push(client.lol.services[route]["queue"]["updates"][i]);
-        }
-        for (let i = 0; i < client.lol.services[route]["queue"]["add"].length; i++) {
-            queue["add"].push(client.lol.services[route]["queue"]["add"][i]);
-        }
-    }
-
-
-    if (queue["updates"].length > 0) {
-        if (queue["updates"][0]["count"] === 0) {
-            step = //"- Step : 1/2 (Fetching game list)" +
-                "- Current : <@" + queue["updates"][0]["discordid"] + "> (" + queue["updates"][0]["gamename"] + "#" + queue["updates"][0]["tagline"] + ") : Fetching match list";
-        } else {
-            step = //"- Step : 2/2 (Fetching matchs details)\n" +
-                "- Current : <@" + queue["updates"][0]["discordid"] + "> (" + queue["updates"][0]["gamename"] + "#" + queue["updates"][0]["tagline"] + ") : " + queue["updates"][0]["count"] + "/" + queue["updates"][0]["total"] + " matchs";
-        }
-        embed.addFields(
-            {
-                name: "Queued updates :",
-                value: "- size : " + queue["updates"].length + " Summoners\n" +
-                    step + "\n"
-            }
-        );
-        const pos = [];
-        for (let i = 1; i < queue["updates"].length; i++) {
-            if (queue["updates"][i]["discordid"] === interaction.user.id) {
-                pos.push([i, queue["updates"][i]["gamename"] + "#" + queue["updates"][i]["tagline"]]);
-                break;
-            }
-        }
-        let text = "";
-        for (let i = 0; i < pos.length; i++) {
-            text += "- " + pos[i][1] + " : " + pos[i][0] + "/" + queue["updates"].length + "\n";
-        }
-        if (text !== "") {
-            embed.addFields(
-                {
-                    name: "Your position in the queue :",
-                    value: "" + text
-                }
-            );
-        }
-    } else {
-        embed.addFields(
-            {
-                name: "Updates in queue :",
-                value: "- 0 Matchs\n"
-            }
-        );
-    }
-    /*if (interaction.user.id === "297409548703105035") {
-        embed.addFields(
-            {
-                name: "Api limit reached :",
-                value: "" + client.lol.api_limit
-            }
-        );
-    }*/
     return await interaction.editReply({ embeds: [embed] });
 }
 
