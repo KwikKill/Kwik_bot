@@ -36,7 +36,6 @@ async function publishBotStats(client) {
     await client.redisPubClient.set("bot:stats:connected", "true")
     await client.redisPubClient.set("bot:stats:topServers", JSON.stringify(topServers))
 
-    logger.log("[Stats Publisher] Published bot stats to Redis")
   } catch (error) {
     logger.error(error, "[Stats Publisher] Failed to publish bot stats")
   }
