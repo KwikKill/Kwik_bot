@@ -10,6 +10,9 @@ class LolRankManager {
         "unranked": "unranked",
     };
     trackers= [];
+    champions = {};
+    version = "";
+    set_up = false;
 
     async setup(client) {
         this.client = client;
@@ -107,6 +110,19 @@ class LolRankManager {
             }
         }
 
+        // Get the current version of League of Legends
+        this.champions = await client.lol.lol_api.getChampsId("EUW1", client);
+        const versions = await client.lol.lol_api.getCurrentPatch("EUW1", client);
+        this.version = versions["n"]["champion"];
+
+        // every 10 minutes, refresh the version and champions list
+        setInterval(async () => {
+            this.champions = await client.lol.lol_api.getChampsId("EUW1", client);
+            const versions = await client.lol.lol_api.getCurrentPatch("EUW1", client);
+            this.version = versions["n"]["champion"];
+        }, 10 * 60 * 1000);
+
+        this.set_up = true;
     }
 
     /**
@@ -116,6 +132,10 @@ class LolRankManager {
      * @param {object} last_game last game data
      */
     async send_tracker_message(puuid, old_rank, new_rank, last_game) {
+        if (!this.set_up) {
+            logger.error("LolRankManager not set up yet, cannot send tracker message");
+            return;
+        }
 
         // If the new rank is the same as the old rank, return
         if (JSON.stringify(old_rank) === JSON.stringify(new_rank)) {
@@ -446,7 +466,11 @@ class LolRankManager {
      * @returns {string} champion URL
      */
     get_champion_url(name) {
-        return "https://cdn.communitydragon.org/latest/champion/" + this.get_champion_id(name) + "/square";
+        //return "https://cdn.communitydragon.org/latest/champion/" + this.get_champion_id(name) + "/square";
+        if (this.champions[name] === undefined) {
+            return "";
+        }
+        return "http://ddragon.leagueoflegends.com/cdn/" + this.version + "/img/champion/" + this.champions[name] + ".png";
     }
 
     /**

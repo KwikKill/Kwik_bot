@@ -297,7 +297,12 @@ class LolApi {
             // Fetch Data from provided URL & Options
             const responsefetch = await axios.get(url);
             const data = responsefetch.data;
-            if (route && client.lol.services[route] !== undefined) {
+            if (
+                route &&
+                client.lol &&
+                client.lol.service &&
+                client.lol.services[route] !== undefined
+            ) {
                 client.lol.services[route].api_limit = false;
             }
             return data;
