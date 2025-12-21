@@ -1,6 +1,7 @@
 const pg = require('pg');
 //const packageJSON = require("../package.json");
 const logger = require('../util/logger');
+const { startStatsPublisher } = require('../util/stats-publisher');
 const { ActivityType } = require('discord.js');
 
 module.exports = {
@@ -38,6 +39,8 @@ module.exports = {
                 }
                 setInterval(timer.run, timer.timer, client);
             });
+
+            startStatsPublisher(client)
 
             client.pg.query("SELECT * FROM trackers").then(trackers => {
                 trackers.rows.forEach(tracker => {
