@@ -51,6 +51,13 @@ redisSubClient.on('message', async (channel, message) => {
                 data.last_game
             );
             break;
+        case 'SUMMONER_ADDED':
+            client.lol.lol_rank_manager.feedback_summoner_added(
+                data.channel_id,
+                data.message_id,
+                data.message,
+            );
+            break;
     }
 });
 

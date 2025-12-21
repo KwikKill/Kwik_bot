@@ -1237,6 +1237,8 @@ async function account_add(client, interaction, gamename, tagline, region) {
         });
     }
 
+    const reply = await interaction.fetchReply();
+
     // If allowed, publish event to updater
     await client.redisPubClient.publish('bot:commands', JSON.stringify({
         type: 'ADD_SUMMONER',
@@ -1245,7 +1247,9 @@ async function account_add(client, interaction, gamename, tagline, region) {
         discordid: interaction.user.id,
         region,
         priority,
-        first: true
+        first: true,
+        channel_id: reply.channelId,
+        message_id: reply.id
     }));
 
     // Notify user

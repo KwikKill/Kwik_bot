@@ -533,6 +533,24 @@ class LolRankManager {
 
         return rank;
     }
+
+    async feedback_summoner_added(channel_id, message_id, message) {
+        try {
+            const channel = await this.client.channels.fetch(channel_id);
+            if (!channel) {
+                logger.error("Error while sending summoner added feedback: Channel not found");
+                return;
+            }
+            const message_obj = await channel.messages.fetch(message_id);
+            if (!message_obj) {
+                logger.error("Error while sending summoner added feedback: Message not found");
+                return;
+            }
+            await message_obj.edit(message);
+        } catch (e) {
+            logger.error("Error while sending summoner added feedback: " + e);
+        }
+    }
 }
 
 module.exports = {
