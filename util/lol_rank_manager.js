@@ -548,6 +548,7 @@ class LolRankManager {
             }
             await message_obj.edit(message);
         } catch (e) {
+            logger.error("Channel Id: " + channel_id + " Message Id: " + message_id);
             logger.error("Error while sending summoner added feedback: " + e);
         }
     }
