@@ -18,13 +18,25 @@ async function publishBotStats(client) {
       connected: true,
     }
 
+    const topServers = client.guilds.cache
+      .sort((a, b) => b.memberCount - a.memberCount)
+      .first(3)
+      .map((guild) => ({
+        id: guild.id,
+        name: guild.name,
+        icon: guild.iconURL({ extension: "png", size: 128 }) || null,
+        memberCount: guild.memberCount,
+      }))
+
     // Publish each stat to Redis
     await client.redisPubClient.set("bot:stats:serverCount", stats.serverCount.toString())
     await client.redisPubClient.set("bot:stats:userCount", stats.userCount.toString())
     await client.redisPubClient.set("bot:stats:uptime", stats.uptime.toString())
     await client.redisPubClient.set("bot:stats:commands", stats.commands.toString())
     await client.redisPubClient.set("bot:stats:connected", "true")
+    await client.redisPubClient.set("bot:stats:topServers", JSON.stringify(topServers))
 
+    logger.log("[Stats Publisher] Published bot stats to Redis")
   } catch (error) {
     logger.error(error, "[Stats Publisher] Failed to publish bot stats")
   }
