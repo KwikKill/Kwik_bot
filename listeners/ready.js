@@ -2,6 +2,7 @@ const pg = require('pg');
 //const packageJSON = require("../package.json");
 const logger = require('../util/logger');
 const { startStatsPublisher } = require('../util/stats-publisher');
+const { initWeeklyLeaderboards } = require('../util/weekly_leaderboard');
 const { ActivityType } = require('discord.js');
 
 module.exports = {
@@ -49,6 +50,7 @@ module.exports = {
                         guild: tracker.guildid
                     });
                 });
+                initWeeklyLeaderboards(client);
             });
         });
     }
