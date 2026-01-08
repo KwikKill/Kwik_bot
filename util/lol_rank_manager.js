@@ -304,6 +304,17 @@ class LolRankManager {
                 embed.setURL(this.get_league_of_graph(last_game["matchId"]));
                 embed.setThumbnail(this.get_champion_url(last_game["champion"]));
 
+                const KDA = (last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)
+                const emoji = KDA < 1 ?
+                    "🗑️"
+                    : KDA < 2 ?
+                        "🎮"
+                        : KDA < 5 ?
+                            "📸"
+                            : KDA < 10 ?
+                                "⚡"
+                                : "🔥";
+
                 // If the user just finished his placement games in solo/duo
                 if (
                     data["RANKED_SOLO_5x5"]["tier"] === 'unranked'
@@ -360,20 +371,8 @@ class LolRankManager {
                     );
                     embeds[discordid] = embed;
                 }
-
-                const KDA = (last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)
-                const emoji = KDA < 1 ?
-                    "🗑️"
-                    : KDA < 2 ?
-                        "🎮"
-                        : KDA < 5 ?
-                            "📸"
-                            : KDA < 10 ?
-                                "⚡"
-                                : "🔥";
-
                 // If the user just finished a game in solo/duo
-                if (
+                else if (
                     (
                         data["RANKED_SOLO_5x5"]["rank"] !== rank["RANKED_SOLO_5x5"]["rank"] ||
                         data["RANKED_SOLO_5x5"]["tier"] !== rank["RANKED_SOLO_5x5"]["tier"] ||
@@ -414,7 +413,7 @@ class LolRankManager {
                     embeds[discordid] = embed;
                 }
                 // If the user just finished a game in flex
-                if (
+                else if (
                     (
                         data["RANKED_FLEX_SR"]["rank"] !== rank["RANKED_FLEX_SR"]["rank"] ||
                         data["RANKED_FLEX_SR"]["tier"] !== rank["RANKED_FLEX_SR"]["tier"] ||
