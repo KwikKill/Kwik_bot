@@ -144,6 +144,7 @@ class LolRankManager {
 
         // read current rank and send message if rank changed
         const embeds = this.build_trackers(old_rank, new_rank, last_game);
+        const sendPromises = [];
 
         for (const x of this.trackers) {
             const channelid = x.channel;
@@ -177,7 +178,24 @@ class LolRankManager {
                                 this.trackers.splice(index, 1);
                                 continue;
                             }
-                            channel.send({ embeds: [embed] });
+
+                            // send concurrently and handle per-send errors so we don't block the loop
+                            sendPromises.push(
+                                channel.send({ embeds: [embed] }).catch(async (e) => {
+                                    if (e && (e.code === 10003 || e.code === 50001)) {
+                                        logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
+                                        try {
+                                            await this.client.pg.query("DELETE FROM trackers WHERE channelid = $1", [channelid]);
+                                        } catch (dbErr) {
+                                            logger.error("Failed to delete tracker for channel " + channelid + ": " + dbErr);
+                                        }
+                                        const index = this.trackers.indexOf(x);
+                                        if (index !== -1) this.trackers.splice(index, 1);
+                                    } else {
+                                        logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
+                                    }
+                                })
+                            );
                         } else {
                             logger.error("Error while building tracker embed for " + new_rank.gamename + "#" + new_rank.tagline);
                             logger.error("Current SOLO rank : " + old_rank["RANKED_SOLO_5x5"]["tier"] + " " + old_rank["RANKED_SOLO_5x5"]["rank"] + " " + old_rank["RANKED_SOLO_5x5"]["leaguePoints"] + " LP");
@@ -198,6 +216,14 @@ class LolRankManager {
                         logger.error("Unknown error while sending tracker message (" + channelid + "): " + e);
                     }
                 }
+            }
+        }
+        
+        if (sendPromises.length) {
+            try {
+                await Promise.allSettled(sendPromises);
+            } catch (e) {
+                logger.error("Error while awaiting send promises: " + e);
             }
         }
     }
