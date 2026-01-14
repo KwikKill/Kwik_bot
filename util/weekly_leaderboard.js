@@ -3,7 +3,8 @@ const { EmbedBuilder } = require('discord.js');
 const GuildsEnabled = [
     "513776796211085342", // KwiK Bot Dev
     "890915473363980308", // Crew YY
-    "962329252550807592" // Chisakouille
+    "962329252550807592", // Chisakouille
+    "991052056657793124"
 ]
 
 /**
@@ -14,7 +15,7 @@ const GuildsEnabled = [
 function initWeeklyLeaderboards(client) {
     if (!client || !client.pg || !client.lol || !client.lol.lol_rank_manager) return;
 
-    const CHECK_INTERVAL_MS = 60 * 1000; // check every minute
+    const CHECK_INTERVAL_MS = 5 * 60 * 1000; // check every 5 minutes
 
     async function runForTracker(tracker, rows) {
         try {
@@ -70,16 +71,7 @@ function initWeeklyLeaderboards(client) {
                 }
             });
 
-            // mark as posted for this guild (set Redis key to today's date)
-            try {
-                const key = `weekly_leaderboard:lastRun:${guildId}`;
-                const today = new Date().toISOString().slice(0, 10);
-                if (client.redisPubClient && client.redisPubClient.set) {
-                    await client.redisPubClient.set(key, today).catch(() => null);
-                }
-            } catch (e) {
-                // ignore
-            }
+            // No longer need per-guild Redis keys since we use a global lock
 
         } catch (e) {
             logger.error('Error in weekly leaderboard for tracker ' + JSON.stringify(tracker) + ' : ' + e);
@@ -91,7 +83,34 @@ function initWeeklyLeaderboards(client) {
         // Monday is 1 in getDay()
         if (now.getDay() !== 1) return;
         if (now.getHours() !== 8) return;
-        if (now.getMinutes() > 2) return; // only in first 3 minutes
+        if (now.getMinutes() >= 30) return;
+
+        // Check global lock FIRST to prevent duplicate runs
+        const globalKey = 'weekly_leaderboard:globalLock';
+        const today = new Date().toISOString().slice(0, 10);
+
+        try {
+            if (client.redisPubClient && client.redisPubClient.get) {
+                const lastGlobalRun = await client.redisPubClient.get(globalKey).catch(() => null);
+                if (lastGlobalRun === today) {
+                    // Already ran today, skip
+                    return;
+                }
+            }
+        } catch (e) {
+            logger.error('[WeeklyLeaderboards] Error checking global lock: ' + e);
+            return; // Fail safe: don't run if we can't check
+        }
+
+        // Set the global lock immediately to prevent concurrent runs
+        try {
+            if (client.redisPubClient && client.redisPubClient.set) {
+                await client.redisPubClient.set(globalKey, today).catch(() => null);
+            }
+        } catch (e) {
+            logger.error('[WeeklyLeaderboards] Error setting global lock: ' + e);
+            return;
+        }
 
         logger.log('[WeeklyLeaderboards] Checking trackers for weekly leaderboard posting');
 
@@ -141,13 +160,7 @@ function initWeeklyLeaderboards(client) {
                 ) {
                     continue;
                 }
-                const key = `weekly_leaderboard:lastRun:${guildId}`;
-                let last = null;
-                if (client.redisPubClient && client.redisPubClient.get) {
-                    last = await client.redisPubClient.get(key).catch(() => null);
-                }
-                const today = new Date().toISOString().slice(0, 10);
-                if (last === today) continue;
+                // No longer need per-guild lock check - global lock handles it
                 // run posting for this tracker using precomputed rows
                 await runForTracker(tracker, rows);
             } catch (e) {
