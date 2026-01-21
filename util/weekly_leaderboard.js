@@ -3,8 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 const GuildsEnabled = [
     "513776796211085342", // KwiK Bot Dev
     "890915473363980308", // Crew YY
-    "962329252550807592", // Chisakouille
-    "991052056657793124"
+    "962329252550807592" // Chisakouille
 ]
 
 /**
@@ -18,6 +17,7 @@ function initWeeklyLeaderboards(client) {
     const CHECK_INTERVAL_MS = 5 * 60 * 1000; // check every 5 minutes
 
     async function runForTracker(tracker, rows) {
+        logger.log('[WeeklyLeaderboards] running "runForTracker" for tracker: ' + JSON.stringify(tracker));
         try {
             const channelId = tracker.channel;
             const guildId = tracker.guild;
@@ -61,6 +61,7 @@ function initWeeklyLeaderboards(client) {
                 .addFields({ name: 'Top 10 Score :', value: lines.join('\n') })
                 .setTimestamp();
 
+            logger.log('[WeeklyLeaderboards] Sending weekly leaderboard to channel ' + channelId);
             await channel.send({ embeds: [embed] }).catch(async (e) => {
                 logger.error('Error sending weekly leaderboard to ' + channelId + ' : ' + e);
                 if (e.code === 10003 || e.code === 50001) {
@@ -152,6 +153,7 @@ function initWeeklyLeaderboards(client) {
         const rows = globalRes && globalRes.rows ? globalRes.rows : [];
 
         for (const tracker of client.lol.lol_rank_manager.trackers || []) {
+            logger.log('[WeeklyLeaderboards] Processing tracker for channel ' + tracker.channel);
             try {
                 const guildId = tracker.guild;
                 if (
@@ -160,8 +162,7 @@ function initWeeklyLeaderboards(client) {
                 ) {
                     continue;
                 }
-                // No longer need per-guild lock check - global lock handles it
-                // run posting for this tracker using precomputed rows
+                logger.log('[WeeklyLeaderboards] Building leaderboard for guild ' + guildId);
                 await runForTracker(tracker, rows);
             } catch (e) {
                 logger.error('Error checking tracker ' + JSON.stringify(tracker) + ' : ' + e);
