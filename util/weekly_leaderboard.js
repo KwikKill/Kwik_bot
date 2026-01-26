@@ -1,9 +1,10 @@
 const logger = require('./logger');
 const { EmbedBuilder } = require('discord.js');
 const GuildsEnabled = [
-    "513776796211085342", // KwiK Bot Dev
-    "890915473363980308", // Crew YY
-    "962329252550807592" // Chisakouille
+    //"513776796211085342", // KwiK Bot Dev
+    //"890915473363980308", // Crew YY
+    //"962329252550807592" // Chisakouille
+    "all"
 ]
 
 /**
@@ -71,8 +72,6 @@ function initWeeklyLeaderboards(client) {
                     if (idx !== -1) client.lol.lol_rank_manager.trackers.splice(idx, 1);
                 }
             });
-
-            // No longer need per-guild Redis keys since we use a global lock
 
         } catch (e) {
             logger.error('Error in weekly leaderboard for tracker ' + JSON.stringify(tracker) + ' : ' + e);
