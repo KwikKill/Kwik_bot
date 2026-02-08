@@ -779,7 +779,9 @@ module.exports = {
                     await interaction.deferReply();
                     client.lol.lol_rank_manager.trackers.forEach(ch => {
                         client.channels.fetch(ch.channel).then(chs => {
-                            chs.send("an unexpected error has occurred, game fetching and tracker messages will be disabled until more investigations");
+                            chs.send("A maintenance will be carried on, game fetching and tracker messages will be disabled. We'll be back up soon !");
+                        }).catch((e) => {
+                            console.log(e);
                         });
                     });
                     return await interaction.editReply({ content: "Maintenance message sent!", ephemeral: true });
