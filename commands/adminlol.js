@@ -1,5 +1,6 @@
 const { PermissionsBitField, ApplicationCommandOptionType, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
 const parse = require('node-html-parser');
+const logger = require('../util/logger.js');
 
 module.exports = {
     name: 'adminlol',
@@ -543,11 +544,13 @@ module.exports = {
                             const response = await fetch(url);
                             const html = await response.text();
                             const node = parse.parse(html);
-                            const price_text = node.querySelectorAll(".txt");
+                            const summoners = node.querySelectorAll("tr");
 
-                            for (let i = 0; i < price_text.length; i++) {
-                                const node2 = price_text[i].querySelector(".name");
-                                const node3 = price_text[i].querySelector("i");
+                            logger.log("Processing " + champ + " page " + j + ", found " + summoners.length + " summoners");
+
+                            for (let i = 0; i < summoners.length; i++) {
+                                const node2 = summoners[i].querySelector(".name");
+                                const node3 = summoners[i].querySelector("i");
                                 if (node2 === null || node3 === null) {
                                     continue;
                                 }
@@ -614,17 +617,22 @@ module.exports = {
                         }
                     }
 
+                    logger.log("Found " + summoners.length + " summoners, adding to the queue");
+
                     for (const summoner of summoners) {
                         const route = client.lol.reverse_routes[summoner[1]];
                         if (route !== undefined && client.lol.services[route] !== undefined) {
-                            client.lol.services[route]["queue"]["updates"].push({
-                                "type": "population",
-                                "region": summoner[1],
-                                "gamename": summoner[0].split("#")[0],
-                                "tagline": summoner[0].split("#")[1],
-                                "add": account,
-                                "discordid": "503109625772507136"
-                            });
+                            await client.redisPubClient.publish('bot:commands', JSON.stringify({
+                                type: 'ADD_SUMMONER',
+                                gamename: summoner[0].split("#")[0],
+                                tagline: summoner[0].split("#")[1],
+                                discordid: "503109625772507136",
+                                region: summoner[1],
+                                priority: 0,
+                                first: true,
+                                channel_id: 0,
+                                message_id: 0
+                            }));
                         }
                     }
 

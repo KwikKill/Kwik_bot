@@ -1100,13 +1100,15 @@ module.exports = {
             if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageChannels) && !interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
                 return await interaction.editReply("You don't have the permission to use this command !");
             }
-            // If the channel provided is not a text channel
-            if (interaction.options.getChannel("channel").type !== ChannelType.GuildText) {
-                return await interaction.editReply("Please provide a valid text channel !");
+            // If the channel provided is not a text channel or thread
+            const channelType = interaction.options.getChannel("channel").type;
+            const validTypes = [ChannelType.GuildText, ChannelType.PublicThread, ChannelType.PrivateThread, ChannelType.AnnouncementThread];
+            if (!validTypes.includes(channelType)) {
+                return await interaction.editReply("Please provide a valid text channel or thread !");
             }
             // If the channel does not belong to the guild
             if (interaction.options.getChannel("channel").guild.id !== interaction.guild.id) {
-                return await interaction.editReply("Please provide a valid text channel in this guild !");
+                return await interaction.editReply("Please provide a valid text channel or thread in this guild !");
             }
             if (interaction.options.getSubcommand() === "add") {
                 tracker_add(client, interaction);
@@ -3939,10 +3941,12 @@ async function tracker_remove(client, interaction) {
         if (response.rowCount === 0) {
             return await interaction.editReply("This channel is currently not a tracker channel !");
         }
-        client.lol.lol_rank_manager.trackers.splice(client.lol.lol_rank_manager.trackers.indexOf({
-            channel: channel.id,
-            guild: channel.guild.id
-        }), 1);
+        const index = client.lol.lol_rank_manager.trackers.findIndex(t => 
+            t.channel === channel.id && t.guild === channel.guild.id
+        );
+        if (index !== -1) {
+            client.lol.lol_rank_manager.trackers.splice(index, 1);
+        }
         await client.pg.query("DELETE FROM trackers WHERE channelid=$1;", [channel.id]);
         return await interaction.editReply("tracker channel removed !");
     } catch (e) {
