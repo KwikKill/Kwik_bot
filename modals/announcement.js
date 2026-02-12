@@ -35,7 +35,11 @@ module.exports = {
         // Send the announcement
         client.lol.lol_rank_manager.trackers.forEach(ch => {
             client.channels.fetch(ch.channel).then(chs => {
-                chs.send({ embeds: [embed] });
+                chs.send({ embeds: [embed] }).catch(err => {
+                    console.error("Error sending announcement to channel " + ch.channel + ": " + err);
+                });
+            }).catch(err => {
+                console.error("Error fetching channel " + ch.channel + ": " + err);
             });
         });
 
