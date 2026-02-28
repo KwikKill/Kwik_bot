@@ -143,14 +143,17 @@ class LolRankManager {
         }
 
         // read current rank and send message if rank changed
-        const embeds = this.build_trackers(old_rank, new_rank, last_game);
+        const embeds = await this.build_trackers(old_rank, new_rank, last_game);
         const sendPromises = [];
 
         for (const x of this.trackers) {
             const channelid = x.channel;
 
             for (const discordid of new_rank.discordid) {
-                const embed = embeds[discordid];
+                const embedData = embeds[discordid];
+                if (!embedData) continue;
+
+                const { embed, files } = embedData;
 
                 // check if the user is muted
                 if (
@@ -180,8 +183,13 @@ class LolRankManager {
                             }
 
                             // send concurrently and handle per-send errors so we don't block the loop
+                            const messagePayload = { embeds: [embed] };
+                            if (files && files.length > 0) {
+                                messagePayload.files = files;
+                            }
+                            
                             sendPromises.push(
-                                channel.send({ embeds: [embed] }).catch(async (e) => {
+                                channel.send(messagePayload).catch(async (e) => {
                                     if (e && (e.code === 10003 || e.code === 50001)) {
                                         logger.error("Channel " + x + " not found or invalid permissions, deleting from database");
                                         try {
@@ -257,11 +265,13 @@ class LolRankManager {
      * @param {object} current_rank current summoner rank data
      * @param {object} last_game last game data
      * @param {*} rank rank data
+     * @returns {Promise<Object>} embeds with attachments
      */
-    build_trackers(data, rank, last_game) {
+    async build_trackers(data, rank, last_game) {
         const embeds = {};
         for (const discordid of data.discordid) {
             const embed = new EmbedBuilder();
+            let files = [];
 
             // If the last game is not in the database or was skipped
             if (last_game === "none" || last_game === null) {
@@ -294,7 +304,7 @@ class LolRankManager {
                             value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
                         }
                     );
-                    embeds[discordid] = embed;
+                    embeds[discordid] = { embed, files };
                 }
                 // If the user just finished a games in flex
                 else if ((
@@ -323,12 +333,39 @@ class LolRankManager {
                             value: LP_change > 0 ? "+" + LP_change + " LP" : LP_change + " LP",
                         }
                     );
-                    embeds[discordid] = embed;
+                    embeds[discordid] = { embed, files };
                 }
             } else {
-                // set embed URL and thumbnail
+                // Generate images if last_game data is available
+                const championImageBuffer = last_game["isMvp"] 
+                    ? await this.create_mvp_champion_image(last_game["champion"])
+                    : null;
+
+                const teamCompBuffer = last_game["all_players"] 
+                    ? await this.create_team_composition_image(last_game["all_players"])
+                    : null;
+
+                // Attach images
+                if (championImageBuffer) {
+                    files.push({
+                        attachment: championImageBuffer,
+                        name: 'champion.png'
+                    });
+                    embed.setThumbnail('attachment://champion.png');
+                } else {
+                    embed.setThumbnail(this.get_champion_url(last_game["champion"]));
+                }
+
+                if (teamCompBuffer) {
+                    files.push({
+                        attachment: teamCompBuffer,
+                        name: 'teamcomp.png'
+                    });
+                    embed.setImage('attachment://teamcomp.png');
+                }
+
+                // set embed URL
                 embed.setURL(this.get_league_of_graph(last_game["matchId"]));
-                embed.setThumbnail(this.get_champion_url(last_game["champion"]));
 
                 const KDA = (last_game["kills"] + last_game["assists"]) / (last_game["deaths"] || 1)
                 const emoji = KDA < 1 ?
@@ -367,7 +404,7 @@ class LolRankManager {
                             inline: true,
                         }
                     );
-                    embeds[discordid] = embed;
+                    embeds[discordid] = { embed, files };
                 }
                 // If the user just finished his placement games in flex
                 else if (
@@ -395,7 +432,7 @@ class LolRankManager {
                             inline: true,
                         }
                     );
-                    embeds[discordid] = embed;
+                    embeds[discordid] = { embed, files };
                 }
                 // If the user just finished a game in solo/duo
                 else if (
@@ -436,7 +473,7 @@ class LolRankManager {
                             inline: true,
                         }
                     );
-                    embeds[discordid] = embed;
+                    embeds[discordid] = { embed, files };
                 }
                 // If the user just finished a game in flex
                 else if (
@@ -477,11 +514,209 @@ class LolRankManager {
                             inline: true,
                         }
                     );
-                    embeds[discordid] = embed;
+                    embeds[discordid] = { embed, files };
                 }
             }
         }
         return embeds;
+    }
+
+    /**
+     * Get champion URL from name
+     * @function get_champion_url
+     * @param {string} name champion name
+     * @returns {string} champion URL
+     */
+    get_champion_url(name) {
+        //return "https://cdn.communitydragon.org/latest/champion/" + this.get_champion_id(name) + "/square";
+        if (this.champions[name] === undefined) {
+            return "";
+        }
+        return "http://ddragon.leagueoflegends.com/cdn/" + this.version + "/img/champion/" + this.champions[name] + ".png";
+    }
+
+    /**
+     * Get champion icon URL by ID
+     * @function get_champion_icon_by_id
+     * @param {number} championId champion ID
+     * @returns {string} champion icon URL
+     */
+    get_champion_icon_by_id(championId) {
+        return "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/" + championId + ".png";
+    }
+
+    /**
+     * Create champion image with MVP badge
+     * @function create_mvp_champion_image
+     * @param {string} championName champion name
+     * @returns {Promise<Buffer>} image buffer with MVP badge
+     */
+    async create_mvp_champion_image(championName) {
+        try {
+            const championUrl = this.get_champion_url(championName);
+            if (!championUrl) {
+                return null;
+            }
+
+            // Download champion image
+            const response = await axios.get(championUrl, {
+                responseType: 'arraybuffer'
+            });
+            
+            const championImage = sharp(response.data);
+            const metadata = await championImage.metadata();
+            
+            // Create MVP badge
+            const badgeSize = Math.floor(metadata.width * 0.35);
+            const badgeSvg = `
+                <svg width="${badgeSize}" height="${badgeSize}">
+                    <defs>
+                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <circle cx="${badgeSize/2}" cy="${badgeSize/2}" r="${badgeSize/2 - 2}" fill="url(#goldGradient)" stroke="#8B4513" stroke-width="3"/>
+                    <text x="${badgeSize/2}" y="${badgeSize/2 + badgeSize/8}" 
+                          font-family="Arial, sans-serif" 
+                          font-size="${badgeSize/3}" 
+                          font-weight="bold" 
+                          fill="#000000" 
+                          text-anchor="middle">MVP</text>
+                </svg>
+            `;
+            
+            const badgeBuffer = Buffer.from(badgeSvg);
+            
+            // Composite MVP badge on top-right corner
+            const compositeImage = await championImage
+                .composite([{
+                    input: badgeBuffer,
+                    top: 5,
+                    left: metadata.width - badgeSize - 5
+                }])
+                .png()
+                .toBuffer();
+            
+            return compositeImage;
+        } catch (error) {
+            logger.error("Error creating MVP champion image: " + error);
+            return null;
+        }
+    }
+
+    /**
+     * Create team composition image (5 champions + VS + 5 champions)
+     * @function create_team_composition_image
+     * @param {Array} allPlayers array of all players with championId and teamId
+     * @returns {Promise<Buffer>} team composition image buffer
+     */
+    async create_team_composition_image(allPlayers) {
+        try {
+            // Group players by team and sort
+            const teamGroups = {};
+            for (const player of allPlayers) {
+                if (!teamGroups[player.teamId]) {
+                    teamGroups[player.teamId] = [];
+                }
+                teamGroups[player.teamId].push(player);
+            }
+
+            // Get the two teams
+            const teamIds = Object.keys(teamGroups).map(Number).sort();
+            if (teamIds.length !== 2) {
+                return null;
+            }
+
+            const team1 = teamGroups[teamIds[0]].slice(0, 5);
+            const team2 = teamGroups[teamIds[1]].slice(0, 5);
+            
+            // If not standard 5v5, just return null
+            if (team1.length !== 5 || team2.length !== 5) {
+                return null;
+            }
+
+            const iconSize = 80;
+            const spacing = 5;
+            const vsWidth = 60;
+            const totalWidth = (iconSize * 5) + (spacing * 4) + vsWidth + (spacing * 2) + (iconSize * 5) + (spacing * 4);
+            const totalHeight = iconSize;
+
+            // Download all champion icons
+            const downloadIcon = async (championId) => {
+                const url = this.get_champion_icon_by_id(championId);
+                const response = await axios.get(url, { responseType: 'arraybuffer' });
+                return await sharp(response.data).resize(iconSize, iconSize).toBuffer();
+            };
+
+            const team1Icons = await Promise.all(team1.map(p => downloadIcon(p.championId)));
+            const team2Icons = await Promise.all(team2.map(p => downloadIcon(p.championId)));
+
+            // Create VS text SVG
+            const vsSvg = `
+                <svg width="${vsWidth}" height="${iconSize}">
+                    <rect width="${vsWidth}" height="${iconSize}" fill="#1a1a1a"/>
+                    <text x="${vsWidth/2}" y="${iconSize/2 + 10}" 
+                          font-family="Arial, sans-serif" 
+                          font-size="28" 
+                          font-weight="bold" 
+                          fill="#FFD700" 
+                          text-anchor="middle">VS</text>
+                </svg>
+            `;
+            const vsBuffer = Buffer.from(vsSvg);
+
+            // Build composite array
+            const composites = [];
+            let currentLeft = 0;
+
+            // Team 1 icons
+            for (let i = 0; i < team1Icons.length; i++) {
+                composites.push({
+                    input: team1Icons[i],
+                    top: 0,
+                    left: currentLeft
+                });
+                currentLeft += iconSize + spacing;
+            }
+
+            // VS text
+            composites.push({
+                input: vsBuffer,
+                top: 0,
+                left: currentLeft
+            });
+            currentLeft += vsWidth + spacing;
+
+            // Team 2 icons
+            for (let i = 0; i < team2Icons.length; i++) {
+                composites.push({
+                    input: team2Icons[i],
+                    top: 0,
+                    left: currentLeft
+                });
+                currentLeft += iconSize + spacing;
+            }
+
+            // Create base image and composite all elements
+            const finalImage = await sharp({
+                create: {
+                    width: totalWidth,
+                    height: totalHeight,
+                    channels: 4,
+                    background: { r: 26, g: 26, b: 26, alpha: 1 }
+                }
+            })
+            .composite(composites)
+            .png()
+            .toBuffer();
+
+            return finalImage;
+        } catch (error) {
+            logger.error("Error creating team composition image: " + error);
+            return null;
+        }
     }
 
     /**
