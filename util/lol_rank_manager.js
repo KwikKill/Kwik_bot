@@ -568,8 +568,10 @@ class LolRankManager {
             const championImage = sharp(response.data);
             const metadata = await championImage.metadata();
             
-            // Create badge with appropriate colors
-            const badgeSize = Math.floor(metadata.width * 0.35);
+            // Create elongated badge with appropriate colors
+            const badgeWidth = Math.floor(metadata.width * 0.55);
+            const badgeHeight = Math.floor(metadata.width * 0.28);
+            const borderRadius = badgeHeight / 2;
             const isAce = badgeText === "ACE";
             const gradientId = isAce ? "redGradient" : "goldGradient";
             const gradientColors = isAce 
@@ -577,30 +579,30 @@ class LolRankManager {
                 : "<stop offset='0%' style='stop-color:#FFD700;stop-opacity:1' /><stop offset='50%' style='stop-color:#FFA500;stop-opacity:1' /><stop offset='100%' style='stop-color:#FF8C00;stop-opacity:1' />";
             
             const badgeSvg = `
-                <svg width="${badgeSize}" height="${badgeSize}">
+                <svg width="${badgeWidth}" height="${badgeHeight}">
                     <defs>
                         <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
                             ${gradientColors}
                         </linearGradient>
                     </defs>
-                    <circle cx="${badgeSize/2}" cy="${badgeSize/2}" r="${badgeSize/2 - 2}" fill="url(#${gradientId})" stroke="#8B4513" stroke-width="3"/>
-                    <text x="${badgeSize/2}" y="${badgeSize/2 + badgeSize/8}" 
+                    <rect x="2" y="2" width="${badgeWidth - 4}" height="${badgeHeight - 4}" rx="${borderRadius}" ry="${borderRadius}" fill="url(#${gradientId})" stroke="#000000" stroke-width="3"/>
+                    <text x="${badgeWidth/2}" y="${badgeHeight/2 + badgeHeight/6}" 
                           font-family="Arial, sans-serif" 
-                          font-size="${badgeSize/3.5}" 
+                          font-size="${badgeHeight * 0.55}" 
                           font-weight="bold" 
-                          fill="#FFFFFF" 
+                          fill="#000000" 
                           text-anchor="middle">${badgeText}</text>
                 </svg>
             `;
             
             const badgeBuffer = Buffer.from(badgeSvg);
             
-            // Composite MVP badge on top-right corner
+            // Composite badge on top-right corner
             const compositeImage = await championImage
                 .composite([{
                     input: badgeBuffer,
                     top: 5,
-                    left: metadata.width - badgeSize - 5
+                    left: metadata.width - badgeWidth - 5
                 }])
                 .png()
                 .toBuffer();
@@ -659,9 +661,11 @@ class LolRankManager {
             const team1Icons = await Promise.all(team1.map(p => downloadIcon(p.championId)));
             const team2Icons = await Promise.all(team2.map(p => downloadIcon(p.championId)));
 
-            // Create badges for MVP/ACE players
+            // Create elongated badges for MVP/ACE players (larger for team comp)
             const createBadge = (badgeText) => {
-                const badgeSize = Math.floor(iconSize * 0.4);
+                const badgeWidth = Math.floor(iconSize * 0.70);
+                const badgeHeight = Math.floor(iconSize * 0.30);
+                const borderRadius = badgeHeight / 2;
                 const isAce = badgeText === "ACE";
                 const gradientId = isAce ? "redGradient" : "goldGradient";
                 const gradientColors = isAce 
@@ -669,18 +673,18 @@ class LolRankManager {
                     : "<stop offset='0%' style='stop-color:#FFD700;stop-opacity:1' /><stop offset='50%' style='stop-color:#FFA500;stop-opacity:1' /><stop offset='100%' style='stop-color:#FF8C00;stop-opacity:1' />";
                 
                 return Buffer.from(`
-                    <svg width="${badgeSize}" height="${badgeSize}">
+                    <svg width="${badgeWidth}" height="${badgeHeight}">
                         <defs>
                             <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
                                 ${gradientColors}
                             </linearGradient>
                         </defs>
-                        <circle cx="${badgeSize/2}" cy="${badgeSize/2}" r="${badgeSize/2 - 1}" fill="url(#${gradientId})" stroke="#000000" stroke-width="2"/>
-                        <text x="${badgeSize/2}" y="${badgeSize/2 + badgeSize/8}" 
+                        <rect x="1" y="1" width="${badgeWidth - 2}" height="${badgeHeight - 2}" rx="${borderRadius}" ry="${borderRadius}" fill="url(#${gradientId})" stroke="#000000" stroke-width="2"/>
+                        <text x="${badgeWidth/2}" y="${badgeHeight/2 + badgeHeight/5.5}" 
                               font-family="Arial, sans-serif" 
-                              font-size="${badgeSize/4}" 
+                              font-size="${badgeHeight * 0.55}" 
                               font-weight="bold" 
-                              fill="#FFFFFF" 
+                              fill="#000000" 
                               text-anchor="middle">${badgeText}</text>
                     </svg>
                 `);
@@ -716,11 +720,12 @@ class LolRankManager {
                 if (team1[i].isMvp) {
                     const badgeText = team1[i].result === "Win" ? "MVP" : "ACE";
                     const badge = createBadge(badgeText);
-                    const badgeSize = Math.floor(iconSize * 0.4);
+                    const badgeWidth = Math.floor(iconSize * 0.70);
+                    const badgeHeight = Math.floor(iconSize * 0.30);
                     composites.push({
                         input: badge,
-                        top: iconSize - badgeSize - 2,
-                        left: currentLeft + iconSize - badgeSize - 2
+                        top: iconSize - badgeHeight - 2,
+                        left: currentLeft + (iconSize - badgeWidth) / 2
                     });
                 }
 
@@ -747,11 +752,12 @@ class LolRankManager {
                 if (team2[i].isMvp) {
                     const badgeText = team2[i].result === "Win" ? "MVP" : "ACE";
                     const badge = createBadge(badgeText);
-                    const badgeSize = Math.floor(iconSize * 0.4);
+                    const badgeWidth = Math.floor(iconSize * 0.70);
+                    const badgeHeight = Math.floor(iconSize * 0.30);
                     composites.push({
                         input: badge,
-                        top: iconSize - badgeSize - 2,
-                        left: currentLeft + iconSize - badgeSize - 2
+                        top: iconSize - badgeHeight - 2,
+                        left: currentLeft + (iconSize - badgeWidth) / 2
                     });
                 }
 
