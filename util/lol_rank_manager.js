@@ -337,8 +337,9 @@ class LolRankManager {
                 }
             } else {
                 // Generate images if last_game data is available
+                const badgeText = last_game["result"] === "Win" ? "MVP" : "ACE";
                 const championImageBuffer = last_game["isMvp"] 
-                    ? await this.create_mvp_champion_image(last_game["champion"])
+                    ? await this.create_mvp_champion_image(last_game["champion"], badgeText)
                     : null;
 
                 const teamCompBuffer = last_game["all_players"] 
@@ -546,12 +547,13 @@ class LolRankManager {
     }
 
     /**
-     * Create champion image with MVP badge
+     * Create champion image with MVP/ACE badge
      * @function create_mvp_champion_image
      * @param {string} championName champion name
-     * @returns {Promise<Buffer>} image buffer with MVP badge
+     * @param {string} badgeText badge text ("MVP" or "ACE")
+     * @returns {Promise<Buffer>} image buffer with badge
      */
-    async create_mvp_champion_image(championName) {
+    async create_mvp_champion_image(championName, badgeText = "MVP") {
         try {
             const championUrl = this.get_champion_url(championName);
             if (!championUrl) {
@@ -566,24 +568,28 @@ class LolRankManager {
             const championImage = sharp(response.data);
             const metadata = await championImage.metadata();
             
-            // Create MVP badge
+            // Create badge with appropriate colors
             const badgeSize = Math.floor(metadata.width * 0.35);
+            const isAce = badgeText === "ACE";
+            const gradientId = isAce ? "redGradient" : "goldGradient";
+            const gradientColors = isAce 
+                ? "<stop offset='0%' style='stop-color:#DC143C;stop-opacity:1' /><stop offset='50%' style='stop-color:#B22222;stop-opacity:1' /><stop offset='100%' style='stop-color:#8B0000;stop-opacity:1' />"
+                : "<stop offset='0%' style='stop-color:#FFD700;stop-opacity:1' /><stop offset='50%' style='stop-color:#FFA500;stop-opacity:1' /><stop offset='100%' style='stop-color:#FF8C00;stop-opacity:1' />";
+            
             const badgeSvg = `
                 <svg width="${badgeSize}" height="${badgeSize}">
                     <defs>
-                        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-                            <stop offset="50%" style="stop-color:#FFA500;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:1" />
+                        <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
+                            ${gradientColors}
                         </linearGradient>
                     </defs>
-                    <circle cx="${badgeSize/2}" cy="${badgeSize/2}" r="${badgeSize/2 - 2}" fill="url(#goldGradient)" stroke="#8B4513" stroke-width="3"/>
+                    <circle cx="${badgeSize/2}" cy="${badgeSize/2}" r="${badgeSize/2 - 2}" fill="url(#${gradientId})" stroke="#8B4513" stroke-width="3"/>
                     <text x="${badgeSize/2}" y="${badgeSize/2 + badgeSize/8}" 
                           font-family="Arial, sans-serif" 
-                          font-size="${badgeSize/3}" 
+                          font-size="${badgeSize/3.5}" 
                           font-weight="bold" 
-                          fill="#000000" 
-                          text-anchor="middle">MVP</text>
+                          fill="#FFFFFF" 
+                          text-anchor="middle">${badgeText}</text>
                 </svg>
             `;
             
@@ -607,9 +613,9 @@ class LolRankManager {
     }
 
     /**
-     * Create team composition image (5 champions + VS + 5 champions)
+     * Create team composition image (5 champions + VS + 5 champions) with MVP/ACE badges
      * @function create_team_composition_image
-     * @param {Array} allPlayers array of all players with championId and teamId
+     * @param {Array} allPlayers array of all players with championId, teamId, isMvp, and result
      * @returns {Promise<Buffer>} team composition image buffer
      */
     async create_team_composition_image(allPlayers) {
@@ -643,7 +649,7 @@ class LolRankManager {
             const totalWidth = (iconSize * 5) + (spacing * 4) + vsWidth + (spacing * 2) + (iconSize * 5) + (spacing * 4);
             const totalHeight = iconSize;
 
-            // Download all champion icons
+            // Download all champion icons (without badges - we'll add them later)
             const downloadIcon = async (championId) => {
                 const url = this.get_champion_icon_by_id(championId);
                 const response = await axios.get(url, { responseType: 'arraybuffer' });
@@ -652,6 +658,33 @@ class LolRankManager {
 
             const team1Icons = await Promise.all(team1.map(p => downloadIcon(p.championId)));
             const team2Icons = await Promise.all(team2.map(p => downloadIcon(p.championId)));
+
+            // Create badges for MVP/ACE players
+            const createBadge = (badgeText) => {
+                const badgeSize = Math.floor(iconSize * 0.4);
+                const isAce = badgeText === "ACE";
+                const gradientId = isAce ? "redGradient" : "goldGradient";
+                const gradientColors = isAce 
+                    ? "<stop offset='0%' style='stop-color:#DC143C;stop-opacity:1' /><stop offset='50%' style='stop-color:#B22222;stop-opacity:1' /><stop offset='100%' style='stop-color:#8B0000;stop-opacity:1' />"
+                    : "<stop offset='0%' style='stop-color:#FFD700;stop-opacity:1' /><stop offset='50%' style='stop-color:#FFA500;stop-opacity:1' /><stop offset='100%' style='stop-color:#FF8C00;stop-opacity:1' />";
+                
+                return Buffer.from(`
+                    <svg width="${badgeSize}" height="${badgeSize}">
+                        <defs>
+                            <linearGradient id="${gradientId}" x1="0%" y1="0%" x2="100%" y2="100%">
+                                ${gradientColors}
+                            </linearGradient>
+                        </defs>
+                        <circle cx="${badgeSize/2}" cy="${badgeSize/2}" r="${badgeSize/2 - 1}" fill="url(#${gradientId})" stroke="#000000" stroke-width="2"/>
+                        <text x="${badgeSize/2}" y="${badgeSize/2 + badgeSize/8}" 
+                              font-family="Arial, sans-serif" 
+                              font-size="${badgeSize/4}" 
+                              font-weight="bold" 
+                              fill="#FFFFFF" 
+                              text-anchor="middle">${badgeText}</text>
+                    </svg>
+                `);
+            };
 
             // Create VS text SVG
             const vsSvg = `
@@ -671,13 +704,26 @@ class LolRankManager {
             const composites = [];
             let currentLeft = 0;
 
-            // Team 1 icons
+            // Team 1 icons with badges
             for (let i = 0; i < team1Icons.length; i++) {
                 composites.push({
                     input: team1Icons[i],
                     top: 0,
                     left: currentLeft
                 });
+
+                // Add badge if this player is MVP/ACE
+                if (team1[i].isMvp) {
+                    const badgeText = team1[i].result === "Win" ? "MVP" : "ACE";
+                    const badge = createBadge(badgeText);
+                    const badgeSize = Math.floor(iconSize * 0.4);
+                    composites.push({
+                        input: badge,
+                        top: iconSize - badgeSize - 2,
+                        left: currentLeft + iconSize - badgeSize - 2
+                    });
+                }
+
                 currentLeft += iconSize + spacing;
             }
 
@@ -689,13 +735,26 @@ class LolRankManager {
             });
             currentLeft += vsWidth + spacing;
 
-            // Team 2 icons
+            // Team 2 icons with badges
             for (let i = 0; i < team2Icons.length; i++) {
                 composites.push({
                     input: team2Icons[i],
                     top: 0,
                     left: currentLeft
                 });
+
+                // Add badge if this player is MVP/ACE
+                if (team2[i].isMvp) {
+                    const badgeText = team2[i].result === "Win" ? "MVP" : "ACE";
+                    const badge = createBadge(badgeText);
+                    const badgeSize = Math.floor(iconSize * 0.4);
+                    composites.push({
+                        input: badge,
+                        top: iconSize - badgeSize - 2,
+                        left: currentLeft + iconSize - badgeSize - 2
+                    });
+                }
+
                 currentLeft += iconSize + spacing;
             }
 
