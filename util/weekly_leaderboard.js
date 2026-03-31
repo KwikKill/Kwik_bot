@@ -151,6 +151,8 @@ function initWeeklyLeaderboards(client) {
         const globalRes = await client.pg.query(query).catch(err => { logger.error(err); return null; });
         const rows = globalRes && globalRes.rows ? globalRes.rows : [];
 
+        const promises = [];
+
         for (const tracker of client.lol.lol_rank_manager.trackers || []) {
             logger.log('[WeeklyLeaderboards] Processing tracker for channel ' + tracker.channel);
             try {
@@ -162,11 +164,19 @@ function initWeeklyLeaderboards(client) {
                     continue;
                 }
                 logger.log('[WeeklyLeaderboards] Building leaderboard for guild ' + guildId);
-                await runForTracker(tracker, rows);
+                promises.push(
+                    runForTracker(tracker, rows)
+                );
             } catch (e) {
                 logger.error('Error checking tracker ' + JSON.stringify(tracker) + ' : ' + e);
             }
         }
+
+        Promise.allSettled(promises).then(() => {
+            logger.log('[WeeklyLeaderboards] Finished processing all trackers for this week');
+        }).catch(e => {
+            logger.error('Error in processing trackers: ' + e);
+        });
     }
 
     // Start periodic check
