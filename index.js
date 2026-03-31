@@ -38,26 +38,42 @@ redisSubClient.subscribe('updater:events', (err, count) => {
     if (err) logger.error(err, 'Failed to subscribe to updater:events');
     else logger.log('Subscribed to updater:events');
 });
+redisSubClient.subscribe('infra:commands', (err, count) => {
+    if (err) logger.error(err, 'Failed to subscribe to infra:commands');
+    else logger.log('Subscribed to infra:commands');
+});
 redisSubClient.on('message', async (channel, message) => {
-    if (channel !== 'updater:events') return;
-    
     const data = JSON.parse(message);
-    switch (data.type) {
-        case 'RANK_UPDATE':
-            client.lol.lol_rank_manager.send_tracker_message(
-                data.puuid,
-                data.old_rank,
-                data.new_rank,
-                data.last_game
-            );
-            break;
-        case 'SUMMONER_ADDED':
-            client.lol.lol_rank_manager.feedback_summoner_added(
-                data.channel_id,
-                data.message_id,
-                data.message,
-            );
-            break;
+
+    if (channel === 'updater:events') {
+        switch (data.type) {
+            case 'RANK_UPDATE':
+                client.lol.lol_rank_manager.send_tracker_message(
+                    data.puuid,
+                    data.old_rank,
+                    data.new_rank,
+                    data.last_game
+                );
+                break;
+            case 'SUMMONER_ADDED':
+                client.lol.lol_rank_manager.feedback_summoner_added(
+                    data.channel_id,
+                    data.message_id,
+                    data.message,
+                );
+                break;
+        }
+        return;
+    }
+
+    if (channel === 'infra:commands') {
+        if (data.type === 'RESTART_BOT') {
+            logger.warn('Received RESTART_BOT command, exiting process for container restart');
+            if (client.redisPubClient) {
+                await client.redisPubClient.set('bot:stats:connected', 'false');
+            }
+            setTimeout(() => process.exit(0), 500);
+        }
     }
 });
 

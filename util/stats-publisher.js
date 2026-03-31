@@ -10,23 +10,63 @@ async function publishBotStats(client) {
   }
 
   try {
+    let totalCommandsUsed = 0
+    if (client.pg) {
+      const totalCommandsRes = await client.pg.query("SELECT COUNT(*)::int AS total FROM logs")
+      totalCommandsUsed = totalCommandsRes.rows?.[0]?.total || 0
+    }
+
     const stats = {
       serverCount: client.guilds.cache.size,
       userCount: client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
       uptime: Math.floor(process.uptime()),
-      commands: client.commands.size,
+      commands: totalCommandsUsed,
       connected: true,
     }
 
-    const topServers = client.guilds.cache
+    const topServersBase = client.guilds.cache
       .sort((a, b) => b.memberCount - a.memberCount)
-      .first(3)
+      .first(10)
       .map((guild) => ({
         id: guild.id,
         name: guild.name,
         icon: guild.iconURL({ extension: "png", size: 128 }) || null,
         memberCount: guild.memberCount,
       }))
+
+    let topServers = topServersBase.map((server) => ({
+      ...server,
+      commandsUsed: 0,
+      hasTrackerChannel: false,
+    }))
+
+    if (client.pg && topServers.length > 0) {
+      const guildIds = topServers.map((server) => server.id)
+
+      const [commandsPerGuildRes, trackerPerGuildRes] = await Promise.all([
+        client.pg.query(
+          "SELECT serverid, COUNT(*)::int AS command_count FROM logs WHERE serverid = ANY($1::text[]) GROUP BY serverid",
+          [guildIds],
+        ),
+        client.pg.query(
+          "SELECT DISTINCT guildid FROM trackers WHERE guildid = ANY($1::text[])",
+          [guildIds],
+        ),
+      ])
+
+      const commandCountByGuild = new Map()
+      for (const row of commandsPerGuildRes.rows) {
+        commandCountByGuild.set(row.serverid, row.command_count || 0)
+      }
+
+      const trackerGuilds = new Set(trackerPerGuildRes.rows.map((row) => row.guildid))
+
+      topServers = topServers.map((server) => ({
+        ...server,
+        commandsUsed: commandCountByGuild.get(server.id) || 0,
+        hasTrackerChannel: trackerGuilds.has(server.id),
+      }))
+    }
 
     // Publish each stat to Redis
     await client.redisPubClient.set("bot:stats:serverCount", stats.serverCount.toString())
