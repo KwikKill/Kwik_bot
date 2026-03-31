@@ -24,24 +24,21 @@ async function publishBotStats(client) {
       connected: true,
     }
 
-    const topServersBase = client.guilds.cache
-      .sort((a, b) => b.memberCount - a.memberCount)
-      .first(10)
-      .map((guild) => ({
+    const allServersBase = client.guilds.cache.map((guild) => ({
         id: guild.id,
         name: guild.name,
         icon: guild.iconURL({ extension: "png", size: 128 }) || null,
         memberCount: guild.memberCount,
       }))
 
-    let topServers = topServersBase.map((server) => ({
+    let allServers = allServersBase.map((server) => ({
       ...server,
       commandsUsed: 0,
       hasTrackerChannel: false,
     }))
 
-    if (client.pg && topServers.length > 0) {
-      const guildIds = topServers.map((server) => server.id)
+    if (client.pg && allServers.length > 0) {
+      const guildIds = allServers.map((server) => server.id)
 
       const [commandsPerGuildRes, trackerPerGuildRes] = await Promise.all([
         client.pg.query(
@@ -61,12 +58,25 @@ async function publishBotStats(client) {
 
       const trackerGuilds = new Set(trackerPerGuildRes.rows.map((row) => row.guildid))
 
-      topServers = topServers.map((server) => ({
+      allServers = allServers.map((server) => ({
         ...server,
         commandsUsed: commandCountByGuild.get(server.id) || 0,
         hasTrackerChannel: trackerGuilds.has(server.id),
       }))
     }
+
+    const topServersByMembers = [...allServers]
+      .sort((a, b) => b.memberCount - a.memberCount)
+      .slice(0, 10)
+
+    const topServersByCommands = [...allServers]
+      .sort((a, b) => {
+        if ((b.commandsUsed || 0) !== (a.commandsUsed || 0)) {
+          return (b.commandsUsed || 0) - (a.commandsUsed || 0)
+        }
+        return b.memberCount - a.memberCount
+      })
+      .slice(0, 10)
 
     // Publish each stat to Redis
     await client.redisPubClient.set("bot:stats:serverCount", stats.serverCount.toString())
@@ -74,7 +84,9 @@ async function publishBotStats(client) {
     await client.redisPubClient.set("bot:stats:uptime", stats.uptime.toString())
     await client.redisPubClient.set("bot:stats:commands", stats.commands.toString())
     await client.redisPubClient.set("bot:stats:connected", "true")
-    await client.redisPubClient.set("bot:stats:topServers", JSON.stringify(topServers))
+    await client.redisPubClient.set("bot:stats:topServers", JSON.stringify(topServersByMembers))
+    await client.redisPubClient.set("bot:stats:topServersByMembers", JSON.stringify(topServersByMembers))
+    await client.redisPubClient.set("bot:stats:topServersByCommands", JSON.stringify(topServersByCommands))
 
   } catch (error) {
     logger.error(error, "[Stats Publisher] Failed to publish bot stats")
