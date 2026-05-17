@@ -3893,6 +3893,12 @@ async function tracker_add(client, interaction) {
         if (!channel.permissionsFor(client.user)?.has(PermissionsBitField.Flags.SendMessages)) {
             return await interaction.editReply("The bot doesn't have the permission to send messages in this channel !");
         }
+        if (!channel.permissionsFor(client.user)?.has(PermissionsBitField.Flags.EmbedLinks)) {
+            return await interaction.editReply("The bot doesn't have the permission to send embed links in this channel !");
+        }
+        if (!channel.permissionsFor(client.user)?.has(PermissionsBitField.Flags.UseExternalEmojis)) {
+            return await interaction.editReply("The bot doesn't have the permission to use external emojis in this channel !");
+        }
 
         const query = "INSERT INTO trackers (channelid, guildid) VALUES ($1, $2);";
         client.lol.lol_rank_manager.trackers.push({
