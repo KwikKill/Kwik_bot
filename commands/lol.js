@@ -1286,6 +1286,7 @@ async function account_remove(client, interaction, gamename, tagline) {
     });
     const response = await client.pg.query("SELECT * FROM summoners where discordid=$1 AND gamename=$2 AND tagline=$3;", [interaction.user.id, gamename, tagline]);
     if (response.rows.length > 0) {
+        const puuid = response.rows[0].puuid;
         await client.pg.query({
             name: "remove_account",
             text: "DELETE FROM summoners " +
@@ -1295,6 +1296,11 @@ async function account_remove(client, interaction, gamename, tagline) {
                 ";",
             values: [interaction.user.id, gamename, tagline]
         });
+        await client.redisPubClient.publish('bot:commands', JSON.stringify({
+            type: 'REMOVE_SUMMONER',
+            puuid,
+            discordid: interaction.user.id,
+        }));
         return await interaction.editReply("The account has been removed.");
     }
     return await interaction.editReply("This account is not in the database.");
